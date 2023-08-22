@@ -49,6 +49,8 @@ import { useDrag, onCreate, onDelete } from "../hooks/useDrag"
 import { CustomiseSectionsHeader, Editable } from "./components/Editable"
 import { AddSectionButton } from "./components/Editable/AddSectionButton"
 import { HeroBody } from "./components/Homepage/HeroBody"
+import { HeroDropdownSection } from "./components/Homepage/HeroDropdownSection"
+import { HeroHighlightSection } from "./components/Homepage/HeroHighlightSection"
 import { InfobarBody } from "./components/Homepage/InfobarBody"
 import { InfopicBody } from "./components/Homepage/InfopicBody"
 import { ResourcesBody } from "./components/Homepage/ResourcesBody"
@@ -985,9 +987,6 @@ const EditHomepage = ({ match }) => {
                           >
                             <HeroBody
                               {...section.hero}
-                              highlights={section.hero.key_highlights || []}
-                              dropdownElems={frontMatter.sections[0].hero}
-                              // TODO: Shift to rhf
                               notification={frontMatter.notification}
                               index={sectionIndex}
                               errors={{
@@ -998,7 +997,22 @@ const EditHomepage = ({ match }) => {
                               handleHighlightDropdownToggle={
                                 handleHighlightDropdownToggle
                               }
-                            />
+                            >
+                              {({ currentSelectedOption }) =>
+                                currentSelectedOption === "dropdown" ? (
+                                  <HeroDropdownSection
+                                    {...section.hero}
+                                    state={frontMatter.sections[0].hero}
+                                    errors={errors}
+                                  />
+                                ) : (
+                                  <HeroHighlightSection
+                                    errors={errors}
+                                    {...section.hero}
+                                  />
+                                )
+                              }
+                            </HeroBody>
                           </Editable.EditableAccordionItem>
                           <Divider />
                           <VStack spacing="0.5rem" alignItems="flex-start">

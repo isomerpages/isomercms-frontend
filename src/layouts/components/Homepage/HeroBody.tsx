@@ -23,26 +23,18 @@ import { useEditableContext } from "contexts/EditableContext"
 
 import { Editable } from "layouts/components/Editable"
 
-import {
-  EditorHeroDropdownSection,
-  EditorHomepageState,
-  HeroFrontmatterSection,
-  HighlightOption,
-} from "types/homepage"
+import { HighlightOption } from "types/homepage"
 
-import {
-  HeroDropdownFormFields,
-  HeroDropdownSection,
-} from "./HeroDropdownSection"
-import { HeroHighlightSection } from "./HeroHighlightSection"
+import { HeroDropdownFormFields } from "./HeroDropdownSection"
 
 type HeroHighlightSectionFormFields = HighlightOption
+
+type HeroSectionType = "highlights" | "dropdown"
 
 export interface HeroBodyFormFields {
   title: string
   subtitle: string
   background: string
-  dropdown: HeroDropdownFormFields
 }
 
 interface HeroBodyProps extends HeroBodyFormFields {
@@ -56,27 +48,24 @@ interface HeroBodyProps extends HeroBodyFormFields {
   } & HeroBodyFormFields
   handleHighlightDropdownToggle: (event: Record<string, unknown>) => void
   notification: string
-  highlights: Partial<HeroHighlightSectionFormFields>[]
-  dropdownElems: EditorHeroDropdownSection
-  button: string
-  url: string
+  children: (props: {
+    currentSelectedOption: HeroSectionType
+  }) => React.ReactNode
 }
 
 export const HeroBody = ({
   title,
   subtitle,
-  dropdown,
-  highlights,
   background,
   index,
-  button,
-  url,
   errors,
   handleHighlightDropdownToggle,
   notification,
-  dropdownElems,
+  children,
 }: HeroBodyProps) => {
-  const [heroSectionType, setHeroSectionType] = useState("highlights")
+  const [heroSectionType, setHeroSectionType] = useState<HeroSectionType>(
+    "highlights"
+  )
   const { onChange } = useEditableContext()
 
   return (
@@ -150,7 +139,7 @@ export const HeroBody = ({
             Customise Layout
           </Text>
           <Radio.RadioGroup
-            onChange={(nextSectionType) => {
+            onChange={(nextSectionType: HeroSectionType) => {
               setHeroSectionType(nextSectionType)
               handleHighlightDropdownToggle({
                 target: {
@@ -180,20 +169,7 @@ export const HeroBody = ({
           </Radio.RadioGroup>
         </Box>
 
-        {heroSectionType === "dropdown" ? (
-          <HeroDropdownSection
-            title={dropdown.title}
-            state={dropdownElems}
-            errors={errors}
-          />
-        ) : (
-          <HeroHighlightSection
-            errors={errors}
-            button={button}
-            url={url}
-            highlights={highlights}
-          />
-        )}
+        {children({ currentSelectedOption: heroSectionType })}
       </Editable.Section>
     </>
   )

@@ -31,7 +31,7 @@ export const HeroHighlightSection = ({
   errors,
   button,
   url,
-  highlights,
+  highlights = [],
 }: HeroHighlightSectionProps) => {
   const {
     onDragEnd,
