@@ -1,5 +1,4 @@
 import {
-  Center,
   Flex,
   Text,
   VStack,
@@ -12,6 +11,7 @@ import {
   AccordionItemProps,
   forwardRef,
   StackProps,
+  Divider,
 } from "@chakra-ui/react"
 import {
   OnDragEndResponder,
@@ -182,6 +182,7 @@ interface DraggableAccordionItemProps {
   // rather than having us pass in manually
   index: number
   draggableId: string
+  isInvalid?: boolean
 }
 // NOTE: Separating editable/draggable
 // due to semantics on `Draggables`
@@ -190,43 +191,65 @@ const DraggableAccordionItem = ({
   title,
   children,
   index,
+  isInvalid,
 }: PropsWithChildren<DraggableAccordionItemProps>) => {
   return (
     <Draggable draggableId={uuid()} index={index}>
       {(draggableProvided) => (
         <BaseAccordionItem
-          borderRadius="0.25rem"
+          borderRadius="0.5rem"
           {...draggableProvided.draggableProps}
           ref={draggableProvided.innerRef}
           boxShadow="sm"
           {...draggableProvided.dragHandleProps}
-          _hover={{
-            bgColor: "interaction.muted.main.hover",
-          }}
+          position="relative"
         >
-          <Center>
-            <IconButton
-              variant="clear"
-              cursor="grab"
-              aria-label="drag item"
-              icon={<BxDraggable />}
-            />
-          </Center>
-          {/* NOTE: Check with design on styling. 
-        See if entire section is button (ie, whole component hover styling)
-      */}
-          <Flex flexDir="row">
-            <Flex px="1.5rem" pb="1rem" flex="1" flexDir="column">
-              {tag}
-              <Text textStyle="h6" textAlign="left" mt="0.25rem">
-                {title}
-              </Text>
-            </Flex>
-            <AccordionButton w="auto" h="fit-content" py="1rem">
-              <AccordionIcon />
-            </AccordionButton>
-          </Flex>
-          <AccordionPanel pb={4}>{children}</AccordionPanel>
+          {({ isExpanded }) => (
+            <>
+              <IconButton
+                position="absolute"
+                top="0.5rem"
+                left="0"
+                right="0"
+                variant="clear"
+                cursor="grab"
+                aria-label="drag item"
+                margin="0 auto"
+                w="fit-content"
+                icon={<BxDraggable />}
+              />
+              {!isExpanded && isInvalid && (
+                <Divider
+                  border="4px solid"
+                  borderColor="utility.feedback.critical"
+                  orientation="vertical"
+                  left={0}
+                  position="absolute"
+                  borderLeftRadius="0.5rem"
+                  h="-webkit-fill-available"
+                />
+              )}
+              <Flex
+                flexDir="row"
+                pt="1.88rem"
+                pb={isExpanded ? "0rem" : "0.88rem"}
+                _hover={{
+                  bgColor: isExpanded ? "none" : "interaction.muted.main.hover",
+                }}
+              >
+                <Flex px="1.5rem" pb="1rem" flex="1" flexDir="column">
+                  {tag}
+                  <Text textStyle="h6" textAlign="left" mt="0.25rem">
+                    {title}
+                  </Text>
+                </Flex>
+                <AccordionButton w="auto" h="fit-content" py="1rem">
+                  <AccordionIcon />
+                </AccordionButton>
+              </Flex>
+              <AccordionPanel pb={4}>{children}</AccordionPanel>
+            </>
+          )}
         </BaseAccordionItem>
       )}
     </Draggable>
