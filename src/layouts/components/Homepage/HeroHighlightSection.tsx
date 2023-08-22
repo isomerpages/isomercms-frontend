@@ -12,6 +12,8 @@ import { useDragDropContext } from "contexts/DragDropContext"
 
 import { Editable } from "layouts/components/Editable"
 
+import { HighlightOption } from "types/homepage"
+
 interface HeroHighlightFormFields {
   title: string
   url: string
@@ -33,7 +35,7 @@ interface HeroHighlightSectionProps extends HeroHighlightSectionFormFields {
     }
   }) => void
   onCreate: () => void
-  highlights: HeroHighlightFormFields[]
+  highlights: Partial<HighlightOption>[]
 }
 
 export const HeroHighlightSection = ({
@@ -127,7 +129,7 @@ export const HeroHighlightSection = ({
                           }
                           isRequired
                         >
-                          <FormLabel>Title</FormLabel>
+                          <FormLabel>Description</FormLabel>
                           <Input
                             placeholder="Highlight description"
                             id={`highlight-${highlightIndex}-description`}

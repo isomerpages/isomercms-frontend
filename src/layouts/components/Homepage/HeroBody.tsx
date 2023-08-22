@@ -25,6 +25,7 @@ import {
   EditorHeroDropdownSection,
   EditorHomepageState,
   HeroFrontmatterSection,
+  HighlightOption,
 } from "types/homepage"
 
 import {
@@ -33,11 +34,7 @@ import {
 } from "./HeroDropdownSection"
 import { HeroHighlightSection } from "./HeroHighlightSection"
 
-interface HeroHighlightSectionFormFields {
-  title: string
-  description: string
-  url: string
-}
+type HeroHighlightSectionFormFields = HighlightOption
 
 export interface HeroBodyFormFields {
   title: string
@@ -68,7 +65,7 @@ interface HeroBodyProps extends HeroBodyFormFields {
   handleHighlightDropdownToggle: (event: Record<string, unknown>) => void
   notification: string
   state: EditorHomepageState
-  highlights: HeroHighlightSectionFormFields[]
+  highlights: Partial<HeroHighlightSectionFormFields>[]
   button: string
   url: string
 }
