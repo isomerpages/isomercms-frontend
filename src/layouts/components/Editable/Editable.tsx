@@ -11,6 +11,7 @@ import {
   AccordionProps,
   AccordionItemProps,
   forwardRef,
+  StackProps,
 } from "@chakra-ui/react"
 import {
   OnDragEndResponder,
@@ -215,7 +216,7 @@ const DraggableAccordionItem = ({
         See if entire section is button (ie, whole component hover styling)
       */}
           <Flex flexDir="row">
-            <Flex px="1.5rem" pb="1.5rem" flex="1" flexDir="column">
+            <Flex px="1.5rem" pb="1rem" flex="1" flexDir="column">
               {tag}
               <Text textStyle="h6" textAlign="left" mt="0.25rem">
                 {title}
@@ -236,10 +237,15 @@ const EditableAccordion = (props: AccordionProps) => {
   return <Accordion allowToggle bg="base.canvas.default" {...props} />
 }
 
+const EditableSection = (props: StackProps) => (
+  <VStack px="0.5rem" align="flex-start" spacing="1rem" {...props} />
+)
+
 export const Editable = {
   Sidebar: EditableSidebar,
   Draggable: EditableDraggable,
   EditableAccordionItem,
   Accordion: EditableAccordion,
   DraggableAccordionItem,
+  Section: EditableSection,
 }
