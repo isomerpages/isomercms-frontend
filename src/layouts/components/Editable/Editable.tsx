@@ -204,7 +204,7 @@ const EditableAccordionItem = ({
       */}
           <AccordionButton px="1.5rem" py="3rem">
             <Flex flex="1" flexDir="column">
-              <Text textStyle="h6" textAlign="left" mt="0.25rem">
+              <Text textStyle="h6" textAlign="left" mt="0.25rem" noOfLines={1}>
                 {title}
               </Text>
             </Flex>
@@ -285,13 +285,23 @@ const DraggableAccordionItem = ({
                   pt={tag ? "0" : "0.37rem"}
                   flex="1"
                   flexDir="column"
+                  // NOTE: Allocate 3.25rem for the accordion button
+                  // so that the text doesn't cut into it
+                  // and the button doesn't go out of the bounding box
+                  maxW="calc(100% - 3.25rem)"
                 >
                   {tag}
-                  <Text textStyle="h6" textAlign="left" mt="0.25rem">
+                  <Text
+                    textStyle="h6"
+                    textAlign="left"
+                    mt="0.25rem"
+                    noOfLines={1}
+                    maxW="100%"
+                  >
                     {title}
                   </Text>
                 </Flex>
-                <AccordionButton w="auto" h="fit-content" py="1rem">
+                <AccordionButton w="auto" h="fit-content" py="1rem" mr="0.5rem">
                   <AccordionIcon />
                 </AccordionButton>
               </Flex>

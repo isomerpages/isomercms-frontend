@@ -59,6 +59,11 @@ import { ResourcesBody } from "./components/Homepage/ResourcesBody"
 
 const RADIX_PARSE_INT = 10
 
+const getHasError = (errorArray) =>
+  _.some(errorArray, (err) =>
+    _.some(err, (errorMessage) => errorMessage.length > 0)
+  )
+
 const getHasErrors = (errors) => {
   const hasSectionErrors = _.some(errors.sections, (section) => {
     // Section is an object, e.g. { hero: {} }
@@ -73,17 +78,8 @@ const getHasErrors = (errors) => {
     )
   })
 
-  const hasHighlightErrors = _.some(
-    errors.highlights,
-    (highlight) =>
-      _.some(highlight, (errorMessage) => errorMessage.length > 0) === true
-  )
-
-  const hasDropdownElemErrors = _.some(
-    errors.dropdownElems,
-    (dropdownElem) =>
-      _.some(dropdownElem, (errorMessage) => errorMessage.length > 0) === true
-  )
+  const hasHighlightErrors = getHasError(errors.highlights)
+  const hasDropdownElemErrors = getHasError(errors.dropdownElems)
 
   return hasSectionErrors || hasHighlightErrors || hasDropdownElemErrors
 }
@@ -983,6 +979,11 @@ const EditHomepage = ({ match }) => {
                           <Editable.EditableAccordionItem
                             title="Hero section"
                             // TODO: Add `isInvalid` prop to `EditableAccordionItem`
+                            isInvalid={
+                              getHasError(errors.dropdownElems) ||
+                              getHasError(errors.highlights) ||
+                              _.some(_.values(errors.sections[0]?.hero))
+                            }
                           >
                             <HeroBody
                               {...section.hero}
@@ -1007,7 +1008,7 @@ const EditHomepage = ({ match }) => {
                                 ) : (
                                   <HeroHighlightSection
                                     errors={errors}
-                                    {...section.hero}
+                                    highlights={section.hero.key_highlights}
                                   />
                                 )
                               }
