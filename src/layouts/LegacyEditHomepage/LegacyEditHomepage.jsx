@@ -50,6 +50,18 @@ import EditorResourcesSection from "./components/ResourcesSection"
 // ==========
 const RADIX_PARSE_INT = 10
 
+// NOTE: `scrollIntoView` does not work when called synchronously
+// to avoid this problem, we do a `setTimeout` to wrap it.
+// This calls it after 1ms, which allows it to work.
+const scrollTo = (ref) => {
+  setTimeout(() =>
+    ref.current.scrollIntoView({
+      behavior: "smooth",
+    })
+  )
+}
+
+// Constants
 // Section constructors
 const ResourcesSectionConstructor = (isErrorConstructor) => ({
   resources: {
@@ -289,7 +301,7 @@ const EditHomepage = ({ match }) => {
 
   useEffect(() => {
     if (scrollRefs.length > 0) {
-      scrollRefs[frontMatter.sections.length - 1].current.scrollIntoView()
+      scrollTo(scrollRefs[frontMatter.sections.length - 1])
     }
   }, [scrollRefs, frontMatter.sections.length])
 
@@ -412,7 +424,7 @@ const EditHomepage = ({ match }) => {
           })
           setErrors(newErrors)
 
-          scrollRefs[sectionIndex].current.scrollIntoView()
+          scrollTo(scrollRefs[sectionIndex])
           break
         }
         case "highlight": {
@@ -455,7 +467,7 @@ const EditHomepage = ({ match }) => {
           })
           setErrors(newErrors)
 
-          scrollRefs[0].current.scrollIntoView()
+          scrollTo(scrollRefs[0])
           break
         }
         case "dropdownelem": {
@@ -500,7 +512,7 @@ const EditHomepage = ({ match }) => {
           })
           setErrors(newErrors)
 
-          scrollRefs[0].current.scrollIntoView()
+          scrollTo(scrollRefs[0])
           break
         }
         default: {
@@ -537,7 +549,7 @@ const EditHomepage = ({ match }) => {
           })
           setErrors(newErrors)
 
-          scrollRefs[0].current.scrollIntoView()
+          scrollTo(scrollRefs[0])
         }
       }
     } catch (err) {
@@ -816,7 +828,7 @@ const EditHomepage = ({ match }) => {
 
           setDisplaySections(newDisplaySections)
 
-          scrollRefs[sectionId].current.scrollIntoView()
+          scrollTo(scrollRefs[index])
           break
         }
         case "highlight": {
@@ -832,6 +844,7 @@ const EditHomepage = ({ match }) => {
             $set: resetHighlightSections,
           })
 
+          scrollTo(scrollRefs[0])
           setDisplayHighlights(newDisplayHighlights)
           break
         }
@@ -848,6 +861,7 @@ const EditHomepage = ({ match }) => {
             $set: resetDropdownSections,
           })
 
+          scrollTo(scrollRefs[0])
           setDisplayDropdownElems(newDisplayDropdownElems)
           break
         }
