@@ -26,7 +26,6 @@ const DEFAULT_BE_STATE = {
   favicon: "/images/isomer-logo.svg",
   shareicon: "/images/isomer-logo.svg",
   facebook_pixel: "",
-  google_analytics: "",
   google_analytics_ga4: "",
   linkedin_insights: "",
   is_government: false,

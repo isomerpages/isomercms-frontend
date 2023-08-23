@@ -160,7 +160,6 @@ export const MOCK_BE_SETTINGS: BackendSiteSettings = {
   description: "isomer is a website builder",
   // NOTE: No shareicon/logo/favicon as no uploaded img within the story
   facebook_pixel: "many pixel",
-  google_analytics: "some analytics",
   google_analytics_ga4: "some ga4 analytics",
   linkedin_insights: "some insightful comment",
   is_government: true,
