@@ -2,6 +2,7 @@ import "@fontsource/ibm-plex-mono"
 import "inter-ui/inter.css"
 
 import { datadogRum } from "@datadog/browser-rum"
+import { GrowthBookProvider } from "@growthbook/growthbook-react"
 import { ThemeProvider } from "@opengovsg/design-system-react"
 import axios from "axios"
 import { useEffect } from "react"
@@ -14,6 +15,8 @@ import { ServicesProvider } from "contexts/ServicesContext"
 
 // Import route selector
 import { RouteSelector } from "routing/RouteSelector"
+
+import { getGrowthBookInstance } from "utils/growthbook"
 
 import theme from "theme"
 
@@ -64,22 +67,30 @@ if (REACT_APP_ENV === "staging" || REACT_APP_ENV === "production") {
   datadogRum.startSessionReplayRecording()
 }
 
+// GrowthBook instance
+const growthbook = getGrowthBookInstance(
+  process.env.REACT_APP_GROWTHBOOK_CLIENT_KEY
+)
+
 const App = () => {
   useEffect(() => {
     localStorage.removeItem(LOCAL_STORAGE_SITE_COLORS)
+    growthbook.loadFeatures({ autoRefresh: true })
   }, [])
 
   return (
     <Router basename={process.env.PUBLIC_URL}>
-      <ServicesProvider client={apiClient}>
-        <QueryClientProvider client={queryClient}>
-          <LoginProvider>
-            <ThemeProvider theme={theme}>
-              <RouteSelector />
-            </ThemeProvider>
-          </LoginProvider>
-        </QueryClientProvider>
-      </ServicesProvider>
+      <GrowthBookProvider growthbook={growthbook}>
+        <ServicesProvider client={apiClient}>
+          <QueryClientProvider client={queryClient}>
+            <LoginProvider>
+              <ThemeProvider theme={theme}>
+                <RouteSelector />
+              </ThemeProvider>
+            </LoginProvider>
+          </QueryClientProvider>
+        </ServicesProvider>
+      </GrowthBookProvider>
     </Router>
   )
 }
