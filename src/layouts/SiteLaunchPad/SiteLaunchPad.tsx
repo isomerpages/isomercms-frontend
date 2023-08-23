@@ -27,12 +27,7 @@ import { SiteViewHeader } from "layouts/layouts/SiteViewLayout/SiteViewHeader"
 
 import { isSiteLaunchEnabled } from "utils/siteLaunchUtils"
 
-import {
-  SiteLaunchFEStatus,
-  SiteLaunchTaskTypeIndex,
-  SITE_LAUNCH_PAGES,
-  SITE_LAUNCH_TASKS_LENGTH,
-} from "types/siteLaunch"
+import { SITE_LAUNCH_PAGES } from "types/siteLaunch"
 import { useErrorToast } from "utils"
 
 import {
@@ -55,9 +50,6 @@ interface RiskAcceptanceModalProps {
 
 interface SiteLaunchPadProps {
   pageNumber: number
-
-  handleDecrementStepNumber: () => void
-  handleIncrementStepNumber: () => void
 }
 
 const RiskAcceptanceModal = ({
@@ -129,8 +121,6 @@ const RiskAcceptanceModal = ({
 
 export const SiteLaunchPad = ({
   pageNumber,
-  handleDecrementStepNumber,
-  handleIncrementStepNumber,
 }: SiteLaunchPadProps): JSX.Element => {
   let title: JSX.Element
   let body: JSX.Element
@@ -146,12 +136,7 @@ export const SiteLaunchPad = ({
       break
     case SITE_LAUNCH_PAGES.CHECKLIST:
       title = <SiteLaunchChecklistTitle />
-      body = (
-        <SiteLaunchChecklistBody
-          handleIncrementStepNumber={handleIncrementStepNumber}
-          handleDecrementStepNumber={handleDecrementStepNumber}
-        />
-      )
+      body = <SiteLaunchChecklistBody />
       break
     case SITE_LAUNCH_PAGES.FINAL_STATE:
       title = <></> // No title for final state
@@ -176,11 +161,7 @@ export const SiteLaunchPad = ({
 }
 
 export const SiteLaunchPadPage = (): JSX.Element => {
-  const {
-    siteLaunchStatusProps,
-    setSiteLaunchStatusProps,
-    pageNumber,
-  } = useSiteLaunchContext()
+  const { pageNumber } = useSiteLaunchContext()
   const { siteName } = useParams<{ siteName: string }>()
 
   const errorToast = useErrorToast()
@@ -196,38 +177,11 @@ export const SiteLaunchPadPage = (): JSX.Element => {
     }
   }, [siteName, errorToast, role, isLoaded])
 
-  const handleIncrementStepNumber = () => {
-    if (
-      siteLaunchStatusProps &&
-      siteLaunchStatusProps.stepNumber < SITE_LAUNCH_TASKS_LENGTH
-    ) {
-      setSiteLaunchStatusProps({
-        ...siteLaunchStatusProps,
-        stepNumber: (siteLaunchStatusProps.stepNumber +
-          1) as SiteLaunchTaskTypeIndex, // safe to assert since we do a check
-        siteLaunchStatus: SiteLaunchFEStatus.ChecklistTasksPending,
-      })
-    }
-  }
-  const handleDecrementStepNumber = () => {
-    if (siteLaunchStatusProps && siteLaunchStatusProps.stepNumber > 0) {
-      setSiteLaunchStatusProps({
-        ...siteLaunchStatusProps,
-        stepNumber: (siteLaunchStatusProps?.stepNumber -
-          1) as SiteLaunchTaskTypeIndex, // safe to assert since we do a check
-      })
-    }
-  }
-
   return (
     <Skeleton isLoaded={isLoaded}>
       <>
         {isSiteLaunchEnabled(siteName, role) ? (
-          <SiteLaunchPad
-            pageNumber={pageNumber}
-            handleDecrementStepNumber={handleDecrementStepNumber}
-            handleIncrementStepNumber={handleIncrementStepNumber}
-          />
+          <SiteLaunchPad pageNumber={pageNumber} />
         ) : (
           /**
            * Without the isLoaded check, the site will redirect prematurely.
