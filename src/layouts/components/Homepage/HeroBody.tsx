@@ -6,7 +6,6 @@ import {
   Box,
   Divider,
   HStack,
-  RadioGroup,
 } from "@chakra-ui/react"
 import {
   FormErrorMessage,
@@ -26,12 +25,16 @@ import {
   EditorHeroDropdownSection,
   EditorHomepageState,
   HeroFrontmatterSection,
+  HighlightOption,
 } from "types/homepage"
 
 import {
   HeroDropdownFormFields,
   HeroDropdownSection,
 } from "./HeroDropdownSection"
+import { HeroHighlightSection } from "./HeroHighlightSection"
+
+type HeroHighlightSectionFormFields = HighlightOption
 
 export interface HeroBodyFormFields {
   title: string
@@ -50,24 +53,32 @@ interface HeroBodyProps extends HeroBodyFormFields {
         id: string
       }
     },
-    type: "Dropdown Element"
+    type: "Dropdown Element" | "Highlight"
   ) => void
   errors: {
     dropdownElems: HeroDropdownFormFields[]
-    highlights: unknown[]
+    highlights: HeroHighlightSectionFormFields[]
     dropdown: string
+    button: string
+    url: string
   } & HeroBodyFormFields
   handleHighlightDropdownToggle: (event: Record<string, unknown>) => void
   notification: string
   state: EditorHomepageState
+  highlights: Partial<HeroHighlightSectionFormFields>[]
+  button: string
+  url: string
 }
 
 export const HeroBody = ({
   title,
   subtitle,
   dropdown,
+  highlights,
   background,
   index,
+  button,
+  url,
   onChange,
   createHandler,
   deleteHandler,
@@ -76,7 +87,7 @@ export const HeroBody = ({
   notification,
   state,
 }: HeroBodyProps) => {
-  const [heroSectionType, setHeroSectionType] = useState("highlight")
+  const [heroSectionType, setHeroSectionType] = useState("highlights")
   return (
     <>
       <Editable.Section spacing="1.25rem">
@@ -147,7 +158,7 @@ export const HeroBody = ({
           <Text textStyle="h5" mb="1rem">
             Customise Layout
           </Text>
-          <RadioGroup
+          <Radio.RadioGroup
             onChange={(nextSectionType) => {
               setHeroSectionType(nextSectionType)
               handleHighlightDropdownToggle({
@@ -157,16 +168,25 @@ export const HeroBody = ({
               })
             }}
             as={HStack}
-            spacing="1rem"
-            defaultValue="highlight"
+            defaultValue="highlights"
           >
-            <Radio value="highlight" size="xs" w="fit-content">
+            <Radio
+              value="highlights"
+              size="xs"
+              w="fit-content"
+              allowDeselect={false}
+            >
               Button + Highlights
             </Radio>
-            <Radio value="dropdown" size="xs" w="fit-content">
+            <Radio
+              value="dropdown"
+              size="xs"
+              w="fit-content"
+              allowDeselect={false}
+            >
               Dropdown
             </Radio>
-          </RadioGroup>
+          </Radio.RadioGroup>
         </Box>
 
         {heroSectionType === "dropdown" ? (
@@ -182,8 +202,15 @@ export const HeroBody = ({
             onClick={(event) => deleteHandler(event, "Dropdown Element")}
           />
         ) : (
-          // <HeroHighlightSection />
-          <div />
+          <HeroHighlightSection
+            onChange={onChange}
+            onCreate={() => createHandler({ target: { id: "highlight" } })}
+            onClick={(event) => deleteHandler(event, "Highlight")}
+            errors={errors}
+            button={button}
+            url={url}
+            highlights={highlights}
+          />
         )}
       </Editable.Section>
     </>

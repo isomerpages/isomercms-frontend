@@ -985,6 +985,7 @@ const EditHomepage = ({ match }) => {
                             <Editable.EditableAccordionItem title="Hero section">
                               <HeroBody
                                 {...section.hero}
+                                highlights={section.hero.key_highlights || []}
                                 state={homepageState}
                                 // TODO: Shift to rhf
                                 notification={frontMatter.notification}
