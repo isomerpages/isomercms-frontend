@@ -14,11 +14,7 @@ import { Editable } from "layouts/components/Editable"
 
 import { HighlightOption } from "types/homepage"
 
-interface HeroHighlightFormFields {
-  title: string
-  url: string
-  description: string
-}
+const MAX_HIGHLIGHTS = 4
 
 interface HeroHighlightSectionFormFields {
   button: string
@@ -26,7 +22,7 @@ interface HeroHighlightSectionFormFields {
 }
 interface HeroHighlightSectionProps extends HeroHighlightSectionFormFields {
   errors: HeroHighlightSectionFormFields & {
-    highlights: HeroHighlightFormFields[]
+    highlights: HighlightOption[]
   }
   onChange: () => void
   onClick: (event: {
@@ -186,7 +182,7 @@ export const HeroHighlightSection = ({
         variant="outline"
         w="full"
         leftIcon={<BiPlus fontSize="1.5rem" />}
-        isDisabled={highlights.length >= 4}
+        isDisabled={highlights.length >= MAX_HIGHLIGHTS}
       >
         Add option
       </Button>
