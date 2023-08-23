@@ -530,9 +530,39 @@ export const MOCK_LAUNCHING_SITE_LAUNCH_DTO: SiteLaunchDto = {
   siteLaunchStatus: SiteLaunchBEStatus.Launching,
   dnsRecords: [
     {
-      source: "sourceURL",
+      source: "www.isomer.gov.sg",
       type: "CNAME",
-      target: "targetURL",
+      target: "d2fdsaf8ft15h.cloudfront.net",
+    },
+    {
+      source: "_123456787202a1b56dd8a5545efee05.isomer.gov.sg",
+      type: "CNAME",
+      target:
+        "_fae940f7aa0gfd51754f18ed50bgf521.wrfxpmntfs.acm-validations.aws",
+    },
+    {
+      source: "isomer.gov.sg",
+      type: "A Record",
+      target: "18.136.36.203",
+    },
+  ],
+}
+
+export const MOCK_WWW_LAUNCHING_SITE_LAUNCH_DTO: SiteLaunchDto = MOCK_LAUNCHING_SITE_LAUNCH_DTO
+
+export const MOCK_NON_WWW_LAUNCHING_SITE_LAUNCH_DTO: SiteLaunchDto = {
+  siteLaunchStatus: SiteLaunchBEStatus.Launching,
+  dnsRecords: [
+    {
+      source: "isomer.gov.sg",
+      type: "CNAME",
+      target: "d2fdsaf8ft15h.cloudfront.net",
+    },
+    {
+      source: "_123456787202a1b56dd8a5545efee05.isomer.gov.sg",
+      type: "CNAME",
+      target:
+        "_fae940f7aa0gfd51754f18ed50bgf521.wrfxpmntfs.acm-validations.aws",
     },
   ],
 }
