@@ -12,6 +12,12 @@ import {
   TextProps,
   Skeleton,
   HStack,
+  Popover,
+  PopoverTrigger,
+  PopoverArrow,
+  PopoverContent,
+  PopoverBody,
+  useClipboard,
 } from "@chakra-ui/react"
 import { Button, Checkbox, Link } from "@opengovsg/design-system-react"
 import { useForm } from "react-hook-form"
@@ -19,7 +25,7 @@ import { useParams, Link as RouterLink } from "react-router-dom"
 
 import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 
-import { BxCopy, BxLifeBuoy } from "assets"
+import { BxCopy } from "assets"
 import {
   DNSRecord,
   getNewDomainTaskFrmIdx,
@@ -64,25 +70,54 @@ const getTextProps = (index: number, tasksDone: number): TextProps => {
 }
 
 const textWithCopyIcon = (text: string): JSX.Element => {
+  const { onCopy, hasCopied } = useClipboard(text)
   return (
-    <Button variant="link" onClick={() => navigator.clipboard.writeText(text)}>
-      <Box display="flex" alignItems="center" maxW="16rem">
-        <Text
-          textStyle="body-2"
-          color="black"
-          whiteSpace="nowrap"
-          overflow="hidden"
-          textOverflow="ellipsis"
+    <Button variant="link" onClick={onCopy}>
+      {/* Closes after 1.5s and does not refocus on the button to avoid the outline */}
+      <Popover
+        returnFocusOnClose={false}
+        isOpen={hasCopied}
+        placement="right-start"
+      >
+        <PopoverTrigger>
+          <Box display="flex" alignItems="center" maxW="16rem">
+            <Text
+              textStyle="body-2"
+              color="black"
+              whiteSpace="nowrap"
+              overflow="hidden"
+              textOverflow="ellipsis"
+            >
+              {text}
+            </Text>
+
+            <Icon as={BxCopy} ml="0.5rem" />
+          </Box>
+        </PopoverTrigger>
+        <PopoverContent
+          bg="background.action.alt"
+          _focus={{
+            boxShadow: "none",
+          }}
+          w="fit-content"
         >
-          {text}
-        </Text>
-        <Icon as={BxCopy} ml="0.5rem" />
-      </Box>
+          <PopoverArrow bg="background.action.alt" />
+          <PopoverBody>
+            <Text textStyle="body-2" color="text.inverse">
+              Link copied!
+            </Text>
+          </PopoverBody>
+        </PopoverContent>
+      </Popover>
     </Button>
   )
 }
 
-const generateDNSTable = (dnsRecords: DNSRecord[] | undefined): JSX.Element => {
+const DnsTable = ({
+  dnsRecords,
+}: {
+  dnsRecords?: DNSRecord[]
+}): JSX.Element => {
   return (
     <TableContainer width="100%">
       <Table variant="simple">
@@ -117,11 +152,6 @@ const generateDNSTable = (dnsRecords: DNSRecord[] | undefined): JSX.Element => {
       </Table>
     </TableContainer>
   )
-}
-
-interface SiteLaunchChecklistBodyProps {
-  handleIncrementStepNumber: () => void
-  handleDecrementStepNumber: () => void
 }
 
 interface TableMappingProps {
@@ -179,11 +209,10 @@ const addSubtitlesForChecklist = (
   return newTask
 }
 
-export const SiteLaunchChecklistBody = ({
-  handleIncrementStepNumber,
-  handleDecrementStepNumber,
-}: SiteLaunchChecklistBodyProps): JSX.Element => {
+export const SiteLaunchChecklistBody = (): JSX.Element => {
   const {
+    handleIncrementStepNumber,
+    handleDecrementStepNumber,
     siteLaunchStatusProps,
     setSiteLaunchStatusProps,
     generateDNSRecords,
@@ -292,8 +321,8 @@ export const SiteLaunchChecklistBody = ({
         status.
       </Text>
       <Text mb="2rem">
-        You may leave this page and return later to continue from where you left
-        off. If you run into issues,{" "}
+        Do not close this tab until you complete all the tasks. If you run into
+        issues,{" "}
         <Link href="mailto:support@isomer.gov.sg">contact Isomer support.</Link>
       </Text>
       <Box
@@ -378,7 +407,9 @@ export const SiteLaunchChecklistBody = ({
                       </>
                     )}
                     <Skeleton isLoaded={!!siteLaunchStatusProps?.dnsRecords}>
-                      {generateDNSTable(siteLaunchStatusProps?.dnsRecords)}
+                      <DnsTable
+                        dnsRecords={siteLaunchStatusProps?.dnsRecords}
+                      />
                     </Skeleton>
                   </Td>
                 </Tr>
