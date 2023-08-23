@@ -83,10 +83,11 @@ const textWithCopyIcon = (text: string): JSX.Element => {
           <Box display="flex" alignItems="center" maxW="16rem">
             <Text
               textStyle="body-2"
-              color="black"
+              textColor="base.content.default"
               whiteSpace="nowrap"
               overflow="hidden"
               textOverflow="ellipsis"
+              noOfLines={1}
             >
               {text}
             </Text>
@@ -141,7 +142,7 @@ const DnsTable = ({
                 {textWithCopyIcon(record.source)}
               </Td>
               <Td textStyle="body-2" color="text.label.secondary">
-                <Text>{record.type}</Text>
+                <Text textColor="base.content.default">{record.type}</Text>
               </Td>
               <Td textStyle="body-2" color="text.label.secondary">
                 {textWithCopyIcon(record.target)}

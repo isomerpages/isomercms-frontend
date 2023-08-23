@@ -83,7 +83,6 @@ export const SiteLaunchProvider = ({
   })
 
   const { data: siteLaunchDto } = useGetSiteLaunchStatus(siteName)
-  console.log({ siteLaunchDto })
   const queryClient = useQueryClient()
   const refetchSiteLaunchStatus = () => {
     /**
