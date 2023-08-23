@@ -117,7 +117,7 @@ jobs:
 
       - name: Save branch name as environment variable (for pull requests)
         if: ${{ env.ISOMER_RUN_CHROMATIC_BUILD == 'true' && github.event_name == 'issue_comment' }}
-        run: echo "ISOMER_BRANCH_NAME=${{ fromJSON(steps.get_branch_name.outputs.data).head.ref }}" >> $GITHUB_ENV
+        run: echo "ISOMER_BRANCH_NAME=${{ fromJSON(steps.get_pull_request.outputs.data).head.ref }}" >> $GITHUB_ENV
 
       - name: Save branch name as environment variable (for push)
         if: ${{ env.ISOMER_RUN_CHROMATIC_BUILD == 'true' && github.event_name == 'push' }}
