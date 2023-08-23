@@ -9,11 +9,6 @@ import { useEffect, createRef, useState } from "react"
 
 import { Footer } from "components/Footer"
 import Header from "components/Header"
-import EditorHeroSection from "components/homepage/HeroSection"
-import EditorInfobarSection from "components/homepage/InfobarSection"
-import EditorInfopicSection from "components/homepage/InfopicSection"
-import NewSectionCreator from "components/homepage/NewSectionCreator"
-import EditorResourcesSection from "components/homepage/ResourcesSection"
 import { LoadingButton } from "components/LoadingButton"
 import { WarningModal } from "components/WarningModal"
 
@@ -41,7 +36,13 @@ import {
 
 import { DEFAULT_RETRY_MSG } from "utils"
 
-import { useDrag, onCreate, onDelete } from "../hooks/useDrag"
+import { useDrag, onCreate, onDelete } from "../../hooks/useDrag"
+
+import EditorHeroSection from "./components/HeroSection"
+import EditorInfobarSection from "./components/InfobarSection"
+import EditorInfopicSection from "./components/InfopicSection"
+import NewSectionCreator from "./components/NewSectionCreator"
+import EditorResourcesSection from "./components/ResourcesSection"
 
 /* eslint-disable react/no-array-index-key */
 
