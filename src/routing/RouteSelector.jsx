@@ -10,9 +10,9 @@ import { ReviewRequestRoleProvider } from "contexts/ReviewRequestRoleContext"
 import { SiteLaunchProvider } from "contexts/SiteLaunchContext"
 
 import EditContactUs from "layouts/EditContactUs"
-import EditHomepage from "layouts/EditHomepage"
 import EditNavBar from "layouts/EditNavBar"
 import EditPage from "layouts/EditPage"
+import { FeatureFlaggedHomepage } from "layouts/FeatureFlaggedHomepage"
 import { Folders } from "layouts/Folders"
 import { LoginPage } from "layouts/Login"
 import { SgidLoginCallbackPage } from "layouts/Login/SgidLoginCallbackPage"
@@ -123,7 +123,7 @@ export const RouteSelector = () => (
 
       <ProtectedRouteWithProps
         path="/sites/:siteName/homepage"
-        component={injectApprovalRedirect(EditHomepage)}
+        component={injectApprovalRedirect(FeatureFlaggedHomepage)}
       />
 
       <ProtectedRouteWithProps

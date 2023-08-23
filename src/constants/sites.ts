@@ -1,0 +1,32 @@
+export const TESTING_SITES = [
+  "a-test-v4",
+  "alex-debug-staging",
+  "alexis-test-abc",
+  "alexis-test-bcd",
+  "chin-test",
+  "harish-test-site",
+  "jikun-test",
+  "kishore-test",
+  "kishore-test-dev-gh",
+  "kishore-test-dev-emil",
+  "kishore-test-email-login",
+  "kishore-test-test-email-flow",
+  "rcd-test-31",
+  "rcd-test-repo",
+  "rcd-test-repo2",
+  "rcd-test-repo3",
+  "test-jacksontest",
+  "zhongjun-test",
+  "zhongjun-test-amplify",
+  "zhongjun-test-emailam",
+]
+
+export const OGP_SITES = [
+  "scamshield",
+  "ogp-covid",
+  "ogp",
+  "ogp-sgid",
+  "ogp-parking",
+  "ogp-parkingsg",
+  "isomerpages-isomergovsg",
+]
