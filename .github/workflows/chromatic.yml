@@ -4,6 +4,10 @@ name: "Chromatic"
 # Event for the workflow
 on: push
 
+env:
+  # Required for the chromatic action
+  REACT_APP_BACKEND_URL: "https://cms-api.isomer.gov.sg/v1"
+
 # List of jobs
 jobs:
   changes:
