@@ -33,10 +33,14 @@ export const NotFoundPage = (): JSX.Element => {
         <VStack spacing="1rem">
           <NotFoundSubmarineImage />
           <VStack spacing="0.5rem" mt="1rem">
-            <Text textStyle="subhead-1" fontWeight="bold">
+            <Text
+              textStyle="subhead-1"
+              fontWeight="medium"
+              color="base.content.strong"
+            >
               The page you are looking for does not exist anymore.
             </Text>
-            <Text textStyle="body-2">
+            <Text textStyle="body-2" color="base.content.default">
               Try refreshing your page when you return.
             </Text>
           </VStack>

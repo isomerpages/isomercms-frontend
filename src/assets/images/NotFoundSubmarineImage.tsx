@@ -3,7 +3,7 @@ export const NotFoundSubmarineImage = (
 ): JSX.Element => {
   return (
     <svg
-      width="401"
+      width="400"
       height="400"
       viewBox="0 0 401 400"
       fill="none"
