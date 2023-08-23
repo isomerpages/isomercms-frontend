@@ -273,7 +273,7 @@ export const onCreate = <E,>(
       return updateEditorSection(
         homepageState,
         newDisplaySections,
-        sections,
+        sections as EditorHomepageState["frontMatter"]["sections"],
         newErrorSections
       )
     }

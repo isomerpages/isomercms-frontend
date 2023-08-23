@@ -12,6 +12,8 @@ import {
   forwardRef,
   StackProps,
   Divider,
+  BoxProps,
+  Box,
 } from "@chakra-ui/react"
 import {
   OnDragEndResponder,
@@ -52,28 +54,38 @@ export const CustomiseSectionsHeader = () => (
   </>
 )
 
-const EmptySideBarBody = () => {
-  return (
-    <VStack spacing="0.5rem" alignItems="flex-start" px="1.5rem" pt="1.5rem">
-      <CustomiseSectionsHeader />
-      <Flex
-        alignItems="center"
-        flexDir="column"
-        p="3.75rem 1.5rem"
-        justifyContent="center"
+interface EmptySectionProps {
+  image?: JSX.Element
+  title: string
+  subtitle: string
+  isEmpty?: boolean
+}
+export const EmptySection = ({
+  image,
+  children,
+  title,
+  subtitle,
+  isEmpty,
+}: PropsWithChildren<EmptySectionProps>) => {
+  return isEmpty ? (
+    <Flex
+      alignItems="center"
+      flexDir="column"
+      p="3.75rem 1.5rem"
+      justifyContent="center"
+    >
+      {image}
+      <Text>{title}</Text>
+      <Text
+        textStyle="caption-2"
+        textColor="base.content.medium"
+        textAlign="center"
       >
-        <HomepageStartEditingImage />
-        <Text>Sections you add will appear here</Text>
-        <Text
-          textStyle="caption-2"
-          textColor="base.content.medium"
-          textAlign="center"
-        >
-          Add informative content to your website from images to text by
-          clicking “Add section” below
-        </Text>
-      </Flex>
-    </VStack>
+        {subtitle}
+      </Text>
+    </Flex>
+  ) : (
+    <>{children}</>
   )
 }
 
@@ -85,7 +97,7 @@ const EditableSidebar = ({
   return (
     <Flex flexDir="column" bg="base.canvas.alt">
       <SidebarHeader title={title} />
-      {children ? <>{children}</> : <EmptySideBarBody />}
+      {children}
     </Flex>
   )
 }
@@ -106,14 +118,15 @@ const getDroppableInfo = (editableId: HomepageDroppableZone): DropInfo => {
   }
 }
 
-export interface EditableDraggableProps {
+export interface EditableDraggableProps extends Omit<BoxProps, "onDragEnd"> {
   onDragEnd: OnDragEndResponder
   editableId: HomepageDroppableZone
 }
-const EditableDraggable = ({
+export const EditableDroppable = ({
   onDragEnd,
   children,
   editableId,
+  ...rest
 }: PropsWithChildren<EditableDraggableProps>) => {
   return (
     // NOTE: According to the dnd docs,
@@ -122,13 +135,14 @@ const EditableDraggable = ({
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable {...getDroppableInfo(editableId)}>
         {(droppableProvided) => (
-          <div
+          <Box
             ref={droppableProvided.innerRef}
             {...droppableProvided.droppableProps}
+            {...rest}
           >
             {children}
             {droppableProvided.placeholder}
-          </div>
+          </Box>
         )}
       </Droppable>
     </DragDropContext>
@@ -176,7 +190,7 @@ const EditableAccordionItem = ({
 }
 
 interface DraggableAccordionItemProps {
-  tag: JSX.Element
+  tag?: JSX.Element
   title: string
   // TODO: Should get these props automatically
   // rather than having us pass in manually
@@ -237,7 +251,13 @@ const DraggableAccordionItem = ({
                   bgColor: isExpanded ? "none" : "interaction.muted.main.hover",
                 }}
               >
-                <Flex px="1.5rem" pb="1rem" flex="1" flexDir="column">
+                <Flex
+                  pl="1.5rem"
+                  pb={tag ? "1rem" : "1.37rem"}
+                  pt={tag ? "0" : "0.37rem"}
+                  flex="1"
+                  flexDir="column"
+                >
                   {tag}
                   <Text textStyle="h6" textAlign="left" mt="0.25rem">
                     {title}
@@ -266,9 +286,10 @@ const EditableSection = (props: StackProps) => (
 
 export const Editable = {
   Sidebar: EditableSidebar,
-  Draggable: EditableDraggable,
+  Droppable: EditableDroppable,
   EditableAccordionItem,
   Accordion: EditableAccordion,
   DraggableAccordionItem,
   Section: EditableSection,
+  EmptySection,
 }
