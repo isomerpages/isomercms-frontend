@@ -9,3 +9,12 @@ export const getGrowthBookInstance = (clientKey: string, isDev = false) => {
     enableDevMode: isDev, // enable only for local dev
   })
 }
+
+export const getSiteNameAttributeFromPath = (path: string) => {
+  const pathnames = path.split("/")
+
+  if (pathnames.length > 2 && pathnames[1] === "sites") {
+    return pathnames[2]
+  }
+  return ""
+}

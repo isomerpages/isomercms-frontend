@@ -3,11 +3,12 @@ import { useGrowthBook } from "@growthbook/growthbook-react"
 import axios from "axios"
 import _ from "lodash"
 import { useEffect } from "react"
-import { Redirect, Route, RouteProps } from "react-router-dom"
+import { Redirect, Route, RouteProps, useLocation } from "react-router-dom"
 
 import { useLoginContext } from "contexts/LoginContext"
 
 import { getDecodedParams } from "utils/decoding"
+import { getSiteNameAttributeFromPath } from "utils/growthbook"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -32,6 +33,7 @@ export const ProtectedRoute = ({
     contactNumber,
   } = useLoginContext()
   const growthbook = useGrowthBook()
+  const currPath = useLocation().pathname
 
   useEffect(() => {
     if (growthbook)
@@ -41,8 +43,11 @@ export const ProtectedRoute = ({
         email,
         displayedName,
         contactNumber,
+        siteName: getSiteNameAttributeFromPath(currPath),
       })
-  }, [userId, userType, email, displayedName, contactNumber])
+  }, [userId, userType, email, displayedName, contactNumber, currPath])
+
+  console.log(`all`, growthbook?.getAttributes())
 
   if (isLoading) {
     return (
