@@ -185,5 +185,11 @@ export const buildDiffData = apiDataBuilder<BlobDiff>(
 )
 
 export const buildSiteLaunchDto = apiDataBuilder<SiteLaunchDto>(
-  "*/sites/:siteName/launchInfo"
+  "*/sites/:siteName/launchInfo",
+  "get"
+)
+
+export const buildLaunchSite = apiDataBuilder(
+  "*/sites/:siteName/launch",
+  "post"
 )
