@@ -244,7 +244,9 @@ export const SiteLaunchChecklistBody = (): JSX.Element => {
   const handleGenerateDNSRecordsOnClick = () => {
     setSiteLaunchStatusProps({
       ...siteLaunchStatusProps,
-      stepNumber: SITE_LAUNCH_TASKS.GENERATE_NEW_DNS_RECORDS,
+      stepNumber: siteLaunchStatusProps?.isNewDomain
+        ? NEW_DOMAIN_SITE_LAUNCH_TASKS_LENGTH
+        : SITE_LAUNCH_TASKS_LENGTH,
       siteLaunchStatus: SiteLaunchFEStatus.Launching,
     })
 
