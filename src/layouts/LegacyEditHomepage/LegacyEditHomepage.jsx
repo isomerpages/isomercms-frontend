@@ -299,10 +299,17 @@ const EditHomepage = ({ match }) => {
     loadPageDetails()
   }, [homepageData])
 
+  const [isFirstLoadComplete, setIsFirstLoadComplete] = useState(false)
+
   useEffect(() => {
     if (scrollRefs.length > 0) {
-      scrollTo(scrollRefs[frontMatter.sections.length - 1])
+      if (!isFirstLoadComplete) {
+        setIsFirstLoadComplete(true)
+      } else {
+        scrollTo(scrollRefs[frontMatter.sections.length - 1])
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrollRefs, frontMatter.sections.length])
 
   useEffect(() => {
