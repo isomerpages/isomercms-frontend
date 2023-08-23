@@ -1,6 +1,8 @@
 import { Box, Center, Spinner } from "@chakra-ui/react"
+import { useGrowthBook } from "@growthbook/growthbook-react"
 import axios from "axios"
 import _ from "lodash"
+import { useEffect } from "react"
 import { Redirect, Route, RouteProps } from "react-router-dom"
 
 import { useLoginContext } from "contexts/LoginContext"
@@ -21,7 +23,26 @@ export const ProtectedRoute = ({
   component: WrappedComponent,
   ...rest
 }: RouteProps): JSX.Element => {
-  const { displayedName, isLoading } = useLoginContext()
+  const {
+    displayedName,
+    isLoading,
+    userId,
+    userType,
+    email,
+    contactNumber,
+  } = useLoginContext()
+  const growthbook = useGrowthBook()
+
+  useEffect(() => {
+    if (growthbook)
+      growthbook.setAttributes({
+        userId,
+        userType,
+        email,
+        displayedName,
+        contactNumber,
+      })
+  }, [userId, userType, email, displayedName, contactNumber])
 
   if (isLoading) {
     return (

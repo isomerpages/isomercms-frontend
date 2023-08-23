@@ -75,6 +75,8 @@ const growthbook = getGrowthBookInstance(
 const App = () => {
   useEffect(() => {
     localStorage.removeItem(LOCAL_STORAGE_SITE_COLORS)
+
+    // Load features from the GrowthBook API and keep them up-to-date
     growthbook.loadFeatures({ autoRefresh: true })
   }, [])
 
