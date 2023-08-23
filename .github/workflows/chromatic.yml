@@ -47,7 +47,7 @@ jobs:
     environment: staging
     # Job steps
     steps:
-      # Determine if the PR comment should trigger the e2e test suite
+      # Determine if the PR comment should trigger the Chromatic build
       - name: Check if user is part of Isomer core team
         uses: tspascoal/get-user-teams-membership@v1
         id: checkUserMember
@@ -64,27 +64,43 @@ jobs:
           trigger: "${{ env.ISOMER_TRIGGER_COMMENT }}"
           prefix_only: "true"
           reaction: "+1"
-      - name: Don't run job if user is not part of Isomer core team or trigger words are not present
-        if: ${{ steps.checkUserMember.outputs.isTeamMember != 'true' || !(github.event_name == 'issue_comment' && github.event.issue.pull_request && steps.check.outputs.triggered == 'true') }}
-        run: exit 0
-      # 👇 Version 2 of the action
+
+      - name: Set environment variable to run Chromatic build
+        if: ${{ steps.checkUserMember.outputs.isTeamMember == 'true' && (github.event_name == 'issue_comment' && github.event.issue.pull_request && steps.check.outputs.triggered == 'true') }}
+        run: echo "ISOMER_RUN_CHROMATIC_BUILD=true" >> $GITHUB_ENV
+
       - name: Checkout repository
-        uses: actions/checkout@v2
+        if: ${{ env.ISOMER_RUN_CHROMATIC_BUILD == 'true' }}
+        uses: actions/checkout@v3
         with:
+          ref: refs/pull/${{ github.event.issue.number }}/head
           fetch-depth: 0 # 👈 Required to retrieve git history
-      - name: Checkout Pull Request
-        run: hub pr checkout ${{ github.event.issue.number }}
+
       # This extra step is not in the original chromatic workflow.
       # This is to pin the version of node (18.x) used.
       - name: Setup Node.js
+        if: ${{ env.ISOMER_RUN_CHROMATIC_BUILD == 'true' }}
         uses: actions/setup-node@v3
         with:
           node-version: "18.x"
           cache: "npm"
+
       - name: Install dependencies
+        if: ${{ env.ISOMER_RUN_CHROMATIC_BUILD == 'true' }}
         run: npm ci
-        # 👇 Adds Chromatic as a step in the workflow
+
+      - name: Get pull request information
+        if: ${{ env.ISOMER_RUN_CHROMATIC_BUILD == 'true' }}
+        uses: octokit/request-action@v2.x
+        id: get_pull_request
+        with:
+          route: GET /repos/{repository}/pulls/{pull_number}
+          repository: ${{ github.repository }} # isomerpages/isomercms-frontend
+          pull_number: ${{ github.event.issue.number }}
+
+      # 👇 Adds Chromatic as a step in the workflow
       - name: Publish to Chromatic
+        if: ${{ env.ISOMER_RUN_CHROMATIC_BUILD == 'true' }}
         uses: chromaui/action@v1
         # Chromatic GitHub Action options
         with:
@@ -92,3 +108,4 @@ jobs:
           # 👇 Chromatic projectToken, refer to the manage page to obtain it.
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           onlyChanged: true
+          branchName: ${{ fromJSON(steps.get_pull_request.outputs.data).head.ref }}
