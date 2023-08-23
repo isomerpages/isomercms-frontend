@@ -31,7 +31,7 @@ jobs:
     # Operating System
     runs-on: ubuntu-latest
     # Only run if the user is not a bot and there are changes
-    if: ${{!endsWith(github.actor , 'bot')}} && steps.filter.outputs.frontend == 'true'
+    if: ${{ !endsWith(github.actor , 'bot') && steps.filter.outputs.frontend == 'true' }}
     environment: staging
     # Job steps
     steps:
