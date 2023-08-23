@@ -89,6 +89,15 @@ jobs:
         if: ${{ env.ISOMER_RUN_CHROMATIC_BUILD == 'true' }}
         run: npm ci
 
+      - name: Get pull request information
+        if: ${{ env.ISOMER_RUN_CHROMATIC_BUILD == 'true' }}
+        uses: octokit/request-action@v2.x
+        id: get_pull_request
+        with:
+          route: GET /repos/{repository}/pulls/{pull_number}
+          repository: ${{ github.repository }} # isomerpages/isomercms-frontend
+          pull_number: ${{ github.event.issue.number }}
+
       # 👇 Adds Chromatic as a step in the workflow
       - name: Publish to Chromatic
         if: ${{ env.ISOMER_RUN_CHROMATIC_BUILD == 'true' }}
@@ -99,3 +108,4 @@ jobs:
           # 👇 Chromatic projectToken, refer to the manage page to obtain it.
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           onlyChanged: true
+          branchName: ${{ fromJSON(steps.get_pull_request.outputs.data).head.ref }}
