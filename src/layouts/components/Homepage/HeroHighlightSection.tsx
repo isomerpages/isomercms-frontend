@@ -8,7 +8,7 @@ import {
 import _ from "lodash"
 import { BiPlus } from "react-icons/bi"
 
-import { useDragDropContext } from "contexts/DragDropContext"
+import { useEditableContext } from "contexts/EditableContext"
 
 import { Editable } from "layouts/components/Editable"
 
@@ -24,13 +24,6 @@ interface HeroHighlightSectionProps extends HeroHighlightSectionFormFields {
   errors: HeroHighlightSectionFormFields & {
     highlights: HighlightOption[]
   }
-  onChange: () => void
-  onClick: (event: {
-    target: {
-      id: string
-    }
-  }) => void
-  onCreate: () => void
   highlights: Partial<HighlightOption>[]
 }
 
@@ -38,12 +31,15 @@ export const HeroHighlightSection = ({
   errors,
   button,
   url,
-  onChange,
-  onCreate,
-  onClick,
-  highlights,
+  highlights = [],
 }: HeroHighlightSectionProps) => {
-  const { onDragEnd } = useDragDropContext()
+  const {
+    onDragEnd,
+    onChange,
+    onCreate,
+    onDelete,
+    onDisplay,
+  } = useEditableContext()
 
   return (
     <Box w="full">
@@ -80,7 +76,8 @@ export const HeroHighlightSection = ({
           Drag and drop highlights to rearrange them. On a desktop screen,
           highlights are shown side-by-side
         </Text>
-        <Editable.Accordion>
+        {/* TODO: Add `displayHandler` */}
+        <Editable.Accordion onChange={() => onDisplay("highlight")}>
           <Editable.EmptySection
             isEmpty={highlights.length === 0}
             title="Highlights you add will appear here"
@@ -154,11 +151,10 @@ export const HeroHighlightSection = ({
                         <Button
                           id={`highlight-${highlightIndex}-delete`}
                           onClick={() =>
-                            onClick({
-                              target: {
-                                id: `highlight-${highlightIndex}-delete`,
-                              },
-                            })
+                            onDelete(
+                              `highlight-${highlightIndex}-delete`,
+                              "Highlight"
+                            )
                           }
                           alignSelf="center"
                           variant="clear"
@@ -178,7 +174,7 @@ export const HeroHighlightSection = ({
       </Editable.Droppable>
       <Button
         id={`highlight-${highlights.length}-create`}
-        onClick={onCreate}
+        onClick={() => onCreate({ target: { id: "highlight" } })}
         variant="outline"
         w="full"
         leftIcon={<BiPlus fontSize="1.5rem" />}

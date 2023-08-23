@@ -43,22 +43,48 @@ import {
 import { HomepageStartEditingImage } from "assets"
 import { DEFAULT_RETRY_MSG } from "utils"
 
-import { DragDropContextProvider } from "../contexts/DragDropContext"
+import { EditableContextProvider } from "../contexts/EditableContext"
 import { useDrag, onCreate, onDelete } from "../hooks/useDrag"
 
 import { CustomiseSectionsHeader, Editable } from "./components/Editable"
 import { AddSectionButton } from "./components/Editable/AddSectionButton"
 import { HeroBody } from "./components/Homepage/HeroBody"
+import { HeroDropdownSection } from "./components/Homepage/HeroDropdownSection"
+import { HeroHighlightSection } from "./components/Homepage/HeroHighlightSection"
 import { InfobarBody } from "./components/Homepage/InfobarBody"
 import { InfopicBody } from "./components/Homepage/InfopicBody"
 import { ResourcesBody } from "./components/Homepage/ResourcesBody"
 
 /* eslint-disable react/no-array-index-key */
 
-// Constants
-// ==========
 const RADIX_PARSE_INT = 10
 
+const getHasError = (errorArray) =>
+  _.some(errorArray, (err) =>
+    _.some(err, (errorMessage) => errorMessage.length > 0)
+  )
+
+const getHasErrors = (errors) => {
+  const hasSectionErrors = _.some(errors.sections, (section) => {
+    // Section is an object, e.g. { hero: {} }
+    // _.keys(section) produces an array with length 1
+    // The 0th element of the array contains the sectionType
+    const sectionType = _.keys(section)[0]
+    return (
+      _.some(
+        section[sectionType],
+        (errorMessage) => errorMessage.length > 0
+      ) === true
+    )
+  })
+
+  const hasHighlightErrors = getHasError(errors.highlights)
+  const hasDropdownElemErrors = getHasError(errors.dropdownElems)
+
+  return hasSectionErrors || hasHighlightErrors || hasDropdownElemErrors
+}
+
+// Constants
 // Section constructors
 // TODO: Export all these as const and write wrapper for error...
 const ResourcesSectionConstructor = (isErrorConstructor) => ({
@@ -126,7 +152,6 @@ const EditHomepage = ({ match }) => {
   const { siteName } = match.params
   const [hasLoaded, setHasLoaded] = useState(false)
   const [scrollRefs, setScrollRefs] = useState([])
-  const [hasErrors, setHasErrors] = useState(false)
   const [frontMatter, setFrontMatter] = useState({
     title: "",
     subtitle: "",
@@ -188,6 +213,7 @@ const EditHomepage = ({ match }) => {
   const errorToast = useErrorToast()
 
   // TODO: Tidy up these `useEffects` and figure out what they do
+  // TODO: Shift this into react query + custom hook
   useEffect(() => {
     if (!homepageData) return
     const loadPageDetails = async () => {
@@ -204,6 +230,7 @@ const EditHomepage = ({ match }) => {
           content: { frontMatter },
           sha,
         } = homepageData
+        // Set displaySections
         const displaySections = []
         let displayHighlights = []
         let displayDropdownElems = []
@@ -299,39 +326,6 @@ const EditHomepage = ({ match }) => {
     }
   }, [scrollRefs, frontMatter.sections.length])
 
-  useEffect(() => {
-    const hasSectionErrors = _.some(errors.sections, (section) => {
-      // Section is an object, e.g. { hero: {} }
-      // _.keys(section) produces an array with length 1
-      // The 0th element of the array contains the sectionType
-      const sectionType = _.keys(section)[0]
-      return (
-        _.some(
-          section[sectionType],
-          (errorMessage) => errorMessage.length > 0
-        ) === true
-      )
-    })
-
-    const hasHighlightErrors = _.some(
-      errors.highlights,
-      (highlight) =>
-        _.some(highlight, (errorMessage) => errorMessage.length > 0) === true
-    )
-
-    const hasDropdownElemErrors = _.some(
-      errors.dropdownElems,
-      (dropdownElem) =>
-        _.some(dropdownElem, (errorMessage) => errorMessage.length > 0) === true
-    )
-
-    const hasErrors =
-      hasSectionErrors || hasHighlightErrors || hasDropdownElemErrors
-
-    setHasErrors(hasErrors)
-  }, [errors])
-
-  // TODO: Use `react-hook-forms`
   const onFieldChange = async (event) => {
     try {
       const { id, value } = event.target
@@ -633,6 +627,11 @@ const EditHomepage = ({ match }) => {
     }
   }
 
+  const onDeleteClick = (id, name) => {
+    onOpen()
+    setItemPendingForDelete({ id, type: name })
+  }
+
   const onDragEnd = (result) => {
     const homepageState = onDrag(result)
     setHomepageState(homepageState)
@@ -795,57 +794,53 @@ const EditHomepage = ({ match }) => {
     }
   }
 
-  const displayHandler = async (event) => {
+  const displayHandler = async (elemType, index) => {
+    // NOTE: If index is less than 0,
+    // this means that the accordion is being closed.
+    // Hence, we don't trigger a scroll.
+    if (index < 0) return
     try {
-      const { id } = event.target
-      const idArray = id.split("-")
-      const elemType = idArray[0]
       switch (elemType) {
         case "section": {
-          const sectionId = idArray[1]
           const resetDisplaySections = _.fill(
             Array(displaySections.length),
             false
           )
-          resetDisplaySections[sectionId] = !displaySections[sectionId]
+          resetDisplaySections[index] = !displaySections[index]
           const newDisplaySections = update(displaySections, {
             $set: resetDisplaySections,
           })
 
           setDisplaySections(newDisplaySections)
 
-          scrollRefs[sectionId].current.scrollIntoView()
+          scrollRefs[index].current.scrollIntoView()
           break
         }
         case "highlight": {
-          const highlightIndex = idArray[1]
           const resetHighlightSections = _.fill(
             Array(displayHighlights.length),
             false
           )
-          resetHighlightSections[highlightIndex] = !displayHighlights[
-            highlightIndex
-          ]
+          resetHighlightSections[index] = !displayHighlights[index]
           const newDisplayHighlights = update(displayHighlights, {
             $set: resetHighlightSections,
           })
 
+          scrollRefs[0].current.scrollIntoView()
           setDisplayHighlights(newDisplayHighlights)
           break
         }
         case "dropdownelem": {
-          const dropdownsIndex = idArray[1]
           const resetDropdownSections = _.fill(
             Array(displayDropdownElems.length),
             false
           )
-          resetDropdownSections[dropdownsIndex] = !displayDropdownElems[
-            dropdownsIndex
-          ]
+          resetDropdownSections[index] = !displayDropdownElems[index]
           const newDisplayDropdownElems = update(displayDropdownElems, {
             $set: resetDropdownSections,
           })
 
+          scrollRefs[0].current.scrollIntoView()
           setDisplayDropdownElems(newDisplayDropdownElems)
           break
         }
@@ -856,6 +851,7 @@ const EditHomepage = ({ match }) => {
     }
   }
 
+  // TODO: Shift to react-query
   const savePage = async () => {
     try {
       const filteredFrontMatter = _.cloneDeep(frontMatter)
@@ -959,214 +955,190 @@ const EditHomepage = ({ match }) => {
           backButtonUrl={`/sites/${siteName}/workspace`}
         />
         {hasLoaded && (
-          <DragDropContextProvider onDragEnd={onDragEnd}>
+          <EditableContextProvider
+            onDragEnd={onDragEnd}
+            onChange={onFieldChange}
+            onCreate={createHandler}
+            onDelete={onDeleteClick}
+            onDisplay={displayHandler}
+          >
             <HStack className={elementStyles.wrapper}>
-              <div className={editorStyles.homepageEditorSidebar}>
-                <Editable.Sidebar
-                  title="Homepage"
-                  onChange={(idx) => {
-                    displayHandler({ target: { id: `section-${idx}` } })
-                  }}
+              <Editable.Sidebar title="Homepage">
+                <Editable.Accordion
+                  onChange={(idx) => displayHandler("section", idx)}
                 >
-                  <Editable.Accordion
-                    onChange={(idx) => {
-                      displayHandler({ target: { id: `section-${idx}` } })
-                    }}
+                  <VStack
+                    bg="base.canvas.alt"
+                    p="1.5rem"
+                    spacing="1.5rem"
+                    alignItems="flex-start"
                   >
-                    <VStack
-                      bg="base.canvas.alt"
-                      p="1.5rem"
-                      spacing="1.5rem"
-                      alignItems="flex-start"
-                    >
-                      {heroSection.map((section, sectionIndex) => {
-                        return (
-                          <>
-                            <Editable.EditableAccordionItem title="Hero section">
-                              <HeroBody
-                                {...section.hero}
-                                highlights={section.hero.key_highlights || []}
-                                state={homepageState}
-                                // TODO: Shift to rhf
-                                notification={frontMatter.notification}
-                                index={sectionIndex}
-                                onChange={onFieldChange}
-                                createHandler={createHandler}
-                                deleteHandler={(event, type) => {
-                                  onOpen()
-                                  setItemPendingForDelete({
-                                    id: event.target.id,
-                                    type,
-                                  })
-                                }}
-                                errors={{
-                                  ...errors.sections[0].hero,
-                                  ...errors,
-                                }}
-                                handleHighlightDropdownToggle={
-                                  handleHighlightDropdownToggle
-                                }
-                              />
-                            </Editable.EditableAccordionItem>
-                            <Divider />
-                            <VStack spacing="0.5rem" alignItems="flex-start">
-                              <CustomiseSectionsHeader />
-                            </VStack>
-                          </>
-                        )
-                      })}
-                      <Editable.Droppable
-                        width="100%"
-                        editableId="leftPane"
-                        onDragEnd={onDragEnd}
-                      >
-                        <Editable.EmptySection
-                          title="Sections you add will appear here"
-                          subtitle="Add informative content to your website from images to text by
-                    clicking “Add section” below"
-                          image={<HomepageStartEditingImage />}
-                          // NOTE: It's empty if there is only 1 section and it's a hero section
-                          // as the hero section displays above the custom sections
-                          // and has a fixed display
-                          isEmpty={
-                            frontMatter.sections.length === 1 &&
-                            heroSection.length === 1
-                          }
-                        >
-                          <VStack p={0} spacing="1.5rem">
-                            {frontMatter.sections.map(
-                              (section, sectionIndex) => (
-                                <>
-                                  {section.resources && (
-                                    <Editable.DraggableAccordionItem
-                                      index={sectionIndex}
-                                      tag={
-                                        <Tag variant="subtle">Resources</Tag>
-                                      }
-                                      title="New resource widget"
-                                      isInvalid={_.some(
-                                        errors.sections[sectionIndex].resources
-                                      )}
-                                    >
-                                      <ResourcesBody
-                                        {...section.resources}
-                                        index={sectionIndex}
-                                        onClick={(event) => {
-                                          onOpen()
-                                          setItemPendingForDelete({
-                                            id: event.target.id,
-                                            type: "Resources Section",
-                                          })
-                                        }}
-                                        onChange={onFieldChange}
-                                        errors={
-                                          errors.sections[sectionIndex]
-                                            .resources
-                                        }
-                                      />
-                                    </Editable.DraggableAccordionItem>
-                                  )}
-
-                                  {section.infobar && (
-                                    <Editable.DraggableAccordionItem
-                                      index={sectionIndex}
-                                      tag={<Tag variant="subtle">Infobar</Tag>}
-                                      title={
-                                        section.infobar.title || "New infobar"
-                                      }
-                                      isInvalid={_.some(
-                                        errors.sections[sectionIndex].infobar
-                                      )}
-                                    >
-                                      <InfobarBody
-                                        {...section.infobar}
-                                        index={sectionIndex}
-                                        onClick={(event) => {
-                                          onOpen()
-                                          setItemPendingForDelete({
-                                            id: event.target.id,
-                                            type: "Infobar Section",
-                                          })
-                                        }}
-                                        onChange={onFieldChange}
-                                        errors={
-                                          errors.sections[sectionIndex].infobar
-                                        }
-                                      />
-                                    </Editable.DraggableAccordionItem>
-                                  )}
-
-                                  {section.infopic && (
-                                    <Editable.DraggableAccordionItem
-                                      index={sectionIndex}
-                                      tag={<Tag variant="subtle">Infopic</Tag>}
-                                      title={
-                                        section.infopic.title || "New infopic"
-                                      }
-                                      isInvalid={_.some(
-                                        errors.sections[sectionIndex].infopic
-                                      )}
-                                    >
-                                      <InfopicBody
-                                        index={sectionIndex}
-                                        onClick={(event) => {
-                                          onOpen()
-                                          setItemPendingForDelete({
-                                            id: event.target.id,
-                                            type: "Infopic Section",
-                                          })
-                                        }}
-                                        onChange={onFieldChange}
-                                        errors={
-                                          errors.sections[sectionIndex].infopic
-                                        }
-                                        {...section.infopic}
-                                      />
-                                    </Editable.DraggableAccordionItem>
-                                  )}
-                                </>
-                              )
-                            )}
+                    {heroSection.map((section, sectionIndex) => {
+                      return (
+                        <>
+                          <Editable.EditableAccordionItem
+                            title="Hero section"
+                            // TODO: Add `isInvalid` prop to `EditableAccordionItem`
+                            isInvalid={
+                              getHasError(errors.dropdownElems) ||
+                              getHasError(errors.highlights) ||
+                              _.some(_.values(errors.sections[0]?.hero))
+                            }
+                          >
+                            <HeroBody
+                              {...section.hero}
+                              notification={frontMatter.notification}
+                              index={sectionIndex}
+                              errors={{
+                                ...errors.sections[0].hero,
+                                highlights: errors.highlights,
+                                dropdownElems: errors.dropdownElems,
+                              }}
+                              handleHighlightDropdownToggle={
+                                handleHighlightDropdownToggle
+                              }
+                            >
+                              {({ currentSelectedOption }) =>
+                                currentSelectedOption === "dropdown" ? (
+                                  <HeroDropdownSection
+                                    {...section.hero}
+                                    state={section.hero}
+                                    errors={errors}
+                                  />
+                                ) : (
+                                  <HeroHighlightSection
+                                    errors={errors}
+                                    highlights={section.hero.key_highlights}
+                                  />
+                                )
+                              }
+                            </HeroBody>
+                          </Editable.EditableAccordionItem>
+                          <Divider />
+                          <VStack spacing="0.5rem" alignItems="flex-start">
+                            <CustomiseSectionsHeader />
                           </VStack>
-                        </Editable.EmptySection>
-                      </Editable.Droppable>
-                    </VStack>
-                  </Editable.Accordion>
-                  {/* NOTE: Set the padding here - 
+                        </>
+                      )
+                    })}
+                    <Editable.Droppable
+                      width="100%"
+                      editableId="leftPane"
+                      onDragEnd={onDragEnd}
+                    >
+                      <Editable.EmptySection
+                        title="Sections you add will appear here"
+                        subtitle="Add informative content to your website from images to text by
+                    clicking “Add section” below"
+                        image={<HomepageStartEditingImage />}
+                        // NOTE: It's empty if there is only 1 section and it's a hero section
+                        // as the hero section displays above the custom sections
+                        // and has a fixed display
+                        isEmpty={
+                          frontMatter.sections.length === 1 &&
+                          heroSection.length === 1
+                        }
+                      >
+                        <VStack p={0} spacing="1.5rem">
+                          {frontMatter.sections.map((section, sectionIndex) => (
+                            <>
+                              {section.resources && (
+                                <Editable.DraggableAccordionItem
+                                  index={sectionIndex}
+                                  tag={<Tag variant="subtle">Resources</Tag>}
+                                  title="New resource widget"
+                                  isInvalid={_.some(
+                                    errors.sections[sectionIndex].resources
+                                  )}
+                                >
+                                  <ResourcesBody
+                                    {...section.resources}
+                                    index={sectionIndex}
+                                    errors={
+                                      errors.sections[sectionIndex].resources
+                                    }
+                                  />
+                                </Editable.DraggableAccordionItem>
+                              )}
+
+                              {section.infobar && (
+                                <Editable.DraggableAccordionItem
+                                  index={sectionIndex}
+                                  tag={<Tag variant="subtle">Infobar</Tag>}
+                                  title={section.infobar.title || "New infobar"}
+                                  isInvalid={_.some(
+                                    errors.sections[sectionIndex].infobar
+                                  )}
+                                >
+                                  <InfobarBody
+                                    {...section.infobar}
+                                    index={sectionIndex}
+                                    errors={
+                                      errors.sections[sectionIndex].infobar
+                                    }
+                                  />
+                                </Editable.DraggableAccordionItem>
+                              )}
+
+                              {section.infopic && (
+                                <Editable.DraggableAccordionItem
+                                  index={sectionIndex}
+                                  tag={<Tag variant="subtle">Infopic</Tag>}
+                                  title={section.infopic.title || "New infopic"}
+                                  isInvalid={_.some(
+                                    errors.sections[sectionIndex].infopic
+                                  )}
+                                >
+                                  <InfopicBody
+                                    index={sectionIndex}
+                                    errors={
+                                      errors.sections[sectionIndex].infopic
+                                    }
+                                    {...section.infopic}
+                                  />
+                                </Editable.DraggableAccordionItem>
+                              )}
+                            </>
+                          ))}
+                        </VStack>
+                      </Editable.EmptySection>
+                    </Editable.Droppable>
+                  </VStack>
+                </Editable.Accordion>
+                {/* NOTE: Set the padding here - 
                         We cannot let the button be part of the `Draggable` 
                         as otherwise, when dragging, 
                         the component will appear over the button
                     */}
-                  <Box p="1.5rem">
-                    <AddSectionButton>
-                      <AddSectionButton.List>
-                        <AddSectionButton.Option
-                          onClick={() => onClick("infopic")}
-                          title="Infopic"
-                          subtitle="Add an image with informational text"
-                        />
-                        <AddSectionButton.Option
-                          title="Infobar"
-                          subtitle="Add informational text"
-                          onClick={() => onClick("infobar")}
-                        />
-                        {/* NOTE: Check if the sections contain any `resources` 
+                <Box p="1.5rem">
+                  <AddSectionButton>
+                    <AddSectionButton.List>
+                      <AddSectionButton.Option
+                        onClick={() => onClick("infopic")}
+                        title="Infopic"
+                        subtitle="Add an image with informational text"
+                      />
+                      <AddSectionButton.Option
+                        title="Infobar"
+                        subtitle="Add informational text"
+                        onClick={() => onClick("infobar")}
+                      />
+                      {/* NOTE: Check if the sections contain any `resources` 
                                 and if it does, prevent creation of another `resources` section
                             */}
-                        {!frontMatter.sections.some(
-                          ({ resources }) => !!resources
-                        ) && (
-                          <AddSectionButton.Option
-                            title="Resources"
-                            subtitle="Add a preview and link to your Resource Room"
-                            onClick={() => onClick("resources")}
-                          />
-                        )}
-                      </AddSectionButton.List>
-                    </AddSectionButton>
-                  </Box>
-                </Editable.Sidebar>
-              </div>
+                      {!frontMatter.sections.some(
+                        ({ resources }) => !!resources
+                      ) && (
+                        <AddSectionButton.Option
+                          title="Resources"
+                          subtitle="Add a preview and link to your Resource Room"
+                          onClick={() => onClick("resources")}
+                        />
+                      )}
+                    </AddSectionButton.List>
+                  </AddSectionButton>
+                </Box>
+              </Editable.Sidebar>
               <div className={editorStyles.homepageEditorMain}>
                 {/* Isomer Template Pane */}
                 {/* Notification */}
@@ -1297,11 +1269,14 @@ const EditHomepage = ({ match }) => {
               </div>
             </HStack>
             <Footer>
-              <LoadingButton isDisabled={hasErrors} onClick={savePage}>
+              <LoadingButton
+                isDisabled={getHasErrors(errors)}
+                onClick={savePage}
+              >
                 Save
               </LoadingButton>
             </Footer>
-          </DragDropContextProvider>
+          </EditableContextProvider>
         )}
       </VStack>
     </>

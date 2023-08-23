@@ -14,6 +14,7 @@ import {
   Divider,
   BoxProps,
   Box,
+  FlexProps,
 } from "@chakra-ui/react"
 import {
   OnDragEndResponder,
@@ -25,7 +26,7 @@ import { IconButton } from "@opengovsg/design-system-react"
 import { PropsWithChildren } from "react"
 import { v4 as uuid } from "uuid"
 
-import { BxDraggable, HomepageStartEditingImage } from "assets"
+import { BxDraggable } from "assets"
 
 interface SidebarHeaderProps {
   title: string
@@ -89,13 +90,24 @@ export const EmptySection = ({
   )
 }
 
-export type EditableSidebarProps = SidebarHeaderProps
+export type EditableSidebarProps = SidebarHeaderProps & FlexProps
 const EditableSidebar = ({
   title,
   children,
-}: PropsWithChildren<EditableSidebarProps>) => {
+  ...rest
+}: EditableSidebarProps) => {
   return (
-    <Flex flexDir="column" bg="base.canvas.alt">
+    <Flex
+      flexDir="column"
+      bg="base.canvas.alt"
+      width="450px"
+      overflowY="scroll"
+      pb="100px"
+      // NOTE: We reserve 80px **each** for
+      // both the header and the footer
+      h="calc(100vh - 160px - 1rem)"
+      {...rest}
+    >
       <SidebarHeader title={title} />
       {children}
     </Flex>
@@ -164,27 +176,43 @@ const BaseAccordionItem = forwardRef((props: AccordionItemProps, ref) => {
 
 interface EditableCardProps {
   title: string
+  isInvalid?: boolean
 }
 // TODO: Break this up into individual sub-components
 // that can be selectively used to create the card
 const EditableAccordionItem = ({
   title,
   children,
+  isInvalid,
 }: PropsWithChildren<EditableCardProps>) => {
   return (
-    <BaseAccordionItem>
-      {/* NOTE: Check with design on styling. 
+    <BaseAccordionItem pos="relative">
+      {({ isExpanded }) => (
+        <>
+          {!isExpanded && isInvalid && (
+            <Divider
+              border="4px solid"
+              borderColor="utility.feedback.critical"
+              orientation="vertical"
+              left={0}
+              position="absolute"
+              h="-webkit-fill-available"
+            />
+          )}
+          {/* NOTE: Check with design on styling. 
         See if entire section is button (ie, whole component hover styling)
       */}
-      <AccordionButton px="1.5rem" py="3rem">
-        <Flex flex="1" flexDir="column">
-          <Text textStyle="h6" textAlign="left" mt="0.25rem">
-            {title}
-          </Text>
-        </Flex>
-        <AccordionIcon />
-      </AccordionButton>
-      <AccordionPanel pb={4}>{children}</AccordionPanel>
+          <AccordionButton px="1.5rem" py="3rem">
+            <Flex flex="1" flexDir="column">
+              <Text textStyle="h6" textAlign="left" mt="0.25rem" noOfLines={1}>
+                {title}
+              </Text>
+            </Flex>
+            <AccordionIcon />
+          </AccordionButton>
+          <AccordionPanel pb={4}>{children}</AccordionPanel>
+        </>
+      )}
     </BaseAccordionItem>
   )
 }
@@ -257,13 +285,23 @@ const DraggableAccordionItem = ({
                   pt={tag ? "0" : "0.37rem"}
                   flex="1"
                   flexDir="column"
+                  // NOTE: Allocate 3.25rem for the accordion button
+                  // so that the text doesn't cut into it
+                  // and the button doesn't go out of the bounding box
+                  maxW="calc(100% - 3.25rem)"
                 >
                   {tag}
-                  <Text textStyle="h6" textAlign="left" mt="0.25rem">
+                  <Text
+                    textStyle="h6"
+                    textAlign="left"
+                    mt="0.25rem"
+                    noOfLines={1}
+                    maxW="100%"
+                  >
                     {title}
                   </Text>
                 </Flex>
-                <AccordionButton w="auto" h="fit-content" py="1rem">
+                <AccordionButton w="auto" h="fit-content" py="1rem" mr="0.5rem">
                   <AccordionIcon />
                 </AccordionButton>
               </Flex>

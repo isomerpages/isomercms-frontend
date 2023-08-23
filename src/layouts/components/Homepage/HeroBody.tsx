@@ -19,42 +19,26 @@ import { BiInfoCircle } from "react-icons/bi"
 import { FormContext, FormError, FormTitle } from "components/Form"
 import FormFieldMedia from "components/FormFieldMedia"
 
+import { useEditableContext } from "contexts/EditableContext"
+
 import { Editable } from "layouts/components/Editable"
 
-import {
-  EditorHeroDropdownSection,
-  EditorHomepageState,
-  HeroFrontmatterSection,
-  HighlightOption,
-} from "types/homepage"
+import { HighlightOption } from "types/homepage"
 
-import {
-  HeroDropdownFormFields,
-  HeroDropdownSection,
-} from "./HeroDropdownSection"
-import { HeroHighlightSection } from "./HeroHighlightSection"
+import { HeroDropdownFormFields } from "./HeroDropdownSection"
 
 type HeroHighlightSectionFormFields = HighlightOption
+
+type HeroSectionType = "highlights" | "dropdown"
 
 export interface HeroBodyFormFields {
   title: string
   subtitle: string
   background: string
-  dropdown: HeroDropdownFormFields
 }
 
 interface HeroBodyProps extends HeroBodyFormFields {
   index: number
-  onChange: () => void
-  createHandler: (event: Record<string, unknown>) => void
-  deleteHandler: (
-    event: {
-      target: {
-        id: string
-      }
-    },
-    type: "Dropdown Element" | "Highlight"
-  ) => void
   errors: {
     dropdownElems: HeroDropdownFormFields[]
     highlights: HeroHighlightSectionFormFields[]
@@ -64,30 +48,26 @@ interface HeroBodyProps extends HeroBodyFormFields {
   } & HeroBodyFormFields
   handleHighlightDropdownToggle: (event: Record<string, unknown>) => void
   notification: string
-  state: EditorHomepageState
-  highlights: Partial<HeroHighlightSectionFormFields>[]
-  button: string
-  url: string
+  children: (props: {
+    currentSelectedOption: HeroSectionType
+  }) => React.ReactNode
 }
 
 export const HeroBody = ({
   title,
   subtitle,
-  dropdown,
-  highlights,
   background,
   index,
-  button,
-  url,
-  onChange,
-  createHandler,
-  deleteHandler,
   errors,
   handleHighlightDropdownToggle,
   notification,
-  state,
+  children,
 }: HeroBodyProps) => {
-  const [heroSectionType, setHeroSectionType] = useState("highlights")
+  const [heroSectionType, setHeroSectionType] = useState<HeroSectionType>(
+    "highlights"
+  )
+  const { onChange } = useEditableContext()
+
   return (
     <>
       <Editable.Section spacing="1.25rem">
@@ -159,7 +139,7 @@ export const HeroBody = ({
             Customise Layout
           </Text>
           <Radio.RadioGroup
-            onChange={(nextSectionType) => {
+            onChange={(nextSectionType: HeroSectionType) => {
               setHeroSectionType(nextSectionType)
               handleHighlightDropdownToggle({
                 target: {
@@ -167,51 +147,30 @@ export const HeroBody = ({
                 },
               })
             }}
-            as={HStack}
             defaultValue="highlights"
           >
-            <Radio
-              value="highlights"
-              size="xs"
-              w="fit-content"
-              allowDeselect={false}
-            >
-              Button + Highlights
-            </Radio>
-            <Radio
-              value="dropdown"
-              size="xs"
-              w="fit-content"
-              allowDeselect={false}
-            >
-              Dropdown
-            </Radio>
+            <HStack spacing="2rem">
+              <Radio
+                value="highlights"
+                size="xs"
+                w="fit-content"
+                allowDeselect={false}
+              >
+                Button + Highlights
+              </Radio>
+              <Radio
+                value="dropdown"
+                size="xs"
+                w="fit-content"
+                allowDeselect={false}
+              >
+                Dropdown
+              </Radio>
+            </HStack>
           </Radio.RadioGroup>
         </Box>
 
-        {heroSectionType === "dropdown" ? (
-          <HeroDropdownSection
-            title={dropdown.title}
-            state={
-              (state.frontMatter.sections[0] as HeroFrontmatterSection)
-                .hero as EditorHeroDropdownSection
-            }
-            errors={errors}
-            onCreate={() => createHandler({ target: { id: "dropdownelem" } })}
-            onChange={onChange}
-            onClick={(event) => deleteHandler(event, "Dropdown Element")}
-          />
-        ) : (
-          <HeroHighlightSection
-            onChange={onChange}
-            onCreate={() => createHandler({ target: { id: "highlight" } })}
-            onClick={(event) => deleteHandler(event, "Highlight")}
-            errors={errors}
-            button={button}
-            url={url}
-            highlights={highlights}
-          />
-        )}
+        {children({ currentSelectedOption: heroSectionType })}
       </Editable.Section>
     </>
   )

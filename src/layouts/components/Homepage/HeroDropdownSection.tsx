@@ -8,7 +8,7 @@ import {
 import _ from "lodash"
 import { BiPlus } from "react-icons/bi"
 
-import { useDragDropContext } from "contexts/DragDropContext"
+import { useEditableContext } from "contexts/EditableContext"
 
 import { Editable } from "layouts/components/Editable"
 
@@ -20,13 +20,6 @@ export interface HeroDropdownFormFields {
 }
 
 interface HeroDropdownSectionProps {
-  onChange: () => void
-  onClick: (event: {
-    target: {
-      id: string
-    }
-  }) => void
-  onCreate: () => void
   errors: {
     dropdownElems: HeroDropdownFormFields[]
     title: string
@@ -38,13 +31,16 @@ interface HeroDropdownSectionProps {
 
 export const HeroDropdownSection = ({
   errors,
-  onChange,
-  onClick,
   state,
-  onCreate,
   title,
 }: HeroDropdownSectionProps) => {
-  const { onDragEnd } = useDragDropContext()
+  const {
+    onDragEnd,
+    onCreate,
+    onChange,
+    onDelete,
+    onDisplay,
+  } = useEditableContext()
 
   return (
     <Box>
@@ -64,7 +60,8 @@ export const HeroDropdownSection = ({
         <Text mt="0.5rem" textStyle="body-2" textColor="base.content.medium">
           Drag and drop dropdown options to rearrange them
         </Text>
-        <Editable.Accordion>
+        {/* TODO: Add `displayHandler` */}
+        <Editable.Accordion onChange={() => onDisplay("dropdownelem")}>
           <Editable.EmptySection
             title="Options you add will appear here"
             subtitle="Add options to allow users to quickly navigate your site"
@@ -123,11 +120,10 @@ export const HeroDropdownSection = ({
                         <Button
                           id={`dropdownelem-${dropdownOptionIndex}-delete`}
                           onClick={() =>
-                            onClick({
-                              target: {
-                                id: `dropdownelem-${dropdownOptionIndex}-delete`,
-                              },
-                            })
+                            onDelete(
+                              `dropdownelem-${dropdownOptionIndex}-delete`,
+                              "Dropdown Element"
+                            )
                           }
                           alignSelf="center"
                           variant="clear"
@@ -147,7 +143,7 @@ export const HeroDropdownSection = ({
       </Editable.Droppable>
       <Button
         id={`dropdownelem-${state.dropdown.options.length}-create`}
-        onClick={onCreate}
+        onClick={() => onCreate({ target: { id: "dropdownelem" } })}
         variant="outline"
         w="full"
         leftIcon={<BiPlus fontSize="1.5rem" />}
