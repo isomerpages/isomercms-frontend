@@ -25,7 +25,7 @@ export const EditableContext = createContext<null | EditableContextReturn>(null)
 
 export const useEditableContext = (): EditableContextReturn => {
   const context = useContext(EditableContext)
-  if (context === null) {
+  if (!context) {
     throw new Error(
       "useEditableContext must be used within a EditableContextProvider"
     )
