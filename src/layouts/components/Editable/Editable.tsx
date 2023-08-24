@@ -16,12 +16,7 @@ import {
   Box,
   FlexProps,
 } from "@chakra-ui/react"
-import {
-  OnDragEndResponder,
-  Droppable,
-  DragDropContext,
-  Draggable,
-} from "@hello-pangea/dnd"
+import { Droppable, Draggable } from "@hello-pangea/dnd"
 import { IconButton } from "@opengovsg/design-system-react"
 import { PropsWithChildren } from "react"
 import { v4 as uuid } from "uuid"
@@ -130,8 +125,7 @@ const getDroppableInfo = (editableId: HomepageDroppableZone): DropInfo => {
   }
 }
 
-export interface EditableDraggableProps extends Omit<BoxProps, "onDragEnd"> {
-  onDragEnd: OnDragEndResponder
+export interface EditableDraggableProps extends BoxProps {
   editableId: HomepageDroppableZone
 }
 /**
@@ -145,29 +139,23 @@ export interface EditableDraggableProps extends Omit<BoxProps, "onDragEnd"> {
  * @param editableId this determines the zone that the child draggables will be in.
  */
 export const EditableDroppable = ({
-  onDragEnd,
-  children,
   editableId,
+  children,
   ...rest
 }: PropsWithChildren<EditableDraggableProps>) => {
   return (
-    // NOTE: According to the dnd docs,
-    // there CANNOT be more than 1
-    // `DragDropContext` in the component tree.
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable {...getDroppableInfo(editableId)}>
-        {(droppableProvided) => (
-          <Box
-            ref={droppableProvided.innerRef}
-            {...droppableProvided.droppableProps}
-            {...rest}
-          >
-            {children}
-            {droppableProvided.placeholder}
-          </Box>
-        )}
-      </Droppable>
-    </DragDropContext>
+    <Droppable {...getDroppableInfo(editableId)}>
+      {(droppableProvided) => (
+        <Box
+          ref={droppableProvided.innerRef}
+          {...droppableProvided.droppableProps}
+          {...rest}
+        >
+          {children}
+          {droppableProvided.placeholder}
+        </Box>
+      )}
+    </Droppable>
   )
 }
 
