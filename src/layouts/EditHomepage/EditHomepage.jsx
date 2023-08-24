@@ -56,7 +56,7 @@ import {
   RESOURCES_SECTION,
 } from "./constants"
 import { HomepagePreview } from "./HomepagePreview"
-import { getErrorValues } from "./utils"
+import { getErrorValues, getHasErrorFromHomepageState } from "./utils"
 
 /* eslint-disable react/no-array-index-key */
 
@@ -77,26 +77,6 @@ const getHasError = (errorArray) =>
   _.some(errorArray, (err) =>
     _.some(err, (errorMessage) => errorMessage.length > 0)
   )
-
-const getHasErrors = (errors) => {
-  const hasSectionErrors = _.some(errors.sections, (section) => {
-    // Section is an object, e.g. { hero: {} }
-    // _.keys(section) produces an array with length 1
-    // The 0th element of the array contains the sectionType
-    const sectionType = _.keys(section)[0]
-    return (
-      _.some(
-        section[sectionType],
-        (errorMessage) => errorMessage.length > 0
-      ) === true
-    )
-  })
-
-  const hasHighlightErrors = getHasError(errors.highlights)
-  const hasDropdownElemErrors = getHasError(errors.dropdownElems)
-
-  return hasSectionErrors || hasHighlightErrors || hasDropdownElemErrors
-}
 
 // Constants
 // Section constructors
@@ -1122,7 +1102,7 @@ const EditHomepage = ({ match }) => {
             </HStack>
             <Footer>
               <LoadingButton
-                isDisabled={getHasErrors(errors)}
+                isDisabled={getHasErrorFromHomepageState(homepageState)}
                 onClick={savePage}
               >
                 Save
