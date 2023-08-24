@@ -8,7 +8,7 @@ import {
 } from "types/homepage"
 import { validateDropdownElem, validateHighlight, validateSection } from "utils"
 
-export const getErrorValues = (
+export const getDefaultValues = (
   obj: Record<string, string>
 ): Record<string, string> => {
   return _.mapValues(obj, () => "")
