@@ -24,14 +24,6 @@ import { useUpdateHomepageHook } from "hooks/homepageHooks/useUpdateHomepageHook
 import useSiteColorsHook from "hooks/useSiteColorsHook"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
-import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
-
-import TemplateHeroSection from "templates/homepage/HeroSection"
-import TemplateInfobarSection from "templates/homepage/InfobarSection"
-import TemplateInfopicLeftSection from "templates/homepage/InfopicLeftSection"
-import TemplateInfopicRightSection from "templates/homepage/InfopicRightSection"
-import TemplateResourcesSection from "templates/homepage/ResourcesSection"
-import { getClassNames } from "templates/utils/stylingUtils"
 
 import { useErrorToast } from "utils/toasts"
 import {
@@ -62,6 +54,7 @@ import {
   KEY_HIGHLIGHT_SECTION,
   RESOURCES_SECTION,
 } from "./constants"
+import { HomepagePreview } from "./HomepagePreview"
 import { getErrorValues } from "./utils"
 
 /* eslint-disable react/no-array-index-key */
@@ -144,7 +137,6 @@ const EditHomepage = ({ match }) => {
     sections: [],
   })
   const [sha, setSha] = useState(null)
-  const [dropdownIsActive, setDropdownIsActive] = useState(false)
   const [displaySections, setDisplaySections] = useState([])
   const [displayHighlights, setDisplayHighlights] = useState([])
   const [displayDropdownElems, setDisplayDropdownElems] = useState([])
@@ -763,14 +755,6 @@ const EditHomepage = ({ match }) => {
     setErrors(newErrors)
   }
 
-  const toggleDropdown = async () => {
-    try {
-      setDropdownIsActive((prevState) => !prevState)
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
   const displayHandler = async (elemType, index) => {
     // NOTE: If index is less than 0,
     // this means that the accordion is being closed.
@@ -861,18 +845,6 @@ const EditHomepage = ({ match }) => {
       })
       console.log(err)
     }
-  }
-
-  const isLeftInfoPic = (sectionIndex) => {
-    // If the previous section in the list was not an infopic section
-    // or if the previous section was a right infopic section, return true
-    if (
-      !frontMatter.sections[sectionIndex - 1].infopic ||
-      !isLeftInfoPic(sectionIndex - 1)
-    )
-      return true
-
-    return false
   }
 
   // NOTE: sectionType is one of `resources`, `infopic` or `infobar`
@@ -1127,134 +1099,10 @@ const EditHomepage = ({ match }) => {
                   </AddSectionButton>
                 </Box>
               </Editable.Sidebar>
-              <div className={editorStyles.homepageEditorMain}>
-                {/* Isomer Template Pane */}
-                {/* Notification */}
-                {frontMatter.notification && (
-                  <div
-                    id="notification-bar"
-                    className={getClassNames(editorStyles, [
-                      "bp-notification",
-                      "is-marginless",
-                      "bg-secondary",
-                    ])}
-                  >
-                    <div className={editorStyles["bp-container"]}>
-                      <div className={editorStyles.row}>
-                        <div className={editorStyles.col}>
-                          <div
-                            className={getClassNames(editorStyles, [
-                              "field",
-                              "has-addons",
-                              "bp-notification-flex",
-                            ])}
-                          >
-                            <div
-                              className={getClassNames(editorStyles, [
-                                "control",
-                                "has-text-centered",
-                                "has-text-white",
-                              ])}
-                            >
-                              <h6>{frontMatter.notification}</h6>
-                            </div>
-                            <div
-                              className={getClassNames(editorStyles, [
-                                "button",
-                                "has-text-white",
-                              ])}
-                            >
-                              <span
-                                className={getClassNames(editorStyles, [
-                                  "sgds-icon",
-                                  "sgds-icon-cross",
-                                ])}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {/* Template preview section */}
-                {frontMatter.sections.map((section, sectionIndex) => (
-                  <>
-                    {/* Hero section */}
-                    {section.hero ? (
-                      <>
-                        <TemplateHeroSection
-                          key={`section-${sectionIndex}`}
-                          hero={section.hero}
-                          siteName={siteName}
-                          dropdownIsActive={dropdownIsActive}
-                          toggleDropdown={toggleDropdown}
-                          ref={scrollRefs[sectionIndex]}
-                        />
-                      </>
-                    ) : null}
-                    {/* Resources section */}
-                    {section.resources ? (
-                      <>
-                        <TemplateResourcesSection
-                          key={`section-${sectionIndex}`}
-                          title={section.resources.title}
-                          subtitle={section.resources.subtitle}
-                          button={section.resources.button}
-                          sectionIndex={sectionIndex}
-                          ref={scrollRefs[sectionIndex]}
-                        />
-                      </>
-                    ) : null}
-                    {/* Infobar section */}
-                    {section.infobar ? (
-                      <>
-                        <TemplateInfobarSection
-                          key={`section-${sectionIndex}`}
-                          title={section.infobar.title}
-                          subtitle={section.infobar.subtitle}
-                          description={section.infobar.description}
-                          button={section.infobar.button}
-                          sectionIndex={sectionIndex}
-                          ref={scrollRefs[sectionIndex]}
-                        />
-                      </>
-                    ) : null}
-                    {/* Infopic section */}
-                    {section.infopic ? (
-                      <>
-                        {isLeftInfoPic(sectionIndex) ? (
-                          <TemplateInfopicLeftSection
-                            key={`section-${sectionIndex}`}
-                            title={section.infopic.title}
-                            subtitle={section.infopic.subtitle}
-                            description={section.infopic.description}
-                            imageUrl={section.infopic.image}
-                            imageAlt={section.infopic.alt}
-                            button={section.infopic.button}
-                            sectionIndex={sectionIndex}
-                            siteName={siteName}
-                            ref={scrollRefs[sectionIndex]}
-                          />
-                        ) : (
-                          <TemplateInfopicRightSection
-                            key={`section-${sectionIndex}`}
-                            title={section.infopic.title}
-                            subtitle={section.infopic.subtitle}
-                            description={section.infopic.description}
-                            imageUrl={section.infopic.image}
-                            imageAlt={section.infopic.alt}
-                            button={section.infopic.button}
-                            sectionIndex={sectionIndex}
-                            siteName={siteName}
-                            ref={scrollRefs[sectionIndex]}
-                          />
-                        )}
-                      </>
-                    ) : null}
-                  </>
-                ))}
-              </div>
+              <HomepagePreview
+                frontMatter={frontMatter}
+                scrollRefs={scrollRefs}
+              />
             </HStack>
             <Footer>
               <LoadingButton
