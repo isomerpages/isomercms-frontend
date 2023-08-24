@@ -53,6 +53,7 @@ export const ResourcesBody = ({
           placeholder="This subtitle appears above the title"
           id={`section-${index}-resources-subtitle`}
           value={subtitle}
+          onBlur={onChange}
           onChange={onChange}
         />
         <FormErrorMessage>{errors.subtitle}</FormErrorMessage>
@@ -63,6 +64,7 @@ export const ResourcesBody = ({
           placeholder="Your widget title goes here"
           id={`section-${index}-resources-title`}
           value={title}
+          onBlur={onChange}
           onChange={onChange}
         />
         <FormErrorMessage>{errors.title}</FormErrorMessage>
@@ -73,6 +75,7 @@ export const ResourcesBody = ({
           placeholder="This button appears at the bottom of the widget"
           id={`section-${index}-resources-button`}
           value={button}
+          onBlur={onChange}
           onChange={onChange}
         />
         <FormErrorMessage>{errors.button}</FormErrorMessage>
