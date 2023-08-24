@@ -180,7 +180,7 @@ const validateHighlights = (highlightError, field, value) => {
   switch (field) {
     case "title": {
       // Title is too short
-      if (value.length < HIGHLIGHTS_TITLE_MIN_LENGTH) {
+      if (value.length <= HIGHLIGHTS_TITLE_MIN_LENGTH) {
         errorMessage = `The title should be longer than ${HIGHLIGHTS_TITLE_MIN_LENGTH} characters.`
       }
       // Title is too long
@@ -191,7 +191,7 @@ const validateHighlights = (highlightError, field, value) => {
     }
     case "description": {
       // Description is too short
-      if (value.length < HIGHLIGHTS_DESCRIPTION_MIN_LENGTH) {
+      if (value.length <= HIGHLIGHTS_DESCRIPTION_MIN_LENGTH) {
         errorMessage = `The description should be longer than ${HIGHLIGHTS_DESCRIPTION_MIN_LENGTH} characters.`
       }
       // Description is too long
@@ -225,7 +225,7 @@ const validateDropdownElems = (dropdownElemError, field, value) => {
   switch (field) {
     case "title": {
       // Title is too short
-      if (value.length < DROPDOWNELEM_TITLE_MIN_LENGTH) {
+      if (value.length <= DROPDOWNELEM_TITLE_MIN_LENGTH) {
         errorMessage = `The title should be longer than ${DROPDOWNELEM_TITLE_MIN_LENGTH} characters.`
       }
       // Title is too long
@@ -258,7 +258,7 @@ const validateHeroSection = (sectionError, sectionType, field, value) => {
   switch (field) {
     case "title": {
       // Title is too short
-      if (value.length < HERO_TITLE_MIN_LENGTH) {
+      if (value.length <= HERO_TITLE_MIN_LENGTH) {
         errorMessage = `The title should be longer than ${HERO_TITLE_MIN_LENGTH} characters.`
       }
       // Title is too long
@@ -269,7 +269,7 @@ const validateHeroSection = (sectionError, sectionType, field, value) => {
     }
     case "subtitle": {
       // Subtitle is too short
-      if (value.length < HERO_SUBTITLE_MIN_LENGTH) {
+      if (value.length <= HERO_SUBTITLE_MIN_LENGTH) {
         errorMessage = `The subtitle should be longer than ${HERO_SUBTITLE_MIN_LENGTH} characters.`
       }
       // Subtitle is too long
@@ -295,7 +295,7 @@ const validateHeroSection = (sectionError, sectionType, field, value) => {
     }
     case "dropdown": {
       // Dropdown text is too short
-      if (value.length < HERO_DROPDOWN_MIN_LENGTH) {
+      if (value.length <= HERO_DROPDOWN_MIN_LENGTH) {
         errorMessage = `The dropdown text should be longer than ${HERO_DROPDOWN_MIN_LENGTH} characters.`
       }
       // Dropdown text is too long
@@ -326,7 +326,7 @@ const validateResourcesSection = (sectionError, sectionType, field, value) => {
   switch (field) {
     case "title": {
       // Title is too short
-      if (value.length < RESOURCES_TITLE_MIN_LENGTH) {
+      if (value.length <= RESOURCES_TITLE_MIN_LENGTH) {
         errorMessage = `Title should be longer than ${RESOURCES_TITLE_MIN_LENGTH} characters.`
       }
       // Title is too long
@@ -337,7 +337,7 @@ const validateResourcesSection = (sectionError, sectionType, field, value) => {
     }
     case "subtitle": {
       // Subtitle is too short
-      if (value.length < RESOURCES_SUBTITLE_MIN_LENGTH) {
+      if (value.length <= RESOURCES_SUBTITLE_MIN_LENGTH) {
         errorMessage = `Subtitle should be longer than ${RESOURCES_SUBTITLE_MIN_LENGTH} characters.`
       }
       // Subtitle is too long
@@ -348,7 +348,7 @@ const validateResourcesSection = (sectionError, sectionType, field, value) => {
     }
     case "button": {
       // Button text is too short
-      if (value.length < RESOURCES_BUTTON_TEXT_MIN_LENGTH) {
+      if (value.length <= RESOURCES_BUTTON_TEXT_MIN_LENGTH) {
         errorMessage = `Button text should be longer than ${RESOURCES_BUTTON_TEXT_MIN_LENGTH} characters.`
       }
       // Button text is too long
@@ -370,7 +370,7 @@ const validateInfobarSection = (sectionError, sectionType, field, value) => {
   switch (field) {
     case "title": {
       // Title is too short
-      if (value.length < INFOBAR_TITLE_MIN_LENGTH) {
+      if (value.length <= INFOBAR_TITLE_MIN_LENGTH) {
         errorMessage = `Title should be longer than ${INFOBAR_TITLE_MIN_LENGTH} characters.`
       }
       // Title is too long
@@ -381,7 +381,7 @@ const validateInfobarSection = (sectionError, sectionType, field, value) => {
     }
     case "subtitle": {
       // Subtitle is too short
-      if (value.length < INFOBAR_SUBTITLE_MIN_LENGTH) {
+      if (value.length <= INFOBAR_SUBTITLE_MIN_LENGTH) {
         errorMessage = `Subtitle should be longer than ${INFOBAR_SUBTITLE_MIN_LENGTH} characters.`
       }
       // Subtitle is too long
@@ -392,7 +392,7 @@ const validateInfobarSection = (sectionError, sectionType, field, value) => {
     }
     case "description": {
       // Description is too short
-      if (value.length < INFOBAR_DESCRIPTION_MIN_LENGTH) {
+      if (value.length <= INFOBAR_DESCRIPTION_MIN_LENGTH) {
         errorMessage = `Ddescription should be longer than ${INFOBAR_DESCRIPTION_MIN_LENGTH} characters.`
       }
       // Description is too long
@@ -403,7 +403,7 @@ const validateInfobarSection = (sectionError, sectionType, field, value) => {
     }
     case "button": {
       // Button text is too short
-      if (value.length < INFOBAR_BUTTON_TEXT_MIN_LENGTH) {
+      if (value.length <= INFOBAR_BUTTON_TEXT_MIN_LENGTH) {
         errorMessage = `Button text should be longer than ${INFOBAR_BUTTON_TEXT_MIN_LENGTH} characters.`
       }
       // Button text is too long
@@ -434,7 +434,7 @@ const validateInfopicSection = (sectionError, sectionType, field, value) => {
   switch (field) {
     case "title": {
       // Title is too short
-      if (value.length < INFOPIC_TITLE_MIN_LENGTH) {
+      if (value.length <= INFOPIC_TITLE_MIN_LENGTH) {
         errorMessage = `Title should be longer than ${INFOPIC_TITLE_MIN_LENGTH} characters.`
       }
       // Title is too long
@@ -445,7 +445,7 @@ const validateInfopicSection = (sectionError, sectionType, field, value) => {
     }
     case "subtitle": {
       // Subtitle is too short
-      if (value.length < INFOPIC_SUBTITLE_MIN_LENGTH) {
+      if (value.length <= INFOPIC_SUBTITLE_MIN_LENGTH) {
         errorMessage = `Subtitle should be longer than ${INFOPIC_SUBTITLE_MIN_LENGTH} characters.`
       }
       // Subtitle is too long
@@ -456,7 +456,7 @@ const validateInfopicSection = (sectionError, sectionType, field, value) => {
     }
     case "description": {
       // Description is too short
-      if (value.length < INFOPIC_DESCRIPTION_MIN_LENGTH) {
+      if (value.length <= INFOPIC_DESCRIPTION_MIN_LENGTH) {
         errorMessage = `Description should be longer than ${INFOPIC_DESCRIPTION_MIN_LENGTH} characters.`
       }
       // Description is too long
@@ -467,7 +467,7 @@ const validateInfopicSection = (sectionError, sectionType, field, value) => {
     }
     case "button": {
       // Button text is too short
-      if (value.length < INFOPIC_BUTTON_TEXT_MIN_LENGTH) {
+      if (value.length <= INFOPIC_BUTTON_TEXT_MIN_LENGTH) {
         errorMessage = `Button text should be longer than ${INFOPIC_BUTTON_TEXT_MIN_LENGTH} characters.`
       }
       // Button text is too long
@@ -478,7 +478,7 @@ const validateInfopicSection = (sectionError, sectionType, field, value) => {
     }
     case "alt": {
       // Alt text is too short
-      if (value.length < INFOPIC_ALT_TEXT_MIN_LENGTH) {
+      if (value.length <= INFOPIC_ALT_TEXT_MIN_LENGTH) {
         errorMessage = `Image alt text should be longer than ${INFOPIC_ALT_TEXT_MIN_LENGTH} characters.`
       }
       // Alt text is too long
