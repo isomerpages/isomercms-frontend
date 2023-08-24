@@ -12,7 +12,16 @@ import { getClassNames } from "templates/utils/stylingUtils"
  */
 
 const TemplateInfopicRightSection = (
-  { title, subtitle, description, button, sectionIndex, imageUrl, imageAlt },
+  {
+    title,
+    subtitle,
+    description,
+    button,
+    sectionIndex,
+    imageUrl,
+    imageAlt,
+    siteName,
+  },
   ref
 ) => {
   const addDefaultSrc = (e) => {
@@ -86,11 +95,7 @@ const TemplateInfopicRightSection = (
               </div>
             </div>
             <div className={getClassNames(editorStyles, ["col", "is-half"])}>
-              <img
-                onError={addDefaultSrc}
-                src={loadedImageURL}
-                alt={imageAlt}
-              />
+              <img onError={addDefaultSrc} src={loadedImageURL} alt={alt} />
             </div>
           </div>
           {/* For tablet */}
@@ -109,11 +114,7 @@ const TemplateInfopicRightSection = (
                 "padding--bottom--xl",
               ])}
             >
-              <img
-                onError={addDefaultSrc}
-                src={loadedImageURL}
-                alt={imageAlt}
-              />
+              <img onError={addDefaultSrc} src={loadedImageURL} alt={alt} />
             </div>
             <div className={getClassNames(editorStyles, ["col", "is-half"])}>
               <p
@@ -173,11 +174,7 @@ const TemplateInfopicRightSection = (
                 "padding--bottom--xl",
               ])}
             >
-              <img
-                onError={addDefaultSrc}
-                src={loadedImageURL}
-                alt={imageAlt}
-              />
+              <img onError={addDefaultSrc} src={loadedImageURL} alt={alt} />
             </div>
             <div
               className={getClassNames(editorStyles, [
@@ -243,13 +240,7 @@ TemplateInfopicRightSection.propTypes = {
   subtitle: PropTypes.string,
   description: PropTypes.string,
   button: PropTypes.string,
-  imageUrl: PropTypes.string,
-  imageAlt: PropTypes.string,
+  image: PropTypes.string,
+  alt: PropTypes.string,
   sectionIndex: PropTypes.number.isRequired,
-}
-
-TemplateInfopicRightSection.defaultProps = {
-  title: undefined,
-  subtitle: undefined,
-  description: undefined,
 }

@@ -536,7 +536,8 @@ const EditHomepage = ({ match }) => {
 
       switch (elemType) {
         case "section": {
-          const val = enumSection(value, false)
+          // NOTE: setting `isError` to true to get an empty object
+          const val = enumSection(value, true)
           const err = enumSection(value, true)
 
           const newScrollRefs = update(scrollRefs, { $push: [createRef()] })

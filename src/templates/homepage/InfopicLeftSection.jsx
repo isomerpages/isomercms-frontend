@@ -12,7 +12,16 @@ import { getClassNames } from "templates/utils/stylingUtils"
  */
 
 const TemplateInfopicLeftSection = (
-  { title, subtitle, description, button, sectionIndex, imageUrl, imageAlt },
+  {
+    title,
+    subtitle,
+    description,
+    button,
+    sectionIndex,
+    imageUrl,
+    imageAlt,
+    siteName,
+  },
   ref
 ) => {
   const addDefaultSrc = (e) => {
@@ -85,11 +94,7 @@ const TemplateInfopicLeftSection = (
               </div>
             </div>
             <div className={getClassNames(editorStyles, ["col", "is-half"])}>
-              <img
-                onError={addDefaultSrc}
-                src={loadedImageURL}
-                alt={imageAlt}
-              />
+              <img onError={addDefaultSrc} src={loadedImageURL} alt={alt} />
             </div>
           </div>
           {/* For tablet */}
@@ -150,11 +155,7 @@ const TemplateInfopicLeftSection = (
                 "padding--bottom--xl",
               ])}
             >
-              <img
-                onError={addDefaultSrc}
-                src={loadedImageURL}
-                alt={imageAlt}
-              />
+              <img onError={addDefaultSrc} src={loadedImageURL} alt={alt} />
             </div>
           </div>
           {/* For desktop */}
@@ -223,11 +224,7 @@ const TemplateInfopicLeftSection = (
                 "padding--bottom--xl",
               ])}
             >
-              <img
-                onError={addDefaultSrc}
-                src={loadedImageURL}
-                alt={imageAlt}
-              />
+              <img onError={addDefaultSrc} src={loadedImageURL} alt={alt} />
             </div>
           </div>
         </div>
@@ -243,13 +240,7 @@ TemplateInfopicLeftSection.propTypes = {
   subtitle: PropTypes.string,
   description: PropTypes.string,
   button: PropTypes.string,
-  imageUrl: PropTypes.string,
-  imageAlt: PropTypes.string,
+  image: PropTypes.string,
+  alt: PropTypes.string,
   sectionIndex: PropTypes.number.isRequired,
-}
-
-TemplateInfopicLeftSection.defaultProps = {
-  title: undefined,
-  subtitle: undefined,
-  description: undefined,
 }

@@ -104,10 +104,4 @@ TemplateInfobarSection.propTypes = {
   sectionIndex: PropTypes.number.isRequired,
 }
 
-TemplateInfobarSection.defaultProps = {
-  title: undefined,
-  subtitle: undefined,
-  description: undefined,
-}
-
 export default forwardRef(TemplateInfobarSection)
