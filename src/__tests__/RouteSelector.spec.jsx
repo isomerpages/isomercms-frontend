@@ -134,8 +134,7 @@ jest.mock("layouts/Folders", () => {
 
 jest.mock("layouts/NotFoundPage", () => {
   return {
-    __esModule: true,
-    default: () => {
+    NotFoundPage: () => {
       return <div>{NOT_FOUND_LAYOUT_TEXT}</div>
     },
   }
