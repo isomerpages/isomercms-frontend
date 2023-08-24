@@ -43,17 +43,17 @@ import {
 import { HomepageStartEditingImage } from "assets"
 import { DEFAULT_RETRY_MSG } from "utils"
 
-import { EditableContextProvider } from "../contexts/EditableContext"
-import { useDrag, onCreate, onDelete } from "../hooks/useDrag"
+import { EditableContextProvider } from "../../contexts/EditableContext"
+import { useDrag, onCreate, onDelete } from "../../hooks/useDrag"
+import { CustomiseSectionsHeader, Editable } from "../components/Editable"
+import { AddSectionButton } from "../components/Editable/AddSectionButton"
+import { HeroBody } from "../components/Homepage/HeroBody"
+import { HeroDropdownSection } from "../components/Homepage/HeroDropdownSection"
+import { HeroHighlightSection } from "../components/Homepage/HeroHighlightSection"
+import { InfobarBody } from "../components/Homepage/InfobarBody"
+import { InfopicBody } from "../components/Homepage/InfopicBody"
+import { ResourcesBody } from "../components/Homepage/ResourcesBody"
 
-import { CustomiseSectionsHeader, Editable } from "./components/Editable"
-import { AddSectionButton } from "./components/Editable/AddSectionButton"
-import { HeroBody } from "./components/Homepage/HeroBody"
-import { HeroDropdownSection } from "./components/Homepage/HeroDropdownSection"
-import { HeroHighlightSection } from "./components/Homepage/HeroHighlightSection"
-import { InfobarBody } from "./components/Homepage/InfobarBody"
-import { InfopicBody } from "./components/Homepage/InfopicBody"
-import { ResourcesBody } from "./components/Homepage/ResourcesBody"
 import {
   DROPDOWN_ELEMENT_SECTION,
   DROPDOWN_SECTION,
@@ -61,8 +61,8 @@ import {
   INFOPIC_SECTION,
   KEY_HIGHLIGHT_SECTION,
   RESOURCES_SECTION,
-} from "./EditHomepage/constants"
-import { getErrorValues } from "./EditHomepage/utils"
+} from "./constants"
+import { getErrorValues } from "./utils"
 
 /* eslint-disable react/no-array-index-key */
 
