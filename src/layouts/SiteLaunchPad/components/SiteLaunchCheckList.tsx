@@ -293,8 +293,8 @@ export const SiteLaunchChecklistBody = ({
       </Text>
       <Text mb="2rem">
         You may leave this page and return later to continue from where you left
-        off. If you run into issues, contact the Isomer team using the I need
-        support button.
+        off. If you run into issues,{" "}
+        <Link href="mailto:support@isomer.gov.sg">contact Isomer support.</Link>
       </Text>
       <Box
         border="1px solid"
@@ -311,11 +311,7 @@ export const SiteLaunchChecklistBody = ({
                     Site launch tasks ({tasksDone}/{numberOfTasks})
                   </Text>
                 </Td>
-                <Td bg="gray.100" textAlign="center" width="30%">
-                  <a href="mailto:support@isomer.gov.sg">
-                    I need support <Icon as={BxLifeBuoy} />
-                  </a>
-                </Td>
+                <Td bg="gray.100" width="30%" />
               </Tr>
             </Thead>
             <Tbody>

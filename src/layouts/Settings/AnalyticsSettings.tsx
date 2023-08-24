@@ -7,7 +7,7 @@ import {
 import { useFormContext, useFormState } from "react-hook-form"
 import { BiInfoCircle } from "react-icons/bi"
 
-import { ANALYTICS_SETUP_LINK, GA_DEPRECATION_LINK } from "constants/config"
+import { ANALYTICS_SETUP_LINK } from "constants/config"
 
 import { Section, SectionHeader, SectionCaption } from "layouts/components"
 
@@ -53,18 +53,6 @@ export const AnalyticsSettings = ({
             {/* @ts-ignore */}
             {errors.pixel && errors.pixel.message}
           </FormErrorMessage>
-        </FormControl>
-
-        <FormControl isDisabled={isError}>
-          <FormLabel>Google Analytics (UA)</FormLabel>
-          <SectionCaption icon={BiInfoCircle}>
-            This field will be removed following the deprecation of Universal
-            Analytics on 1 July 2023.{" "}
-            <Link href={GA_DEPRECATION_LINK} isExternal>
-              Read more
-            </Link>
-          </SectionCaption>
-          <Input isDisabled w="100%" {...register("ga")} />
         </FormControl>
 
         <FormControl isDisabled={isError}>

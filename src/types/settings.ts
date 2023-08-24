@@ -78,8 +78,6 @@ export interface BackendSiteSettings {
   // eslint-disable-next-line camelcase
   facebook_pixel?: string
   // eslint-disable-next-line camelcase
-  google_analytics?: string
-  // eslint-disable-next-line camelcase
   google_analytics_ga4?: string
   // eslint-disable-next-line camelcase
   linkedin_insights?: string

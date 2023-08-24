@@ -325,33 +325,33 @@ const validateResourcesSection = (sectionError, sectionType, field, value) => {
     case "title": {
       // Title is too short
       if (value.length < RESOURCES_TITLE_MIN_LENGTH) {
-        errorMessage = `The title should be longer than ${RESOURCES_TITLE_MIN_LENGTH} characters.`
+        errorMessage = `Title should be longer than ${RESOURCES_TITLE_MIN_LENGTH} characters.`
       }
       // Title is too long
       if (value.length > RESOURCES_TITLE_MAX_LENGTH) {
-        errorMessage = `The title should be shorter than ${RESOURCES_TITLE_MAX_LENGTH} characters.`
+        errorMessage = `Title should be shorter than ${RESOURCES_TITLE_MAX_LENGTH} characters.`
       }
       break
     }
     case "subtitle": {
       // Subtitle is too short
       if (value.length < RESOURCES_SUBTITLE_MIN_LENGTH) {
-        errorMessage = `The subtitle should be longer than ${RESOURCES_SUBTITLE_MIN_LENGTH} characters.`
+        errorMessage = `Subtitle should be longer than ${RESOURCES_SUBTITLE_MIN_LENGTH} characters.`
       }
       // Subtitle is too long
       if (value.length > RESOURCES_SUBTITLE_MAX_LENGTH) {
-        errorMessage = `The subtitle should be shorter than ${RESOURCES_SUBTITLE_MAX_LENGTH} characters.`
+        errorMessage = `Subtitle should be shorter than ${RESOURCES_SUBTITLE_MAX_LENGTH} characters.`
       }
       break
     }
     case "button": {
       // Button text is too short
       if (value.length < RESOURCES_BUTTON_TEXT_MIN_LENGTH) {
-        errorMessage = `The button text should be longer than ${RESOURCES_BUTTON_TEXT_MIN_LENGTH} characters.`
+        errorMessage = `Button text should be longer than ${RESOURCES_BUTTON_TEXT_MIN_LENGTH} characters.`
       }
       // Button text is too long
       if (value.length > RESOURCES_BUTTON_TEXT_MAX_LENGTH) {
-        errorMessage = `The button text should be shorter than ${RESOURCES_BUTTON_TEXT_MAX_LENGTH} characters.`
+        errorMessage = `Button text should be shorter than ${RESOURCES_BUTTON_TEXT_MAX_LENGTH} characters.`
       }
       break
     }
@@ -369,44 +369,44 @@ const validateInfobarSection = (sectionError, sectionType, field, value) => {
     case "title": {
       // Title is too short
       if (value.length < INFOBAR_TITLE_MIN_LENGTH) {
-        errorMessage = `The title should be longer than ${INFOBAR_TITLE_MIN_LENGTH} characters.`
+        errorMessage = `Title should be longer than ${INFOBAR_TITLE_MIN_LENGTH} characters.`
       }
       // Title is too long
       if (value.length > INFOBAR_TITLE_MAX_LENGTH) {
-        errorMessage = `The title should be shorter than ${INFOBAR_TITLE_MAX_LENGTH} characters.`
+        errorMessage = `Title should be shorter than ${INFOBAR_TITLE_MAX_LENGTH} characters.`
       }
       break
     }
     case "subtitle": {
       // Subtitle is too short
       if (value.length < INFOBAR_SUBTITLE_MIN_LENGTH) {
-        errorMessage = `The subtitle should be longer than ${INFOBAR_SUBTITLE_MIN_LENGTH} characters.`
+        errorMessage = `Subtitle should be longer than ${INFOBAR_SUBTITLE_MIN_LENGTH} characters.`
       }
       // Subtitle is too long
       if (value.length > INFOBAR_SUBTITLE_MAX_LENGTH) {
-        errorMessage = `The subtitle should be shorter than ${INFOBAR_SUBTITLE_MAX_LENGTH} characters.`
+        errorMessage = `Subtitle should be shorter than ${INFOBAR_SUBTITLE_MAX_LENGTH} characters.`
       }
       break
     }
     case "description": {
       // Description is too short
       if (value.length < INFOBAR_DESCRIPTION_MIN_LENGTH) {
-        errorMessage = `The description should be longer than ${INFOBAR_DESCRIPTION_MIN_LENGTH} characters.`
+        errorMessage = `Ddescription should be longer than ${INFOBAR_DESCRIPTION_MIN_LENGTH} characters.`
       }
       // Description is too long
       if (getLengthWithoutTags(value) > INFOBAR_DESCRIPTION_MAX_LENGTH) {
-        errorMessage = `The description should be shorter than ${INFOBAR_DESCRIPTION_MAX_LENGTH} characters.`
+        errorMessage = `Description should be shorter than ${INFOBAR_DESCRIPTION_MAX_LENGTH} characters.`
       }
       break
     }
     case "button": {
       // Button text is too short
       if (value.length < INFOBAR_BUTTON_TEXT_MIN_LENGTH) {
-        errorMessage = `The button text should be longer than ${INFOBAR_BUTTON_TEXT_MIN_LENGTH} characters.`
+        errorMessage = `Button text should be longer than ${INFOBAR_BUTTON_TEXT_MIN_LENGTH} characters.`
       }
       // Button text is too long
       if (value.length > INFOBAR_BUTTON_TEXT_MAX_LENGTH) {
-        errorMessage = `The button text should be shorter than ${INFOBAR_BUTTON_TEXT_MAX_LENGTH} characters.`
+        errorMessage = `Button text should be shorter than ${INFOBAR_BUTTON_TEXT_MAX_LENGTH} characters.`
       }
       break
     }
@@ -433,55 +433,55 @@ const validateInfopicSection = (sectionError, sectionType, field, value) => {
     case "title": {
       // Title is too short
       if (value.length < INFOPIC_TITLE_MIN_LENGTH) {
-        errorMessage = `The title should be longer than ${INFOPIC_TITLE_MIN_LENGTH} characters.`
+        errorMessage = `Title should be longer than ${INFOPIC_TITLE_MIN_LENGTH} characters.`
       }
       // Title is too long
       if (value.length > INFOPIC_TITLE_MAX_LENGTH) {
-        errorMessage = `The title should be shorter than ${INFOPIC_TITLE_MAX_LENGTH} characters.`
+        errorMessage = `Title should be shorter than ${INFOPIC_TITLE_MAX_LENGTH} characters.`
       }
       break
     }
     case "subtitle": {
       // Subtitle is too short
       if (value.length < INFOPIC_SUBTITLE_MIN_LENGTH) {
-        errorMessage = `The subtitle should be longer than ${INFOPIC_SUBTITLE_MIN_LENGTH} characters.`
+        errorMessage = `Subtitle should be longer than ${INFOPIC_SUBTITLE_MIN_LENGTH} characters.`
       }
       // Subtitle is too long
       if (value.length > INFOPIC_SUBTITLE_MAX_LENGTH) {
-        errorMessage = `The subtitle should be shorter than ${INFOPIC_SUBTITLE_MAX_LENGTH} characters.`
+        errorMessage = `Subtitle should be shorter than ${INFOPIC_SUBTITLE_MAX_LENGTH} characters.`
       }
       break
     }
     case "description": {
       // Description is too short
       if (value.length < INFOPIC_DESCRIPTION_MIN_LENGTH) {
-        errorMessage = `The description should be longer than ${INFOPIC_DESCRIPTION_MIN_LENGTH} characters.`
+        errorMessage = `Description should be longer than ${INFOPIC_DESCRIPTION_MIN_LENGTH} characters.`
       }
       // Description is too long
       if (value.length > INFOPIC_DESCRIPTION_MAX_LENGTH) {
-        errorMessage = `The description should be shorter than ${INFOPIC_DESCRIPTION_MAX_LENGTH} characters.`
+        errorMessage = `Description should be shorter than ${INFOPIC_DESCRIPTION_MAX_LENGTH} characters.`
       }
       break
     }
     case "button": {
       // Button text is too short
       if (value.length < INFOPIC_BUTTON_TEXT_MIN_LENGTH) {
-        errorMessage = `The button text should be longer than ${INFOPIC_BUTTON_TEXT_MIN_LENGTH} characters.`
+        errorMessage = `Button text should be longer than ${INFOPIC_BUTTON_TEXT_MIN_LENGTH} characters.`
       }
       // Button text is too long
       if (value.length > INFOPIC_BUTTON_TEXT_MAX_LENGTH) {
-        errorMessage = `The button text should be shorter than ${INFOPIC_BUTTON_TEXT_MAX_LENGTH} characters.`
+        errorMessage = `Button text should be shorter than ${INFOPIC_BUTTON_TEXT_MAX_LENGTH} characters.`
       }
       break
     }
     case "alt": {
       // Alt text is too short
       if (value.length < INFOPIC_ALT_TEXT_MIN_LENGTH) {
-        errorMessage = `The image alt text should be longer than ${INFOPIC_ALT_TEXT_MIN_LENGTH} characters.`
+        errorMessage = `Image alt text should be longer than ${INFOPIC_ALT_TEXT_MIN_LENGTH} characters.`
       }
       // Alt text is too long
       if (value.length > INFOPIC_ALT_TEXT_MAX_LENGTH) {
-        errorMessage = `The image alt text should be shorter than ${INFOPIC_ALT_TEXT_MAX_LENGTH} characters.`
+        errorMessage = `Image alt text should be shorter than ${INFOPIC_ALT_TEXT_MAX_LENGTH} characters.`
       }
       break
     }

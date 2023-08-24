@@ -7,6 +7,7 @@ import {
   EditorHeroHighlightsSection,
   EditorHomepageElement,
   EditorHomepageState,
+  HeroFrontmatterSection,
   PossibleEditorSections,
 } from "types/homepage"
 
@@ -167,11 +168,11 @@ const updateHomepageState = (
     // passed in via droppableId
     case "dropdownelem": {
       // TODO: type check to avoid casting
-      const draggedElem = (frontMatter.sections[0]
+      const draggedElem = ((frontMatter.sections[0] as HeroFrontmatterSection)
         .hero as EditorHeroDropdownSection).dropdown.options[source.index]
       const newDropdownOptions = updatePositions(
-        (frontMatter.sections[0].hero as EditorHeroDropdownSection).dropdown
-          .options,
+        ((frontMatter.sections[0] as HeroFrontmatterSection)
+          .hero as EditorHeroDropdownSection).dropdown.options,
         source.index,
         destination.index,
         draggedElem
@@ -208,11 +209,11 @@ const updateHomepageState = (
     }
     case "highlight": {
       // TODO: type check to avoid casting
-      const draggedElem = (frontMatter.sections[0]
+      const draggedElem = ((frontMatter.sections[0] as HeroFrontmatterSection)
         .hero as EditorHeroHighlightsSection).key_highlights[source.index]
       const newHighlightOptions = updatePositions(
-        (frontMatter.sections[0].hero as EditorHeroHighlightsSection)
-          .key_highlights,
+        ((frontMatter.sections[0] as HeroFrontmatterSection)
+          .hero as EditorHeroHighlightsSection).key_highlights,
         source.index,
         destination.index,
         draggedElem
@@ -272,14 +273,14 @@ export const onCreate = <E,>(
       return updateEditorSection(
         homepageState,
         newDisplaySections,
-        sections,
+        sections as EditorHomepageState["frontMatter"]["sections"],
         newErrorSections
       )
     }
     case "dropdownelem": {
       const newDropdownOptions = createElement(
-        (frontMatter.sections[0].hero as EditorHeroDropdownSection).dropdown
-          .options,
+        ((frontMatter.sections[0] as HeroFrontmatterSection)
+          .hero as EditorHeroDropdownSection).dropdown.options,
         val
       )
       const newDropdownErrors = createElement(errors.dropdownElems, err)
@@ -303,13 +304,13 @@ export const onCreate = <E,>(
       // If key highlights section exists
       if (
         !_.isEmpty(
-          (frontMatter.sections[0].hero as EditorHeroHighlightsSection)
-            .key_highlights
+          ((frontMatter.sections[0] as HeroFrontmatterSection)
+            .hero as EditorHeroHighlightsSection).key_highlights
         )
       ) {
         const newHighlightOptions = createElement(
-          (frontMatter.sections[0].hero as EditorHeroHighlightsSection)
-            .key_highlights,
+          ((frontMatter.sections[0] as HeroFrontmatterSection)
+            .hero as EditorHeroHighlightsSection).key_highlights,
           val
         )
 
@@ -365,8 +366,8 @@ export const onDelete = (
 
     case "dropdownelem": {
       const newDropdownOptions = deleteElement(
-        (frontMatter.sections[0].hero as EditorHeroDropdownSection).dropdown
-          .options,
+        ((frontMatter.sections[0] as HeroFrontmatterSection)
+          .hero as EditorHeroDropdownSection).dropdown.options,
         indexToDelete
       )
       const newDropdownErrors = deleteElement(
@@ -387,8 +388,8 @@ export const onDelete = (
     }
     case "highlight": {
       const newHighlightOptions = deleteElement(
-        (frontMatter.sections[0].hero as EditorHeroHighlightsSection)
-          .key_highlights,
+        ((frontMatter.sections[0] as HeroFrontmatterSection)
+          .hero as EditorHeroHighlightsSection).key_highlights,
         indexToDelete
       )
       const newHighlightErrors = deleteElement(errors.highlights, indexToDelete)

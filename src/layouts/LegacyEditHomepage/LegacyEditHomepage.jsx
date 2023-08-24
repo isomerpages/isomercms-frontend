@@ -1,13 +1,7 @@
 /* eslint-disable @typescript-eslint/no-shadow */
-import {
-  Box,
-  useDisclosure,
-  Text,
-  HStack,
-  VStack,
-  Divider,
-} from "@chakra-ui/react"
-import { Button, Tag } from "@opengovsg/design-system-react"
+import { useDisclosure, Text, HStack, VStack } from "@chakra-ui/react"
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd"
+import { Button, Input } from "@opengovsg/design-system-react"
 import update from "immutability-helper"
 import _ from "lodash"
 import PropTypes from "prop-types"
@@ -40,53 +34,23 @@ import {
   validateDropdownElems,
 } from "utils/validators"
 
-import { HomepageStartEditingImage } from "assets"
 import { DEFAULT_RETRY_MSG } from "utils"
 
-import { EditableContextProvider } from "../contexts/EditableContext"
-import { useDrag, onCreate, onDelete } from "../hooks/useDrag"
+import { useDrag, onCreate, onDelete } from "../../hooks/useDrag"
 
-import { CustomiseSectionsHeader, Editable } from "./components/Editable"
-import { AddSectionButton } from "./components/Editable/AddSectionButton"
-import { HeroBody } from "./components/Homepage/HeroBody"
-import { HeroDropdownSection } from "./components/Homepage/HeroDropdownSection"
-import { HeroHighlightSection } from "./components/Homepage/HeroHighlightSection"
-import { InfobarBody } from "./components/Homepage/InfobarBody"
-import { InfopicBody } from "./components/Homepage/InfopicBody"
-import { ResourcesBody } from "./components/Homepage/ResourcesBody"
+import EditorHeroSection from "./components/HeroSection"
+import EditorInfobarSection from "./components/InfobarSection"
+import EditorInfopicSection from "./components/InfopicSection"
+import NewSectionCreator from "./components/NewSectionCreator"
+import EditorResourcesSection from "./components/ResourcesSection"
 
 /* eslint-disable react/no-array-index-key */
 
+// Constants
+// ==========
 const RADIX_PARSE_INT = 10
 
-const getHasError = (errorArray) =>
-  _.some(errorArray, (err) =>
-    _.some(err, (errorMessage) => errorMessage.length > 0)
-  )
-
-const getHasErrors = (errors) => {
-  const hasSectionErrors = _.some(errors.sections, (section) => {
-    // Section is an object, e.g. { hero: {} }
-    // _.keys(section) produces an array with length 1
-    // The 0th element of the array contains the sectionType
-    const sectionType = _.keys(section)[0]
-    return (
-      _.some(
-        section[sectionType],
-        (errorMessage) => errorMessage.length > 0
-      ) === true
-    )
-  })
-
-  const hasHighlightErrors = getHasError(errors.highlights)
-  const hasDropdownElemErrors = getHasError(errors.dropdownElems)
-
-  return hasSectionErrors || hasHighlightErrors || hasDropdownElemErrors
-}
-
-// Constants
 // Section constructors
-// TODO: Export all these as const and write wrapper for error...
 const ResourcesSectionConstructor = (isErrorConstructor) => ({
   resources: {
     title: isErrorConstructor ? "" : "Resources Section Title",
@@ -152,6 +116,7 @@ const EditHomepage = ({ match }) => {
   const { siteName } = match.params
   const [hasLoaded, setHasLoaded] = useState(false)
   const [scrollRefs, setScrollRefs] = useState([])
+  const [hasErrors, setHasErrors] = useState(false)
   const [frontMatter, setFrontMatter] = useState({
     title: "",
     subtitle: "",
@@ -169,6 +134,7 @@ const EditHomepage = ({ match }) => {
     sections: [],
   })
   const [sha, setSha] = useState(null)
+  const [hasResources, setHasResources] = useState(false)
   const [dropdownIsActive, setDropdownIsActive] = useState(false)
   const [displaySections, setDisplaySections] = useState([])
   const [displayHighlights, setDisplayHighlights] = useState([])
@@ -208,12 +174,10 @@ const EditHomepage = ({ match }) => {
     setDisplayDropdownElems(displayDropdownElems)
     setDisplayHighlights(displayHighlights)
   }
-  const heroSection = frontMatter.sections.filter((section) => !!section.hero)
 
   const errorToast = useErrorToast()
 
   // TODO: Tidy up these `useEffects` and figure out what they do
-  // TODO: Shift this into react query + custom hook
   useEffect(() => {
     if (!homepageData) return
     const loadPageDetails = async () => {
@@ -230,7 +194,8 @@ const EditHomepage = ({ match }) => {
           content: { frontMatter },
           sha,
         } = homepageData
-        // Set displaySections
+        // Compute hasResources and set displaySections
+        let hasResources = false
         const displaySections = []
         let displayHighlights = []
         let displayDropdownElems = []
@@ -276,6 +241,7 @@ const EditHomepage = ({ match }) => {
           // Check if there is already a resources section
           if (section.resources) {
             sectionsErrors.push(ResourcesSectionConstructor(true))
+            hasResources = true
           }
 
           if (section.infobar) {
@@ -300,6 +266,7 @@ const EditHomepage = ({ match }) => {
         setFrontMatter(frontMatter)
         setOriginalFrontMatter(_.cloneDeep(frontMatter))
         setSha(sha)
+        setHasResources(hasResources)
         setDisplaySections(displaySections)
         setDisplayDropdownElems(displayDropdownElems)
         setDisplayHighlights(displayHighlights)
@@ -326,6 +293,39 @@ const EditHomepage = ({ match }) => {
     }
   }, [scrollRefs, frontMatter.sections.length])
 
+  useEffect(() => {
+    const hasSectionErrors = _.some(errors.sections, (section) => {
+      // Section is an object, e.g. { hero: {} }
+      // _.keys(section) produces an array with length 1
+      // The 0th element of the array contains the sectionType
+      const sectionType = _.keys(section)[0]
+      return (
+        _.some(
+          section[sectionType],
+          (errorMessage) => errorMessage.length > 0
+        ) === true
+      )
+    })
+
+    const hasHighlightErrors = _.some(
+      errors.highlights,
+      (highlight) =>
+        _.some(highlight, (errorMessage) => errorMessage.length > 0) === true
+    )
+
+    const hasDropdownElemErrors = _.some(
+      errors.dropdownElems,
+      (dropdownElem) =>
+        _.some(dropdownElem, (errorMessage) => errorMessage.length > 0) === true
+    )
+
+    const hasErrors =
+      hasSectionErrors || hasHighlightErrors || hasDropdownElemErrors
+
+    setHasErrors(hasErrors)
+  }, [errors])
+
+  // TODO: Use `react-hook-forms`
   const onFieldChange = async (event) => {
     try {
       const { id, value } = event.target
@@ -551,6 +551,12 @@ const EditHomepage = ({ match }) => {
       const idArray = id.split("-")
       const elemType = idArray[0]
 
+      // The Isomer site can only have 1 resources section in the homepage
+      // Set hasResources to prevent the creation of more resources sections
+      if (elemType === "section" && value === "resources") {
+        setHasResources(true)
+      }
+
       switch (elemType) {
         case "section": {
           const val = enumSection(value, false)
@@ -618,6 +624,8 @@ const EditHomepage = ({ match }) => {
         })
 
         setScrollRefs(newScrollRefs)
+        // Set hasResources to false to allow users to create a resources section
+        if (frontMatter.sections[index].resources) setHasResources(false)
       }
 
       const newHomepageState = onDelete(homepageState, elemType, index)
@@ -625,11 +633,6 @@ const EditHomepage = ({ match }) => {
     } catch (err) {
       console.log(err)
     }
-  }
-
-  const onDeleteClick = (id, name) => {
-    onOpen()
-    setItemPendingForDelete({ id, type: name })
   }
 
   const onDragEnd = (result) => {
@@ -794,53 +797,57 @@ const EditHomepage = ({ match }) => {
     }
   }
 
-  const displayHandler = async (elemType, index) => {
-    // NOTE: If index is less than 0,
-    // this means that the accordion is being closed.
-    // Hence, we don't trigger a scroll.
-    if (index < 0) return
+  const displayHandler = async (event) => {
     try {
+      const { id } = event.target
+      const idArray = id.split("-")
+      const elemType = idArray[0]
       switch (elemType) {
         case "section": {
+          const sectionId = idArray[1]
           const resetDisplaySections = _.fill(
             Array(displaySections.length),
             false
           )
-          resetDisplaySections[index] = !displaySections[index]
+          resetDisplaySections[sectionId] = !displaySections[sectionId]
           const newDisplaySections = update(displaySections, {
             $set: resetDisplaySections,
           })
 
           setDisplaySections(newDisplaySections)
 
-          scrollRefs[index].current.scrollIntoView()
+          scrollRefs[sectionId].current.scrollIntoView()
           break
         }
         case "highlight": {
+          const highlightIndex = idArray[1]
           const resetHighlightSections = _.fill(
             Array(displayHighlights.length),
             false
           )
-          resetHighlightSections[index] = !displayHighlights[index]
+          resetHighlightSections[highlightIndex] = !displayHighlights[
+            highlightIndex
+          ]
           const newDisplayHighlights = update(displayHighlights, {
             $set: resetHighlightSections,
           })
 
-          scrollRefs[0].current.scrollIntoView()
           setDisplayHighlights(newDisplayHighlights)
           break
         }
         case "dropdownelem": {
+          const dropdownsIndex = idArray[1]
           const resetDropdownSections = _.fill(
             Array(displayDropdownElems.length),
             false
           )
-          resetDropdownSections[index] = !displayDropdownElems[index]
+          resetDropdownSections[dropdownsIndex] = !displayDropdownElems[
+            dropdownsIndex
+          ]
           const newDisplayDropdownElems = update(displayDropdownElems, {
             $set: resetDropdownSections,
           })
 
-          scrollRefs[0].current.scrollIntoView()
           setDisplayDropdownElems(newDisplayDropdownElems)
           break
         }
@@ -851,7 +858,6 @@ const EditHomepage = ({ match }) => {
     }
   }
 
-  // TODO: Shift to react-query
   const savePage = async () => {
     try {
       const filteredFrontMatter = _.cloneDeep(frontMatter)
@@ -896,16 +902,6 @@ const EditHomepage = ({ match }) => {
       return true
 
     return false
-  }
-
-  // NOTE: sectionType is one of `resources`, `infopic` or `infobar`
-  const onClick = (sectionType) => {
-    createHandler({
-      target: {
-        value: sectionType,
-        id: "section-new",
-      },
-    })
   }
 
   return (
@@ -955,190 +951,230 @@ const EditHomepage = ({ match }) => {
           backButtonUrl={`/sites/${siteName}/workspace`}
         />
         {hasLoaded && (
-          <EditableContextProvider
-            onDragEnd={onDragEnd}
-            onChange={onFieldChange}
-            onCreate={createHandler}
-            onDelete={onDeleteClick}
-            onDisplay={displayHandler}
-          >
+          <>
             <HStack className={elementStyles.wrapper}>
-              <Editable.Sidebar title="Homepage">
-                <Editable.Accordion
-                  onChange={(idx) => displayHandler("section", idx)}
-                >
-                  <VStack
-                    bg="base.canvas.alt"
-                    p="1.5rem"
-                    spacing="1.5rem"
-                    alignItems="flex-start"
+              <div className={editorStyles.homepageEditorSidebar}>
+                <div>
+                  <div
+                    className={`${elementStyles.card} ${elementStyles.siteNotificationSection}`}
                   >
-                    {heroSection.map((section, sectionIndex) => {
-                      return (
-                        <>
-                          <Editable.EditableAccordionItem
-                            title="Hero section"
-                            // TODO: Add `isInvalid` prop to `EditableAccordionItem`
-                            isInvalid={
-                              getHasError(errors.dropdownElems) ||
-                              getHasError(errors.highlights) ||
-                              _.some(_.values(errors.sections[0]?.hero))
-                            }
-                          >
-                            <HeroBody
-                              {...section.hero}
-                              notification={frontMatter.notification}
-                              index={sectionIndex}
-                              errors={{
-                                ...errors.sections[0].hero,
-                                highlights: errors.highlights,
-                                dropdownElems: errors.dropdownElems,
-                              }}
-                              handleHighlightDropdownToggle={
-                                handleHighlightDropdownToggle
-                              }
-                            >
-                              {({ currentSelectedOption }) =>
-                                currentSelectedOption === "dropdown" ? (
-                                  <HeroDropdownSection
-                                    {...section.hero}
-                                    state={section.hero}
-                                    errors={errors}
-                                  />
-                                ) : (
-                                  <HeroHighlightSection
-                                    errors={errors}
-                                    highlights={section.hero.key_highlights}
-                                  />
-                                )
-                              }
-                            </HeroBody>
-                          </Editable.EditableAccordionItem>
-                          <Divider />
-                          <VStack spacing="0.5rem" alignItems="flex-start">
-                            <CustomiseSectionsHeader />
-                          </VStack>
-                        </>
-                      )
-                    })}
-                    <Editable.Droppable
-                      width="100%"
-                      editableId="leftPane"
-                      onDragEnd={onDragEnd}
-                    >
-                      <Editable.EmptySection
-                        title="Sections you add will appear here"
-                        subtitle="Add informative content to your website from images to text by
-                    clicking “Add section” below"
-                        image={<HomepageStartEditingImage />}
-                        // NOTE: It's empty if there is only 1 section and it's a hero section
-                        // as the hero section displays above the custom sections
-                        // and has a fixed display
-                        isEmpty={
-                          frontMatter.sections.length === 1 &&
-                          heroSection.length === 1
-                        }
-                      >
-                        <VStack p={0} spacing="1.5rem">
+                    <p>
+                      <h2 className={elementStyles.notificationHeader}>
+                        Site notification
+                      </h2>
+                    </p>
+                    <Input
+                      placeholder="Notification"
+                      value={frontMatter.notification}
+                      id="site-notification"
+                      onChange={onFieldChange}
+                    />
+                    <span className={elementStyles.info}>
+                      Note: Leave text field empty if you don’t need this
+                      notification bar
+                    </span>
+                  </div>
+
+                  {/* Homepage section configurations */}
+                  <DragDropContext onDragEnd={onDragEnd}>
+                    <Droppable droppableId="leftPane" type="editor">
+                      {(droppableProvided) => (
+                        <div
+                          ref={droppableProvided.innerRef}
+                          {...droppableProvided.droppableProps}
+                        >
                           {frontMatter.sections.map((section, sectionIndex) => (
                             <>
-                              {section.resources && (
-                                <Editable.DraggableAccordionItem
-                                  index={sectionIndex}
-                                  tag={<Tag variant="subtle">Resources</Tag>}
-                                  title="New resource widget"
-                                  isInvalid={_.some(
-                                    errors.sections[sectionIndex].resources
-                                  )}
-                                >
-                                  <ResourcesBody
-                                    {...section.resources}
-                                    index={sectionIndex}
-                                    errors={
-                                      errors.sections[sectionIndex].resources
+                              {/* Hero section */}
+                              {section.hero ? (
+                                <>
+                                  <EditorHeroSection
+                                    key={`section-${sectionIndex}`}
+                                    title={section.hero.title}
+                                    subtitle={section.hero.subtitle}
+                                    background={section.hero.background}
+                                    button={section.hero.button}
+                                    url={section.hero.url}
+                                    dropdown={
+                                      section.hero.dropdown
+                                        ? section.hero.dropdown
+                                        : null
+                                    }
+                                    sectionIndex={sectionIndex}
+                                    highlights={
+                                      section.hero.key_highlights
+                                        ? section.hero.key_highlights
+                                        : []
+                                    }
+                                    onFieldChange={onFieldChange}
+                                    createHandler={createHandler}
+                                    deleteHandler={(event, type) => {
+                                      onOpen()
+                                      setItemPendingForDelete({
+                                        id: event.target.id,
+                                        type,
+                                      })
+                                    }}
+                                    shouldDisplay={
+                                      displaySections[sectionIndex]
+                                    }
+                                    displayHighlights={displayHighlights}
+                                    displayDropdownElems={displayDropdownElems}
+                                    displayHandler={displayHandler}
+                                    errors={errors}
+                                    handleHighlightDropdownToggle={
+                                      handleHighlightDropdownToggle
                                     }
                                   />
-                                </Editable.DraggableAccordionItem>
-                              )}
+                                </>
+                              ) : null}
 
-                              {section.infobar && (
-                                <Editable.DraggableAccordionItem
+                              {/* Resources section */}
+                              {section.resources ? (
+                                <Draggable
+                                  draggableId={`resources-${sectionIndex}-draggable`}
                                   index={sectionIndex}
-                                  tag={<Tag variant="subtle">Infobar</Tag>}
-                                  title={section.infobar.title || "New infobar"}
-                                  isInvalid={_.some(
-                                    errors.sections[sectionIndex].infobar
-                                  )}
                                 >
-                                  <InfobarBody
-                                    {...section.infobar}
-                                    index={sectionIndex}
-                                    errors={
-                                      errors.sections[sectionIndex].infobar
-                                    }
-                                  />
-                                </Editable.DraggableAccordionItem>
-                              )}
+                                  {(draggableProvided) => (
+                                    <div
+                                      {...draggableProvided.draggableProps}
+                                      {...draggableProvided.dragHandleProps}
+                                      ref={draggableProvided.innerRef}
+                                    >
+                                      <EditorResourcesSection
+                                        key={`section-${sectionIndex}`}
+                                        title={section.resources.title}
+                                        subtitle={section.resources.subtitle}
+                                        button={section.resources.button}
+                                        sectionIndex={sectionIndex}
+                                        deleteHandler={(event) => {
+                                          onOpen()
+                                          setItemPendingForDelete({
+                                            id: event.target.id,
+                                            type: "Resources Section",
+                                          })
+                                        }}
+                                        onFieldChange={onFieldChange}
+                                        shouldDisplay={
+                                          displaySections[sectionIndex]
+                                        }
+                                        displayHandler={displayHandler}
+                                        errors={
+                                          errors.sections[sectionIndex]
+                                            .resources
+                                        }
+                                      />
+                                    </div>
+                                  )}
+                                </Draggable>
+                              ) : null}
 
-                              {section.infopic && (
-                                <Editable.DraggableAccordionItem
+                              {/* Infobar section */}
+                              {section.infobar ? (
+                                <Draggable
+                                  draggableId={`infobar-${sectionIndex}-draggable`}
                                   index={sectionIndex}
-                                  tag={<Tag variant="subtle">Infopic</Tag>}
-                                  title={section.infopic.title || "New infopic"}
-                                  isInvalid={_.some(
-                                    errors.sections[sectionIndex].infopic
-                                  )}
                                 >
-                                  <InfopicBody
-                                    index={sectionIndex}
-                                    errors={
-                                      errors.sections[sectionIndex].infopic
-                                    }
-                                    {...section.infopic}
-                                  />
-                                </Editable.DraggableAccordionItem>
-                              )}
+                                  {(draggableProvided) => (
+                                    <div
+                                      {...draggableProvided.draggableProps}
+                                      {...draggableProvided.dragHandleProps}
+                                      ref={draggableProvided.innerRef}
+                                    >
+                                      <EditorInfobarSection
+                                        key={`section-${sectionIndex}`}
+                                        title={section.infobar.title}
+                                        subtitle={section.infobar.subtitle}
+                                        description={
+                                          section.infobar.description
+                                        }
+                                        button={section.infobar.button}
+                                        url={section.infobar.url}
+                                        sectionIndex={sectionIndex}
+                                        deleteHandler={(event) => {
+                                          onOpen()
+                                          setItemPendingForDelete({
+                                            id: event.target.id,
+                                            type: "Infobar Section",
+                                          })
+                                        }}
+                                        onFieldChange={onFieldChange}
+                                        shouldDisplay={
+                                          displaySections[sectionIndex]
+                                        }
+                                        displayHandler={displayHandler}
+                                        errors={
+                                          errors.sections[sectionIndex].infobar
+                                        }
+                                      />
+                                    </div>
+                                  )}
+                                </Draggable>
+                              ) : null}
+
+                              {/* Infopic section */}
+                              {section.infopic ? (
+                                <Draggable
+                                  draggableId={`infopic-${sectionIndex}-draggable`}
+                                  index={sectionIndex}
+                                >
+                                  {(draggableProvided) => (
+                                    <div
+                                      {...draggableProvided.draggableProps}
+                                      {...draggableProvided.dragHandleProps}
+                                      ref={draggableProvided.innerRef}
+                                    >
+                                      <EditorInfopicSection
+                                        key={`section-${sectionIndex}`}
+                                        title={section.infopic.title}
+                                        subtitle={section.infopic.subtitle}
+                                        description={
+                                          section.infopic.description
+                                        }
+                                        button={section.infopic.button}
+                                        url={section.infopic.url}
+                                        imageUrl={section.infopic.image}
+                                        imageAlt={section.infopic.alt}
+                                        sectionIndex={sectionIndex}
+                                        deleteHandler={(event) => {
+                                          onOpen()
+                                          setItemPendingForDelete({
+                                            id: event.target.id,
+                                            type: "Infopic Section",
+                                          })
+                                        }}
+                                        onFieldChange={onFieldChange}
+                                        shouldDisplay={
+                                          displaySections[sectionIndex]
+                                        }
+                                        displayHandler={displayHandler}
+                                        errors={
+                                          errors.sections[sectionIndex].infopic
+                                        }
+                                        siteName={siteName}
+                                      />
+                                    </div>
+                                  )}
+                                </Draggable>
+                              ) : null}
+
+                              {/* Carousel section */}
+                              {/* TO-DO */}
                             </>
                           ))}
-                        </VStack>
-                      </Editable.EmptySection>
-                    </Editable.Droppable>
-                  </VStack>
-                </Editable.Accordion>
-                {/* NOTE: Set the padding here - 
-                        We cannot let the button be part of the `Draggable` 
-                        as otherwise, when dragging, 
-                        the component will appear over the button
-                    */}
-                <Box p="1.5rem">
-                  <AddSectionButton>
-                    <AddSectionButton.List>
-                      <AddSectionButton.Option
-                        onClick={() => onClick("infopic")}
-                        title="Infopic"
-                        subtitle="Add an image with informational text"
-                      />
-                      <AddSectionButton.Option
-                        title="Infobar"
-                        subtitle="Add informational text"
-                        onClick={() => onClick("infobar")}
-                      />
-                      {/* NOTE: Check if the sections contain any `resources` 
-                                and if it does, prevent creation of another `resources` section
-                            */}
-                      {!frontMatter.sections.some(
-                        ({ resources }) => !!resources
-                      ) && (
-                        <AddSectionButton.Option
-                          title="Resources"
-                          subtitle="Add a preview and link to your Resource Room"
-                          onClick={() => onClick("resources")}
-                        />
+                          {droppableProvided.placeholder}
+                        </div>
                       )}
-                    </AddSectionButton.List>
-                  </AddSectionButton>
-                </Box>
-              </Editable.Sidebar>
+                    </Droppable>
+                  </DragDropContext>
+
+                  {/* Section creator */}
+                  <NewSectionCreator
+                    hasResources={hasResources}
+                    createHandler={createHandler}
+                  />
+                </div>
+              </div>
               <div className={editorStyles.homepageEditorMain}>
                 {/* Isomer Template Pane */}
                 {/* Notification */}
@@ -1189,7 +1225,6 @@ const EditHomepage = ({ match }) => {
                     </div>
                   </div>
                 )}
-                {/* Template preview section */}
                 {frontMatter.sections.map((section, sectionIndex) => (
                   <>
                     {/* Hero section */}
@@ -1269,14 +1304,11 @@ const EditHomepage = ({ match }) => {
               </div>
             </HStack>
             <Footer>
-              <LoadingButton
-                isDisabled={getHasErrors(errors)}
-                onClick={savePage}
-              >
+              <LoadingButton isDisabled={hasErrors} onClick={savePage}>
                 Save
               </LoadingButton>
             </Footer>
-          </EditableContextProvider>
+          </>
         )}
       </VStack>
     </>
