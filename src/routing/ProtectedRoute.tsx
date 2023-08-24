@@ -47,8 +47,6 @@ export const ProtectedRoute = ({
       })
   }, [userId, userType, email, displayedName, contactNumber, currPath])
 
-  console.log(`all`, growthbook?.getAttributes())
-
   if (isLoading) {
     return (
       <Box h="100vh" w="100vw">
