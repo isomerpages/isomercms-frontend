@@ -1,4 +1,4 @@
-import type { IterableElement } from "type-fest"
+import type { IterableElement, SetOptional } from "type-fest"
 
 export type DropdownOption = {
   title: string
@@ -142,10 +142,22 @@ export interface EditorHomepageState {
 
 export interface EditorHeroDropdownSection {
   dropdown: {
-    options: Partial<DropdownOption>[]
+    options: SetOptional<DropdownOption, "url">[]
   }
 }
 
 export interface EditorHeroHighlightsSection {
-  key_highlights: []
+  key_highlights: SetOptional<HighlightOption, "url">[]
+}
+
+export const isHighlightSection = (
+  heroSection: HomepageEditorHeroSection
+): heroSection is EditorHeroHighlightsSection => {
+  return !!(heroSection as EditorHeroHighlightsSection).key_highlights
+}
+
+export const isDropdownSection = (
+  heroSection: HomepageEditorHeroSection
+): heroSection is EditorHeroDropdownSection => {
+  return !!(heroSection as EditorHeroDropdownSection).dropdown
 }
