@@ -1,5 +1,6 @@
 // NOTE: Below eslint disable is inherited from our legacy code :(
 /* eslint-disable react/no-array-index-key */
+import _ from "lodash"
 import { Ref, useState } from "react"
 import { useParams } from "react-router-dom"
 
@@ -17,6 +18,12 @@ import {
   EditorHomepageState,
   InfopicFrontmatterSection,
 } from "types/homepage"
+
+import {
+  INFOBAR_SECTION,
+  INFOPIC_SECTION,
+  RESOURCES_SECTION,
+} from "./constants"
 
 const isLeftInfoPic = (
   sectionIndex: number,
@@ -114,9 +121,8 @@ export const HomepagePreview = ({
             <>
               <TemplateResourcesSection
                 key={`section-${sectionIndex}`}
-                title={section.resources.title}
-                subtitle={section.resources.subtitle}
-                button={section.resources.button}
+                {...RESOURCES_SECTION}
+                {..._.pickBy(section.resources)}
                 sectionIndex={sectionIndex}
                 ref={scrollRefs[sectionIndex]}
               />
@@ -127,10 +133,8 @@ export const HomepagePreview = ({
             <>
               <TemplateInfobarSection
                 key={`section-${sectionIndex}`}
-                title={section.infobar.title}
-                subtitle={section.infobar.subtitle}
-                description={section.infobar.description}
-                button={section.infobar.button}
+                {...INFOBAR_SECTION}
+                {..._.pickBy(section.infobar)}
                 sectionIndex={sectionIndex}
                 ref={scrollRefs[sectionIndex]}
               />
@@ -142,24 +146,16 @@ export const HomepagePreview = ({
               {isLeftInfoPic(sectionIndex, frontMatter) ? (
                 <TemplateInfopicLeftSection
                   key={`section-${sectionIndex}`}
-                  title={section.infopic.title}
-                  subtitle={section.infopic.subtitle}
-                  description={section.infopic.description}
-                  imageUrl={section.infopic.image}
-                  imageAlt={section.infopic.alt}
-                  button={section.infopic.button}
+                  {...INFOPIC_SECTION}
+                  {..._.pickBy(section.infopic)}
                   sectionIndex={sectionIndex}
                   ref={scrollRefs[sectionIndex]}
                 />
               ) : (
                 <TemplateInfopicRightSection
                   key={`section-${sectionIndex}`}
-                  title={section.infopic.title}
-                  subtitle={section.infopic.subtitle}
-                  description={section.infopic.description}
-                  imageUrl={section.infopic.image}
-                  imageAlt={section.infopic.alt}
-                  button={section.infopic.button}
+                  {...INFOPIC_SECTION}
+                  {..._.pickBy(section.infopic)}
                   sectionIndex={sectionIndex}
                   ref={scrollRefs[sectionIndex]}
                 />
