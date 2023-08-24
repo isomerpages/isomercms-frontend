@@ -554,7 +554,7 @@ const EditHomepage = ({ match }) => {
           break
         }
         case "dropdownelem": {
-          const val = DROPDOWN_ELEMENT_SECTION
+          const val = getErrorValues(DROPDOWN_ELEMENT_SECTION)
           const err = getErrorValues(DROPDOWN_ELEMENT_SECTION)
 
           const updatedHomepageState = onCreate(
@@ -570,8 +570,9 @@ const EditHomepage = ({ match }) => {
         case "highlight": {
           // depends on index to generate
           // If key highlights section exists
-          const val = KEY_HIGHLIGHT_SECTION
+          const val = getErrorValues(KEY_HIGHLIGHT_SECTION)
           const err = getErrorValues(KEY_HIGHLIGHT_SECTION)
+
           const updatedHomepageState = onCreate(
             homepageState,
             elemType,

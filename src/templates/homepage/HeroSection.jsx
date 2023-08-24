@@ -8,6 +8,11 @@ import { forwardRef } from "react"
 
 import { useFetchPreviewMedia } from "hooks/useFetchPreviewMedia"
 
+import {
+  DROPDOWN_ELEMENT_SECTION,
+  KEY_HIGHLIGHT_SECTION,
+} from "layouts/EditHomepage/constants"
+
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 import { getClassNames } from "templates/utils/stylingUtils"
@@ -36,7 +41,7 @@ const HeroButton = ({ button }) => (
 
 const HeroDropdownElem = ({ title }) => (
   <div className={editorStyles["bp-dropdown-item"]}>
-    <h5>{title}</h5>
+    <h5>{title || DROPDOWN_ELEMENT_SECTION.title}</h5>
   </div>
 )
 
@@ -94,55 +99,41 @@ const HeroDropdown = ({ title, options, isActive, toggleDropdown }) => (
           "is-centered",
         ])}
       >
-        {options
-          ? options.map((option, index) =>
-              option.title ? (
-                <HeroDropdownElem
-                  key={`dropdown-${index}`}
-                  title={option.title}
-                />
-              ) : null
-            )
-          : null}
+        {options &&
+          options.map((option, index) => (
+            <HeroDropdownElem key={`dropdown-${index}`} title={option.title} />
+          ))}
       </div>
     </div>
   </div>
 )
 
 const KeyHighlightElem = ({ title, description }) => (
-  <>
-    {title || description ? (
-      <div className={getClassNames(editorStyles, ["col"])}>
-        <div className={editorStyles["is-highlight"]}>
-          {/* Title */}
-          {title ? (
-            <p
-              className={getClassNames(editorStyles, [
-                "has-text-weight-semibold",
-                "has-text-white",
-                "key-highlight-title",
-                "is-uppercase",
-                "padding--top--xs",
-              ])}
-            >
-              {title}
-            </p>
-          ) : null}
-          {/* Description */}
-          {description ? (
-            <p
-              className={getClassNames(editorStyles, [
-                "has-text-white-trans",
-                "padding--bottom--sm",
-              ])}
-            >
-              {description}
-            </p>
-          ) : null}
-        </div>
-      </div>
-    ) : null}
-  </>
+  <div className={getClassNames(editorStyles, ["col"])}>
+    <div className={editorStyles["is-highlight"]}>
+      {/* Title */}
+      <p
+        className={getClassNames(editorStyles, [
+          "has-text-weight-semibold",
+          "has-text-white",
+          "key-highlight-title",
+          "is-uppercase",
+          "padding--top--xs",
+        ])}
+      >
+        {title || KEY_HIGHLIGHT_SECTION.title}
+      </p>
+      {/* Description */}
+      <p
+        className={getClassNames(editorStyles, [
+          "has-text-white-trans",
+          "padding--bottom--sm",
+        ])}
+      >
+        {description || KEY_HIGHLIGHT_SECTION.description}
+      </p>
+    </div>
+  </div>
 )
 
 const KeyHighlights = ({ highlights }) => (
