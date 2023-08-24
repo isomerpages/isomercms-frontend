@@ -49,7 +49,7 @@ export interface InfopicSection {
   description?: string
   button?: string
   url?: string
-  images?: string
+  image?: string
   alt?: string
 }
 
@@ -91,20 +91,14 @@ export type HomepageEditorHeroSection =
   | EditorHeroHighlightsSection
 
 export type HeroFrontmatterSection = { hero: HomepageEditorHeroSection }
-// TODO: add properties here instead of typing as `Record<string, unknown>`
-// we can find them in `HomepagePreview`
-export type ResourcesFrontmatterSection = { resources: Record<string, unknown> }
+export type ResourcesFrontmatterSection = { resources: ResourcesSection }
 
-// TODO: add properties here instead of typing as `Record<string, unknown>`
-// we can find them in `HomepagePreview`
 export type InfopicFrontmatterSection = {
-  infopic: Record<string, unknown>
+  infopic: InfopicSection
 }
 
-// TODO: add properties here instead of typing as `Record<string, unknown>`
-// we can find them in `HomepagePreview`
 export type InfobarFrontmatterSection = {
-  infobar: Record<string, unknown>
+  infobar: InfobarSection
 }
 
 export type EditorHomepageFrontmatterSection =
