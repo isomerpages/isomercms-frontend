@@ -1,3 +1,4 @@
+import { removeOtherCollaborators } from "../api"
 import {
   CMS_BASEURL,
   E2E_EMAIL_ADMIN,
@@ -137,7 +138,7 @@ describe("collaborators flow", () => {
     it("should not be able to remove the last site member", () => {
       // Act
       // NOTE: Remove all collaborators except the initial admin
-      removeFirstCollaborator()
+      removeOtherCollaborators(E2E_EMAIL_ADMIN.email)
 
       // Assert
       cy.get(DELETE_COLLABORATOR_BUTTON_SELECTOR).should("be.disabled")
