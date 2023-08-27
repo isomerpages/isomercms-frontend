@@ -11,3 +11,12 @@ export type FeatureFlag = {
   key: string
   type: FeatureFlagTypes
 }
+
+export type GBAttributes = {
+  userId: string
+  userType: string
+  email: string
+  displayedName: string
+  contactNumber: string
+  siteName?: string
+}

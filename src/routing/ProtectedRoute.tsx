@@ -10,6 +10,8 @@ import { useLoginContext } from "contexts/LoginContext"
 import { getDecodedParams } from "utils/decoding"
 import { getSiteNameAttributeFromPath } from "utils/growthbook"
 
+import { GBAttributes } from "types/featureFlags"
+
 // axios settings
 axios.defaults.withCredentials = true
 
@@ -34,17 +36,23 @@ export const ProtectedRoute = ({
   } = useLoginContext()
   const growthbook = useGrowthBook()
   const currPath = useLocation().pathname
+  const siteNameFromPath = getSiteNameAttributeFromPath(currPath)
 
   useEffect(() => {
-    if (growthbook)
-      growthbook.setAttributes({
+    if (growthbook) {
+      const gbAttributes: GBAttributes = {
         userId,
         userType,
         email,
         displayedName,
         contactNumber,
-        siteName: getSiteNameAttributeFromPath(currPath),
-      })
+      }
+      // add siteName if it exists
+      if (siteNameFromPath && siteNameFromPath !== "") {
+        gbAttributes.siteName = siteNameFromPath
+      }
+      growthbook.setAttributes(gbAttributes)
+    }
   }, [userId, userType, email, displayedName, contactNumber, currPath])
 
   if (isLoading) {
