@@ -2,7 +2,9 @@ import { GrowthBook } from "@growthbook/growthbook-react"
 
 const GROWTHBOOK_API_HOST = "https://cdn.growthbook.io"
 
-export const getGrowthBookInstance = (clientKey: string, isDev = false) => {
+export const getGrowthBookInstance = (clientKey: string) => {
+  const isDev = process.env.REACT_APP_ENV === "LOCAL_DEV" // only enable for local dev
+
   return new GrowthBook({
     apiHost: GROWTHBOOK_API_HOST,
     clientKey,
