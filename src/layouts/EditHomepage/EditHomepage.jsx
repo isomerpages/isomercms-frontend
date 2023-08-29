@@ -82,27 +82,19 @@ const getHasError = (errorArray) =>
 // Section constructors
 // TODO: Export all these as const and write wrapper for error...
 
-const enumSection = (type, isError) => {
+const enumSection = (type) => {
   switch (type) {
     case "resources":
-      return isError
-        ? { resources: getDefaultValues(RESOURCES_SECTION) }
-        : { resources: RESOURCES_SECTION }
+      return { resources: getDefaultValues(RESOURCES_SECTION) }
 
     case "infobar":
-      return isError
-        ? { infobar: getDefaultValues(INFOBAR_SECTION) }
-        : { infobar: INFOBAR_SECTION }
+      return { infobar: getDefaultValues(INFOBAR_SECTION) }
 
     case "infopic":
-      return isError
-        ? { infopic: getDefaultValues(INFOPIC_SECTION) }
-        : { infopic: INFOPIC_SECTION }
+      return { infopic: getDefaultValues(INFOPIC_SECTION) }
 
     default:
-      return isError
-        ? { infobar: getDefaultValues(INFOBAR_SECTION) }
-        : { infobar: INFOBAR_SECTION }
+      return { infobar: getDefaultValues(INFOBAR_SECTION) }
   }
 }
 
@@ -516,9 +508,8 @@ const EditHomepage = ({ match }) => {
 
       switch (elemType) {
         case "section": {
-          // NOTE: setting `isError` to true to get an empty object
-          const val = enumSection(value, true)
-          const err = enumSection(value, true)
+          const val = enumSection(value)
+          const err = enumSection(value)
 
           const newScrollRefs = update(scrollRefs, { $push: [createRef()] })
 
