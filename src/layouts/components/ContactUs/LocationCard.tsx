@@ -133,7 +133,6 @@ export const LocationCard = ({
           <Editable.Droppable
             width="100%"
             editableId={`locations-${index}-operating_hours`}
-            // onDragEnd={onDragEnd}
           >
             <Editable.EmptySection
               title="Operating hours you add will appear here"
