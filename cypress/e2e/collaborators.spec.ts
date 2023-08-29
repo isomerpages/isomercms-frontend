@@ -63,7 +63,7 @@ describe("collaborators flow", () => {
   })
 
   describe("Admin adding a collaborator", () => {
-    after(() => removeFirstCollaborator())
+    after(() => removeOtherCollaborators(E2E_EMAIL_ADMIN.email))
 
     it("should not be able to click the add collaborator button when the input is empty", () => {
       // Act
