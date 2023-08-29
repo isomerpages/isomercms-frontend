@@ -261,6 +261,7 @@ const DraggableAccordionItem = ({
           {({ isExpanded }) => (
             <>
               <IconButton
+                pointerEvents="none"
                 position="absolute"
                 top="0.5rem"
                 left="0"
