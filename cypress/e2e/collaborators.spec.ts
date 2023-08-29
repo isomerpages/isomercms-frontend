@@ -18,7 +18,6 @@ import {
   addCollaborator,
   getCollaboratorsModal,
   inputCollaborators,
-  removeFirstCollaborator,
 } from "../utils/collaborators"
 
 const collaborator = E2E_EMAIL_COLLAB.email
