@@ -193,7 +193,7 @@ const validateHighlight = (field, value) => {
         return `The title should be longer than ${HIGHLIGHTS_TITLE_MIN_LENGTH} characters.`
       }
       // Title is too long
-      if (value.length > HIGHLIGHTS_TITLE_MAX_LENGTH) {
+      if (value.length >= HIGHLIGHTS_TITLE_MAX_LENGTH) {
         return `The title should be shorter than ${HIGHLIGHTS_TITLE_MAX_LENGTH} characters.`
       }
       return ""
@@ -204,7 +204,7 @@ const validateHighlight = (field, value) => {
         return `The description should be longer than ${HIGHLIGHTS_DESCRIPTION_MIN_LENGTH} characters.`
       }
       // Description is too long
-      if (value.length > HIGHLIGHTS_DESCRIPTION_MAX_LENGTH) {
+      if (value.length >= HIGHLIGHTS_DESCRIPTION_MAX_LENGTH) {
         return `The description should be shorter than ${HIGHLIGHTS_DESCRIPTION_MAX_LENGTH} characters.`
       }
       return ""
@@ -230,7 +230,7 @@ const validateDropdownElem = (field, value) => {
         return `The title should be longer than ${DROPDOWNELEM_TITLE_MIN_LENGTH} characters.`
       }
       // Title is too long
-      if (value.length > DROPDOWNELEM_TITLE_MAX_LENGTH) {
+      if (value.length >= DROPDOWNELEM_TITLE_MAX_LENGTH) {
         return `The title should be shorter than ${DROPDOWNELEM_TITLE_MAX_LENGTH} characters.`
       }
       return ""
@@ -255,7 +255,7 @@ const validateHeroSectionFields = (field, value) => {
         return `The title should be longer than ${HERO_TITLE_MIN_LENGTH} characters.`
       }
       // Title is too long
-      if (value.length > HERO_TITLE_MAX_LENGTH) {
+      if (value.length >= HERO_TITLE_MAX_LENGTH) {
         return `The title should be shorter than ${HERO_TITLE_MAX_LENGTH} characters.`
       }
       return ""
@@ -266,7 +266,7 @@ const validateHeroSectionFields = (field, value) => {
         return `The subtitle should be longer than ${HERO_SUBTITLE_MIN_LENGTH} characters.`
       }
       // Subtitle is too long
-      if (value.length > HERO_SUBTITLE_MAX_LENGTH) {
+      if (value.length >= HERO_SUBTITLE_MAX_LENGTH) {
         return `The subtitle should be shorter than ${HERO_SUBTITLE_MAX_LENGTH} characters.`
       }
       return ""
@@ -277,7 +277,7 @@ const validateHeroSectionFields = (field, value) => {
         return `The dropdown text should be longer than ${HERO_DROPDOWN_MIN_LENGTH} characters.`
       }
       // Dropdown text is too long
-      if (value.length > HERO_DROPDOWN_MAX_LENGTH) {
+      if (value.length >= HERO_DROPDOWN_MAX_LENGTH) {
         return `The dropdown text should be shorter than ${HERO_DROPDOWN_MAX_LENGTH} characters.`
       }
       return ""
@@ -298,7 +298,7 @@ const validateResourcesSectionFields = (field, value) => {
         return `Title should be longer than ${RESOURCES_TITLE_MIN_LENGTH} characters.`
       }
       // Title is too long
-      if (value.length > RESOURCES_TITLE_MAX_LENGTH) {
+      if (value.length >= RESOURCES_TITLE_MAX_LENGTH) {
         return `Title should be shorter than ${RESOURCES_TITLE_MAX_LENGTH} characters.`
       }
       return ""
@@ -309,7 +309,7 @@ const validateResourcesSectionFields = (field, value) => {
         return `Subtitle should be longer than ${RESOURCES_SUBTITLE_MIN_LENGTH} characters.`
       }
       // Subtitle is too long
-      if (value.length > RESOURCES_SUBTITLE_MAX_LENGTH) {
+      if (value.length >= RESOURCES_SUBTITLE_MAX_LENGTH) {
         return `Subtitle should be shorter than ${RESOURCES_SUBTITLE_MAX_LENGTH} characters.`
       }
       return ""
@@ -320,7 +320,7 @@ const validateResourcesSectionFields = (field, value) => {
         return `Button text should be longer than ${RESOURCES_BUTTON_TEXT_MIN_LENGTH} characters.`
       }
       // Button text is too long
-      if (value.length > RESOURCES_BUTTON_TEXT_MAX_LENGTH) {
+      if (value.length >= RESOURCES_BUTTON_TEXT_MAX_LENGTH) {
         return `Button text should be shorter than ${RESOURCES_BUTTON_TEXT_MAX_LENGTH} characters.`
       }
       return ""
@@ -340,7 +340,7 @@ const validateInfobarSectionFields = (field, value) => {
         return `Title should be longer than ${INFOBAR_TITLE_MIN_LENGTH} characters.`
       }
       // Title is too long
-      if (value.length > INFOBAR_TITLE_MAX_LENGTH) {
+      if (value.length >= INFOBAR_TITLE_MAX_LENGTH) {
         return `Title should be shorter than ${INFOBAR_TITLE_MAX_LENGTH} characters.`
       }
       return ""
@@ -351,7 +351,7 @@ const validateInfobarSectionFields = (field, value) => {
         return `Subtitle should be longer than ${INFOBAR_SUBTITLE_MIN_LENGTH} characters.`
       }
       // Subtitle is too long
-      if (value.length > INFOBAR_SUBTITLE_MAX_LENGTH) {
+      if (value.length >= INFOBAR_SUBTITLE_MAX_LENGTH) {
         return `Subtitle should be shorter than ${INFOBAR_SUBTITLE_MAX_LENGTH} characters.`
       }
       return ""
@@ -362,7 +362,7 @@ const validateInfobarSectionFields = (field, value) => {
         return `Ddescription should be longer than ${INFOBAR_DESCRIPTION_MIN_LENGTH} characters.`
       }
       // Description is too long
-      if (getLengthWithoutTags(value) > INFOBAR_DESCRIPTION_MAX_LENGTH) {
+      if (getLengthWithoutTags(value) >= INFOBAR_DESCRIPTION_MAX_LENGTH) {
         return `Description should be shorter than ${INFOBAR_DESCRIPTION_MAX_LENGTH} characters.`
       }
       return ""
@@ -373,7 +373,7 @@ const validateInfobarSectionFields = (field, value) => {
         return `Button text should be longer than ${INFOBAR_BUTTON_TEXT_MIN_LENGTH} characters.`
       }
       // Button text is too long
-      if (value.length > INFOBAR_BUTTON_TEXT_MAX_LENGTH) {
+      if (value.length >= INFOBAR_BUTTON_TEXT_MAX_LENGTH) {
         return `Button text should be shorter than ${INFOBAR_BUTTON_TEXT_MAX_LENGTH} characters.`
       }
       return ""
@@ -394,7 +394,7 @@ const validateInfopicSectionFields = (field, value) => {
         return `Title should be longer than ${INFOPIC_TITLE_MIN_LENGTH} characters.`
       }
       // Title is too long
-      if (value.length > INFOPIC_TITLE_MAX_LENGTH) {
+      if (value.length >= INFOPIC_TITLE_MAX_LENGTH) {
         return `Title should be shorter than ${INFOPIC_TITLE_MAX_LENGTH} characters.`
       }
       return ""
@@ -405,7 +405,7 @@ const validateInfopicSectionFields = (field, value) => {
         return `Subtitle should be longer than ${INFOPIC_SUBTITLE_MIN_LENGTH} characters.`
       }
       // Subtitle is too long
-      if (value.length > INFOPIC_SUBTITLE_MAX_LENGTH) {
+      if (value.length >= INFOPIC_SUBTITLE_MAX_LENGTH) {
         return `Subtitle should be shorter than ${INFOPIC_SUBTITLE_MAX_LENGTH} characters.`
       }
       return ""
@@ -416,7 +416,7 @@ const validateInfopicSectionFields = (field, value) => {
         return `Description should be longer than ${INFOPIC_DESCRIPTION_MIN_LENGTH} characters.`
       }
       // Description is too long
-      if (value.length > INFOPIC_DESCRIPTION_MAX_LENGTH) {
+      if (value.length >= INFOPIC_DESCRIPTION_MAX_LENGTH) {
         return `Description should be shorter than ${INFOPIC_DESCRIPTION_MAX_LENGTH} characters.`
       }
       return ""
@@ -427,7 +427,7 @@ const validateInfopicSectionFields = (field, value) => {
         return `Button text should be longer than ${INFOPIC_BUTTON_TEXT_MIN_LENGTH} characters.`
       }
       // Button text is too long
-      if (value.length > INFOPIC_BUTTON_TEXT_MAX_LENGTH) {
+      if (value.length >= INFOPIC_BUTTON_TEXT_MAX_LENGTH) {
         return `Button text should be shorter than ${INFOPIC_BUTTON_TEXT_MAX_LENGTH} characters.`
       }
       return ""
@@ -438,7 +438,7 @@ const validateInfopicSectionFields = (field, value) => {
         return `Image alt text should be longer than ${INFOPIC_ALT_TEXT_MIN_LENGTH} characters.`
       }
       // Alt text is too long
-      if (value.length > INFOPIC_ALT_TEXT_MAX_LENGTH) {
+      if (value.length >= INFOPIC_ALT_TEXT_MAX_LENGTH) {
         return `Image alt text should be shorter than ${INFOPIC_ALT_TEXT_MAX_LENGTH} characters.`
       }
       return ""
