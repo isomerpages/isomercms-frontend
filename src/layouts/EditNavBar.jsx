@@ -31,7 +31,7 @@ import { validateLink } from "utils/validators"
 import { getEditNavBarData } from "api"
 import { DEFAULT_RETRY_MSG, deslugifyDirectory, isEmpty } from "utils"
 
-import { CustomiseSectionsHeader, Editable } from "./components/Editable"
+import { Editable } from "./components/Editable"
 import { AddSectionButton } from "./components/Editable/AddSectionButton"
 import { FolderMenuBody } from "./components/NavBar/FolderMenuBody"
 import { GroupMenuBody } from "./components/NavBar/GroupMenuBody"
@@ -649,7 +649,11 @@ const EditNavBar = ({ match }) => {
                       alignItems="flex-start"
                     >
                       <VStack spacing="0.5rem" alignItems="flex-start">
-                        <CustomiseSectionsHeader />
+                        <Text textStyle="h5">Menu Items</Text>
+                        <Text textStyle="body-2">
+                          You can specify a folder or resource room to
+                          automatically populate its links.
+                        </Text>
                       </VStack>
                       <DragDropContext onDragEnd={onDragEnd}>
                         <Editable.Droppable
@@ -760,7 +764,7 @@ const EditNavBar = ({ match }) => {
                   </Editable.Accordion>
 
                   <Box p="1.5rem">
-                    <AddSectionButton>
+                    <AddSectionButton sectionType="menu item">
                       <AddSectionButton.List>
                         {/* NOTE: Check if the site contains any collections in `options` 
                             if it does not, prevent creation of a `folder` section

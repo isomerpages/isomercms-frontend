@@ -139,6 +139,7 @@ export const GroupMenuBody = ({
       </FormControl>
       <Box w="100%" pt="0.5rem">
         <AddSectionButton
+          sectionType="submenu"
           onClick={() => {
             onCreate({
               target: {
