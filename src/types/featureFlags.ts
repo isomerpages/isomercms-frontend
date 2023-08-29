@@ -1,15 +1,7 @@
-export const FeatureFlagSupportedTypes = {
-  boolean: "boolean",
-  number: "number",
-  string: "string",
-  json: "json",
-} as const
-
-export type FeatureFlagTypes = typeof FeatureFlagSupportedTypes[keyof typeof FeatureFlagSupportedTypes]
-
-export type FeatureFlag = {
-  key: string
-  type: FeatureFlagTypes
+// Example usage: const gb = useGrowthBook<FeatureFlags>();
+export interface FeatureFlags {
+  sampleFlag: string
+  sampleFlag2: string
 }
 
 export type GBAttributes = {
