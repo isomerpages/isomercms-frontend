@@ -8,7 +8,7 @@ export const getGrowthBookInstance = (clientKey: string) => {
   return new GrowthBook({
     apiHost: GROWTHBOOK_API_HOST,
     clientKey,
-    enableDevMode: isDev, // enable only for local dev
+    enableDevMode: isDev,
   })
 }
 
