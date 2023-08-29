@@ -1,8 +1,8 @@
 // Example usage: const gb = useGrowthBook<FeatureFlags>();
-export interface FeatureFlags {
-  sampleFlag: string
-  sampleFlag2: string
-}
+// export interface FeatureFlags {
+// sampleFlag: string
+// sampleFlag2: boolean
+// }
 
 export type GBAttributes = {
   userId: string
