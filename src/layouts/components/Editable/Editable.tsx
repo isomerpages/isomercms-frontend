@@ -110,13 +110,18 @@ const EditableSidebar = ({
 }
 
 type HomepageDroppableZone = "dropdownelem" | "leftPane" | "highlight"
+type ContactUsDroppableZone =
+  | "locations"
+  | "contacts"
+  | `locations-${number}-operating_hours`
+type DroppableZone = HomepageDroppableZone | ContactUsDroppableZone
 
 type DropInfo = {
-  droppableId: HomepageDroppableZone
+  droppableId: DroppableZone
   type: string
 }
 
-const getDroppableInfo = (editableId: HomepageDroppableZone): DropInfo => {
+const getDroppableInfo = (editableId: DroppableZone): DropInfo => {
   if (editableId === "leftPane")
     return { droppableId: editableId, type: "editor" }
   return {
@@ -126,7 +131,7 @@ const getDroppableInfo = (editableId: HomepageDroppableZone): DropInfo => {
 }
 
 export interface EditableDraggableProps extends BoxProps {
-  editableId: HomepageDroppableZone
+  editableId: DroppableZone
 }
 /**
  * This component provides the drag and drop context required for its children to be draggable.
@@ -203,7 +208,7 @@ const EditableAccordionItem = ({
               h="-webkit-fill-available"
             />
           )}
-          {/* NOTE: Check with design on styling. 
+          {/* NOTE: Check with design on styling.
         See if entire section is button (ie, whole component hover styling)
       */}
           <AccordionButton px="1.5rem" py="3rem">
@@ -261,6 +266,7 @@ const DraggableAccordionItem = ({
           {({ isExpanded }) => (
             <>
               <IconButton
+                pointerEvents="none"
                 position="absolute"
                 top="0.5rem"
                 left="0"
