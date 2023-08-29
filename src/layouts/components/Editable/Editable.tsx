@@ -114,7 +114,13 @@ type ContactUsDroppableZone =
   | "locations"
   | "contacts"
   | `locations-${number}-operating_hours`
-type DroppableZone = HomepageDroppableZone | ContactUsDroppableZone
+
+type NavDroppableZone = "link" | `sublink-${number}`
+
+type DroppableZone =
+  | HomepageDroppableZone
+  | ContactUsDroppableZone
+  | NavDroppableZone
 
 type DropInfo = {
   droppableId: DroppableZone
