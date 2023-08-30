@@ -56,10 +56,9 @@ jest.mock("layouts/Settings", () => {
   }
 })
 
-jest.mock("layouts/EditNavBar", () => {
+jest.mock("layouts/FeatureFlaggedNavBar", () => {
   return {
-    __esModule: true,
-    default: () => {
+    FeatureFlaggedNavBar: () => {
       return <div>{EDIT_NAVBAR_LAYOUT_TEXT}</div>
     },
   }

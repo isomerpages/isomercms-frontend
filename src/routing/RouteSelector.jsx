@@ -9,10 +9,10 @@ import VerifyUserDetailsModal from "components/VerifyUserDetailsModal"
 import { ReviewRequestRoleProvider } from "contexts/ReviewRequestRoleContext"
 import { SiteLaunchProvider } from "contexts/SiteLaunchContext"
 
-import EditNavBar from "layouts/EditNavBar"
 import EditPage from "layouts/EditPage"
 import { FeatureFlaggedContactUs } from "layouts/FeatureFlaggedContactUs"
 import { FeatureFlaggedHomepage } from "layouts/FeatureFlaggedHomepage"
+import { FeatureFlaggedNavBar } from "layouts/FeatureFlaggedNavBar"
 import { Folders } from "layouts/Folders"
 import { LoginPage } from "layouts/Login"
 import { SgidLoginCallbackPage } from "layouts/Login/SgidLoginCallbackPage"
@@ -84,7 +84,7 @@ export const RouteSelector = () => (
       <ProtectedRouteWithProps
         exact
         path="/sites/:siteName/navbar"
-        component={injectApprovalRedirect(EditNavBar)}
+        component={injectApprovalRedirect(FeatureFlaggedNavBar)}
       />
 
       <ProtectedRouteWithProps
@@ -147,11 +147,6 @@ export const RouteSelector = () => (
           <ResourceRoom />
         </ApprovedReviewRedirect>
       </ProtectedRouteWithProps>
-
-      <ProtectedRouteWithProps
-        path="/sites/:siteName/navbar"
-        component={injectApprovalRedirect(EditNavBar)}
-      />
 
       <ProtectedRouteWithProps path="/sites/:siteName/settings">
         <ApprovedReviewRedirect>
