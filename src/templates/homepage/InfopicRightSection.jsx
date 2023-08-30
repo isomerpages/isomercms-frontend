@@ -1,42 +1,25 @@
 import PropTypes from "prop-types"
 import { forwardRef } from "react"
-import { useQuery } from "react-query"
+
+import { useFetchPreviewMedia } from "hooks/useFetchPreviewMedia"
 
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 import { getClassNames } from "templates/utils/stylingUtils"
-
-import { fetchImageURL } from "utils"
 
 /* eslint
   react/no-array-index-key: 0
  */
 
 const TemplateInfopicRightSection = (
-  {
-    title,
-    subtitle,
-    description,
-    button,
-    sectionIndex,
-    imageUrl,
-    imageAlt,
-    siteName,
-  },
+  { title, subtitle, description, button, sectionIndex, imageUrl, imageAlt },
   ref
 ) => {
   const addDefaultSrc = (e) => {
     e.target.src = "/placeholder_no_image.png"
   }
 
-  const { data: loadedImageURL } = useQuery(
-    `${siteName}/${imageUrl}`,
-    () => fetchImageURL(siteName, decodeURI(imageUrl)),
-    {
-      refetchOnWindowFocus: false,
-      staleTime: Infinity, // Never automatically refetch image unless query is invalidated
-    }
-  )
+  const loadedImageURL = useFetchPreviewMedia(imageUrl)
 
   return (
     <div ref={ref}>
@@ -263,7 +246,6 @@ TemplateInfopicRightSection.propTypes = {
   imageUrl: PropTypes.string,
   imageAlt: PropTypes.string,
   sectionIndex: PropTypes.number.isRequired,
-  siteName: PropTypes.string.isRequired,
 }
 
 TemplateInfopicRightSection.defaultProps = {

@@ -103,7 +103,6 @@ export const HomepagePreview = ({
               <TemplateHeroSection
                 key={`section-${sectionIndex}`}
                 hero={section.hero}
-                siteName={siteName}
                 dropdownIsActive={dropdownIsActive}
                 toggleDropdown={toggleDropdown}
                 ref={scrollRefs[sectionIndex]}
@@ -150,7 +149,6 @@ export const HomepagePreview = ({
                   imageAlt={section.infopic.alt}
                   button={section.infopic.button}
                   sectionIndex={sectionIndex}
-                  siteName={siteName}
                   ref={scrollRefs[sectionIndex]}
                 />
               ) : (
@@ -163,7 +161,6 @@ export const HomepagePreview = ({
                   imageAlt={section.infopic.alt}
                   button={section.infopic.button}
                   sectionIndex={sectionIndex}
-                  siteName={siteName}
                   ref={scrollRefs[sectionIndex]}
                 />
               )}
