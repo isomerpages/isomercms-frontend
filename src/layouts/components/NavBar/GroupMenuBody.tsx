@@ -1,4 +1,4 @@
-import { Box, FormControl, VStack, Flex, Text } from "@chakra-ui/react"
+import { FormControl, VStack, Text } from "@chakra-ui/react"
 import { DragDropContext } from "@hello-pangea/dnd"
 import {
   Button,
@@ -137,19 +137,19 @@ export const GroupMenuBody = ({
           </Editable.Droppable>
         </DragDropContext>
       </FormControl>
-      <Box w="100%" pt="0.5rem">
-        <AddSectionButton
-          buttonText="Add submenu"
-          onClick={() => {
-            onCreate({
-              target: {
-                id: `sublink-${index}-${sublinks.length}-create`,
-                value: "sublinkLink",
-              },
-            })
-          }}
-        />
-      </Box>
+      <AddSectionButton
+        w="100%"
+        pt="0.5rem"
+        buttonText="Add submenu"
+        onClick={() => {
+          onCreate({
+            target: {
+              id: `sublink-${index}-${sublinks.length}-create`,
+              value: "sublinkLink",
+            },
+          })
+        }}
+      />
       <Button
         id={`section-${index}`}
         onClick={() => onDelete(`link-${index}`, "Menu Group")}
