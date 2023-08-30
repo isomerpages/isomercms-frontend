@@ -788,7 +788,7 @@ const EditHomepage = ({ match }) => {
 
           setDisplaySections(newDisplaySections)
 
-          scrollRefs[index].current.scrollIntoView()
+          scrollTo(scrollRefs[index])
           break
         }
         case "highlight": {
