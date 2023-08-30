@@ -764,7 +764,7 @@ const EditNavBar = ({ match }) => {
                   </Editable.Accordion>
 
                   <Box p="1.5rem">
-                    <AddSectionButton sectionType="menu item">
+                    <AddSectionButton buttonText="Add menu item">
                       <AddSectionButton.List>
                         {/* NOTE: Check if the site contains any collections in `options` 
                             if it does not, prevent creation of a `folder` section
