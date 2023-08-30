@@ -303,6 +303,7 @@ const EditHomepage = ({ match }) => {
   const [isFirstLoadComplete, setIsFirstLoadComplete] = useState(false)
 
   useEffect(() => {
+    if (scrollRefs.length === 0) return // Page data has not been populated
     if (!isFirstLoadComplete) {
       setIsFirstLoadComplete(true)
     } else {
