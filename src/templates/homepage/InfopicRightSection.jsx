@@ -7,7 +7,7 @@ import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 import { getClassNames } from "templates/utils/stylingUtils"
 
-import { getImagePath } from "utils/images"
+import { getImageDetails } from "utils/images"
 
 /* eslint
   react/no-array-index-key: 0
@@ -31,10 +31,10 @@ const TemplateInfopicRightSection = (
   }
 
   const [loadedImageURL, setLoadedImageURL] = useState("")
-  const fileName = getImagePath(imageUrl)
+  const { fileName, imageDirectory } = getImageDetails(imageUrl)
   const { data: mediaData } = useGetMediaHook({
     siteName,
-    mediaDirectoryName: "images",
+    mediaDirectoryName: imageDirectory || "images",
     fileName,
   })
 

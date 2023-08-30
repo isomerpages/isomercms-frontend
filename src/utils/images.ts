@@ -1,10 +1,18 @@
 /**
- * Util method to retrieve image path from /images folder from the relative file path,
- * e.g. "/images/album/picture.jpg" -> "album/picture.jpg"
+ * Util method to retrieve image details from /images folder from the relative file path,
+ * e.g. "/images/album%/picture$.jpg" -> { imageDirectory: "images%2Falbum%24", fileName: "picture%24.jpg" }
  */
-export const getImagePath = (imageLink: string) => {
+export const getImageDetails = (imageLink: string) => {
   const cleanImagePath = decodeURI(imageLink).replace(/^\//, "")
-  const filePathArr = cleanImagePath.split("/")
-  const filePath = filePathArr[filePathArr.length - 1]
-  return filePath
+  const filePathArr = cleanImagePath
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+  const fileName = filePathArr[filePathArr.length - 1]
+  const imageDirectory = filePathArr
+    .slice(0, filePathArr.length - 1)
+    .join("%2F")
+  return {
+    fileName,
+    imageDirectory,
+  }
 }
