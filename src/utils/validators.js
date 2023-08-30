@@ -551,7 +551,7 @@ const validateContactType = (contactType, value) => {
       if (value.length < CONTACT_TITLE_MIN_LENGTH) {
         errorMessage = `Label cannot be empty`
       }
-      if (value.length > CONTACT_TITLE_MAX_LENGTH) {
+      if (value.length >= CONTACT_TITLE_MAX_LENGTH) {
         errorMessage = `Label should be shorter than ${CONTACT_TITLE_MAX_LENGTH} characters`
       }
       break
@@ -585,7 +585,7 @@ const validateContactType = (contactType, value) => {
       break
     }
     case "other": {
-      if (value.length > CONTACT_DESCRIPTION_MAX_LENGTH) {
+      if (value.length >= CONTACT_DESCRIPTION_MAX_LENGTH) {
         errorMessage = `Notes should be shorter than ${CONTACT_DESCRIPTION_MAX_LENGTH} characters`
       }
       break
@@ -607,7 +607,7 @@ const validateLocationType = (locationType, value) => {
         errorMessage = `Label cannot be empty.`
       }
       // Title is too long
-      if (value.length > LOCATION_TITLE_MAX_LENGTH) {
+      if (value.length >= LOCATION_TITLE_MAX_LENGTH) {
         errorMessage = `Label should be shorter than ${LOCATION_TITLE_MAX_LENGTH} characters.`
       }
       break
@@ -639,7 +639,7 @@ const validateLocationType = (locationType, value) => {
       if (value && value.length < LOCATION_OPERATING_DAYS_MIN_LENGTH) {
         errorMessage += `Days should be longer than ${LOCATION_OPERATING_DAYS_MIN_LENGTH} characters. `
       }
-      if (value && value.length > LOCATION_OPERATING_DAYS_MAX_LENGTH) {
+      if (value && value.length >= LOCATION_OPERATING_DAYS_MAX_LENGTH) {
         errorMessage += `Days should be shorter than ${LOCATION_OPERATING_DAYS_MAX_LENGTH} characters. `
       }
       break
@@ -654,13 +654,13 @@ const validateLocationType = (locationType, value) => {
       if (value && value.length < LOCATION_OPERATING_HOURS_MIN_LENGTH) {
         errorMessage += `Hours should be longer than ${LOCATION_OPERATING_HOURS_MIN_LENGTH} characters.`
       }
-      if (value && value.length > LOCATION_OPERATING_HOURS_MAX_LENGTH) {
+      if (value && value.length >= LOCATION_OPERATING_HOURS_MAX_LENGTH) {
         errorMessage += `Hours should be shorter than ${LOCATION_OPERATING_HOURS_MAX_LENGTH} characters.`
       }
       break
     }
     case "description": {
-      if (value.length > LOCATION_OPERATING_DESCRIPTION_MAX_LENGTH) {
+      if (value.length >= LOCATION_OPERATING_DESCRIPTION_MAX_LENGTH) {
         errorMessage = `Description should be less than ${LOCATION_OPERATING_DESCRIPTION_MAX_LENGTH} characters.`
       }
       break
