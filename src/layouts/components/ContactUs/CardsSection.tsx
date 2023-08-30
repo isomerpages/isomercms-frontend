@@ -1,6 +1,7 @@
 import { Text, VStack } from "@chakra-ui/react"
-import { DragDropContext, OnDragEndResponder } from "@hello-pangea/dnd"
-import { ChangeEventHandler, MouseEvent, MouseEventHandler } from "react"
+import { DragDropContext } from "@hello-pangea/dnd"
+
+import { useEditableContext } from "contexts/EditableContext"
 
 import { Editable } from "../Editable"
 import { AddSectionButton } from "../Editable/AddSectionButton"
@@ -22,13 +23,7 @@ type ContactUsContactCardProps = {
   errors: ContactCardFrontMatter[]
 }
 
-type CardsSection = (ContactUsLocationCardProps | ContactUsContactCardProps) & {
-  onChange: ChangeEventHandler<HTMLInputElement>
-  onDragEnd: OnDragEndResponder
-  createHandler: MouseEventHandler<HTMLButtonElement>
-  deleteHandler: (id: string) => void
-  displayHandler: (expandedIndex: number | number[]) => void
-}
+type CardsSectionProps = ContactUsLocationCardProps | ContactUsContactCardProps
 
 const CONTACTUS_SECTION_TITLE: Record<ContactUsType, string> = {
   locations: "Locations",
@@ -54,12 +49,9 @@ export const CardsSection = ({
   contactUsType,
   cardFrontMatter,
   errors,
-  onChange,
-  onDragEnd,
-  createHandler,
-  deleteHandler,
-  displayHandler,
-}: CardsSection) => {
+}: CardsSectionProps) => {
+  const { onDragEnd, onCreate } = useEditableContext()
+
   return (
     <>
       <Text textStyle="h5">{CONTACTUS_SECTION_TITLE[contactUsType]}</Text>
@@ -78,18 +70,12 @@ export const CardsSection = ({
                       index={index}
                       frontMatter={card as LocationCardFrontMatter}
                       errors={errors[index]}
-                      onFieldChange={onChange}
-                      onDragEnd={onDragEnd}
-                      deleteHandler={deleteHandler}
-                      displayHandler={displayHandler}
                     />
                   ) : (
                     <ContactCard
                       index={index}
                       frontMatter={card as ContactCardFrontMatter}
                       errors={errors[index]}
-                      onFieldChange={onChange}
-                      deleteHandler={deleteHandler}
                     />
                   )}
                 </>
@@ -104,11 +90,11 @@ export const CardsSection = ({
         id={contactUsType}
         buttonText={CONTACTUS_ADD_BUTTON_TITLE[contactUsType]}
         onClick={() =>
-          createHandler(({
+          onCreate({
             target: {
               id: contactUsType,
             },
-          } as unknown) as MouseEvent<HTMLButtonElement>)
+          })
         }
       />
     </>

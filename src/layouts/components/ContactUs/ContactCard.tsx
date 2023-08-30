@@ -6,7 +6,9 @@ import {
   Input,
 } from "@opengovsg/design-system-react"
 import _ from "lodash"
-import { ChangeEvent, ChangeEventHandler, useState } from "react"
+import { ChangeEvent, useState } from "react"
+
+import { useEditableContext } from "contexts/EditableContext"
 
 import { Editable } from "../Editable"
 
@@ -31,8 +33,6 @@ type ContactCardProps = {
   index: number
   frontMatter: ContactCardFrontMatter
   errors: ContactCardFrontMatter
-  onFieldChange: ChangeEventHandler<HTMLInputElement>
-  deleteHandler: (id: string) => void
 }
 
 const PHONE_PREFIXES: Record<PhonePrefix, string> = {
@@ -63,9 +63,9 @@ export const ContactCard = ({
   index,
   frontMatter,
   errors,
-  onFieldChange,
-  deleteHandler,
 }: ContactCardProps) => {
+  const { onChange, onDelete } = useEditableContext()
+
   const [phonePrefix, setPhonePrefix] = useState<PhonePrefix>(
     "phone" in frontMatter.content[0] &&
       frontMatter.content[0].phone.startsWith(PHONE_PREFIXES["toll-free"])
@@ -85,7 +85,7 @@ export const ContactCard = ({
     setPhonePrefix(event.target.value as PhonePrefix)
     // Reset the input box to be empty
     setPhoneNumber("")
-    onFieldChange({
+    onChange({
       target: {
         id: `contacts-${index}-phone-0`,
         value: "",
@@ -104,7 +104,7 @@ export const ContactCard = ({
         return [g1, g2, g3].join(" ")
       })
 
-    onFieldChange({
+    onChange({
       target: {
         id: `contacts-${index}-phone-0`,
         value:
@@ -134,7 +134,7 @@ export const ContactCard = ({
             // TODO: Remove the `id/onChange`
             // and change to react hook forms
             id={`contacts-${index}-title`}
-            onChange={onFieldChange}
+            onChange={onChange}
             value={frontMatter.title || ""}
             placeholder="This is a title for your contact info"
           />
@@ -193,7 +193,7 @@ export const ContactCard = ({
             // TODO: Remove the `id/onChange`
             // and change to react hook forms
             id={`contacts-${index}-email-1`}
-            onChange={onFieldChange}
+            onChange={onChange}
             value={
               ("email" in frontMatter.content[1] &&
                 frontMatter.content[1].email) ||
@@ -217,7 +217,7 @@ export const ContactCard = ({
             // TODO: Remove the `id/onChange`
             // and change to react hook forms
             id={`contacts-${index}-other-2`}
-            onChange={onFieldChange}
+            onChange={onChange}
             value={
               ("other" in frontMatter.content[2] &&
                 frontMatter.content[2].other) ||
@@ -234,7 +234,7 @@ export const ContactCard = ({
           variant="clear"
           w="100%"
           id={`contacts-${index}`}
-          onClick={() => deleteHandler(`contacts-${index}`)}
+          onClick={() => onDelete(`contacts-${index}`, "contact information")}
           alignSelf="center"
           colorScheme="critical"
         >

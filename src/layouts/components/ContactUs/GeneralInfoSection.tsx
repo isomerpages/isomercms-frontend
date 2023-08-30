@@ -4,8 +4,9 @@ import {
   FormLabel,
   Input,
 } from "@opengovsg/design-system-react"
-import { ChangeEventHandler } from "react"
 import { BiInfoCircle } from "react-icons/bi"
+
+import { useEditableContext } from "contexts/EditableContext"
 
 import { Editable } from "../Editable"
 
@@ -21,15 +22,15 @@ type GeneralInfoSectionProps = {
   frontMatter: GeneralInfoFrontMatter
   footerContent: FooterContentFrontMatter
   errors: GeneralInfoFrontMatter & FooterContentFrontMatter
-  onChange: ChangeEventHandler
 }
 
 export const GeneralInfoSection = ({
   frontMatter,
   footerContent,
   errors,
-  onChange,
 }: GeneralInfoSectionProps) => {
+  const { onChange } = useEditableContext()
+
   return (
     <Editable.EditableAccordionItem
       title="General Information"

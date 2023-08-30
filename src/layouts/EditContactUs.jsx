@@ -221,6 +221,7 @@ const EditContactUs = ({ match }) => {
   } = useDisclosure({ defaultIsOpen: true })
   const {
     isOpen: isDeleteModalOpen,
+    onOpen: onDeleteModalOpen,
     onClose: onDeleteModalClose,
   } = useDisclosure()
   const { data: contactUsDetails } = useGetContactUsHook(siteName)
@@ -636,6 +637,16 @@ const EditContactUs = ({ match }) => {
     }
   }
 
+  const onDeleteClick = (id, type) => {
+    if (type === "operating hours") {
+      // Skip using the modal
+      onFieldChange({ target: { id, value: "" } })
+    } else {
+      setItemPendingForDelete({ id, type })
+      onDeleteModalOpen()
+    }
+  }
+
   const createHandler = async (event) => {
     const { id } = event.target
     try {
@@ -911,7 +922,7 @@ const EditContactUs = ({ match }) => {
               onDragEnd={onDragEnd}
               onChange={onFieldChange}
               onCreate={createHandler}
-              onDelete={deleteHandler}
+              onDelete={onDeleteClick}
               onDisplay={displayHandler}
             >
               <HStack className={elementStyles.wrapper}>
@@ -928,7 +939,6 @@ const EditContactUs = ({ match }) => {
                         frontMatter={frontMatter}
                         footerContent={footerContent}
                         errors={errors}
-                        onChange={onFieldChange}
                       />
 
                       <Divider />
@@ -938,11 +948,6 @@ const EditContactUs = ({ match }) => {
                         contactUsType="locations"
                         cardFrontMatter={frontMatter.locations}
                         errors={errors.locations}
-                        onChange={onFieldChange}
-                        onDragEnd={onDragEnd}
-                        createHandler={createHandler}
-                        deleteHandler={deleteHandler}
-                        displayHandler={displayHandler}
                       />
 
                       <Divider />
@@ -952,11 +957,6 @@ const EditContactUs = ({ match }) => {
                         contactUsType="contacts"
                         cardFrontMatter={frontMatter.contacts}
                         errors={errors.contacts}
-                        onChange={onFieldChange}
-                        onDragEnd={onDragEnd}
-                        createHandler={createHandler}
-                        deleteHandler={deleteHandler}
-                        displayHandler={displayHandler}
                       />
                     </VStack>
                   </Editable.Accordion>

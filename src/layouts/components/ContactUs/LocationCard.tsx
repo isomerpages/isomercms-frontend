@@ -1,5 +1,5 @@
 import { VStack, FormControl, Flex, Icon, Box, Text } from "@chakra-ui/react"
-import { DragDropContext, OnDragEndResponder } from "@hello-pangea/dnd"
+import { DragDropContext } from "@hello-pangea/dnd"
 import {
   Button,
   FormLabel,
@@ -7,8 +7,10 @@ import {
   Input,
 } from "@opengovsg/design-system-react"
 import _ from "lodash"
-import { ChangeEvent, ChangeEventHandler, MouseEventHandler } from "react"
+import { ChangeEvent } from "react"
 import { BiInfoCircle } from "react-icons/bi"
+
+import { useEditableContext } from "contexts/EditableContext"
 
 import { Editable } from "../Editable"
 import { AddSectionButton } from "../Editable/AddSectionButton"
@@ -28,12 +30,6 @@ type LocationCardProps = {
   index: number
   frontMatter: LocationCardFrontMatter
   errors: LocationCardFrontMatter
-  onFieldChange:
-    | ChangeEventHandler<HTMLInputElement>
-    | MouseEventHandler<HTMLButtonElement>
-  onDragEnd: OnDragEndResponder
-  deleteHandler: (id: string) => void
-  displayHandler: (expandedIndex: number | number[]) => void
 }
 
 const getHasErrors = (errors: LocationCardFrontMatter) => {
@@ -51,11 +47,9 @@ export const LocationCard = ({
   index,
   frontMatter,
   errors,
-  onFieldChange,
-  onDragEnd,
-  deleteHandler,
-  displayHandler,
 }: LocationCardProps) => {
+  const { onChange, onDragEnd, onDelete } = useEditableContext()
+
   return (
     <Editable.DraggableAccordionItem
       index={index}
@@ -71,7 +65,7 @@ export const LocationCard = ({
             // TODO: Remove the `id/onChange`
             // and change to react hook forms
             id={`locations-${index}-title`}
-            onChange={onFieldChange as ChangeEventHandler<HTMLInputElement>}
+            onChange={onChange}
             value={frontMatter.title || ""}
             placeholder="This is a title for your location"
           />
@@ -87,7 +81,7 @@ export const LocationCard = ({
                 // TODO: Remove the `id/onChange`
                 // and change to react hook forms
                 id={`locations-${index}-address-${addressIndex}`}
-                onChange={onFieldChange as ChangeEventHandler<HTMLInputElement>}
+                onChange={onChange}
                 value={address || ""}
                 placeholder={`Address Line ${addressIndex + 1}`}
               />
@@ -103,7 +97,7 @@ export const LocationCard = ({
             // TODO: Remove the `id/onChange`
             // and change to react hook forms
             id={`locations-${index}-maps_link`}
-            onChange={onFieldChange as ChangeEventHandler<HTMLInputElement>}
+            onChange={onChange}
             value={frontMatter.maps_link || ""}
             placeholder="Insert a link here"
           />
@@ -139,7 +133,7 @@ export const LocationCard = ({
               subtitle="Tell visitors when your locations are open"
               isEmpty={frontMatter.operating_hours.length === 0}
             >
-              <Editable.Accordion onChange={displayHandler}>
+              <Editable.Accordion>
                 {/* Note: contentEditable is required to stop drag and drop
                     from hitting the first level drag and drop */}
                 <VStack p={0} spacing="1.125rem" contentEditable>
@@ -168,9 +162,7 @@ export const LocationCard = ({
                               // TODO: Remove the `id/onChange`
                               // and change to react hook forms
                               id={`locations-${index}-operating_hours-${operatingHourIndex}-days`}
-                              onChange={
-                                onFieldChange as ChangeEventHandler<HTMLInputElement>
-                              }
+                              onChange={onChange}
                               value={operatingHour.days || ""}
                               placeholder="Days of the week"
                             />
@@ -191,9 +183,7 @@ export const LocationCard = ({
                               // TODO: Remove the `id/onChange`
                               // and change to react hook forms
                               id={`locations-${index}-operating_hours-${operatingHourIndex}-time`}
-                              onChange={
-                                onFieldChange as ChangeEventHandler<HTMLInputElement>
-                              }
+                              onChange={onChange}
                               value={operatingHour.time || ""}
                               placeholder="Hours you are open"
                             />
@@ -212,9 +202,7 @@ export const LocationCard = ({
                               // TODO: Remove the `id/onChange`
                               // and change to react hook forms
                               id={`locations-${index}-operating_hours-${operatingHourIndex}-description`}
-                              onChange={
-                                onFieldChange as ChangeEventHandler<HTMLInputElement>
-                              }
+                              onChange={onChange}
                               value={operatingHour.description || ""}
                               placeholder="A short description if needed"
                             />
@@ -229,8 +217,11 @@ export const LocationCard = ({
                             variant="clear"
                             w="100%"
                             id={`locations-${index}-remove_operating_hours-${operatingHourIndex}`}
-                            onClick={
-                              onFieldChange as MouseEventHandler<HTMLButtonElement>
+                            onClick={() =>
+                              onDelete(
+                                `locations-${index}-remove_operating_hours-${operatingHourIndex}`,
+                                "operating hours"
+                              )
                             }
                             alignSelf="center"
                             colorScheme="critical"
@@ -253,7 +244,7 @@ export const LocationCard = ({
           id={`locations-${index}-add_operating_hours`}
           buttonText="Add operating hours"
           onClick={() =>
-            onFieldChange({
+            onChange({
               target: {
                 id: `locations-${index}-add_operating_hours`,
               },
@@ -265,7 +256,7 @@ export const LocationCard = ({
           variant="clear"
           w="100%"
           id={`locations-${index}`}
-          onClick={() => deleteHandler(`locations-${index}`)}
+          onClick={() => onDelete(`locations-${index}`, "location")}
           alignSelf="center"
           colorScheme="critical"
         >
