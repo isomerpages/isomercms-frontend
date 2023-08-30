@@ -1,16 +1,20 @@
+import { useFeatureIsOn } from "@growthbook/growthbook-react"
 import { useParams } from "react-router-dom"
 
-import { OGP_SITES, TESTING_SITES } from "constants/sites"
+import { FEATURE_FLAGS } from "constants/featureFlags"
+
+import { FeatureFlags } from "types/featureFlags"
 
 import EditContactUs from "./EditContactUs"
 import LegacyEditContactUs from "./LegacyEditContactUs"
 
 export const FeatureFlaggedContactUs = (): JSX.Element => {
   const params = useParams<{ siteName: string }>()
-  const isOgpSite =
-    OGP_SITES.includes(params.siteName) ||
-    TESTING_SITES.includes(params.siteName)
-  return isOgpSite ? (
+  const shouldShowNewStyles = useFeatureIsOn<FeatureFlags>(
+    FEATURE_FLAGS.STYLING_REVAMP
+  )
+
+  return shouldShowNewStyles ? (
     <EditContactUs match={{ params }} />
   ) : (
     <LegacyEditContactUs match={{ params }} />

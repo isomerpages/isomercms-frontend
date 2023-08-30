@@ -1,16 +1,20 @@
+import { useFeatureIsOn } from "@growthbook/growthbook-react"
 import { useParams } from "react-router-dom"
 
-import { OGP_SITES, TESTING_SITES } from "constants/sites"
+import { FEATURE_FLAGS } from "constants/featureFlags"
+
+import { FeatureFlags } from "types/featureFlags"
 
 import EditHomepage from "./EditHomepage"
 import LegacyEditHomepage from "./LegacyEditHomepage/LegacyEditHomepage"
 
 export const FeatureFlaggedHomepage = (): JSX.Element => {
   const params = useParams<{ siteName: string }>()
-  const isOgpSite =
-    OGP_SITES.includes(params.siteName) ||
-    TESTING_SITES.includes(params.siteName)
-  return isOgpSite ? (
+  const shouldShowNewStyles = useFeatureIsOn<FeatureFlags>(
+    FEATURE_FLAGS.STYLING_REVAMP
+  )
+
+  return shouldShowNewStyles ? (
     <EditHomepage match={{ params }} />
   ) : (
     <LegacyEditHomepage match={{ params }} />
