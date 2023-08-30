@@ -90,7 +90,7 @@ export const ContactCard = ({
         id: `contacts-${index}-phone-0`,
         value: "",
       },
-    } as ChangeEvent<HTMLInputElement>)
+    })
   }
 
   const updatePhoneNumber = (event: ChangeEvent<HTMLInputElement>) => {
@@ -113,7 +113,7 @@ export const ContactCard = ({
             ? formattedPhoneNumber
             : "",
       },
-    } as ChangeEvent<HTMLInputElement>)
+    })
     setPhoneNumber(
       formattedPhoneNumber.slice(PHONE_PREFIXES[phonePrefix].length).trim()
     )

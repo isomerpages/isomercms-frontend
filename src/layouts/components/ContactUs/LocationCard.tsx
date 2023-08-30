@@ -248,7 +248,7 @@ export const LocationCard = ({
               target: {
                 id: `locations-${index}-add_operating_hours`,
               },
-            } as ChangeEvent<HTMLInputElement> & React.MouseEvent<HTMLButtonElement, MouseEvent>)
+            })
           }
         />
 
