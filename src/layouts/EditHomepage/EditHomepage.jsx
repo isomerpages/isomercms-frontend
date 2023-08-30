@@ -21,6 +21,7 @@ import { WarningModal } from "components/WarningModal"
 // Import hooks
 import { useGetHomepageHook } from "hooks/homepageHooks"
 import { useUpdateHomepageHook } from "hooks/homepageHooks/useUpdateHomepageHook"
+import { useAfterFirstLoad } from "hooks/useAfterFirstLoad"
 import useSiteColorsHook from "hooks/useSiteColorsHook"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -60,6 +61,17 @@ import { getErrorValues } from "./utils"
 /* eslint-disable react/no-array-index-key */
 
 const RADIX_PARSE_INT = 10
+
+// NOTE: `scrollIntoView` does not work when called synchronously
+// to avoid this problem, we do a `setTimeout` to wrap it.
+// This calls it after 1ms, which allows it to work.
+const scrollTo = (ref) => {
+  setTimeout(() =>
+    ref.current.scrollIntoView({
+      behavior: "smooth",
+    })
+  )
+}
 
 const getHasError = (errorArray) =>
   _.some(errorArray, (err) =>
@@ -289,10 +301,12 @@ const EditHomepage = ({ match }) => {
     loadPageDetails()
   }, [homepageData])
 
+  const delayedScrollTo = useAfterFirstLoad(scrollTo)
+
   useEffect(() => {
-    if (scrollRefs.length > 0) {
-      scrollRefs[frontMatter.sections.length - 1].current.scrollIntoView()
-    }
+    if (scrollRefs.length === 0) return // Page data has not been populated
+    delayedScrollTo(scrollRefs[frontMatter.sections.length - 1])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrollRefs, frontMatter.sections.length])
 
   const onFieldChange = async (event) => {
@@ -381,7 +395,7 @@ const EditHomepage = ({ match }) => {
           })
           setErrors(newErrors)
 
-          scrollRefs[sectionIndex].current.scrollIntoView()
+          scrollTo(scrollRefs[sectionIndex])
           break
         }
         case "highlight": {
@@ -424,7 +438,7 @@ const EditHomepage = ({ match }) => {
           })
           setErrors(newErrors)
 
-          scrollRefs[0].current.scrollIntoView()
+          scrollTo(scrollRefs[0])
           break
         }
         case "dropdownelem": {
@@ -469,7 +483,7 @@ const EditHomepage = ({ match }) => {
           })
           setErrors(newErrors)
 
-          scrollRefs[0].current.scrollIntoView()
+          scrollTo(scrollRefs[0])
           break
         }
         default: {
@@ -506,7 +520,7 @@ const EditHomepage = ({ match }) => {
           })
           setErrors(newErrors)
 
-          scrollRefs[0].current.scrollIntoView()
+          scrollTo(scrollRefs[0])
         }
       }
     } catch (err) {
@@ -774,7 +788,7 @@ const EditHomepage = ({ match }) => {
 
           setDisplaySections(newDisplaySections)
 
-          scrollRefs[index].current.scrollIntoView()
+          scrollTo(scrollRefs[index])
           break
         }
         case "highlight": {
@@ -787,7 +801,7 @@ const EditHomepage = ({ match }) => {
             $set: resetHighlightSections,
           })
 
-          scrollRefs[0].current.scrollIntoView()
+          scrollTo(scrollRefs[0])
           setDisplayHighlights(newDisplayHighlights)
           break
         }
@@ -801,7 +815,7 @@ const EditHomepage = ({ match }) => {
             $set: resetDropdownSections,
           })
 
-          scrollRefs[0].current.scrollIntoView()
+          scrollTo(scrollRefs[0])
           setDisplayDropdownElems(newDisplayDropdownElems)
           break
         }
