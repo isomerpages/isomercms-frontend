@@ -18,9 +18,8 @@ const TemplateInfopicRightSection = (
     description,
     button,
     sectionIndex,
-    imageUrl,
-    imageAlt,
-    siteName,
+    image: imageUrl,
+    alt: imageAlt,
   },
   ref
 ) => {
@@ -95,7 +94,11 @@ const TemplateInfopicRightSection = (
               </div>
             </div>
             <div className={getClassNames(editorStyles, ["col", "is-half"])}>
-              <img onError={addDefaultSrc} src={loadedImageURL} alt={alt} />
+              <img
+                onError={addDefaultSrc}
+                src={loadedImageURL}
+                alt={imageAlt}
+              />
             </div>
           </div>
           {/* For tablet */}
@@ -114,7 +117,11 @@ const TemplateInfopicRightSection = (
                 "padding--bottom--xl",
               ])}
             >
-              <img onError={addDefaultSrc} src={loadedImageURL} alt={alt} />
+              <img
+                onError={addDefaultSrc}
+                src={loadedImageURL}
+                alt={imageAlt}
+              />
             </div>
             <div className={getClassNames(editorStyles, ["col", "is-half"])}>
               <p
@@ -174,7 +181,11 @@ const TemplateInfopicRightSection = (
                 "padding--bottom--xl",
               ])}
             >
-              <img onError={addDefaultSrc} src={loadedImageURL} alt={alt} />
+              <img
+                onError={addDefaultSrc}
+                src={loadedImageURL}
+                alt={imageAlt}
+              />
             </div>
             <div
               className={getClassNames(editorStyles, [
