@@ -21,6 +21,7 @@ import { WarningModal } from "components/WarningModal"
 // Import hooks
 import { useGetHomepageHook } from "hooks/homepageHooks"
 import { useUpdateHomepageHook } from "hooks/homepageHooks/useUpdateHomepageHook"
+import { useAfterFirstLoad } from "hooks/useAfterFirstLoad"
 import useSiteColorsHook from "hooks/useSiteColorsHook"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -300,15 +301,11 @@ const EditHomepage = ({ match }) => {
     loadPageDetails()
   }, [homepageData])
 
-  const [isFirstLoadComplete, setIsFirstLoadComplete] = useState(false)
+  const delayedScrollTo = useAfterFirstLoad(scrollTo)
 
   useEffect(() => {
     if (scrollRefs.length === 0) return // Page data has not been populated
-    if (!isFirstLoadComplete) {
-      setIsFirstLoadComplete(true)
-    } else {
-      scrollTo(scrollRefs[frontMatter.sections.length - 1])
-    }
+    delayedScrollTo(scrollRefs[frontMatter.sections.length - 1])
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scrollRefs, frontMatter.sections.length])
 
