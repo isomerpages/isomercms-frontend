@@ -32,7 +32,6 @@ export const getHasErrorFromHomepageState = ({
         .entries()
         .map(([key, value]) => validateHighlight(key, value))
         .some()
-        .valueOf()
       return acc || curErr
     }, hasError)
   }
@@ -45,7 +44,6 @@ export const getHasErrorFromHomepageState = ({
         .entries()
         .map(([key, value]) => validateDropdownElem(key, value))
         .some()
-        .valueOf()
       return acc || curError
     }, hasError)
   }
