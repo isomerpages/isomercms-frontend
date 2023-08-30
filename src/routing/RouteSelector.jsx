@@ -9,9 +9,9 @@ import VerifyUserDetailsModal from "components/VerifyUserDetailsModal"
 import { ReviewRequestRoleProvider } from "contexts/ReviewRequestRoleContext"
 import { SiteLaunchProvider } from "contexts/SiteLaunchContext"
 
-import EditContactUs from "layouts/EditContactUs"
 import EditNavBar from "layouts/EditNavBar"
 import EditPage from "layouts/EditPage"
+import { FeatureFlaggedContactUs } from "layouts/FeatureFlaggedContactUs"
 import { FeatureFlaggedHomepage } from "layouts/FeatureFlaggedHomepage"
 import { Folders } from "layouts/Folders"
 import { LoginPage } from "layouts/Login"
@@ -128,7 +128,7 @@ export const RouteSelector = () => (
 
       <ProtectedRouteWithProps
         path="/sites/:siteName/contact-us"
-        component={injectApprovalRedirect(EditContactUs)}
+        component={injectApprovalRedirect(FeatureFlaggedContactUs)}
       />
 
       <ProtectedRouteWithProps path="/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName">

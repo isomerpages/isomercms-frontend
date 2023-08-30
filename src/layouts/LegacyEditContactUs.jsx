@@ -1,6 +1,5 @@
 // TODO: Clean up formatting, semi-colons, PropTypes etc
 import {
-  Divider,
   Box,
   Text,
   Code,
@@ -13,15 +12,18 @@ import update from "immutability-helper"
 import _ from "lodash"
 import PropTypes from "prop-types"
 import { createRef, useEffect, useState } from "react"
+import { DragDropContext } from "react-beautiful-dnd"
 
+import EditorSection from "components/contact-us/Section"
 import { Footer } from "components/Footer"
+import FormContext from "components/Form/FormContext"
+import FormTitle from "components/Form/FormTitle"
+import FormField from "components/FormField"
 import Header from "components/Header"
 import { LoadingButton } from "components/LoadingButton"
 import { WarningModal } from "components/WarningModal"
 
 // Import hooks
-import { EditableContextProvider } from "contexts/EditableContext"
-
 import {
   useGetContactUsHook,
   useUpdateContactUsHook,
@@ -43,10 +45,6 @@ import { useErrorToast } from "utils/toasts"
 import { validateContactType, validateLocationType } from "utils/validators"
 
 import { DEFAULT_RETRY_MSG, isEmpty } from "utils"
-
-import { CardsSection } from "./components/ContactUs/CardsSection"
-import { GeneralInfoSection } from "./components/ContactUs/GeneralInfoSection"
-import { Editable } from "./components/Editable"
 
 /* eslint-disable react/no-array-index-key */
 
@@ -96,23 +94,6 @@ const enumSection = (type, args) => {
         "Unreachable path! Please ensure all possible enums are covered."
       )
   }
-}
-
-const validateHeaderTitle = (title) => {
-  if (title.length < 1) {
-    return "Name cannot be empty"
-  }
-  if (title.length > 100) {
-    return "Name cannot exceed 100 characters"
-  }
-  return ""
-}
-
-const validateFeedbackUrl = (url) => {
-  if (url.length > 0 && !url.startsWith("https://")) {
-    return "Check that you have a valid URL"
-  }
-  return ""
 }
 
 const displayDeletedFrontMatter = (deletedFrontMatter) => {
@@ -327,96 +308,46 @@ const EditContactUs = ({ match }) => {
     )
       return
 
-    let elem = ""
-    let elemError = ""
-    let elemDisplay = ""
-    let elemScrollRef = ""
-    let newFrontMatter = ""
-    let newErrors = ""
-    let newDisplaySections = ""
-    let newScrollRefs = ""
+    const elem = frontMatter[type][source.index]
+    const elemError = errors[type][source.index]
+    const elemDisplay = displaySections[type][source.index]
+    const elemScrollRef = scrollRefs[type][source.index]
 
-    if (type.startsWith("locations-")) {
-      const idTokens = type.split("-")
-      const parentId = idTokens[1]
-      const subtype = idTokens[2]
+    const newFrontMatter = update(frontMatter, {
+      [type]: {
+        $splice: [
+          [source.index, 1], // Remove elem from its original position
+          [destination.index, 0, elem], // Splice elem into its new position
+        ],
+      },
+    })
+    const newErrors = update(errors, {
+      [type]: {
+        $splice: [
+          [source.index, 1], // Remove elem from its original position
+          [destination.index, 0, elemError], // Splice elem into its new position
+        ],
+      },
+    })
+    const newDisplaySections = update(displaySections, {
+      [type]: {
+        $splice: [
+          [source.index, 1],
+          [destination.index, 0, elemDisplay],
+        ],
+      },
+    })
+    const newScrollRefs = update(scrollRefs, {
+      [type]: {
+        $splice: [
+          [source.index, 1],
+          [destination.index, 0, elemScrollRef],
+        ],
+      },
+    })
 
-      elem = frontMatter.locations[parentId][subtype][source.index]
-      elemError = errors.locations[parentId][subtype][source.index]
-      elemDisplay = displaySections.locations[parentId]
-      elemScrollRef = scrollRefs.locations[parentId]
-
-      newFrontMatter = update(frontMatter, {
-        locations: {
-          [parentId]: {
-            [subtype]: {
-              $splice: [
-                [source.index, 1], // Remove elem from its original position
-                [destination.index, 0, elem], // Splice elem into its new position
-              ],
-            },
-          },
-        },
-      })
-
-      newErrors = update(errors, {
-        locations: {
-          [parentId]: {
-            [subtype]: {
-              $splice: [
-                [source.index, 1], // Remove elem from its original position
-                [destination.index, 0, elemError], // Splice elem into its new position
-              ],
-            },
-          },
-        },
-      })
-
-      newDisplaySections = update(displaySections, {})
-      newScrollRefs = update(scrollRefs, {})
-    } else {
-      elem = frontMatter[type][source.index]
-      elemError = errors[type][source.index]
-      elemDisplay = displaySections[type][source.index]
-      elemScrollRef = scrollRefs[type][source.index]
-
-      newFrontMatter = update(frontMatter, {
-        [type]: {
-          $splice: [
-            [source.index, 1], // Remove elem from its original position
-            [destination.index, 0, elem], // Splice elem into its new position
-          ],
-        },
-      })
-      newErrors = update(errors, {
-        [type]: {
-          $splice: [
-            [source.index, 1], // Remove elem from its original position
-            [destination.index, 0, elemError], // Splice elem into its new position
-          ],
-        },
-      })
-
-      newDisplaySections = update(displaySections, {
-        [type]: {
-          $splice: [
-            [source.index, 1],
-            [destination.index, 0, elemDisplay],
-          ],
-        },
-      })
-      newScrollRefs = update(scrollRefs, {
-        [type]: {
-          $splice: [
-            [source.index, 1],
-            [destination.index, 0, elemScrollRef],
-          ],
-        },
-      })
-
-      // scroll to new location of dragged element
-      scrollRefs[type][destination.index].current.scrollIntoView()
-    }
+    // scroll to new location of dragged element
+    scrollRefs[type][destination.index].current.scrollIntoView()
 
     setScrollRefs(newScrollRefs)
     setFrontMatter(newFrontMatter)
@@ -438,11 +369,6 @@ const EditContactUs = ({ match }) => {
           newFooterContent = update(footerContent, {
             [elemType]: { $set: value },
           })
-          newErrors = update(errors, {
-            [elemType]: {
-              $set: validateFeedbackUrl(value),
-            },
-          })
           scrollRefs.sectionsScrollRefs[elemType].current.scrollIntoView()
           break
         }
@@ -451,11 +377,6 @@ const EditContactUs = ({ match }) => {
 
           newFrontMatter = update(frontMatter, {
             [field]: { $set: value },
-          })
-          newErrors = update(errors, {
-            [field]: {
-              $set: validateHeaderTitle(value),
-            },
           })
           scrollRefs.sectionsScrollRefs[elemType].current.scrollIntoView()
           break
@@ -634,16 +555,6 @@ const EditContactUs = ({ match }) => {
       setErrors(_.isUndefined(newErrors) ? errors : newErrors)
     } catch (err) {
       console.log(err)
-    }
-  }
-
-  const onDeleteClick = (id, type) => {
-    if (type === "operating hours") {
-      // Skip using the modal
-      onFieldChange({ target: { id, value: "" } })
-    } else {
-      setItemPendingForDelete({ id, type })
-      onDeleteModalOpen()
     }
   }
 
@@ -871,7 +782,6 @@ const EditContactUs = ({ match }) => {
       >
         <Button onClick={onRemovedContentWarningClose}>Acknowledge</Button>
       </WarningModal>
-
       <WarningModal
         isOpen={itemPendingForDelete.id && isDeleteModalOpen}
         onClose={() => {
@@ -906,7 +816,6 @@ const EditContactUs = ({ match }) => {
           Yes, delete
         </Button>
       </WarningModal>
-
       <VStack>
         <Header
           title="Contact Us"
@@ -917,86 +826,94 @@ const EditContactUs = ({ match }) => {
         />
         {hasLoaded && (
           <>
-            {/* Left column: Editor sidebar */}
-            <EditableContextProvider
-              onDragEnd={onDragEnd}
-              onChange={onFieldChange}
-              onCreate={createHandler}
-              onDelete={onDeleteClick}
-              onDisplay={displayHandler}
-            >
-              <HStack className={elementStyles.wrapper}>
-                <Editable.Sidebar title="Contact Us">
-                  <Editable.Accordion onChange={displayHandler}>
-                    <VStack
-                      bg="base.canvas.alt"
-                      p="1.5rem"
-                      spacing="1.5rem"
-                      alignItems="flex-start"
-                    >
-                      {/* General Information section */}
-                      <GeneralInfoSection
-                        frontMatter={frontMatter}
-                        footerContent={footerContent}
-                        errors={errors}
+            <HStack className={elementStyles.wrapper}>
+              <div className={editorStyles.homepageEditorSidebar}>
+                <div>
+                  <div className={`${elementStyles.card}`}>
+                    <div className={elementStyles.cardHeader}>
+                      <h2>Site Settings</h2>
+                    </div>
+                    <FormContext isRequired>
+                      <FormTitle>Agency Name</FormTitle>
+                      <FormField
+                        placeholder="Agency Name"
+                        id="header-agency_name"
+                        value={frontMatter.agency_name || ""}
+                        onChange={onFieldChange}
                       />
-
-                      <Divider />
-
-                      {/* Locations section */}
-                      <CardsSection
-                        contactUsType="locations"
-                        cardFrontMatter={frontMatter.locations}
-                        errors={errors.locations}
+                      <FormTitle>Feedback Url</FormTitle>
+                      <FormField
+                        placeholder="Feedback Url"
+                        id="feedback"
+                        value={footerContent.feedback || ""}
+                        onChange={onFieldChange}
                       />
+                    </FormContext>
+                  </div>
+                  <DragDropContext onDragEnd={onDragEnd}>
+                    <EditorSection
+                      cards={frontMatter.locations}
+                      onFieldChange={onFieldChange}
+                      createHandler={createHandler}
+                      deleteHandler={(event, type) => {
+                        onDeleteModalOpen()
+                        setItemPendingForDelete({ id: event.target.id, type })
+                      }}
+                      shouldDisplay={displaySections.sectionsDisplay.locations}
+                      displayCards={displaySections.locations}
+                      displayHandler={displayHandler}
+                      errors={errors.locations}
+                      sectionId="locations"
+                    />
 
-                      <Divider />
-
-                      {/* Contact Information section */}
-                      <CardsSection
-                        contactUsType="contacts"
-                        cardFrontMatter={frontMatter.contacts}
-                        errors={errors.contacts}
-                      />
-                    </VStack>
-                  </Editable.Accordion>
-                </Editable.Sidebar>
-
-                {/* Right column: Preview pane */}
-                <div className={`${editorStyles.contactUsEditorMain} `}>
-                  {/* contact-us header */}
-                  <TemplateContactUsHeader
-                    agencyName={frontMatter.agency_name}
-                    ref={scrollRefs.sectionsScrollRefs.header}
-                  />
-                  {/* contact-us content */}
-                  <section className="bp-section is-small padding--bottom--lg">
-                    <div className="bp-container">
-                      <div className="row">
-                        <div className="col is-8 is-offset-2">
-                          <TemplateLocationsSection
-                            locations={frontMatter.locations}
-                            scrollRefs={scrollRefs.locations}
-                            ref={scrollRefs.sectionsScrollRefs.locations}
-                          />
-                          <TemplateContactsSection
-                            contacts={frontMatter.contacts}
-                            scrollRefs={scrollRefs.contacts}
-                            ref={scrollRefs.sectionsScrollRefs.contacts}
-                          />
-                          <TemplateFeedbackSection
-                            feedback={footerContent.feedback}
-                            ref={scrollRefs.sectionsScrollRefs.feedback}
-                          />
-                        </div>
+                    <EditorSection
+                      cards={frontMatter.contacts}
+                      onFieldChange={onFieldChange}
+                      createHandler={createHandler}
+                      deleteHandler={(event, type) => {
+                        onDeleteModalOpen()
+                        setItemPendingForDelete({ id: event.target.id, type })
+                      }}
+                      shouldDisplay={displaySections.sectionsDisplay.contacts}
+                      displayCards={displaySections.contacts}
+                      displayHandler={displayHandler}
+                      errors={errors.contacts}
+                      sectionId="contacts"
+                    />
+                  </DragDropContext>
+                </div>
+              </div>
+              <div className={`${editorStyles.contactUsEditorMain} `}>
+                {/* contact-us header */}
+                <TemplateContactUsHeader
+                  agencyName={frontMatter.agency_name}
+                  ref={scrollRefs.sectionsScrollRefs.header}
+                />
+                {/* contact-us content */}
+                <section className="bp-section is-small padding--bottom--lg">
+                  <div className="bp-container">
+                    <div className="row">
+                      <div className="col is-8 is-offset-2">
+                        <TemplateLocationsSection
+                          locations={frontMatter.locations}
+                          scrollRefs={scrollRefs.locations}
+                          ref={scrollRefs.sectionsScrollRefs.locations}
+                        />
+                        <TemplateContactsSection
+                          contacts={frontMatter.contacts}
+                          scrollRefs={scrollRefs.contacts}
+                          ref={scrollRefs.sectionsScrollRefs.contacts}
+                        />
+                        <TemplateFeedbackSection
+                          feedback={footerContent.feedback}
+                          ref={scrollRefs.sectionsScrollRefs.feedback}
+                        />
                       </div>
                     </div>
-                  </section>
-                </div>
-              </HStack>
-            </EditableContextProvider>
-
-            {/* Save page footer */}
+                  </div>
+                </section>
+              </div>
+            </HStack>
             <Footer>
               {!isEmpty(deletedFrontMatter) && (
                 <LoadingButton
