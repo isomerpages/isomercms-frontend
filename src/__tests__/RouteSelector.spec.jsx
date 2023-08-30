@@ -81,10 +81,9 @@ jest.mock("layouts/ResourceCategory", () => {
   }
 })
 
-jest.mock("layouts/EditContactUs", () => {
+jest.mock("layouts/FeatureFlaggedContactUs", () => {
   return {
-    __esModule: true,
-    default: () => {
+    FeatureFlaggedContactUs: () => {
       return <div>{EDIT_CONTACT_US_LAYOUT_TEXT}</div>
     },
   }
