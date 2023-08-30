@@ -1,48 +1,25 @@
 import PropTypes from "prop-types"
-import { forwardRef, useState, useEffect } from "react"
+import { forwardRef } from "react"
 
-import { useGetMediaHook } from "hooks/mediaHooks"
+import { useFetchPreviewMedia } from "hooks/useFetchPreviewMedia"
 
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 import { getClassNames } from "templates/utils/stylingUtils"
-
-import { getImageDetails } from "utils/images"
 
 /* eslint
   react/no-array-index-key: 0
  */
 
 const TemplateInfopicRightSection = (
-  {
-    title,
-    subtitle,
-    description,
-    button,
-    sectionIndex,
-    imageUrl,
-    imageAlt,
-    siteName,
-  },
+  { title, subtitle, description, button, sectionIndex, imageUrl, imageAlt },
   ref
 ) => {
   const addDefaultSrc = (e) => {
     e.target.src = "/placeholder_no_image.png"
   }
 
-  const [loadedImageURL, setLoadedImageURL] = useState("")
-  const { fileName, imageDirectory } = getImageDetails(imageUrl)
-  const { data: mediaData } = useGetMediaHook({
-    siteName,
-    mediaDirectoryName: imageDirectory || "images",
-    fileName,
-  })
-
-  useEffect(() => {
-    if (mediaData) {
-      setLoadedImageURL(mediaData.mediaUrl)
-    }
-  }, [mediaData])
+  const loadedImageURL = useFetchPreviewMedia(imageUrl)
 
   return (
     <div ref={ref}>
@@ -269,7 +246,6 @@ TemplateInfopicRightSection.propTypes = {
   imageUrl: PropTypes.string,
   imageAlt: PropTypes.string,
   sectionIndex: PropTypes.number.isRequired,
-  siteName: PropTypes.string.isRequired,
 }
 
 TemplateInfopicRightSection.defaultProps = {

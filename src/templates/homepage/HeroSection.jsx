@@ -4,15 +4,13 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 
 import PropTypes from "prop-types"
-import { forwardRef, useState, useEffect } from "react"
+import { forwardRef } from "react"
 
-import { useGetMediaHook } from "hooks/mediaHooks"
+import { useFetchPreviewMedia } from "hooks/useFetchPreviewMedia"
 
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 import { getClassNames } from "templates/utils/stylingUtils"
-
-import { getImageDetails } from "utils/images"
 
 /* eslint
   react/no-array-index-key: 0
@@ -176,22 +174,10 @@ const KeyHighlights = ({ highlights }) => (
 )
 
 const TemplateHeroSection = (
-  { hero, siteName, dropdownIsActive, toggleDropdown },
+  { hero, dropdownIsActive, toggleDropdown },
   ref
 ) => {
-  const [loadedImageURL, setLoadedImageURL] = useState("")
-  const { fileName, imageDirectory } = getImageDetails(hero.background)
-  const { data: mediaData } = useGetMediaHook({
-    siteName,
-    mediaDirectoryName: imageDirectory || "images",
-    fileName,
-  })
-
-  useEffect(() => {
-    if (mediaData) {
-      setLoadedImageURL(mediaData.mediaUrl)
-    }
-  }, [mediaData])
+  const loadedImageURL = useFetchPreviewMedia(hero.background)
 
   const heroStyle = {
     // See j08691's answer at https://stackoverflow.com/questions/21388712/background-size-doesnt-work
@@ -337,7 +323,6 @@ TemplateHeroSection.propTypes = {
       })
     ),
   }).isRequired,
-  siteName: PropTypes.string.isRequired,
   dropdownIsActive: PropTypes.bool.isRequired,
   toggleDropdown: PropTypes.func.isRequired,
 }
