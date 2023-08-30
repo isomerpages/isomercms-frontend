@@ -4,14 +4,15 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 
 import PropTypes from "prop-types"
-import { forwardRef } from "react"
-import { useQuery } from "react-query"
+import { forwardRef, useState, useEffect } from "react"
+
+import { useGetMediaHook } from "hooks/mediaHooks"
 
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 import { getClassNames } from "templates/utils/stylingUtils"
 
-import { fetchImageURL } from "utils"
+import { getImagePath } from "utils/images"
 
 /* eslint
   react/no-array-index-key: 0
@@ -178,14 +179,19 @@ const TemplateHeroSection = (
   { hero, siteName, dropdownIsActive, toggleDropdown },
   ref
 ) => {
-  const { data: loadedImageURL } = useQuery(
-    `${siteName}/${hero.background}`,
-    () => fetchImageURL(siteName, decodeURI(hero.background)),
-    {
-      refetchOnWindowFocus: false,
-      staleTime: Infinity, // Never automatically refetch image unless query is invalidated
+  const [loadedImageURL, setLoadedImageURL] = useState("")
+  const fileName = getImagePath(hero.background)
+  const { data: mediaData } = useGetMediaHook({
+    siteName,
+    mediaDirectoryName: "images",
+    fileName,
+  })
+
+  useEffect(() => {
+    if (mediaData) {
+      setLoadedImageURL(mediaData.mediaUrl)
     }
-  )
+  }, [mediaData])
 
   const heroStyle = {
     // See j08691's answer at https://stackoverflow.com/questions/21388712/background-size-doesnt-work
