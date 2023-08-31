@@ -1,3 +1,4 @@
+import { Box } from "@chakra-ui/react"
 import { Button, IconButton } from "@opengovsg/design-system-react"
 import PropTypes from "prop-types"
 import { useState, useRef } from "react"
@@ -269,7 +270,7 @@ const NavSection = ({
           </div>
         )}
       </Droppable>
-      <div className="d-flex justify-content-between mt-4">
+      <Box d-flex justify-content-between mt="2rem">
         <Select
           ref={selectInputRef}
           className="w-50"
@@ -278,6 +279,7 @@ const NavSection = ({
           options={sectionCreationOptions}
         />
         <Button
+          mt="1rem"
           onClick={sectionCreationHandler}
           isDisabled={!newSectionType}
           variant="solid"
@@ -285,7 +287,7 @@ const NavSection = ({
         >
           Create New Menu
         </Button>
-      </div>
+      </Box>
       <span className={elementStyles.info}>
         {`Note: you can specify a folder ${
           hasResourceRoom ? `or resource room ` : ``
