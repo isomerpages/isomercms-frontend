@@ -154,7 +154,7 @@ describe("Resources page", () => {
 
     cy.wait(Interceptors.DELETE)
 
-    cy.contains("Successfully deleted directory").should("exist")
+    cy.contains("Successfully deleted item").should("exist")
 
     cy.contains(TEST_CATEGORY_RENAMED).should("not.exist")
   })

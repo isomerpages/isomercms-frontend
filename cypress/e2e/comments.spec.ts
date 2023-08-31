@@ -1,5 +1,5 @@
 import * as api from "../api"
-import { createComment } from "../api"
+import { createComment, removeOtherCollaborators } from "../api"
 import {
   CMS_BASEURL,
   E2E_EMAIL_ADMIN,
@@ -15,7 +15,6 @@ import {
   ignoreNotFoundError,
   openCommentsDrawer,
   openReviewRequest,
-  removeFirstCollaborator,
   setUserAsUnauthorised,
   visitE2eEmailTestRepo,
   getCommentInput,
@@ -201,7 +200,7 @@ describe("Comments", () => {
         .then((id) => {
           reviewId = id
         })
-      removeFirstCollaborator()
+      removeOtherCollaborators(E2E_EMAIL_COLLAB.email)
     })
 
     // This is required so that subsequent tests do not fail

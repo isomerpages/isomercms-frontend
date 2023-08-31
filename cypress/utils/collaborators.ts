@@ -20,21 +20,6 @@ export const getCollaboratorsModal = (): Cypress.Chainable<
   return cy.get("form").should("be.visible")
 }
 
-export const removeFirstCollaborator = (): void => {
-  // Note: only removes a single other collaborator, due to concurrency issues
-  getCollaboratorsModal()
-    .get(DELETE_BUTTON_SELECTOR)
-    .then((buttons) => {
-      if (buttons.length > 1) {
-        buttons[1].click()
-        cy.contains("button", "Remove collaborator").click()
-        cy.contains("Collaborator removed successfully").should("be.visible")
-      }
-    })
-
-  closeModal()
-}
-
 export const inputCollaborators = (user: string): void => {
   getCollaboratorsModal().get(ADD_COLLABORATOR_INPUT_SELECTOR).type(user).blur()
   // NOTE: need to ignore the 422 w/ specific error message because we haven't ack yet

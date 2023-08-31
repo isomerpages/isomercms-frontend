@@ -8,6 +8,8 @@ import {
 } from "../fixtures/constants"
 import { SUCCESSFUL_EDIT_PAGE_TOAST } from "../fixtures/messages"
 
+const DATA_LOAD_ASSERTION_TEXT = "You can link folders to your navigation bar."
+
 describe("Workspace Pages flow", () => {
   beforeEach(() => {
     cy.setGithubSessionDefaults()
@@ -214,9 +216,7 @@ describe("Workspace Pages flow", () => {
     it("Should be able to create a new folder with valid folder name with page", () => {
       // Act
       // NOTE: Sentinel value to guarantee that the data has loaded
-      cy.contains("Folders impact navigation on your site.").should(
-        "be.visible"
-      )
+      cy.contains(DATA_LOAD_ASSERTION_TEXT).should("be.visible")
       cy.contains("Create page").should("exist").click()
       cy.get("#title").clear().type(TEST_PAGE_TITLE)
       cy.get("#permalink").clear().type(TEST_PAGE_PERMALNK)
@@ -233,9 +233,7 @@ describe("Workspace Pages flow", () => {
         Interceptors.GET
       )
       // NOTE: Sentinel value to guarantee that the data has loaded
-      cy.contains("Folders impact navigation on your site.").should(
-        "be.visible"
-      )
+      cy.contains(DATA_LOAD_ASSERTION_TEXT).should("be.visible")
 
       cy.contains("Create folder").should("exist").click()
       cy.get("input#newDirectoryName")
@@ -301,9 +299,7 @@ describe("Workspace Pages flow", () => {
     it("Should be able to delete a folder with no pages", () => {
       // Arrange
       // NOTE: Sentinel value to guarantee that the data has loaded
-      cy.contains("Folders impact navigation on your site.").should(
-        "be.visible"
-      )
+      cy.contains(DATA_LOAD_ASSERTION_TEXT).should("be.visible")
       cy.contains("a", PRETTIFIED_FOLDER_NO_PAGES_TITLE)
         .parent()
         .as("emptyFolderItem")
@@ -322,9 +318,7 @@ describe("Workspace Pages flow", () => {
     it("Should be able to delete a folder with pages", () => {
       // Arrange
       // NOTE: Sentinel value to guarantee that the data has loaded
-      cy.contains("Folders impact navigation on your site.").should(
-        "be.visible"
-      )
+      cy.contains(DATA_LOAD_ASSERTION_TEXT).should("be.visible")
       cy.contains("button", PRETTIFIED_EDITED_FOLDER_WITH_PAGES_TITLE)
         .parent()
         .parent()

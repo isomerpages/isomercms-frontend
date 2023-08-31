@@ -46,7 +46,7 @@ export const InfopicBody = ({
 
   return (
     <Editable.Section>
-      <FormControl isInvalid={!!errors.subtitle}>
+      <FormControl isRequired isInvalid={!!errors.subtitle}>
         <FormLabel>Subtitle</FormLabel>
         <Input
           placeholder="This subtitle appears above the title"
@@ -56,7 +56,7 @@ export const InfopicBody = ({
         />
         <FormErrorMessage>{errors.subtitle}</FormErrorMessage>
       </FormControl>
-      <FormControl isInvalid={!!errors.title}>
+      <FormControl isRequired isInvalid={!!errors.title}>
         <FormLabel>Title</FormLabel>
         <Input
           placeholder="Your infopic title goes here"
@@ -66,7 +66,7 @@ export const InfopicBody = ({
         />
         <FormErrorMessage>{errors.title}</FormErrorMessage>
       </FormControl>
-      <FormControl isInvalid={!!errors.description}>
+      <FormControl isRequired isInvalid={!!errors.description}>
         <FormLabel>Description</FormLabel>
         <Textarea
           placeholder="This paragraph appears below the title and conveys information"

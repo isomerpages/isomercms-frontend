@@ -9,15 +9,15 @@ import VerifyUserDetailsModal from "components/VerifyUserDetailsModal"
 import { ReviewRequestRoleProvider } from "contexts/ReviewRequestRoleContext"
 import { SiteLaunchProvider } from "contexts/SiteLaunchContext"
 
-import EditContactUs from "layouts/EditContactUs"
-import EditNavBar from "layouts/EditNavBar"
 import EditPage from "layouts/EditPage"
+import { FeatureFlaggedContactUs } from "layouts/FeatureFlaggedContactUs"
 import { FeatureFlaggedHomepage } from "layouts/FeatureFlaggedHomepage"
+import { FeatureFlaggedNavBar } from "layouts/FeatureFlaggedNavBar"
 import { Folders } from "layouts/Folders"
 import { LoginPage } from "layouts/Login"
 import { SgidLoginCallbackPage } from "layouts/Login/SgidLoginCallbackPage"
 import { Media } from "layouts/Media"
-import NotFoundPage from "layouts/NotFoundPage"
+import { NotFoundPage } from "layouts/NotFoundPage"
 import { ResourceCategory } from "layouts/ResourceCategory"
 import { ResourceRoom } from "layouts/ResourceRoom"
 import { ReviewRequestDashboard } from "layouts/ReviewRequest/Dashboard"
@@ -84,7 +84,7 @@ export const RouteSelector = () => (
       <ProtectedRouteWithProps
         exact
         path="/sites/:siteName/navbar"
-        component={injectApprovalRedirect(EditNavBar)}
+        component={injectApprovalRedirect(FeatureFlaggedNavBar)}
       />
 
       <ProtectedRouteWithProps
@@ -128,7 +128,7 @@ export const RouteSelector = () => (
 
       <ProtectedRouteWithProps
         path="/sites/:siteName/contact-us"
-        component={injectApprovalRedirect(EditContactUs)}
+        component={injectApprovalRedirect(FeatureFlaggedContactUs)}
       />
 
       <ProtectedRouteWithProps path="/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName">
@@ -147,11 +147,6 @@ export const RouteSelector = () => (
           <ResourceRoom />
         </ApprovedReviewRedirect>
       </ProtectedRouteWithProps>
-
-      <ProtectedRouteWithProps
-        path="/sites/:siteName/navbar"
-        component={injectApprovalRedirect(EditNavBar)}
-      />
 
       <ProtectedRouteWithProps path="/sites/:siteName/settings">
         <ApprovedReviewRedirect>

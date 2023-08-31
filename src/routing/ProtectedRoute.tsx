@@ -1,11 +1,16 @@
 import { Box, Center, Spinner } from "@chakra-ui/react"
+import { useGrowthBook } from "@growthbook/growthbook-react"
 import axios from "axios"
 import _ from "lodash"
-import { Redirect, Route, RouteProps } from "react-router-dom"
+import { useEffect } from "react"
+import { Redirect, Route, RouteProps, useLocation } from "react-router-dom"
 
 import { useLoginContext } from "contexts/LoginContext"
 
 import { getDecodedParams } from "utils/decoding"
+import { getSiteNameAttributeFromPath } from "utils/growthbook"
+
+import { GBAttributes } from "types/featureFlags"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -21,7 +26,34 @@ export const ProtectedRoute = ({
   component: WrappedComponent,
   ...rest
 }: RouteProps): JSX.Element => {
-  const { displayedName, isLoading } = useLoginContext()
+  const {
+    displayedName,
+    isLoading,
+    userId,
+    userType,
+    email,
+    contactNumber,
+  } = useLoginContext()
+  const growthbook = useGrowthBook()
+  const currPath = useLocation().pathname
+  const siteNameFromPath = getSiteNameAttributeFromPath(currPath)
+
+  useEffect(() => {
+    if (growthbook) {
+      const gbAttributes: GBAttributes = {
+        userId,
+        userType,
+        email,
+        displayedName,
+        contactNumber,
+      }
+      // add siteName if it exists
+      if (siteNameFromPath && siteNameFromPath !== "") {
+        gbAttributes.siteName = siteNameFromPath
+      }
+      growthbook.setAttributes(gbAttributes)
+    }
+  }, [userId, userType, email, displayedName, contactNumber, currPath])
 
   if (isLoading) {
     return (

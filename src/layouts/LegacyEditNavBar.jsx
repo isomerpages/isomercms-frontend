@@ -1,20 +1,19 @@
 import { useDisclosure, Box, Text, HStack, VStack } from "@chakra-ui/react"
-import { DragDropContext } from "@hello-pangea/dnd"
-import { Button, Tag } from "@opengovsg/design-system-react"
+import { Button } from "@opengovsg/design-system-react"
 import update from "immutability-helper"
 import _ from "lodash"
 import PropTypes from "prop-types"
 import { useEffect, useState } from "react"
+import { DragDropContext } from "react-beautiful-dnd"
 import { useQuery } from "react-query"
 
 import { Footer } from "components/Footer"
 import Header from "components/Header"
 import { LoadingButton } from "components/LoadingButton"
+import NavSection from "components/navbar/NavSection"
 import { WarningModal } from "components/WarningModal"
 
 import { NAVIGATION_CONTENT_KEY } from "constants/queryKeys"
-
-import { EditableContextProvider } from "contexts/EditableContext"
 
 import { useUpdateNavHook } from "hooks/navHooks"
 import useRedirectHook from "hooks/useRedirectHook"
@@ -30,13 +29,6 @@ import { validateLink } from "utils/validators"
 // Import API
 import { getEditNavBarData } from "api"
 import { DEFAULT_RETRY_MSG, deslugifyDirectory, isEmpty } from "utils"
-
-import { Editable } from "./components/Editable"
-import { AddSectionButton } from "./components/Editable/AddSectionButton"
-import { FolderMenuBody } from "./components/NavBar/FolderMenuBody"
-import { GroupMenuBody } from "./components/NavBar/GroupMenuBody"
-import { PageMenuBody } from "./components/NavBar/PageMenuBody"
-import { ResourceMenuBody } from "./components/NavBar/ResourceMenuBody"
 
 const RADIX_PARSE_INT = 10
 
@@ -59,6 +51,7 @@ const EditNavBar = ({ match }) => {
     type: "",
   })
   const [resources, setResources] = useState()
+  const [hasResources, setHasResources] = useState(false)
   const [hasResourceRoom, setHasResourceRoom] = useState(false)
   const [errors, setErrors] = useState({
     links: [],
@@ -78,11 +71,6 @@ const EditNavBar = ({ match }) => {
   } = useDisclosure()
 
   const [hasChanges, setHasChanges] = useState(false)
-
-  const onDeleteClick = (id, name) => {
-    onDeleteModalOpen()
-    setItemPendingForDelete({ id, type: name })
-  }
 
   const errorToast = useErrorToast()
 
@@ -176,6 +164,7 @@ const EditNavBar = ({ match }) => {
 
       const { links: initialLinks } = navContent
 
+      let navHasResources = false
       // Add booleans for displaying links and sublinks
       const initialDisplayLinks = []
       const initialDisplaySublinks = []
@@ -190,6 +179,7 @@ const EditNavBar = ({ match }) => {
         if ("sublinks" in link) {
           numSublinks = link.sublinks.length
         }
+        if ("resource_room" in link) navHasResources = true
         if ("collection" in link && !(link.collection in foldersContent)) {
           // Invalid collection linked
           deletedDisplayText += `<br/>For link <code>${idx + 1}</code>: <br/>`
@@ -229,6 +219,7 @@ const EditNavBar = ({ match }) => {
           )
         setOriginalNav(navContent)
         setSha(navSha)
+        setHasResources(navHasResources)
         setErrors(initialErrors)
         setDeletedLinks(deletedDisplayText)
       }
@@ -327,6 +318,7 @@ const EditNavBar = ({ match }) => {
           const newLinks = update(links, {
             $push: [enumSection(value)],
           })
+          if (value === "resourceLink") setHasResources(true)
           const resetDisplayLinks = _.fill(Array(links.length), false)
           const resetDisplaySublinks = []
           links.forEach((link) => {
@@ -404,6 +396,7 @@ const EditNavBar = ({ match }) => {
       switch (elemType) {
         case "link": {
           const linkIndex = parseInt(idArray[1], RADIX_PARSE_INT)
+          if ("resource_room" in links[linkIndex]) setHasResources(false)
           const newLinks = update(links, {
             $splice: [[linkIndex, 1]],
           })
@@ -463,6 +456,47 @@ const EditNavBar = ({ match }) => {
     }
   }
 
+  const displayHandler = async (event) => {
+    try {
+      const { id } = event.target
+      const idArray = id.split("-")
+      const elemType = idArray[0]
+      switch (elemType) {
+        case "link": {
+          const linkId = idArray[1]
+          const resetDisplayLinks = _.fill(Array(links.length), false)
+          resetDisplayLinks[linkId] = !displayLinks[linkId]
+          const newDisplayLinks = update(displayLinks, {
+            $set: resetDisplayLinks,
+          })
+
+          setDisplayLinks(newDisplayLinks)
+          break
+        }
+        case "sublink": {
+          const linkId = idArray[1]
+          const sublinkId = idArray[2]
+          const resetSublinkSections = _.fill(
+            Array(displaySublinks[linkId].length),
+            false
+          )
+          resetSublinkSections[sublinkId] = !displaySublinks[linkId][sublinkId]
+          const newDisplaySublinks = update(displaySublinks, {
+            [linkId]: {
+              $set: resetSublinkSections,
+            },
+          })
+
+          setDisplaySublinks(newDisplaySublinks)
+          break
+        }
+        default:
+      }
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
   const onDragEnd = (result) => {
     const { source, destination, type } = result
 
@@ -476,88 +510,93 @@ const EditNavBar = ({ match }) => {
     )
       return
 
-    if (type === "link") {
-      const draggedLink = links[source.index]
-      const newLinks = update(links, {
-        $splice: [
-          [source.index, 1], // Remove elem from its original position
-          [destination.index, 0, draggedLink], // Splice elem into its new position
-        ],
-      })
-      const displayLinkBool = displayLinks[source.index]
-      const displaySublinkBools = displaySublinks[source.index]
-      const linkErrors = errors.links[source.index]
-      const sublinkErrors = errors.sublinks[source.index]
-      const newDisplayLinks = update(displayLinks, {
-        $splice: [
-          [source.index, 1],
-          [destination.index, 0, displayLinkBool],
-        ],
-      })
-      const newDisplaySublinks = update(displaySublinks, {
-        $splice: [
-          [source.index, 1],
-          [destination.index, 0, displaySublinkBools],
-        ],
-      })
-      const newLinkErrors = update(errors, {
-        links: {
+    switch (type) {
+      case "link": {
+        const draggedLink = links[source.index]
+        const newLinks = update(links, {
+          $splice: [
+            [source.index, 1], // Remove elem from its original position
+            [destination.index, 0, draggedLink], // Splice elem into its new position
+          ],
+        })
+        const displayLinkBool = displayLinks[source.index]
+        const displaySublinkBools = displaySublinks[source.index]
+        const linkErrors = errors.links[source.index]
+        const sublinkErrors = errors.sublinks[source.index]
+        const newDisplayLinks = update(displayLinks, {
           $splice: [
             [source.index, 1],
-            [destination.index, 0, linkErrors],
+            [destination.index, 0, displayLinkBool],
           ],
-        },
-      })
-      const newErrors = update(newLinkErrors, {
-        sublinks: {
+        })
+        const newDisplaySublinks = update(displaySublinks, {
           $splice: [
             [source.index, 1],
-            [destination.index, 0, sublinkErrors],
+            [destination.index, 0, displaySublinkBools],
           ],
-        },
-      })
-      setLinks(newLinks)
-      setDisplayLinks(newDisplayLinks)
-      setDisplaySublinks(newDisplaySublinks)
-      setErrors(newErrors)
-    }
-    if (type.startsWith("sublink-")) {
-      const idArray = source.droppableId.split("-")
-      const linkIndex = idArray[1]
-      const draggedSublink = links[linkIndex].sublinks[source.index]
-      const sublinkErrors = errors.sublinks[linkIndex][source.index]
-      const newLinks = update(links, {
-        [linkIndex]: {
-          sublinks: {
+        })
+        const newLinkErrors = update(errors, {
+          links: {
             $splice: [
               [source.index, 1],
-              [destination.index, 0, draggedSublink],
+              [destination.index, 0, linkErrors],
             ],
           },
-        },
-      })
-      const displaySublinkBool = displaySublinks[linkIndex][source.index]
-      const newDisplaySublinks = update(displaySublinks, {
-        [linkIndex]: {
-          $splice: [
-            [source.index, 1],
-            [destination.index, 0, displaySublinkBool],
-          ],
-        },
-      })
-      const newErrors = update(errors, {
-        sublinks: {
-          [linkIndex]: {
+        })
+        const newErrors = update(newLinkErrors, {
+          sublinks: {
             $splice: [
               [source.index, 1],
               [destination.index, 0, sublinkErrors],
             ],
           },
-        },
-      })
-      setLinks(newLinks)
-      setDisplaySublinks(newDisplaySublinks)
-      setErrors(newErrors)
+        })
+        setLinks(newLinks)
+        setDisplayLinks(newDisplayLinks)
+        setDisplaySublinks(newDisplaySublinks)
+        setErrors(newErrors)
+        break
+      }
+      case "sublink": {
+        const idArray = source.droppableId.split("-")
+        const linkIndex = idArray[1]
+        const draggedSublink = links[linkIndex].sublinks[source.index]
+        const sublinkErrors = errors.sublinks[linkIndex][source.index]
+        const newLinks = update(links, {
+          [linkIndex]: {
+            sublinks: {
+              $splice: [
+                [source.index, 1],
+                [destination.index, 0, draggedSublink],
+              ],
+            },
+          },
+        })
+        const displaySublinkBool = displaySublinks[linkIndex][source.index]
+        const newDisplaySublinks = update(displaySublinks, {
+          [linkIndex]: {
+            $splice: [
+              [source.index, 1],
+              [destination.index, 0, displaySublinkBool],
+            ],
+          },
+        })
+        const newErrors = update(errors, {
+          sublinks: {
+            [linkIndex]: {
+              $splice: [
+                [source.index, 1],
+                [destination.index, 0, sublinkErrors],
+              ],
+            },
+          },
+        })
+        setLinks(newLinks)
+        setDisplaySublinks(newDisplaySublinks)
+        setErrors(newErrors)
+        break
+      }
+      default:
     }
   }
 
@@ -633,215 +672,43 @@ const EditNavBar = ({ match }) => {
         />
         {hasLoaded && (
           <>
-            <EditableContextProvider
-              onDragEnd={onDragEnd}
-              onChange={onFieldChange}
-              onCreate={createHandler}
-              onDelete={onDeleteClick}
-            >
-              <HStack className={elementStyles.wrapper}>
-                <Editable.Sidebar title="Navigation Bar">
-                  <Editable.Accordion>
-                    <VStack
-                      bg="base.canvas.alt"
-                      p="1.5rem"
-                      spacing="1.5rem"
-                      alignItems="flex-start"
-                    >
-                      <VStack spacing="0.5rem" alignItems="flex-start">
-                        <Text textStyle="h5">Menu Items</Text>
-                        <Text textStyle="body-2">
-                          You can specify a folder or resource room to
-                          automatically populate its links.
-                        </Text>
-                      </VStack>
-                      <DragDropContext onDragEnd={onDragEnd}>
-                        <Editable.Droppable
-                          width="100%"
-                          editableId="link"
-                          onDragEnd={onDragEnd}
-                        >
-                          <Editable.EmptySection
-                            title="Menu items you add will appear here"
-                            subtitle="Start adding items to your navigation bar"
-                            isEmpty={links.length === 0}
-                          >
-                            <VStack p={0} spacing="1.5rem">
-                              {links.map((link, linkIndex) => (
-                                <>
-                                  {link.resource_room && (
-                                    <Editable.DraggableAccordionItem
-                                      index={linkIndex}
-                                      tag={
-                                        <Tag variant="subtle">
-                                          Resource Room
-                                        </Tag>
-                                      }
-                                      title={link.title}
-                                      isInvalid={_.some(
-                                        errors.links[linkIndex]
-                                      )}
-                                    >
-                                      <ResourceMenuBody
-                                        {...link}
-                                        index={linkIndex}
-                                        errors={errors.links[linkIndex]}
-                                      />
-                                    </Editable.DraggableAccordionItem>
-                                  )}
-                                  {link.collection && (
-                                    <Editable.DraggableAccordionItem
-                                      index={linkIndex}
-                                      tag={<Tag variant="subtle">Folder</Tag>}
-                                      title={link.title}
-                                      isInvalid={_.some(
-                                        errors.links[linkIndex]
-                                      )}
-                                    >
-                                      <FolderMenuBody
-                                        {...link}
-                                        index={linkIndex}
-                                        errors={errors.links[linkIndex]}
-                                        options={options}
-                                      />
-                                    </Editable.DraggableAccordionItem>
-                                  )}
-                                  {link.sublinks && (
-                                    <Editable.DraggableAccordionItem
-                                      index={linkIndex}
-                                      tag={
-                                        <Tag variant="subtle">Menu Group</Tag>
-                                      }
-                                      title={link.title}
-                                      isInvalid={
-                                        _.some(errors.links[linkIndex]) ||
-                                        _.some(
-                                          errors.sublinks[
-                                            linkIndex
-                                          ].map((sublink) => _.some(sublink))
-                                        )
-                                      }
-                                    >
-                                      <GroupMenuBody
-                                        {...link}
-                                        index={linkIndex}
-                                        errors={{
-                                          ...errors.links[linkIndex],
-                                          sublinks: errors.sublinks[linkIndex],
-                                        }}
-                                      />
-                                    </Editable.DraggableAccordionItem>
-                                  )}
-                                  {!link.resource_room &&
-                                    !link.collection &&
-                                    !link.sublinks && (
-                                      <Editable.DraggableAccordionItem
-                                        index={linkIndex}
-                                        tag={
-                                          <Tag variant="subtle">
-                                            Single page
-                                          </Tag>
-                                        }
-                                        title={link.title}
-                                        isInvalid={_.some(
-                                          errors.links[linkIndex]
-                                        )}
-                                      >
-                                        <PageMenuBody
-                                          {...link}
-                                          index={linkIndex}
-                                          errors={errors.links[linkIndex]}
-                                        />
-                                      </Editable.DraggableAccordionItem>
-                                    )}
-                                </>
-                              ))}
-                            </VStack>
-                          </Editable.EmptySection>
-                        </Editable.Droppable>
-                      </DragDropContext>
-                    </VStack>
-                  </Editable.Accordion>
-
-                  <Box p="1.5rem">
-                    <AddSectionButton buttonText="Add menu item">
-                      <AddSectionButton.List>
-                        {/* NOTE: Check if the site contains any collections in `options` 
-                            if it does not, prevent creation of a `folder` section
-                          */}
-                        {options && options.length > 0 && (
-                          <AddSectionButton.Option
-                            title="Folder"
-                            subtitle="Add a link to an existing Folder"
-                            onClick={() => {
-                              createHandler({
-                                target: {
-                                  id: `link-create`,
-                                  value: "collectionLink",
-                                },
-                              })
-                            }}
-                          />
-                        )}
-                        <AddSectionButton.Option
-                          title="Menu group"
-                          subtitle="Add a custom group of links to your navigation bar"
-                          onClick={() => {
-                            createHandler({
-                              target: {
-                                id: `link-create`,
-                                value: "sublinkLink",
-                              },
-                            })
-                          }}
-                        />
-                        <AddSectionButton.Option
-                          title="Single Page"
-                          subtitle="Add a link to a single page on your navigation bar"
-                          onClick={() => {
-                            createHandler({
-                              target: {
-                                id: `link-create`,
-                                value: "pageLink",
-                              },
-                            })
-                          }}
-                        />
-                        {/* NOTE: Check if the site does not contain a resource room or any sections contain `resource_room` 
-                            If either condition is fulfilled, prevent creation of a `resource_room` section */}
-                        {hasResourceRoom &&
-                          !links.some(
-                            ({ resource_room }) => !!resource_room
-                          ) && (
-                            <AddSectionButton.Option
-                              title="Resource room"
-                              subtitle="Add a link to your Resources"
-                              onClick={() => {
-                                createHandler({
-                                  target: {
-                                    id: `link-create`,
-                                    value: "resourceLink",
-                                  },
-                                })
-                              }}
-                            />
-                          )}
-                      </AddSectionButton.List>
-                    </AddSectionButton>
-                  </Box>
-                </Editable.Sidebar>
-                {/* need to change the css here */}
-                <div className={`${editorStyles.contactUsEditorMain} `}>
-                  {/* navbar content */}
-                  {/* TODO: update collectionInfo */}
-                  <TemplateNavBar
-                    links={links}
-                    collectionInfo={folderDropdowns}
-                    resources={resources}
-                  />
+            <HStack className={elementStyles.wrapper}>
+              <div className={editorStyles.homepageEditorSidebar}>
+                <div>
+                  <DragDropContext onDragEnd={onDragEnd}>
+                    <NavSection
+                      links={links}
+                      options={options}
+                      createHandler={createHandler}
+                      deleteHandler={(event) => {
+                        onDeleteModalOpen()
+                        setItemPendingForDelete({
+                          id: event.target.id,
+                          type: "Link",
+                        })
+                      }}
+                      onFieldChange={onFieldChange}
+                      displayHandler={displayHandler}
+                      displayLinks={displayLinks}
+                      displaySublinks={displaySublinks}
+                      hasResourceRoom={hasResourceRoom}
+                      hasResources={hasResources}
+                      errors={errors}
+                    />
+                  </DragDropContext>
                 </div>
-              </HStack>
-            </EditableContextProvider>
+              </div>
+              {/* need to change the css here */}
+              <div className={`${editorStyles.contactUsEditorMain} `}>
+                {/* navbar content */}
+                {/* TODO: update collectionInfo */}
+                <TemplateNavBar
+                  links={links}
+                  collectionInfo={folderDropdowns}
+                  resources={resources}
+                />
+              </div>
+            </HStack>
             <Footer>
               {!isEmpty(deletedLinks) && (
                 <Button

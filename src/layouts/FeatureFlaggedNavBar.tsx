@@ -5,18 +5,18 @@ import { FEATURE_FLAGS } from "constants/featureFlags"
 
 import { FeatureFlags } from "types/featureFlags"
 
-import EditHomepage from "./EditHomepage"
-import LegacyEditHomepage from "./LegacyEditHomepage/LegacyEditHomepage"
+import EditNavBar from "./EditNavBar"
+import LegacyEditNavBar from "./LegacyEditNavBar"
 
-export const FeatureFlaggedHomepage = (): JSX.Element => {
+export const FeatureFlaggedNavBar = (): JSX.Element => {
   const params = useParams<{ siteName: string }>()
   const shouldShowNewStyles = useFeatureIsOn<FeatureFlags>(
     FEATURE_FLAGS.STYLING_REVAMP
   )
 
   return shouldShowNewStyles ? (
-    <EditHomepage match={{ params }} />
+    <EditNavBar match={{ params }} />
   ) : (
-    <LegacyEditHomepage match={{ params }} />
+    <LegacyEditNavBar match={{ params }} />
   )
 }

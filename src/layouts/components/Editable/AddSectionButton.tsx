@@ -2,7 +2,15 @@ import { HStack, Icon, MenuItemProps, Text } from "@chakra-ui/react"
 import { Menu, MenuButtonProps } from "@opengovsg/design-system-react"
 import { BiPlus } from "react-icons/bi"
 
-export const AddSectionButton = ({ children, ...rest }: MenuButtonProps) => {
+type AddSectionButtonProps = MenuButtonProps & {
+  buttonText?: string
+}
+
+export const AddSectionButton = ({
+  buttonText,
+  children,
+  ...rest
+}: AddSectionButtonProps) => {
   return (
     <Menu isStretch>
       {({ isOpen }) => (
@@ -16,7 +24,7 @@ export const AddSectionButton = ({ children, ...rest }: MenuButtonProps) => {
           >
             <HStack spacing="0.5rem" justify="center">
               <Icon as={BiPlus} fontSize="1.5rem" />
-              <Text>Add section</Text>
+              <Text>{buttonText || "Add section"}</Text>
             </HStack>
           </Menu.Button>
           {children}

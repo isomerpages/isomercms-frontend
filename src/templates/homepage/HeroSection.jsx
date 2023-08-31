@@ -5,13 +5,12 @@
 
 import PropTypes from "prop-types"
 import { forwardRef } from "react"
-import { useQuery } from "react-query"
+
+import { useFetchPreviewMedia } from "hooks/useFetchPreviewMedia"
 
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 import { getClassNames } from "templates/utils/stylingUtils"
-
-import { fetchImageURL } from "utils"
 
 /* eslint
   react/no-array-index-key: 0
@@ -175,17 +174,10 @@ const KeyHighlights = ({ highlights }) => (
 )
 
 const TemplateHeroSection = (
-  { hero, siteName, dropdownIsActive, toggleDropdown },
+  { hero, dropdownIsActive, toggleDropdown },
   ref
 ) => {
-  const { data: loadedImageURL } = useQuery(
-    `${siteName}/${hero.background}`,
-    () => fetchImageURL(siteName, decodeURI(hero.background)),
-    {
-      refetchOnWindowFocus: false,
-      staleTime: Infinity, // Never automatically refetch image unless query is invalidated
-    }
-  )
+  const loadedImageURL = useFetchPreviewMedia(hero.background)
 
   const heroStyle = {
     // See j08691's answer at https://stackoverflow.com/questions/21388712/background-size-doesnt-work
@@ -331,7 +323,6 @@ TemplateHeroSection.propTypes = {
       })
     ),
   }).isRequired,
-  siteName: PropTypes.string.isRequired,
   dropdownIsActive: PropTypes.bool.isRequired,
   toggleDropdown: PropTypes.func.isRequired,
 }

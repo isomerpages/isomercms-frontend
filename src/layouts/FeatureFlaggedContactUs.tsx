@@ -5,18 +5,18 @@ import { FEATURE_FLAGS } from "constants/featureFlags"
 
 import { FeatureFlags } from "types/featureFlags"
 
-import EditHomepage from "./EditHomepage"
-import LegacyEditHomepage from "./LegacyEditHomepage/LegacyEditHomepage"
+import EditContactUs from "./EditContactUs"
+import LegacyEditContactUs from "./LegacyEditContactUs"
 
-export const FeatureFlaggedHomepage = (): JSX.Element => {
+export const FeatureFlaggedContactUs = (): JSX.Element => {
   const params = useParams<{ siteName: string }>()
   const shouldShowNewStyles = useFeatureIsOn<FeatureFlags>(
     FEATURE_FLAGS.STYLING_REVAMP
   )
 
   return shouldShowNewStyles ? (
-    <EditHomepage match={{ params }} />
+    <EditContactUs match={{ params }} />
   ) : (
-    <LegacyEditHomepage match={{ params }} />
+    <LegacyEditContactUs match={{ params }} />
   )
 }

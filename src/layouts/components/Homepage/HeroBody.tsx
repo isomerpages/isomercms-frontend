@@ -71,7 +71,7 @@ export const HeroBody = ({
   return (
     <>
       <Editable.Section spacing="1.25rem">
-        <FormControl>
+        <FormControl isRequired>
           <FormLabel>Notification Banner</FormLabel>
           <Input
             // TODO: Remove the `id/onChange`

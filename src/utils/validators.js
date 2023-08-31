@@ -30,16 +30,18 @@ export const TIKTOK_REGEX = ".com/@)([a-zA-Z0-9_-]+([/.])?)+$"
 export const DOMAIN_NAME_REGEX =
   "^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]\\/?$"
 export const PHONE_REGEX = "^\\+65(6|8|9)[0-9]{7}$"
+export const TOLL_FREE_PHONE_REGEX = "^1800[0-9]{7}$"
 export const PASSWORD_REGEX =
   "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$"
 const EMAIL_REGEX =
   '^(([^<>()\\[\\]\\.,;:\\s@\\"]+(\\.[^<>()\\[\\]\\.,;:\\s@\\"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z-0-9]+\\.)+[a-zA-Z]{2,}))$'
 const DATE_REGEX = "^([0-9]{4}-[0-9]{2}-[0-9]{2})$"
 const ALPHABETS_ONLY_REGEX = '^[a-zA-Z" "\\._-]+$'
-const ALPHANUMERICS_ONLY_REGEX = '^[a-zA-Z0-9" "\\._-]+$'
+const ALPHANUMERICS_ONLY_REGEX = '^[a-zA-Z0-9" "\\._\\-:]+$'
 
 export const permalinkRegexTest = RegExp(PERMALINK_REGEX)
 export const phoneRegexTest = RegExp(PHONE_REGEX)
+export const tollFreePhoneRegexText = RegExp(TOLL_FREE_PHONE_REGEX)
 export const emailRegexTest = RegExp(EMAIL_REGEX)
 export const dateRegexTest = RegExp(DATE_REGEX)
 export const alphabetsRegexTest = RegExp(ALPHABETS_ONLY_REGEX)
@@ -125,7 +127,7 @@ const CONTACT_DESCRIPTION_MAX_LENGTH = 400
 // Locations
 const LOCATION_TITLE_MIN_LENGTH = 1
 const LOCATION_TITLE_MAX_LENGTH = 30
-const LOCATION_ADDRESS_MIN_LENGTH = 2
+// const LOCATION_ADDRESS_MIN_LENGTH = 2
 const LOCATION_ADDRESS_MAX_LENGTH = 30
 const LOCATION_OPERATING_DAYS_MIN_LENGTH = 2
 const LOCATION_OPERATING_DAYS_MAX_LENGTH = 30
@@ -547,10 +549,10 @@ const validateContactType = (contactType, value) => {
   switch (contactType) {
     case "title": {
       if (value.length < CONTACT_TITLE_MIN_LENGTH) {
-        errorMessage = `Title cannot be empty.`
+        errorMessage = `Label cannot be empty`
       }
-      if (value.length > CONTACT_TITLE_MAX_LENGTH) {
-        errorMessage = `Title should be shorter than ${CONTACT_TITLE_MAX_LENGTH} characters.`
+      if (value.length >= CONTACT_TITLE_MAX_LENGTH) {
+        errorMessage = `Label should be shorter than ${CONTACT_TITLE_MAX_LENGTH} characters`
       }
       break
     }
@@ -564,20 +566,27 @@ const validateContactType = (contactType, value) => {
           !strippedValue.includes("_") &&
           !phoneRegexTest.test(strippedValue)
         ) {
-          errorMessage = `Local numbers should start with 6, 8 or 9.`
+          errorMessage = `Check that you have a valid local number`
+        }
+      } else if (_.startsWith(strippedValue, "1800")) {
+        if (
+          !strippedValue.includes("_") &&
+          !tollFreePhoneRegexText.test(strippedValue)
+        ) {
+          errorMessage = `Check that you have a valid toll-free number`
         }
       }
       break
     }
     case "email": {
       if (value && !emailRegexTest.test(value)) {
-        errorMessage = `Emails should follow the format abc@def.gh and should not contain special characters such as: ?!#\\$% ` // TODO
+        errorMessage = `Check that you have a valid email`
       }
       break
     }
     case "other": {
-      if (value.length > CONTACT_DESCRIPTION_MAX_LENGTH) {
-        errorMessage = `Description should be shorter than ${CONTACT_DESCRIPTION_MAX_LENGTH} characters.`
+      if (value.length >= CONTACT_DESCRIPTION_MAX_LENGTH) {
+        errorMessage = `Notes should be shorter than ${CONTACT_DESCRIPTION_MAX_LENGTH} characters`
       }
       break
     }
@@ -595,69 +604,64 @@ const validateLocationType = (locationType, value) => {
     case "title": {
       // Title is too short
       if (value.length < LOCATION_TITLE_MIN_LENGTH) {
-        errorMessage = `Title cannot be empty.`
+        errorMessage = `Label cannot be empty.`
       }
       // Title is too long
-      if (value.length > LOCATION_TITLE_MAX_LENGTH) {
-        errorMessage = `Title should be shorter than ${LOCATION_TITLE_MAX_LENGTH} characters.`
+      if (value.length >= LOCATION_TITLE_MAX_LENGTH) {
+        errorMessage = `Label should be shorter than ${LOCATION_TITLE_MAX_LENGTH} characters.`
       }
       break
     }
     case "maps_link": {
+      if (value.length > 0 && !value.startsWith("https://")) {
+        errorMessage = "Check that you have a valid URL"
+      }
       break
     }
     case "address": {
-      const errors = []
-      // check if in-between fields are empty e.g. field 3 is filled but field 2 is empty
       if (
-        (value[2].length && !(value[0].length && value[1].length)) ||
-        (value[1].length && !value[0].length)
+        value.some(
+          (field) => field && field.length > LOCATION_ADDRESS_MAX_LENGTH
+        )
       ) {
-        errors.push("Please do not leave in-between fields empty.")
-      } else {
-        value.forEach((field) => {
-          let error = ""
-          // if else check necessarily because we want to push an empty string if there's no error
-          if (field && field.length < LOCATION_ADDRESS_MIN_LENGTH) {
-            error = `Field should be longer than ${LOCATION_ADDRESS_MIN_LENGTH} characters.`
-          }
-          if (field && field.length > LOCATION_ADDRESS_MAX_LENGTH) {
-            error = `Field should be shorter than ${LOCATION_ADDRESS_MAX_LENGTH} characters.`
-          }
-          errors.push(error)
-        })
+        errorMessage = `Each line should be shorter than ${LOCATION_ADDRESS_MAX_LENGTH} characters.`
       }
-      errorMessage = errors
       break
     }
     // fields below are operating hours fields
     case "days": {
+      if (value.length < 1) {
+        errorMessage += `Days cannot be empty.`
+      }
       if (value && !alphabetsRegexTest.test(value)) {
-        errorMessage += `Field should only contain alphabets. `
+        errorMessage += `Days should only contain alphabets and dash (-). `
       }
       if (value && value.length < LOCATION_OPERATING_DAYS_MIN_LENGTH) {
-        errorMessage += `Field should be longer than ${LOCATION_OPERATING_DAYS_MIN_LENGTH} characters. `
+        errorMessage += `Days should be longer than ${LOCATION_OPERATING_DAYS_MIN_LENGTH} characters. `
       }
-      if (value && value.length > LOCATION_OPERATING_DAYS_MAX_LENGTH) {
-        errorMessage += `Field should be shorter than ${LOCATION_OPERATING_DAYS_MAX_LENGTH} characters. `
+      if (value && value.length >= LOCATION_OPERATING_DAYS_MAX_LENGTH) {
+        errorMessage += `Days should be shorter than ${LOCATION_OPERATING_DAYS_MAX_LENGTH} characters. `
       }
       break
     }
     case "time": {
+      if (value.length < 1) {
+        errorMessage += `Hours cannot be empty.`
+      }
       if (value && !alphanumericRegexTest.test(value)) {
-        errorMessage += `Field should only contain alphanumeric characters. `
+        errorMessage += `Hours should only contain alphanumeric characters, dash (-), colon (:), and full-stop (.). `
       }
       if (value && value.length < LOCATION_OPERATING_HOURS_MIN_LENGTH) {
-        errorMessage += `Field should be longer than ${LOCATION_OPERATING_HOURS_MIN_LENGTH} characters.`
+        errorMessage += `Hours should be longer than ${LOCATION_OPERATING_HOURS_MIN_LENGTH} characters.`
       }
-      if (value && value.length > LOCATION_OPERATING_HOURS_MAX_LENGTH) {
-        errorMessage += `Field should be shorter than ${LOCATION_OPERATING_HOURS_MAX_LENGTH} characters.`
+      if (value && value.length >= LOCATION_OPERATING_HOURS_MAX_LENGTH) {
+        errorMessage += `Hours should be shorter than ${LOCATION_OPERATING_HOURS_MAX_LENGTH} characters.`
       }
       break
     }
     case "description": {
-      if (value.length > LOCATION_OPERATING_DESCRIPTION_MAX_LENGTH) {
-        errorMessage = `Description should be shorter than ${LOCATION_OPERATING_DESCRIPTION_MAX_LENGTH} characters.`
+      if (value.length >= LOCATION_OPERATING_DESCRIPTION_MAX_LENGTH) {
+        errorMessage = `Description should be less than ${LOCATION_OPERATING_DESCRIPTION_MAX_LENGTH} characters.`
       }
       break
     }

@@ -16,12 +16,7 @@ import {
   Box,
   FlexProps,
 } from "@chakra-ui/react"
-import {
-  OnDragEndResponder,
-  Droppable,
-  DragDropContext,
-  Draggable,
-} from "@hello-pangea/dnd"
+import { Droppable, Draggable } from "@hello-pangea/dnd"
 import { IconButton } from "@opengovsg/design-system-react"
 import { PropsWithChildren } from "react"
 import { v4 as uuid } from "uuid"
@@ -115,13 +110,24 @@ const EditableSidebar = ({
 }
 
 type HomepageDroppableZone = "dropdownelem" | "leftPane" | "highlight"
+type ContactUsDroppableZone =
+  | "locations"
+  | "contacts"
+  | `locations-${number}-operating_hours`
+
+type NavDroppableZone = "link" | `sublink-${number}`
+
+type DroppableZone =
+  | HomepageDroppableZone
+  | ContactUsDroppableZone
+  | NavDroppableZone
 
 type DropInfo = {
-  droppableId: HomepageDroppableZone
+  droppableId: DroppableZone
   type: string
 }
 
-const getDroppableInfo = (editableId: HomepageDroppableZone): DropInfo => {
+const getDroppableInfo = (editableId: DroppableZone): DropInfo => {
   if (editableId === "leftPane")
     return { droppableId: editableId, type: "editor" }
   return {
@@ -130,34 +136,37 @@ const getDroppableInfo = (editableId: HomepageDroppableZone): DropInfo => {
   }
 }
 
-export interface EditableDraggableProps extends Omit<BoxProps, "onDragEnd"> {
-  onDragEnd: OnDragEndResponder
-  editableId: HomepageDroppableZone
+export interface EditableDraggableProps extends BoxProps {
+  editableId: DroppableZone
 }
+/**
+ * This component provides the drag and drop context required for its children to be draggable.
+ * Do note that anything inside this component will be able to be dragged to.
+ *
+ * This means that children of this component **can interfere** with
+ * the draggable styling even if they are not draggable themselves.
+ * @param onDragEnd this should be a drag responder that determines the order
+ * of draggables once the drag handle has been released.
+ * @param editableId this determines the zone that the child draggables will be in.
+ */
 export const EditableDroppable = ({
-  onDragEnd,
-  children,
   editableId,
+  children,
   ...rest
 }: PropsWithChildren<EditableDraggableProps>) => {
   return (
-    // NOTE: According to the dnd docs,
-    // there CANNOT be more than 1
-    // `DragDropContext` in the component tree.
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable {...getDroppableInfo(editableId)}>
-        {(droppableProvided) => (
-          <Box
-            ref={droppableProvided.innerRef}
-            {...droppableProvided.droppableProps}
-            {...rest}
-          >
-            {children}
-            {droppableProvided.placeholder}
-          </Box>
-        )}
-      </Droppable>
-    </DragDropContext>
+    <Droppable {...getDroppableInfo(editableId)}>
+      {(droppableProvided) => (
+        <Box
+          ref={droppableProvided.innerRef}
+          {...droppableProvided.droppableProps}
+          {...rest}
+        >
+          {children}
+          {droppableProvided.placeholder}
+        </Box>
+      )}
+    </Droppable>
   )
 }
 
@@ -180,6 +189,12 @@ interface EditableCardProps {
 }
 // TODO: Break this up into individual sub-components
 // that can be selectively used to create the card
+/**
+ * This component displays an accordion item that can be expanded to show its children.
+ * It is not draggable and should not be part of any `Droppable` component
+ * to avoid style clashes during drag and drop.
+ * @param isInvalid this prop determines whether the error border will be present on collapse.
+ */
 const EditableAccordionItem = ({
   title,
   children,
@@ -199,7 +214,7 @@ const EditableAccordionItem = ({
               h="-webkit-fill-available"
             />
           )}
-          {/* NOTE: Check with design on styling. 
+          {/* NOTE: Check with design on styling.
         See if entire section is button (ie, whole component hover styling)
       */}
           <AccordionButton px="1.5rem" py="3rem">
@@ -228,6 +243,14 @@ interface DraggableAccordionItemProps {
 }
 // NOTE: Separating editable/draggable
 // due to semantics on `Draggables`
+/**
+ * This component displays an accordion item that can be expanded to show its children.
+ * This component is draggable and **needs** to be part of a `Droppable` component.
+ *
+ * Take note that this component is draggable on the entire card when collapsed
+ * and that only the chevron can be used to expand this component.
+ * @param isInvalid this prop determines whether the error border will be present on collapse.
+ */
 const DraggableAccordionItem = ({
   tag,
   title,
@@ -249,6 +272,7 @@ const DraggableAccordionItem = ({
           {({ isExpanded }) => (
             <>
               <IconButton
+                pointerEvents="none"
                 position="absolute"
                 top="0.5rem"
                 left="0"

@@ -91,11 +91,46 @@ export type HomepageEditorHeroSection =
   | EditorHeroHighlightsSection
 
 export type HeroFrontmatterSection = { hero: HomepageEditorHeroSection }
+// TODO: add properties here instead of typing as `Record<string, unknown>`
+// we can find them in `HomepagePreview`
 export type ResourcesFrontmatterSection = { resources: Record<string, unknown> }
+
+// TODO: add properties here instead of typing as `Record<string, unknown>`
+// we can find them in `HomepagePreview`
+export type InfopicFrontmatterSection = {
+  infopic: Record<string, unknown>
+}
+
+// TODO: add properties here instead of typing as `Record<string, unknown>`
+// we can find them in `HomepagePreview`
+export type InfobarFrontmatterSection = {
+  infobar: Record<string, unknown>
+}
 
 export type EditorHomepageFrontmatterSection =
   | HeroFrontmatterSection
   | ResourcesFrontmatterSection
+  | InfopicFrontmatterSection
+  | InfobarFrontmatterSection
+
+export const EditorHomepageFrontmatterSection = {
+  isHero: (
+    section: EditorHomepageFrontmatterSection
+  ): section is HeroFrontmatterSection =>
+    !!(section as HeroFrontmatterSection).hero,
+  isResources: (
+    section: EditorHomepageFrontmatterSection
+  ): section is ResourcesFrontmatterSection =>
+    !!(section as ResourcesFrontmatterSection).resources,
+  isInfopic: (
+    section: EditorHomepageFrontmatterSection
+  ): section is InfopicFrontmatterSection =>
+    !!(section as InfopicFrontmatterSection).infopic,
+  isInfobar: (
+    section: EditorHomepageFrontmatterSection
+  ): section is InfobarFrontmatterSection =>
+    !!(section as InfobarFrontmatterSection).infobar,
+}
 
 export interface EditorHomepageState {
   frontMatter: Omit<HomepageDto["content"]["frontMatter"], "sections"> & {
