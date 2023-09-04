@@ -53,7 +53,7 @@ export const LocationCard = ({
   return (
     <Editable.DraggableAccordionItem
       index={index}
-      title={frontMatter.title || "New Location"}
+      title={frontMatter.title || "New location"}
       draggableId={`locations-${index}`}
       isInvalid={getHasErrors(errors)}
     >
@@ -227,7 +227,7 @@ export const LocationCard = ({
                             colorScheme="critical"
                             mt="0.5rem"
                           >
-                            Remove operating hours
+                            Delete operating hours
                           </Button>
                         </Editable.Section>
                       </Editable.DraggableAccordionItem>
@@ -240,6 +240,7 @@ export const LocationCard = ({
         </DragDropContext>
 
         <AddSectionButton
+          mt="0.5rem"
           w="100%"
           id={`locations-${index}-add_operating_hours`}
           buttonText="Add operating hours"
