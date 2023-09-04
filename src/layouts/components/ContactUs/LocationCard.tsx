@@ -7,7 +7,6 @@ import {
   Input,
 } from "@opengovsg/design-system-react"
 import _ from "lodash"
-import { ChangeEvent } from "react"
 import { BiInfoCircle } from "react-icons/bi"
 
 import { useEditableContext } from "contexts/EditableContext"
