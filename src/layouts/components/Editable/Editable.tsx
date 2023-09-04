@@ -72,9 +72,9 @@ export const EmptySection = ({
     >
       {image}
       <Text
+        textStyle="subhead-1"
         textColor="base.content.strong"
         textAlign="center"
-        lineHeight="1.75rem"
       >
         {title}
       </Text>
