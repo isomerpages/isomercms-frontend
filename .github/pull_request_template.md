@@ -14,7 +14,11 @@ Closes [insert issue #]
 
 - [ ] Yes - this PR contains breaking changes
   - Details ...
-- [ ] No - this PR is backwards compatible
+- No - this PR is backwards compatible with ALL of the following feature flags
+  - [ ] ggs_whitelisted_repos
+  - [ ] styles
+  - [ ] REACT_APP_IS_SITE_PRIVATISATION_ACTIVE
+  - [ ] REACT_APP_SITE_LAUNCH_FEATURE_WHITELISTED_REPOS
 
 **Features**:
 
