@@ -87,28 +87,28 @@ const EditNavBar = ({ match }) => {
   const errorToast = useErrorToast()
 
   const LinkCollectionSectionConstructor = () => ({
-    title: "Menu Title",
+    title: "New folder",
     collection: collections[0],
   })
 
   const LinkResourceSectionConstructor = () => ({
-    title: "Menu Title",
+    title: "New resource room",
     resource_room: true,
   })
 
   const LinkPageSectionConstructor = () => ({
-    title: "Menu Title",
+    title: "New single page",
     url: "/permalink",
   })
 
   const LinkSublinkSectionConstructor = () => ({
-    title: "Menu Title",
+    title: "New menu group",
     url: "/permalink",
     sublinks: [],
   })
 
   const SublinkSectionConstructor = () => ({
-    title: "Submenu Title",
+    title: "New submenu",
     url: "/permalink",
   })
 
