@@ -710,7 +710,7 @@ const EditNavBar = ({ match }) => {
                                     <Editable.DraggableAccordionItem
                                       index={linkIndex}
                                       tag={
-                                        <Tag variant="subtle">Menu Group</Tag>
+                                        <Tag variant="subtle">Menu group</Tag>
                                       }
                                       title={link.title}
                                       isInvalid={

@@ -50,7 +50,7 @@ export const FolderMenuBody = ({
   return (
     <Editable.Section>
       <FormControl isRequired isInvalid={!!errors.title}>
-        <FormLabel>Menu Item Name</FormLabel>
+        <FormLabel>Menu item name</FormLabel>
         <Input
           placeholder="This is displayed on the navigation bar"
           id={`link-${index}-title`}

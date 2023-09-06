@@ -26,7 +26,7 @@ export const PageMenuBody = ({ title, url, index, errors }: PagesBodyProps) => {
   return (
     <Editable.Section>
       <FormControl isRequired isInvalid={!!errors.title}>
-        <FormLabel>Menu Item Name</FormLabel>
+        <FormLabel>Menu item name</FormLabel>
         <Input
           placeholder="This is displayed on the navigation bar"
           id={`link-${index}-title`}
@@ -38,7 +38,7 @@ export const PageMenuBody = ({ title, url, index, errors }: PagesBodyProps) => {
       <FormControl isRequired isInvalid={!!errors.url}>
         <FormLabel>Destination</FormLabel>
         <Input
-          placeholder="/permalink"
+          placeholder="Enter a /page-url or link for this menu item"
           id={`link-${index}-url`}
           value={url}
           onChange={onChange}

@@ -40,7 +40,7 @@ export const GroupMenuBody = ({
   return (
     <Editable.Section>
       <FormControl isRequired isInvalid={!!errors.title}>
-        <FormLabel>Menu Group Name</FormLabel>
+        <FormLabel>Menu group name</FormLabel>
         <Input
           placeholder="This is displayed on the navigation bar"
           id={`link-${index}-title`}
@@ -52,7 +52,7 @@ export const GroupMenuBody = ({
       <FormControl isRequired isInvalid={!!errors.url}>
         <FormLabel>Destination</FormLabel>
         <Input
-          placeholder="/permalink"
+          placeholder="Enter a /page-url or link for this menu item"
           id={`link-${index}-url`}
           value={url}
           onChange={onChange}
@@ -89,7 +89,7 @@ export const GroupMenuBody = ({
                             isRequired
                             isInvalid={!!errors.sublinks[sublinkIndex].title}
                           >
-                            <FormLabel>Submenu Name</FormLabel>
+                            <FormLabel>Submenu name</FormLabel>
                             <Input
                               placeholder="New menu group"
                               id={`sublink-${index}-${sublinkIndex}-title`}
@@ -106,7 +106,7 @@ export const GroupMenuBody = ({
                           >
                             <FormLabel>Destination</FormLabel>
                             <Input
-                              placeholder="/permalink"
+                              placeholder="Enter a /page-url or link for this menu item"
                               id={`sublink-${index}-${sublinkIndex}-url`}
                               value={sublink.url}
                               onChange={onChange}
