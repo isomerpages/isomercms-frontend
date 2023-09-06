@@ -938,7 +938,7 @@ const EditHomepage = ({ match }) => {
                               {({ currentSelectedOption }) =>
                                 currentSelectedOption === "dropdown" ? (
                                   <HeroDropdownSection
-                                    {...section.hero}
+                                    {...section.hero.dropdown}
                                     state={section.hero}
                                     errors={errors}
                                   />
