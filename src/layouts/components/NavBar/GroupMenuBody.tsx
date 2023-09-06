@@ -40,7 +40,7 @@ export const GroupMenuBody = ({
   return (
     <Editable.Section>
       <FormControl isRequired isInvalid={!!errors.title}>
-        <FormLabel>Menu Group Name</FormLabel>
+        <FormLabel>Menu group name</FormLabel>
         <Input
           placeholder="This is displayed on the navigation bar"
           id={`link-${index}-title`}
@@ -52,7 +52,7 @@ export const GroupMenuBody = ({
       <FormControl isRequired isInvalid={!!errors.url}>
         <FormLabel>Destination</FormLabel>
         <Input
-          placeholder="This subtitle appears above the title"
+          placeholder="Enter a /page-url or link for this menu item"
           id={`link-${index}-url`}
           value={url}
           onChange={onChange}
@@ -60,9 +60,11 @@ export const GroupMenuBody = ({
         <FormErrorMessage>{errors.url}</FormErrorMessage>
       </FormControl>
       <FormControl isRequired pt="0.5rem">
-        <FormLabel mb="0.5rem">Submenus</FormLabel>
-        <Text textStyle="caption-2" mb="1.5rem">
-          Cards are displayed side by side on a desktop screen
+        <FormLabel mb="0.5rem" textStyle="h6">
+          Submenus
+        </FormLabel>
+        <Text textStyle="body-2" mb="1.5rem">
+          Cards are displayed side by side on a desktop screens
         </Text>
         <DragDropContext onDragEnd={onDragEnd}>
           <Editable.Droppable width="100%" editableId={`sublink-${index}`}>
@@ -87,7 +89,7 @@ export const GroupMenuBody = ({
                             isRequired
                             isInvalid={!!errors.sublinks[sublinkIndex].title}
                           >
-                            <FormLabel>Submenu Name</FormLabel>
+                            <FormLabel>Submenu name</FormLabel>
                             <Input
                               placeholder="New menu group"
                               id={`sublink-${index}-${sublinkIndex}-title`}
@@ -104,7 +106,7 @@ export const GroupMenuBody = ({
                           >
                             <FormLabel>Destination</FormLabel>
                             <Input
-                              placeholder="/permalink"
+                              placeholder="Enter a /page-url or link for this menu item"
                               id={`sublink-${index}-${sublinkIndex}-url`}
                               value={sublink.url}
                               onChange={onChange}
