@@ -135,7 +135,7 @@ export const LocationCard = ({
               <Editable.Accordion>
                 {/* Note: contentEditable is required to stop drag and drop
                     from hitting the first level drag and drop */}
-                <VStack p={0} spacing="1.125rem" contentEditable>
+                <VStack p={0} spacing="0.75rem" contentEditable>
                   {frontMatter.operating_hours.map(
                     (operatingHour, operatingHourIndex) => (
                       <Editable.DraggableAccordionItem
@@ -145,9 +145,9 @@ export const LocationCard = ({
                         isInvalid={_.some(
                           errors.operating_hours[operatingHourIndex]
                         )}
+                        isNested
                       >
                         <Editable.Section mt="-0.5rem">
-                          {/* Operating hours days */}
                           <FormControl
                             isRequired
                             isInvalid={
