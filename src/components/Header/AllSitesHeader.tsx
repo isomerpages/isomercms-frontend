@@ -28,7 +28,7 @@ export const AllSitesHeader = (): JSX.Element => {
       <Flex w="180px" justifyContent="center">
         <Image
           src={`${process.env.PUBLIC_URL}/img/logo.svg`}
-          alt="Isomer CMS logo"
+          alt="IsomerCMS logo"
         />
       </Flex>
       <Spacer />
