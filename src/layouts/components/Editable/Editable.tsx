@@ -223,15 +223,15 @@ const EditableAccordionItem = ({
           {/* NOTE: Check with design on styling.
         See if entire section is button (ie, whole component hover styling)
       */}
-          <AccordionButton px="1.5rem" py="2.125rem">
+          <AccordionButton px="1.5rem" py="2.25rem">
             <Flex flex="1" flexDir="column">
-              <Text textStyle="h6" textAlign="left" mt="0.25rem" noOfLines={1}>
+              <Text textStyle="h6" textAlign="left" noOfLines={1}>
                 {title}
               </Text>
             </Flex>
             <AccordionIcon />
           </AccordionButton>
-          <AccordionPanel pb={4}>{children}</AccordionPanel>
+          <AccordionPanel pb="2.25rem">{children}</AccordionPanel>
         </>
       )}
     </BaseAccordionItem>
@@ -307,6 +307,7 @@ const DraggableAccordionItem = ({
                 pb={isExpanded ? "0rem" : "0.88rem"}
                 _hover={{
                   bgColor: isExpanded ? "none" : "interaction.muted.main.hover",
+                  borderRadius: "0.5rem",
                 }}
               >
                 <Flex

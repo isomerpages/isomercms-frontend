@@ -1058,7 +1058,7 @@ const EditHomepage = ({ match }) => {
                         as otherwise, when dragging, 
                         the component will appear over the button
                     */}
-                <Box p="1.5rem">
+                <Box px="1.5rem">
                   <AddSectionButton>
                     <AddSectionButton.List>
                       <AddSectionButton.Option

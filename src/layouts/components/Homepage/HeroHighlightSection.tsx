@@ -170,7 +170,7 @@ export const HeroHighlightSection = ({
                             colorScheme="critical"
                             mt="1rem"
                           >
-                            Delete option
+                            Delete highlight
                           </Button>
                         </Editable.Section>
                       </Editable.DraggableAccordionItem>
@@ -190,7 +190,7 @@ export const HeroHighlightSection = ({
         leftIcon={<BiPlus fontSize="1.5rem" />}
         isDisabled={highlights.length >= MAX_HIGHLIGHTS}
       >
-        Add option
+        Add highlight
       </Button>
     </Box>
   )

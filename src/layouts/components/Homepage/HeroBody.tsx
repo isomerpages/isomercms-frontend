@@ -113,7 +113,7 @@ export const HeroBody = ({
           />
           <FormErrorMessage>{errors.subtitle}</FormErrorMessage>
         </FormControl>
-        <Box>
+        <Box w="100%">
           {/* TODO: migrate this to design system components */}
           <FormContext
             hasError={!!errors.background}
