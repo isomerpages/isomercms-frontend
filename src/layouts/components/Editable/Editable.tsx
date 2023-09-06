@@ -71,7 +71,13 @@ export const EmptySection = ({
       justifyContent="center"
     >
       {image}
-      <Text>{title}</Text>
+      <Text
+        textStyle="subhead-1"
+        textColor="base.content.strong"
+        textAlign="center"
+      >
+        {title}
+      </Text>
       <Text
         textStyle="caption-2"
         textColor="base.content.medium"
@@ -97,7 +103,6 @@ const EditableSidebar = ({
       bg="base.canvas.alt"
       width="450px"
       overflowY="scroll"
-      pb="100px"
       // NOTE: We reserve 80px **each** for
       // both the header and the footer
       h="calc(100vh - 160px - 1rem)"
@@ -217,7 +222,7 @@ const EditableAccordionItem = ({
           {/* NOTE: Check with design on styling.
         See if entire section is button (ie, whole component hover styling)
       */}
-          <AccordionButton px="1.5rem" py="3rem">
+          <AccordionButton px="1.5rem" py="2.125rem">
             <Flex flex="1" flexDir="column">
               <Text textStyle="h6" textAlign="left" mt="0.25rem" noOfLines={1}>
                 {title}

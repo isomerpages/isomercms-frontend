@@ -36,7 +36,7 @@ export const GeneralInfoSection = ({
       title="General Information"
       isInvalid={!!errors.agency_name || !!errors.feedback}
     >
-      <Editable.Section spacing="1.25rem">
+      <Editable.Section spacing="1.25rem" pb="1.25rem">
         <FormControl isRequired isInvalid={!!errors.agency_name}>
           <FormLabel>Name of Organisation / Agency</FormLabel>
           <Input
@@ -69,8 +69,8 @@ export const GeneralInfoSection = ({
               />
               <Text textStyle="caption-2" color="base.content.medium">
                 <Text as="span">
-                  This is optional and appears at the bottom of your screen. If
-                  you don&apos;t have a feedback form, you can use
+                  This is optional and appears at the bottom of your Contact Us
+                  page. If you don&apos;t have a feedback form, you can use
                 </Text>
                 <Text as="span" fontWeight="bold">
                   {" "}
