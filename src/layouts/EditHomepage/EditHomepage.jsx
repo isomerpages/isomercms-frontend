@@ -160,7 +160,6 @@ const EditHomepage = ({ match }) => {
     setDisplayHighlights(displayHighlights)
   }
   const heroSection = frontMatter.sections.filter((section) => !!section.hero)
-  const errorMessages = getErrorsFromHomepageState(homepageState)
 
   const errorToast = useErrorToast()
 
@@ -1093,7 +1092,13 @@ const EditHomepage = ({ match }) => {
               />
             </HStack>
             <Footer>
-              {errorMessages.some((message) => message.includes("longer")) && (
+              {/* NOTE: We have to call this method twice because `homepageState` isn't guaranteed to be loaded
+                  if we put the declaration out of the components.
+                  This is because we have a blocking conditional `isLoaded` that gets set only after data is fetched.
+              */}
+              {getErrorsFromHomepageState(homepageState).some((message) =>
+                message.includes("longer")
+              ) && (
                 <Text
                   mr="0.25rem"
                   textStyle="body-2"
@@ -1104,7 +1109,7 @@ const EditHomepage = ({ match }) => {
                 </Text>
               )}
               <LoadingButton
-                isDisabled={errorMessages.length > 0}
+                isDisabled={getErrorsFromHomepageState(homepageState)}
                 onClick={savePage}
               >
                 Save
