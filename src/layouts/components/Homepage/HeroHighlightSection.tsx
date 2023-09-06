@@ -190,7 +190,7 @@ export const HeroHighlightSection = ({
         leftIcon={<BiPlus fontSize="1.5rem" />}
         isDisabled={highlights.length >= MAX_HIGHLIGHTS}
       >
-        Add option
+        Add highlight
       </Button>
     </Box>
   )
