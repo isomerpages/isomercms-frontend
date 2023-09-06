@@ -307,6 +307,7 @@ const DraggableAccordionItem = ({
                 pb={isExpanded ? "0rem" : "0.88rem"}
                 _hover={{
                   bgColor: isExpanded ? "none" : "interaction.muted.main.hover",
+                  borderRadius: "0.5rem",
                 }}
               >
                 <Flex
