@@ -23,7 +23,6 @@ export interface HeroDropdownFormFields {
 interface HeroDropdownSectionProps {
   errors: {
     dropdownElems: HeroDropdownFormFields[]
-    title: string
     dropdown: string
   }
   state: EditorHeroDropdownSection
