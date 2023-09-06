@@ -15,9 +15,10 @@ const NavDropdownSection = ({ children, link }) => (
 
 const TemplateNavBar = ({ links, collectionInfo, resources }) => (
   <nav className="navbar is-transparent flex-fill">
-    <div className="bp-container">
+    <div className="bp-container is-flex">
       <div className="bp-container is-fluid margin--none navbar-menu h-100">
         <div className="navbar-start">
+          <div className="navbar-item sub-link" />
           {links.map((link, linkIndex) => {
             if (link.collection) {
               return (
