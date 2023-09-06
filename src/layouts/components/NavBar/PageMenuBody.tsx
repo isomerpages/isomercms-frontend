@@ -38,7 +38,7 @@ export const PageMenuBody = ({ title, url, index, errors }: PagesBodyProps) => {
       <FormControl isRequired isInvalid={!!errors.url}>
         <FormLabel>Destination</FormLabel>
         <Input
-          placeholder="This subtitle appears above the title"
+          placeholder="/permalink"
           id={`link-${index}-url`}
           value={url}
           onChange={onChange}

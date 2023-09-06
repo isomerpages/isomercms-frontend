@@ -52,7 +52,7 @@ export const GroupMenuBody = ({
       <FormControl isRequired isInvalid={!!errors.url}>
         <FormLabel>Destination</FormLabel>
         <Input
-          placeholder="This subtitle appears above the title"
+          placeholder="/permalink"
           id={`link-${index}-url`}
           value={url}
           onChange={onChange}
