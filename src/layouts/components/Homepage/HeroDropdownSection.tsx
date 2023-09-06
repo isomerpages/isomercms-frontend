@@ -52,6 +52,7 @@ export const HeroDropdownSection = ({
             <Input
               placeholder="This is a button"
               value={title}
+              onBlur={onChange}
               onChange={onChange}
             />
             <FormErrorMessage>{errors.dropdown}</FormErrorMessage>
@@ -96,6 +97,7 @@ export const HeroDropdownSection = ({
                               placeholder="Dropdown option title"
                               id={`dropdownelem-${dropdownOptionIndex}-title`}
                               value={optionTitle}
+                              onBlur={onChange}
                               onChange={onChange}
                             />
                             <FormErrorMessage>
@@ -113,6 +115,7 @@ export const HeroDropdownSection = ({
                               placeholder="Insert /page-url or https://"
                               id={`dropdownelem-${dropdownOptionIndex}-url`}
                               value={optionUrl}
+                              onBlur={onChange}
                               onChange={onChange}
                             />
                             <FormErrorMessage>

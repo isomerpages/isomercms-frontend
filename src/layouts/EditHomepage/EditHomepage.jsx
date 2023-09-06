@@ -56,7 +56,7 @@ import {
   RESOURCES_SECTION,
 } from "./constants"
 import { HomepagePreview } from "./HomepagePreview"
-import { getErrorValues } from "./utils"
+import { getDefaultValues, getErrorsFromHomepageState } from "./utils"
 
 /* eslint-disable react/no-array-index-key */
 
@@ -78,51 +78,23 @@ const getHasError = (errorArray) =>
     _.some(err, (errorMessage) => errorMessage.length > 0)
   )
 
-const getHasErrors = (errors) => {
-  const hasSectionErrors = _.some(errors.sections, (section) => {
-    // Section is an object, e.g. { hero: {} }
-    // _.keys(section) produces an array with length 1
-    // The 0th element of the array contains the sectionType
-    const sectionType = _.keys(section)[0]
-    return (
-      _.some(
-        section[sectionType],
-        (errorMessage) => errorMessage.length > 0
-      ) === true
-    )
-  })
-
-  const hasHighlightErrors = getHasError(errors.highlights)
-  const hasDropdownElemErrors = getHasError(errors.dropdownElems)
-
-  return hasSectionErrors || hasHighlightErrors || hasDropdownElemErrors
-}
-
 // Constants
 // Section constructors
 // TODO: Export all these as const and write wrapper for error...
 
-const enumSection = (type, isError) => {
+const enumSection = (type) => {
   switch (type) {
     case "resources":
-      return isError
-        ? { resources: getErrorValues(RESOURCES_SECTION) }
-        : { resources: RESOURCES_SECTION }
+      return { resources: getDefaultValues(RESOURCES_SECTION) }
 
     case "infobar":
-      return isError
-        ? { infobar: getErrorValues(INFOBAR_SECTION) }
-        : { infobar: INFOBAR_SECTION }
+      return { infobar: getDefaultValues(INFOBAR_SECTION) }
 
     case "infopic":
-      return isError
-        ? { infopic: getErrorValues(INFOPIC_SECTION) }
-        : { infopic: INFOPIC_SECTION }
+      return { infopic: getDefaultValues(INFOPIC_SECTION) }
 
     default:
-      return isError
-        ? { infobar: getErrorValues(INFOBAR_SECTION) }
-        : { infobar: INFOBAR_SECTION }
+      return { infobar: getDefaultValues(INFOBAR_SECTION) }
   }
 }
 
@@ -188,6 +160,7 @@ const EditHomepage = ({ match }) => {
     setDisplayHighlights(displayHighlights)
   }
   const heroSection = frontMatter.sections.filter((section) => !!section.hero)
+  const errorMessages = getErrorsFromHomepageState(homepageState)
 
   const errorToast = useErrorToast()
 
@@ -238,14 +211,14 @@ const EditHomepage = ({ match }) => {
               )
               // Fill in dropdown elem errors array
               dropdownElemsErrors = _.map(dropdown.options, () =>
-                getErrorValues(DROPDOWN_ELEMENT_SECTION)
+                getDefaultValues(DROPDOWN_ELEMENT_SECTION)
               )
             }
             if (keyHighlights) {
               displayHighlights = _.fill(Array(keyHighlights.length), false)
               // Fill in highlights errors array
               highlightsErrors = _.map(keyHighlights, () =>
-                getErrorValues(KEY_HIGHLIGHT_SECTION)
+                getDefaultValues(KEY_HIGHLIGHT_SECTION)
               )
             }
             // Fill in sectionErrors for hero
@@ -255,16 +228,16 @@ const EditHomepage = ({ match }) => {
           // Check if there is already a resources section
           if (section.resources) {
             sectionsErrors.push({
-              resources: getErrorValues(RESOURCES_SECTION),
+              resources: getDefaultValues(RESOURCES_SECTION),
             })
           }
 
           if (section.infobar) {
-            sectionsErrors.push({ infobar: getErrorValues(INFOBAR_SECTION) })
+            sectionsErrors.push({ infobar: getDefaultValues(INFOBAR_SECTION) })
           }
 
           if (section.infopic) {
-            sectionsErrors.push({ infopic: getErrorValues(INFOPIC_SECTION) })
+            sectionsErrors.push({ infopic: getDefaultValues(INFOPIC_SECTION) })
           }
 
           // Minimize all sections by default
@@ -536,8 +509,8 @@ const EditHomepage = ({ match }) => {
 
       switch (elemType) {
         case "section": {
-          const val = enumSection(value, false)
-          const err = enumSection(value, true)
+          const val = enumSection(value)
+          const err = enumSection(value)
 
           const newScrollRefs = update(scrollRefs, { $push: [createRef()] })
 
@@ -553,8 +526,8 @@ const EditHomepage = ({ match }) => {
           break
         }
         case "dropdownelem": {
-          const val = DROPDOWN_ELEMENT_SECTION
-          const err = getErrorValues(DROPDOWN_ELEMENT_SECTION)
+          const val = getDefaultValues(DROPDOWN_ELEMENT_SECTION)
+          const err = getDefaultValues(DROPDOWN_ELEMENT_SECTION)
 
           const updatedHomepageState = onCreate(
             homepageState,
@@ -569,8 +542,9 @@ const EditHomepage = ({ match }) => {
         case "highlight": {
           // depends on index to generate
           // If key highlights section exists
-          const val = KEY_HIGHLIGHT_SECTION
-          const err = getErrorValues(KEY_HIGHLIGHT_SECTION)
+          const val = getDefaultValues(KEY_HIGHLIGHT_SECTION)
+          const err = getDefaultValues(KEY_HIGHLIGHT_SECTION)
+
           const updatedHomepageState = onCreate(
             homepageState,
             elemType,
@@ -1119,8 +1093,18 @@ const EditHomepage = ({ match }) => {
               />
             </HStack>
             <Footer>
+              {errorMessages.some((message) => message.includes("longer")) && (
+                <Text
+                  mr="0.25rem"
+                  textStyle="body-2"
+                  textColor="base.content.medium"
+                >
+                  You have blocks without content. Please add content to your
+                  empty blocks before saving.
+                </Text>
+              )}
               <LoadingButton
-                isDisabled={getHasErrors(errors)}
+                isDisabled={errorMessages.length > 0}
                 onClick={savePage}
               >
                 Save

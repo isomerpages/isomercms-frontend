@@ -25,7 +25,6 @@ interface InfopicFormFields {
 
 interface InfopicBodyProps extends InfopicFormFields {
   index: number
-  onClick: () => void
   errors: InfopicFormFields & { image: string }
   image: string
 }
@@ -33,7 +32,6 @@ interface InfopicBodyProps extends InfopicFormFields {
 export const InfopicBody = ({
   errors,
   index,
-  onClick,
   title,
   subtitle,
   description,
@@ -53,6 +51,7 @@ export const InfopicBody = ({
           id={`section-${index}-infopic-subtitle`}
           value={subtitle}
           onChange={onChange}
+          onBlur={onChange}
         />
         <FormErrorMessage>{errors.subtitle}</FormErrorMessage>
       </FormControl>
@@ -63,6 +62,7 @@ export const InfopicBody = ({
           id={`section-${index}-infopic-title`}
           value={title}
           onChange={onChange}
+          onBlur={onChange}
         />
         <FormErrorMessage>{errors.title}</FormErrorMessage>
       </FormControl>
@@ -72,6 +72,7 @@ export const InfopicBody = ({
           placeholder="This paragraph appears below the title and conveys information"
           id={`section-${index}-infopic-description`}
           value={description}
+          onBlur={onChange}
           onChange={onChange}
         />
         <FormErrorMessage>{errors.description}</FormErrorMessage>
@@ -82,6 +83,7 @@ export const InfopicBody = ({
           placeholder="This is a button at the bottom of the infopic"
           id={`section-${index}-infopic-button`}
           value={button}
+          onBlur={onChange}
           onChange={onChange}
         />
         <FormErrorMessage>{errors.button}</FormErrorMessage>
@@ -92,6 +94,7 @@ export const InfopicBody = ({
           placeholder="Insert /page-url or https://"
           id={`section-${index}-infopic-url`}
           value={url}
+          onBlur={onChange}
           onChange={onChange}
         />
         <FormErrorMessage>{errors.url}</FormErrorMessage>
@@ -115,6 +118,7 @@ export const InfopicBody = ({
           placeholder="Add a descriptive text about the image"
           id={`section-${index}-infopic-alt`}
           value={alt}
+          onBlur={onChange}
           onChange={onChange}
         />
         <FormErrorMessage>{errors.alt}</FormErrorMessage>

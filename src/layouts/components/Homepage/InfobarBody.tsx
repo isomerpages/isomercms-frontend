@@ -43,6 +43,7 @@ export const InfobarBody = ({
           placeholder="This subtitle appears above the title"
           id={`section-${index}-infobar-subtitle`}
           value={subtitle}
+          onBlur={onChange}
           onChange={onChange}
         />
         <FormErrorMessage>{errors.subtitle}</FormErrorMessage>
@@ -53,6 +54,7 @@ export const InfobarBody = ({
           placeholder="Your infobar title goes here"
           id={`section-${index}-infobar-title`}
           value={title}
+          onBlur={onChange}
           onChange={onChange}
         />
         <FormErrorMessage>{errors.title}</FormErrorMessage>
@@ -63,6 +65,7 @@ export const InfobarBody = ({
           placeholder="This paragraph appears below the title and conveys information"
           id={`section-${index}-infobar-description`}
           value={description}
+          onBlur={onChange}
           onChange={onChange}
         />
         <FormErrorMessage>{errors.description}</FormErrorMessage>
@@ -73,6 +76,7 @@ export const InfobarBody = ({
           placeholder="This is a button"
           id={`section-${index}-infobar-button`}
           value={button}
+          onBlur={onChange}
           onChange={onChange}
         />
         <FormErrorMessage>{errors.button}</FormErrorMessage>
@@ -83,6 +87,7 @@ export const InfobarBody = ({
           placeholder="Insert /page-url or https://"
           id={`section-${index}-infobar-url`}
           value={url}
+          onBlur={onChange}
           onChange={onChange}
         />
         <FormErrorMessage>{errors.url}</FormErrorMessage>

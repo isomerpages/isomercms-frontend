@@ -12,7 +12,15 @@ import { getClassNames } from "templates/utils/stylingUtils"
  */
 
 const TemplateInfopicRightSection = (
-  { title, subtitle, description, button, sectionIndex, imageUrl, imageAlt },
+  {
+    title,
+    subtitle,
+    description,
+    button,
+    sectionIndex,
+    image: imageUrl,
+    alt: imageAlt,
+  },
   ref
 ) => {
   const addDefaultSrc = (e) => {
@@ -243,13 +251,7 @@ TemplateInfopicRightSection.propTypes = {
   subtitle: PropTypes.string,
   description: PropTypes.string,
   button: PropTypes.string,
-  imageUrl: PropTypes.string,
-  imageAlt: PropTypes.string,
+  image: PropTypes.string,
+  alt: PropTypes.string,
   sectionIndex: PropTypes.number.isRequired,
-}
-
-TemplateInfopicRightSection.defaultProps = {
-  title: undefined,
-  subtitle: undefined,
-  description: undefined,
 }

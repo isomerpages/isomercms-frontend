@@ -53,6 +53,7 @@ export const HeroHighlightSection = ({
                 id="section-0-hero-button"
                 placeholder="This is a button"
                 value={button}
+                onBlur={onChange}
                 onChange={onChange}
               />
               {/* TODO: Validate button.  
@@ -65,6 +66,7 @@ export const HeroHighlightSection = ({
               <Input
                 placeholder="Insert /page-url or https://"
                 value={url}
+                onBlur={onChange}
                 onChange={onChange}
                 id="section-0-hero-url"
               />
@@ -114,6 +116,7 @@ export const HeroHighlightSection = ({
                               placeholder="Highlight title"
                               id={`highlight-${highlightIndex}-title`}
                               value={highlightTitle}
+                              onBlur={onChange}
                               onChange={onChange}
                             />
                             <FormErrorMessage>
@@ -131,6 +134,7 @@ export const HeroHighlightSection = ({
                               placeholder="Highlight description"
                               id={`highlight-${highlightIndex}-description`}
                               value={highlightDescription}
+                              onBlur={onChange}
                               onChange={onChange}
                             />
                             <FormErrorMessage>
@@ -146,6 +150,7 @@ export const HeroHighlightSection = ({
                               placeholder="Insert /page-url or https://"
                               id={`highlight-${highlightIndex}-url`}
                               value={highlightUrl}
+                              onBlur={onChange}
                               onChange={onChange}
                             />
                             <FormErrorMessage>

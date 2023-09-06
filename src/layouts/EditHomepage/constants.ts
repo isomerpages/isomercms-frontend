@@ -1,6 +1,7 @@
 export const RESOURCES_SECTION = {
   title: "Resources",
   subtitle: "Add a preview and link to your Resource Room",
+  button: "",
   id: "resources",
 } as const
 

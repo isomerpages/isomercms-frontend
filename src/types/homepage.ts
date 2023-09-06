@@ -1,4 +1,4 @@
-import type { IterableElement } from "type-fest"
+import type { IterableElement, SetOptional } from "type-fest"
 
 export type DropdownOption = {
   title: string
@@ -49,7 +49,7 @@ export interface InfopicSection {
   description?: string
   button?: string
   url?: string
-  images?: string
+  image?: string
   alt?: string
 }
 
@@ -91,20 +91,14 @@ export type HomepageEditorHeroSection =
   | EditorHeroHighlightsSection
 
 export type HeroFrontmatterSection = { hero: HomepageEditorHeroSection }
-// TODO: add properties here instead of typing as `Record<string, unknown>`
-// we can find them in `HomepagePreview`
-export type ResourcesFrontmatterSection = { resources: Record<string, unknown> }
+export type ResourcesFrontmatterSection = { resources: ResourcesSection }
 
-// TODO: add properties here instead of typing as `Record<string, unknown>`
-// we can find them in `HomepagePreview`
 export type InfopicFrontmatterSection = {
-  infopic: Record<string, unknown>
+  infopic: InfopicSection
 }
 
-// TODO: add properties here instead of typing as `Record<string, unknown>`
-// we can find them in `HomepagePreview`
 export type InfobarFrontmatterSection = {
-  infobar: Record<string, unknown>
+  infobar: InfobarSection
 }
 
 export type EditorHomepageFrontmatterSection =
@@ -148,10 +142,22 @@ export interface EditorHomepageState {
 
 export interface EditorHeroDropdownSection {
   dropdown: {
-    options: Partial<DropdownOption>[]
+    options: SetOptional<DropdownOption, "url">[]
   }
 }
 
 export interface EditorHeroHighlightsSection {
-  key_highlights: []
+  key_highlights: SetOptional<HighlightOption, "url">[]
+}
+
+export const isHighlightSection = (
+  heroSection: HomepageEditorHeroSection
+): heroSection is EditorHeroHighlightsSection => {
+  return !!(heroSection as EditorHeroHighlightsSection).key_highlights
+}
+
+export const isDropdownSection = (
+  heroSection: HomepageEditorHeroSection
+): heroSection is EditorHeroDropdownSection => {
+  return !!(heroSection as EditorHeroDropdownSection).dropdown
 }
