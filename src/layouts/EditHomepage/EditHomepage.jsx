@@ -1109,7 +1109,9 @@ const EditHomepage = ({ match }) => {
                 </Text>
               )}
               <LoadingButton
-                isDisabled={getErrorsFromHomepageState(homepageState)}
+                isDisabled={
+                  getErrorsFromHomepageState(homepageState).length > 0
+                }
                 onClick={savePage}
               >
                 Save
