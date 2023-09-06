@@ -1,4 +1,4 @@
-import { Flex } from "@chakra-ui/react"
+import { HStack } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import PropTypes from "prop-types"
 
@@ -16,7 +16,7 @@ const FormMediaInput = ({
   const { isRequired, isDisabled } = useFormContext()
 
   return (
-    <Flex>
+    <HStack spacing="0.5rem">
       <FormInput
         placeholder={placeholder}
         value={value}
@@ -30,7 +30,7 @@ const FormMediaInput = ({
           {inlineButtonText}
         </Button>
       )}
-    </Flex>
+    </HStack>
   )
 }
 
