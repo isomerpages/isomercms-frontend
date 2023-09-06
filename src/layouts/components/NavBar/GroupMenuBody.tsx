@@ -60,9 +60,11 @@ export const GroupMenuBody = ({
         <FormErrorMessage>{errors.url}</FormErrorMessage>
       </FormControl>
       <FormControl isRequired pt="0.5rem">
-        <FormLabel mb="0.5rem">Submenus</FormLabel>
-        <Text textStyle="caption-2" mb="1.5rem">
-          Cards are displayed side by side on a desktop screen
+        <FormLabel mb="0.5rem" textStyle="h6">
+          Submenus
+        </FormLabel>
+        <Text textStyle="body-2" mb="1.5rem">
+          Cards are displayed side by side on a desktop screens
         </Text>
         <DragDropContext onDragEnd={onDragEnd}>
           <Editable.Droppable width="100%" editableId={`sublink-${index}`}>
