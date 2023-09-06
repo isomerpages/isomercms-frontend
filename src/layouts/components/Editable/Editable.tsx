@@ -223,9 +223,9 @@ const EditableAccordionItem = ({
           {/* NOTE: Check with design on styling.
         See if entire section is button (ie, whole component hover styling)
       */}
-          <AccordionButton px="1.5rem" py="2.125rem">
+          <AccordionButton px="1.5rem" py="2.25rem">
             <Flex flex="1" flexDir="column">
-              <Text textStyle="h6" textAlign="left" mt="0.25rem" noOfLines={1}>
+              <Text textStyle="h6" textAlign="left" noOfLines={1}>
                 {title}
               </Text>
             </Flex>
