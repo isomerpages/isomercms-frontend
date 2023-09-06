@@ -133,9 +133,7 @@ export const LocationCard = ({
               isEmpty={frontMatter.operating_hours.length === 0}
             >
               <Editable.Accordion>
-                {/* Note: contentEditable is required to stop drag and drop
-                    from hitting the first level drag and drop */}
-                <VStack p={0} spacing="0.75rem" contentEditable>
+                <VStack p={0} spacing="1.125rem">
                   {frontMatter.operating_hours.map(
                     (operatingHour, operatingHourIndex) => (
                       <Editable.DraggableAccordionItem

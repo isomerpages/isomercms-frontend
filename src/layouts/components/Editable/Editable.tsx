@@ -319,7 +319,7 @@ const DraggableAccordionItem = ({
           borderRadius={isNested ? "0.375rem" : "0.5rem"}
           {...draggableProvided.draggableProps}
           ref={draggableProvided.innerRef}
-          {...draggableProvided.dragHandleProps}
+          boxShadow="sm"
           position="relative"
         >
           {({ isExpanded }) => (
@@ -379,6 +379,7 @@ const DraggableAccordionItem = ({
                   borderRadius: isNested ? "0.375rem" : "0.5rem",
                 }}
                 bgColor="none"
+                {...draggableProvided.dragHandleProps}
               >
                 {isNested && (
                   <IconButton
