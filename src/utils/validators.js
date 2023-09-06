@@ -359,7 +359,7 @@ const validateInfobarSectionFields = (field, value) => {
     case "description": {
       // Description is too short
       if (value.length <= INFOBAR_DESCRIPTION_MIN_LENGTH) {
-        return `Ddescription should be longer than ${INFOBAR_DESCRIPTION_MIN_LENGTH} characters.`
+        return `Description should be longer than ${INFOBAR_DESCRIPTION_MIN_LENGTH} characters.`
       }
       // Description is too long
       if (getLengthWithoutTags(value) >= INFOBAR_DESCRIPTION_MAX_LENGTH) {
@@ -940,6 +940,7 @@ export {
   validateLink,
   validateHighlight,
   validateHighlights,
+  validateHeroSectionFields,
   validateDropdownElem,
   validateDropdownElems,
   validateSection,
