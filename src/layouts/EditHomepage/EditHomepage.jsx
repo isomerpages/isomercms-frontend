@@ -939,7 +939,11 @@ const EditHomepage = ({ match }) => {
                                   <HeroDropdownSection
                                     {...section.hero.dropdown}
                                     state={section.hero}
-                                    errors={errors}
+                                    errors={{
+                                      ...errors,
+                                      dropdown:
+                                        errors.sections[0].hero.dropdown,
+                                    }}
                                   />
                                 ) : (
                                   <HeroHighlightSection
