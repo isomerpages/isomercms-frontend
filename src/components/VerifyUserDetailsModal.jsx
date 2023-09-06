@@ -189,7 +189,7 @@ const VerifyUserDetailsModal = () => {
           <>
             <div>
               In order to improve security, a verified email is now required for
-              all users of Isomer CMS. Only <b>.gov.sg</b> or{" "}
+              all users of IsomerCMS. Only <b>.gov.sg</b> or{" "}
               <b>whitelisted email addresses</b> will be accepted. You must
               verify your email before proceeding.{" "}
               <Link isExternal href={IDENTITY_GUIDE_LINK}>

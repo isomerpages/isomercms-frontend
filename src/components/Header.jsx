@@ -110,7 +110,7 @@ const Header = ({
             <Box w="180px">
               <img
                 src={`${process.env.PUBLIC_URL}/img/logo.svg`}
-                alt="Isomer CMS logo"
+                alt="IsomerCMS logo"
               />
             </Box>
           ) : (
