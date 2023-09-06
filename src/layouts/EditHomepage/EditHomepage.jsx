@@ -56,7 +56,11 @@ import {
   RESOURCES_SECTION,
 } from "./constants"
 import { HomepagePreview } from "./HomepagePreview"
-import { getDefaultValues, getErrorsFromHomepageState } from "./utils"
+import {
+  getDefaultValues,
+  getErrorsFromHomepageState,
+  validateButton,
+} from "./utils"
 
 /* eslint-disable react/no-array-index-key */
 
@@ -321,24 +325,15 @@ const EditHomepage = ({ match }) => {
 
           // Set special error message if hero button has text but hero url is empty
           // This needs to be done separately because it relies on the state of another field
-          if (
-            field === "url" &&
-            !value &&
-            frontMatter.sections[sectionIndex][sectionType].button &&
-            (frontMatter.sections[sectionIndex][sectionType].button || value)
-          ) {
-            const errorMessage = "Please specify a URL for your button"
+          if (field === "url" || field === "button") {
+            const buttonError = validateButton(
+              field,
+              frontMatter.sections[sectionIndex][sectionType],
+              sectionType,
+              value
+            )
             newSectionError = _.cloneDeep(errors.sections[sectionIndex])
-            newSectionError[sectionType][field] = errorMessage
-          } else if (
-            field === "button" &&
-            !frontMatter.sections[sectionIndex][sectionType].url &&
-            (value || frontMatter.sections[sectionIndex][sectionType].url) &&
-            sectionType !== "resources"
-          ) {
-            const errorMessage = "Please specify a URL for your button"
-            newSectionError = _.cloneDeep(errors.sections[sectionIndex])
-            newSectionError[sectionType].url = errorMessage
+            newSectionError[sectionType].url = buttonError
           } else {
             newSectionError = validateSections(
               _.cloneDeep(errors.sections[sectionIndex]),
@@ -941,13 +936,15 @@ const EditHomepage = ({ match }) => {
                                     state={section.hero}
                                     errors={{
                                       ...errors,
-                                      dropdown:
-                                        errors.sections[0].hero.dropdown,
+                                      ...errors.sections[0].hero,
                                     }}
                                   />
                                 ) : (
                                   <HeroHighlightSection
-                                    errors={errors}
+                                    errors={{
+                                      ...errors,
+                                      ...errors.sections[0].hero,
+                                    }}
                                     highlights={section.hero.key_highlights}
                                   />
                                 )
