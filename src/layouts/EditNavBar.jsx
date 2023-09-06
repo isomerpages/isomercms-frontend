@@ -763,7 +763,7 @@ const EditNavBar = ({ match }) => {
                     </VStack>
                   </Editable.Accordion>
 
-                  <Box p="1.5rem">
+                  <Box px="1.5rem">
                     <AddSectionButton buttonText="Add menu item">
                       <AddSectionButton.List>
                         {/* NOTE: Check if the site contains any collections in `options` 
