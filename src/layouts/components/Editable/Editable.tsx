@@ -362,7 +362,7 @@ const DraggableAccordionItem = ({
                   orientation="vertical"
                   left={0}
                   position="absolute"
-                  borderLeftRadius={isNested ? "0.25rem" : "0.5rem"}
+                  borderLeftRadius={isNested ? "0.375rem" : "0.5rem"}
                   h="-webkit-fill-available"
                 />
               )}
