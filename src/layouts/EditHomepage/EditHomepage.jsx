@@ -1097,8 +1097,9 @@ const EditHomepage = ({ match }) => {
                   if we put the declaration out of the components.
                   This is because we have a blocking conditional `isLoaded` that gets set only after data is fetched.
               */}
-              {getErrorsFromHomepageState(homepageState).some((message) =>
-                message.includes("longer")
+              {getErrorsFromHomepageState(homepageState).some(
+                (message) =>
+                  message.includes("longer") || message.includes("specify")
               ) && (
                 <Text
                   mr="0.25rem"

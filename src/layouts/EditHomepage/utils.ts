@@ -87,7 +87,7 @@ export const getErrorsFromHomepageState = ({
   const heroFieldErrors = _(heroSection)
     .omit(["key_highlights", "dropdown"])
     .mapValues((val, key) => validateHeroSectionFields(key, val))
-    .values()
+    .filter()
     .value()
 
   // NOTE: Section is an object keyed by the section type
