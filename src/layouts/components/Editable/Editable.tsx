@@ -103,6 +103,7 @@ const EditableSidebar = ({
       bg="base.canvas.alt"
       width="450px"
       overflowY="scroll"
+      pb="1.5rem"
       // NOTE: We reserve 80px **each** for
       // both the header and the footer
       h="calc(100vh - 160px - 1rem)"
