@@ -231,7 +231,7 @@ const EditableAccordionItem = ({
             </Flex>
             <AccordionIcon />
           </AccordionButton>
-          <AccordionPanel pb={4}>{children}</AccordionPanel>
+          <AccordionPanel pb="2.25rem">{children}</AccordionPanel>
         </>
       )}
     </BaseAccordionItem>
