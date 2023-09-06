@@ -270,7 +270,7 @@ const NavSection = ({
           </div>
         )}
       </Droppable>
-      <Box d-flex justify-content-between mt="2rem">
+      <Box mt="2rem" mb="1rem">
         <Select
           ref={selectInputRef}
           className="w-50"
