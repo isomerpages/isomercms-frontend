@@ -56,7 +56,7 @@ import {
   RESOURCES_SECTION,
 } from "./constants"
 import { HomepagePreview } from "./HomepagePreview"
-import { getDefaultValues, getHasErrorFromHomepageState } from "./utils"
+import { getDefaultValues, getErrorsFromHomepageState } from "./utils"
 
 /* eslint-disable react/no-array-index-key */
 
@@ -160,6 +160,7 @@ const EditHomepage = ({ match }) => {
     setDisplayHighlights(displayHighlights)
   }
   const heroSection = frontMatter.sections.filter((section) => !!section.hero)
+  const errorMessages = getErrorsFromHomepageState(homepageState)
 
   const errorToast = useErrorToast()
 
@@ -1092,8 +1093,18 @@ const EditHomepage = ({ match }) => {
               />
             </HStack>
             <Footer>
+              {errorMessages.some((message) => message.includes("longer")) && (
+                <Text
+                  mr="0.25rem"
+                  textStyle="body-2"
+                  textColor="base.content.medium"
+                >
+                  You have blocks without content. Please add content to your
+                  empty blocks before saving.
+                </Text>
+              )}
               <LoadingButton
-                isDisabled={getHasErrorFromHomepageState(homepageState)}
+                isDisabled={errorMessages.length > 0}
                 onClick={savePage}
               >
                 Save
