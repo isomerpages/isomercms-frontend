@@ -652,15 +652,15 @@ const validateLink = (linkType, value) => {
   switch (linkType) {
     case "title":
       if (value.length < LINK_TITLE_MIN_LENGTH) {
-        errorMessage = `Title cannot be empty.`
+        errorMessage = `Title cannot be empty`
       }
       if (value.length > LINK_TITLE_MAX_LENGTH) {
-        errorMessage = `Title should be shorter than ${LINK_TITLE_MAX_LENGTH} characters.`
+        errorMessage = `Title should be shorter than ${LINK_TITLE_MAX_LENGTH} characters`
       }
       break
     case "url":
       if (value.length < LINK_URL_MIN_LENGTH) {
-        errorMessage = `Permalink cannot be empty.`
+        errorMessage = `Permalink cannot be empty`
       }
       break
     default:
