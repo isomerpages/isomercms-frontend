@@ -102,7 +102,9 @@ export const InfopicBody = ({
           onFieldChange={onChange}
           isRequired
         >
-          <FormTitle>Image</FormTitle>
+          <Box mb="0.75rem">
+            <FormTitle>Image</FormTitle>
+          </Box>
           <FormFieldMedia
             value={image}
             id={`section-${index}-infopic-image`}

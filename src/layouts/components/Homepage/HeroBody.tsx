@@ -120,7 +120,7 @@ export const HeroBody = ({
             onFieldChange={onChange}
             isRequired
           >
-            <Box mb="0.5rem">
+            <Box mb="0.75rem">
               <FormTitle>Hero background image</FormTitle>
             </Box>
             <FormFieldMedia
