@@ -76,8 +76,7 @@ export const GroupMenuBody = ({
               <Editable.Accordion>
                 <VStack p={0} spacing="1.25rem">
                   {sublinks.map((sublink, sublinkIndex) => (
-                    // Note: contentEditable is required to stop drag and drop from hitting the first level drag and drop
-                    <VStack contentEditable w="100%">
+                    <VStack w="100%">
                       <Editable.DraggableAccordionItem
                         draggableId={`sublink-${index}-${sublinkIndex}-draggable`}
                         index={sublinkIndex}
