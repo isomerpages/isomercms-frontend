@@ -269,15 +269,17 @@ const HeroSideSectionLayout = ({
 type HeroBannerLayouts = typeof HERO_LAYOUTS[keyof typeof HERO_LAYOUTS]["value"]
 
 interface HeroLayoutFormProps {
+  variant: HeroBannerLayouts
   children: (props: {
     currentSelectedOption: HeroBannerLayouts
   }) => React.ReactNode
 }
 
-const HeroLayoutForm = ({ children }: HeroLayoutFormProps): JSX.Element => {
-  const [currentLayout, setCurrentLayout] = useState<HeroBannerLayouts>(
-    HERO_LAYOUTS.CENTERED.value
-  )
+const HeroLayoutForm = ({
+  variant,
+  children,
+}: HeroLayoutFormProps): JSX.Element => {
+  const { onChange } = useEditableContext()
 
   return (
     <VStack spacing="1rem" align="flex-start" w="100%">
@@ -287,14 +289,22 @@ const HeroLayoutForm = ({ children }: HeroLayoutFormProps): JSX.Element => {
         <SingleSelect
           isClearable={false}
           name="hero layout options"
-          value={currentLayout}
+          value={variant}
           items={_.values(HERO_LAYOUTS)}
           // NOTE: Safe cast - the possible values are given by `HERO_LAYOUTS`
-          onChange={(val) => setCurrentLayout(val as HeroBannerLayouts)}
+          onChange={(val) => {
+            onChange({
+              target: {
+                // NOTE: Format is field type, index, section type, field
+                id: "section-0-hero-variant",
+                value: val as HeroBannerLayouts,
+              },
+            })
+          }}
         />
       </FormControl>
       <VStack spacing="1rem" w="100%">
-        {children({ currentSelectedOption: currentLayout })}
+        {children({ currentSelectedOption: variant })}
       </VStack>
     </VStack>
   )
@@ -315,9 +325,11 @@ interface HeroBodyProps extends HeroBodyFormFields {
     currentSelectedOption: HeroSectionType
   }) => React.ReactNode
   initialSectionType: HeroSectionType
+  variant: HeroBannerLayouts
 }
 
 export const HeroBody = ({
+  variant = "center",
   handleHighlightDropdownToggle,
   notification,
   children,
@@ -355,7 +367,7 @@ export const HeroBody = ({
           </Flex>
         </FormControl>
         <Divider my="0.25rem" />
-        <HeroLayoutForm>
+        <HeroLayoutForm variant={variant}>
           {({ currentSelectedOption }) => {
             if (currentSelectedOption === HERO_LAYOUTS.CENTERED.value) {
               return <HeroCenteredLayout {...rest} />
