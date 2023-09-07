@@ -69,7 +69,7 @@ export const HeroDropdownSection = ({
               subtitle="Add options to allow users to quickly navigate your site"
               isEmpty={state.dropdown.options.length === 0}
             >
-              <Editable.Section px={0} spacing="1.25rem" py="1.5rem">
+              <Editable.Section px={0} spacing="0.75rem" py="1.5rem">
                 {state.dropdown.options.map(
                   (
                     { title: optionTitle, url: optionUrl },
@@ -131,7 +131,6 @@ export const HeroDropdownSection = ({
                             alignSelf="center"
                             variant="clear"
                             colorScheme="critical"
-                            mt="1rem"
                           >
                             Delete option
                           </Button>

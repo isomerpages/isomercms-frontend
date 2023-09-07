@@ -133,7 +133,7 @@ export const LocationCard = ({
               isEmpty={frontMatter.operating_hours.length === 0}
             >
               <Editable.Accordion>
-                <VStack p={0} spacing="1.125rem">
+                <VStack p={0} spacing="0.75rem">
                   {frontMatter.operating_hours.map(
                     (operatingHour, operatingHourIndex) => (
                       <Editable.DraggableAccordionItem
@@ -222,7 +222,6 @@ export const LocationCard = ({
                             }
                             alignSelf="center"
                             colorScheme="critical"
-                            mt="0.5rem"
                           >
                             Delete operating hours
                           </Button>

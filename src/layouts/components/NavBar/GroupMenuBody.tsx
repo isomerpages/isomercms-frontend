@@ -74,64 +74,62 @@ export const GroupMenuBody = ({
               isEmpty={sublinks.length === 0}
             >
               <Editable.Accordion>
-                <VStack p={0} spacing="1.25rem">
+                <VStack p={0} spacing="0.75rem">
                   {sublinks.map((sublink, sublinkIndex) => (
-                    <VStack w="100%">
-                      <Editable.DraggableAccordionItem
-                        draggableId={`sublink-${index}-${sublinkIndex}-draggable`}
-                        index={sublinkIndex}
-                        title={sublink.title}
-                        isInvalid={_.some(errors.sublinks[sublinkIndex])}
-                        isNested
-                      >
-                        <Editable.Section mt="-0.5rem">
-                          <FormControl
-                            isRequired
-                            isInvalid={!!errors.sublinks[sublinkIndex].title}
-                          >
-                            <FormLabel>Submenu name</FormLabel>
-                            <Input
-                              placeholder="New menu group"
-                              id={`sublink-${index}-${sublinkIndex}-title`}
-                              value={sublink.title}
-                              onChange={onChange}
-                            />
-                            <FormErrorMessage>
-                              {errors.sublinks[sublinkIndex].title}
-                            </FormErrorMessage>
-                          </FormControl>
-                          <FormControl
-                            isRequired
-                            isInvalid={!!errors.sublinks[sublinkIndex].url}
-                          >
-                            <FormLabel>Destination</FormLabel>
-                            <Input
-                              placeholder="Enter a /page-url or link for this menu item"
-                              id={`sublink-${index}-${sublinkIndex}-url`}
-                              value={sublink.url}
-                              onChange={onChange}
-                            />
-                            <FormErrorMessage>
-                              {errors.sublinks[sublinkIndex].url}
-                            </FormErrorMessage>
-                          </FormControl>
-                          <Button
-                            id={`section-${index}-${sublinkIndex}`}
-                            onClick={() =>
-                              onDelete(
-                                `sublink-${index}-${sublinkIndex}`,
-                                "Submenu"
-                              )
-                            }
-                            alignSelf="center"
-                            variant="clear"
-                            colorScheme="critical"
-                          >
-                            Delete submenu
-                          </Button>
-                        </Editable.Section>
-                      </Editable.DraggableAccordionItem>
-                    </VStack>
+                    <Editable.DraggableAccordionItem
+                      draggableId={`sublink-${index}-${sublinkIndex}-draggable`}
+                      index={sublinkIndex}
+                      title={sublink.title}
+                      isInvalid={_.some(errors.sublinks[sublinkIndex])}
+                      isNested
+                    >
+                      <Editable.Section mt="-0.5rem">
+                        <FormControl
+                          isRequired
+                          isInvalid={!!errors.sublinks[sublinkIndex].title}
+                        >
+                          <FormLabel>Submenu name</FormLabel>
+                          <Input
+                            placeholder="New menu group"
+                            id={`sublink-${index}-${sublinkIndex}-title`}
+                            value={sublink.title}
+                            onChange={onChange}
+                          />
+                          <FormErrorMessage>
+                            {errors.sublinks[sublinkIndex].title}
+                          </FormErrorMessage>
+                        </FormControl>
+                        <FormControl
+                          isRequired
+                          isInvalid={!!errors.sublinks[sublinkIndex].url}
+                        >
+                          <FormLabel>Destination</FormLabel>
+                          <Input
+                            placeholder="Enter a /page-url or link for this menu item"
+                            id={`sublink-${index}-${sublinkIndex}-url`}
+                            value={sublink.url}
+                            onChange={onChange}
+                          />
+                          <FormErrorMessage>
+                            {errors.sublinks[sublinkIndex].url}
+                          </FormErrorMessage>
+                        </FormControl>
+                        <Button
+                          id={`section-${index}-${sublinkIndex}`}
+                          onClick={() =>
+                            onDelete(
+                              `sublink-${index}-${sublinkIndex}`,
+                              "Submenu"
+                            )
+                          }
+                          alignSelf="center"
+                          variant="clear"
+                          colorScheme="critical"
+                        >
+                          Delete submenu
+                        </Button>
+                      </Editable.Section>
+                    </Editable.DraggableAccordionItem>
                   ))}
                 </VStack>
               </Editable.Accordion>
