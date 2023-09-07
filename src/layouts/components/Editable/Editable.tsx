@@ -368,7 +368,7 @@ const DraggableAccordionItem = ({
               <Flex
                 pt={isNested ? "0.375rem" : "1.88rem"}
                 pb={!isExpanded && !isNested ? "0.88rem" : "0rem"}
-                role="group"
+                data-group
                 _hover={{
                   bgColor: getDraggableAccordionItemStyle({
                     item: "hover-bgColor",
@@ -432,6 +432,9 @@ const DraggableAccordionItem = ({
                         isNested,
                         isInvalid,
                       }),
+                    }}
+                    _groupFocus={{
+                      color: "base.content.strong",
                     }}
                   >
                     {title}
