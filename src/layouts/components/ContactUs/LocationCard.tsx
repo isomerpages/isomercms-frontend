@@ -222,7 +222,6 @@ export const LocationCard = ({
                             }
                             alignSelf="center"
                             colorScheme="critical"
-                            mt="0.5rem"
                           >
                             Delete operating hours
                           </Button>

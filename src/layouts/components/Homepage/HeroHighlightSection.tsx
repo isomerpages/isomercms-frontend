@@ -164,7 +164,6 @@ export const HeroHighlightSection = ({
                             alignSelf="center"
                             variant="clear"
                             colorScheme="critical"
-                            mt="1rem"
                           >
                             Delete highlight
                           </Button>

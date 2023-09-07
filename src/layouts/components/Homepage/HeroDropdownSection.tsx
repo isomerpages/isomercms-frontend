@@ -131,7 +131,6 @@ export const HeroDropdownSection = ({
                             alignSelf="center"
                             variant="clear"
                             colorScheme="critical"
-                            mt="1rem"
                           >
                             Delete option
                           </Button>
