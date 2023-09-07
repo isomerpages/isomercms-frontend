@@ -1,4 +1,4 @@
-import { FormControl } from "@chakra-ui/react"
+import { FormControl, Box } from "@chakra-ui/react"
 import {
   Button,
   FormErrorMessage,
@@ -96,19 +96,21 @@ export const InfopicBody = ({
         />
         <FormErrorMessage>{errors.url}</FormErrorMessage>
       </FormControl>
-      <FormContext
-        hasError={!!errors.image}
-        onFieldChange={onChange}
-        isRequired
-      >
-        <FormTitle>Image</FormTitle>
-        <FormFieldMedia
-          value={image}
-          id={`section-${index}-infopic-image`}
-          inlineButtonText="Browse"
-        />
-        <FormError>{errors.image}</FormError>
-      </FormContext>
+      <Box w="100%">
+        <FormContext
+          hasError={!!errors.image}
+          onFieldChange={onChange}
+          isRequired
+        >
+          <FormTitle>Image</FormTitle>
+          <FormFieldMedia
+            value={image}
+            id={`section-${index}-infopic-image`}
+            inlineButtonText="Browse"
+          />
+          <FormError>{errors.image}</FormError>
+        </FormContext>
+      </Box>
       <FormControl isRequired isInvalid={!!errors.alt}>
         <FormLabel>Alt text</FormLabel>
         <Input
