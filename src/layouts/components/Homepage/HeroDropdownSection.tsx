@@ -83,6 +83,7 @@ export const HeroDropdownSection = ({
                         isInvalid={_.some(
                           errors.dropdownElems[dropdownOptionIndex]
                         )}
+                        isNested
                       >
                         <Editable.Section>
                           <FormControl
