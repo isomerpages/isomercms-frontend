@@ -446,9 +446,7 @@ const DraggableAccordionItem = ({
                   <AccordionIcon />
                 </AccordionButton>
               </Flex>
-              <AccordionPanel pb={4} pt={isNested ? "18px" : "auto"}>
-                {children}
-              </AccordionPanel>
+              <AccordionPanel pb={4}>{children}</AccordionPanel>
             </Box>
           )}
         </BaseAccordionItem>
