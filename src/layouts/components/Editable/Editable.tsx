@@ -319,13 +319,12 @@ const DraggableAccordionItem = ({
           borderRadius={isNested ? "0.375rem" : "0.5rem"}
           {...draggableProvided.draggableProps}
           ref={draggableProvided.innerRef}
-          boxShadow="sm"
+          boxShadow={isNested ? "" : "sm"}
           position="relative"
         >
           {({ isExpanded }) => (
             <Box
               borderRadius={isNested ? "0.375rem" : "0.5rem"}
-              boxShadow={isNested ? "" : "sm"}
               bgColor={
                 isExpanded && isNested
                   ? "base.canvas.brand-subtle"

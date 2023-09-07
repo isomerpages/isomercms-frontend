@@ -82,6 +82,7 @@ export const GroupMenuBody = ({
                         index={sublinkIndex}
                         title={sublink.title}
                         isInvalid={_.some(errors.sublinks[sublinkIndex])}
+                        isNested
                       >
                         <Editable.Section mt="-0.5rem">
                           <FormControl

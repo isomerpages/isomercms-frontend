@@ -232,7 +232,6 @@ export const ContactCard = ({
 
         <Button
           variant="clear"
-          w="100%"
           id={`contacts-${index}`}
           onClick={() => onDelete(`contacts-${index}`, "contact information")}
           alignSelf="center"

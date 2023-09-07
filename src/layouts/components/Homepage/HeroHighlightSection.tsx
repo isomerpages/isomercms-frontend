@@ -101,6 +101,7 @@ export const HeroHighlightSection = ({
                         draggableId={`highlight-${highlightIndex}-draggable`}
                         index={highlightIndex}
                         isInvalid={_.some(errors.highlights[highlightIndex])}
+                        isNested
                       >
                         <Editable.Section>
                           <FormControl

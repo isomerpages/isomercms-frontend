@@ -252,7 +252,6 @@ export const LocationCard = ({
 
         <Button
           variant="clear"
-          w="100%"
           id={`locations-${index}`}
           onClick={() => onDelete(`locations-${index}`, "location")}
           alignSelf="center"
