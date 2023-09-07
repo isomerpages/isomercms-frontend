@@ -87,28 +87,28 @@ const EditNavBar = ({ match }) => {
   const errorToast = useErrorToast()
 
   const LinkCollectionSectionConstructor = () => ({
-    title: "Menu Title",
+    title: "New folder",
     collection: collections[0],
   })
 
   const LinkResourceSectionConstructor = () => ({
-    title: "Menu Title",
+    title: "New resource room",
     resource_room: true,
   })
 
   const LinkPageSectionConstructor = () => ({
-    title: "Menu Title",
+    title: "New single page",
     url: "/permalink",
   })
 
   const LinkSublinkSectionConstructor = () => ({
-    title: "Menu Title",
+    title: "New menu group",
     url: "/permalink",
     sublinks: [],
   })
 
   const SublinkSectionConstructor = () => ({
-    title: "Submenu Title",
+    title: "New submenu",
     url: "/permalink",
   })
 
@@ -710,7 +710,7 @@ const EditNavBar = ({ match }) => {
                                     <Editable.DraggableAccordionItem
                                       index={linkIndex}
                                       tag={
-                                        <Tag variant="subtle">Menu Group</Tag>
+                                        <Tag variant="subtle">Menu group</Tag>
                                       }
                                       title={link.title}
                                       isInvalid={
@@ -763,7 +763,7 @@ const EditNavBar = ({ match }) => {
                     </VStack>
                   </Editable.Accordion>
 
-                  <Box p="1.5rem">
+                  <Box px="1.5rem">
                     <AddSectionButton buttonText="Add menu item">
                       <AddSectionButton.List>
                         {/* NOTE: Check if the site contains any collections in `options` 

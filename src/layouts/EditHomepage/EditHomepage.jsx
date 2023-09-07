@@ -964,13 +964,19 @@ const EditHomepage = ({ match }) => {
                               {({ currentSelectedOption }) =>
                                 currentSelectedOption === "dropdown" ? (
                                   <HeroDropdownSection
-                                    {...section.hero}
+                                    {...section.hero.dropdown}
                                     state={section.hero}
-                                    errors={errors}
+                                    errors={{
+                                      ...errors,
+                                      ...errors.sections[0].hero,
+                                    }}
                                   />
                                 ) : (
                                   <HeroHighlightSection
-                                    errors={errors}
+                                    errors={{
+                                      ...errors,
+                                      ...errors.sections[0].hero,
+                                    }}
                                     highlights={section.hero.key_highlights}
                                   />
                                 )
@@ -1084,7 +1090,7 @@ const EditHomepage = ({ match }) => {
                         as otherwise, when dragging, 
                         the component will appear over the button
                     */}
-                <Box p="1.5rem">
+                <Box px="1.5rem">
                   <AddSectionButton>
                     <AddSectionButton.List>
                       <AddSectionButton.Option

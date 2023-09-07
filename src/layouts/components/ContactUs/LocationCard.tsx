@@ -7,7 +7,6 @@ import {
   Input,
 } from "@opengovsg/design-system-react"
 import _ from "lodash"
-import { ChangeEvent } from "react"
 import { BiInfoCircle } from "react-icons/bi"
 
 import { useEditableContext } from "contexts/EditableContext"
@@ -53,7 +52,7 @@ export const LocationCard = ({
   return (
     <Editable.DraggableAccordionItem
       index={index}
-      title={frontMatter.title || "New Location"}
+      title={frontMatter.title || "New location"}
       draggableId={`locations-${index}`}
       isInvalid={getHasErrors(errors)}
     >
@@ -134,9 +133,7 @@ export const LocationCard = ({
               isEmpty={frontMatter.operating_hours.length === 0}
             >
               <Editable.Accordion>
-                {/* Note: contentEditable is required to stop drag and drop
-                    from hitting the first level drag and drop */}
-                <VStack p={0} spacing="1.125rem" contentEditable>
+                <VStack p={0} spacing="0.75rem">
                   {frontMatter.operating_hours.map(
                     (operatingHour, operatingHourIndex) => (
                       <Editable.DraggableAccordionItem
@@ -146,9 +143,9 @@ export const LocationCard = ({
                         isInvalid={_.some(
                           errors.operating_hours[operatingHourIndex]
                         )}
+                        isNested
                       >
                         <Editable.Section mt="-0.5rem">
-                          {/* Operating hours days */}
                           <FormControl
                             isRequired
                             isInvalid={
@@ -225,9 +222,8 @@ export const LocationCard = ({
                             }
                             alignSelf="center"
                             colorScheme="critical"
-                            mt="0.5rem"
                           >
-                            Remove operating hours
+                            Delete operating hours
                           </Button>
                         </Editable.Section>
                       </Editable.DraggableAccordionItem>
@@ -240,6 +236,7 @@ export const LocationCard = ({
         </DragDropContext>
 
         <AddSectionButton
+          mt="0.5rem"
           w="100%"
           id={`locations-${index}-add_operating_hours`}
           buttonText="Add operating hours"
@@ -254,7 +251,6 @@ export const LocationCard = ({
 
         <Button
           variant="clear"
-          w="100%"
           id={`locations-${index}`}
           onClick={() => onDelete(`locations-${index}`, "location")}
           alignSelf="center"

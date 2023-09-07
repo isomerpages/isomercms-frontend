@@ -122,7 +122,7 @@ export const ContactCard = ({
   return (
     <Editable.DraggableAccordionItem
       index={index}
-      title={frontMatter.title || "New Contact Information"}
+      title={frontMatter.title || "New contact information"}
       draggableId={`contacts-${index}`}
       isInvalid={getHasErrors(errors)}
     >
@@ -232,7 +232,6 @@ export const ContactCard = ({
 
         <Button
           variant="clear"
-          w="100%"
           id={`contacts-${index}`}
           onClick={() => onDelete(`contacts-${index}`, "contact information")}
           alignSelf="center"

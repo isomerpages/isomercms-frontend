@@ -113,14 +113,14 @@ export const HeroBody = ({
           />
           <FormErrorMessage>{errors.subtitle}</FormErrorMessage>
         </FormControl>
-        <Box>
+        <Box w="100%">
           {/* TODO: migrate this to design system components */}
           <FormContext
             hasError={!!errors.background}
             onFieldChange={onChange}
             isRequired
           >
-            <Box mb="0.5rem">
+            <Box mb="0.75rem">
               <FormTitle>Hero background image</FormTitle>
             </Box>
             <FormFieldMedia

@@ -21,7 +21,54 @@ import { IconButton } from "@opengovsg/design-system-react"
 import { PropsWithChildren } from "react"
 import { v4 as uuid } from "uuid"
 
-import { BxDraggable } from "assets"
+import { BxDraggable, BxDraggableVertical } from "assets"
+
+type EditableAccordionItemStyleTypes =
+  | "card-borderColor"
+  | "hover-bgColor"
+  | "tag-pb"
+  | "title-color"
+  | "title-color-hover"
+type EditableAccordionItemStyleProps = {
+  item: EditableAccordionItemStyleTypes
+  isExpanded?: boolean
+  isNested?: boolean
+  isInvalid?: boolean
+  isDragging?: boolean
+}
+const getDraggableAccordionItemStyle = ({
+  item,
+  isExpanded,
+  isNested,
+  isInvalid,
+  isDragging,
+}: EditableAccordionItemStyleProps): string => {
+  switch (item) {
+    case "card-borderColor":
+      return (isExpanded && isNested) || isDragging
+        ? "base.divider.brand"
+        : "base.divider.medium"
+    case "hover-bgColor":
+      if (isExpanded) return "none"
+      return isNested
+        ? "interaction.muted.sub.hover"
+        : "interaction.muted.main.hover"
+    case "tag-pb":
+      return isNested ? "0.875rem" : "1.37rem"
+    case "title-color":
+      if (!isNested) return "base.content.default"
+      return isExpanded || isDragging
+        ? "base.content.strong"
+        : "base.content.medium"
+    case "title-color-hover":
+      if (!isNested) return "inherit"
+      return isInvalid && !isExpanded
+        ? "base.content.medium"
+        : "base.content.strong"
+    default:
+      return ""
+  }
+}
 
 interface SidebarHeaderProps {
   title: string
@@ -71,7 +118,13 @@ export const EmptySection = ({
       justifyContent="center"
     >
       {image}
-      <Text>{title}</Text>
+      <Text
+        textStyle="subhead-1"
+        textColor="base.content.strong"
+        textAlign="center"
+      >
+        {title}
+      </Text>
       <Text
         textStyle="caption-2"
         textColor="base.content.medium"
@@ -97,7 +150,7 @@ const EditableSidebar = ({
       bg="base.canvas.alt"
       width="450px"
       overflowY="scroll"
-      pb="100px"
+      pb="1.5rem"
       // NOTE: We reserve 80px **each** for
       // both the header and the footer
       h="calc(100vh - 160px - 1rem)"
@@ -171,16 +224,7 @@ export const EditableDroppable = ({
 }
 
 const BaseAccordionItem = forwardRef((props: AccordionItemProps, ref) => {
-  return (
-    <AccordionItem
-      border="1px solid"
-      borderColor="base.divider.medium"
-      w="100%"
-      bg="base.canvas.default"
-      ref={ref}
-      {...props}
-    />
-  )
+  return <AccordionItem border="none" w="100%" ref={ref} {...props} />
 })
 
 interface EditableCardProps {
@@ -203,7 +247,11 @@ const EditableAccordionItem = ({
   return (
     <BaseAccordionItem pos="relative">
       {({ isExpanded }) => (
-        <>
+        <Box
+          bgColor="base.canvas.default"
+          border="1px solid"
+          borderColor="base.divider.medium"
+        >
           {!isExpanded && isInvalid && (
             <Divider
               border="4px solid"
@@ -217,16 +265,16 @@ const EditableAccordionItem = ({
           {/* NOTE: Check with design on styling.
         See if entire section is button (ie, whole component hover styling)
       */}
-          <AccordionButton px="1.5rem" py="3rem">
+          <AccordionButton px="1.5rem" py="2.25rem">
             <Flex flex="1" flexDir="column">
-              <Text textStyle="h6" textAlign="left" mt="0.25rem" noOfLines={1}>
+              <Text textStyle="h6" textAlign="left" noOfLines={1}>
                 {title}
               </Text>
             </Flex>
             <AccordionIcon />
           </AccordionButton>
-          <AccordionPanel pb={4}>{children}</AccordionPanel>
-        </>
+          <AccordionPanel pb="2.25rem">{children}</AccordionPanel>
+        </Box>
       )}
     </BaseAccordionItem>
   )
@@ -240,6 +288,7 @@ interface DraggableAccordionItemProps {
   index: number
   draggableId: string
   isInvalid?: boolean
+  isNested?: boolean
 }
 // NOTE: Separating editable/draggable
 // due to semantics on `Draggables`
@@ -247,9 +296,13 @@ interface DraggableAccordionItemProps {
  * This component displays an accordion item that can be expanded to show its children.
  * This component is draggable and **needs** to be part of a `Droppable` component.
  *
- * Take note that this component is draggable on the entire card when collapsed
- * and that only the chevron can be used to expand this component.
+ * Note:
+ * - This component is draggable on the entire card when collapsed
+ * - Only the chevron can be used to expand this component
+ * - Tag is not supported when isNested is true
+ *
  * @param isInvalid this prop determines whether the error border will be present on collapse.
+ * @param isNested this prop determines the appropriate styling to use (main vs nested accordion item).
  */
 const DraggableAccordionItem = ({
   tag,
@@ -257,55 +310,99 @@ const DraggableAccordionItem = ({
   children,
   index,
   isInvalid,
+  isNested,
 }: PropsWithChildren<DraggableAccordionItemProps>) => {
   return (
     <Draggable draggableId={uuid()} index={index}>
-      {(draggableProvided) => (
+      {(draggableProvided, snapshot) => (
         <BaseAccordionItem
-          borderRadius="0.5rem"
+          borderRadius={isNested ? "0.375rem" : "0.5rem"}
           {...draggableProvided.draggableProps}
           ref={draggableProvided.innerRef}
-          boxShadow="sm"
-          {...draggableProvided.dragHandleProps}
+          boxShadow={isNested ? "" : "sm"}
           position="relative"
         >
           {({ isExpanded }) => (
-            <>
-              <IconButton
-                pointerEvents="none"
-                position="absolute"
-                top="0.5rem"
-                left="0"
-                right="0"
-                variant="clear"
-                cursor="grab"
-                aria-label="drag item"
-                margin="0 auto"
-                w="fit-content"
-                icon={<BxDraggable />}
-              />
+            <Box
+              borderRadius={isNested ? "0.375rem" : "0.5rem"}
+              bgColor={
+                isExpanded && isNested
+                  ? "base.canvas.brand-subtle"
+                  : "base.canvas.default"
+              }
+              border="1px solid"
+              borderColor={getDraggableAccordionItemStyle({
+                item: "card-borderColor",
+                isExpanded,
+                isNested,
+                isDragging: snapshot.isDragging,
+              })}
+            >
+              {!isNested && (
+                <IconButton
+                  pointerEvents="none"
+                  position="absolute"
+                  top="0.5rem"
+                  left="0"
+                  right="0"
+                  variant="clear"
+                  cursor="grab"
+                  aria-label="drag item"
+                  margin="0 auto"
+                  w="fit-content"
+                  icon={<BxDraggable />}
+                />
+              )}
               {!isExpanded && isInvalid && (
                 <Divider
-                  border="4px solid"
+                  borderWidth={isNested ? "2px" : "4px"}
+                  borderStyle="solid"
                   borderColor="utility.feedback.critical"
                   orientation="vertical"
                   left={0}
                   position="absolute"
-                  borderLeftRadius="0.5rem"
+                  borderLeftRadius={isNested ? "0.375rem" : "0.5rem"}
                   h="-webkit-fill-available"
                 />
               )}
               <Flex
-                flexDir="row"
-                pt="1.88rem"
-                pb={isExpanded ? "0rem" : "0.88rem"}
+                pt={isNested ? "0.375rem" : "1.88rem"}
+                pb={!isExpanded && !isNested ? "0.88rem" : "0rem"}
+                data-group
                 _hover={{
-                  bgColor: isExpanded ? "none" : "interaction.muted.main.hover",
+                  bgColor: getDraggableAccordionItemStyle({
+                    item: "hover-bgColor",
+                    isExpanded,
+                    isNested,
+                  }),
+                  borderRadius: isNested ? "0.375rem" : "0.5rem",
                 }}
+                bgColor="none"
+                {...draggableProvided.dragHandleProps}
               >
+                {isNested && (
+                  <IconButton
+                    pointerEvents="none"
+                    position="absolute"
+                    left="0rem"
+                    variant="clear"
+                    cursor="grab"
+                    aria-label="drag item"
+                    margin="0 auto"
+                    w="fit-content"
+                    icon={<BxDraggableVertical />}
+                  />
+                )}
                 <Flex
                   pl="1.5rem"
-                  pb={tag ? "1rem" : "1.37rem"}
+                  pb={
+                    tag
+                      ? "1rem"
+                      : getDraggableAccordionItemStyle({
+                          item: "tag-pb",
+                          isNested,
+                        })
+                  }
                   pt={tag ? "0" : "0.37rem"}
                   flex="1"
                   flexDir="column"
@@ -316,21 +413,44 @@ const DraggableAccordionItem = ({
                 >
                   {tag}
                   <Text
-                    textStyle="h6"
+                    textStyle={isNested ? "subhead-1" : "h6"}
+                    color={getDraggableAccordionItemStyle({
+                      item: "title-color",
+                      isExpanded,
+                      isNested,
+                      isDragging: snapshot.isDragging,
+                    })}
                     textAlign="left"
                     mt="0.25rem"
+                    ml={isNested ? "1rem" : "0"}
                     noOfLines={1}
                     maxW="100%"
+                    _groupHover={{
+                      color: getDraggableAccordionItemStyle({
+                        item: "title-color-hover",
+                        isExpanded,
+                        isNested,
+                        isInvalid,
+                      }),
+                    }}
+                    _groupFocus={{
+                      color: "base.content.strong",
+                    }}
                   >
                     {title}
                   </Text>
                 </Flex>
-                <AccordionButton w="auto" h="fit-content" py="1rem" mr="0.5rem">
+                <AccordionButton
+                  w="auto"
+                  h="fit-content"
+                  py={isNested ? "0.75rem" : "1rem"}
+                  mr="0.5rem"
+                >
                   <AccordionIcon />
                 </AccordionButton>
               </Flex>
               <AccordionPanel pb={4}>{children}</AccordionPanel>
-            </>
+            </Box>
           )}
         </BaseAccordionItem>
       )}

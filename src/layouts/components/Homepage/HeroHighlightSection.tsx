@@ -85,7 +85,7 @@ export const HeroHighlightSection = ({
               title="Highlights you add will appear here"
               subtitle="You can call out informative links using highlights"
             >
-              <Editable.Section px={0} spacing="1.25rem" py="1.5rem">
+              <Editable.Section px={0} spacing="0.75rem" py="1.5rem">
                 {highlights.map(
                   (
                     {
@@ -101,6 +101,7 @@ export const HeroHighlightSection = ({
                         draggableId={`highlight-${highlightIndex}-draggable`}
                         index={highlightIndex}
                         isInvalid={_.some(errors.highlights[highlightIndex])}
+                        isNested
                       >
                         <Editable.Section>
                           <FormControl
@@ -163,9 +164,8 @@ export const HeroHighlightSection = ({
                             alignSelf="center"
                             variant="clear"
                             colorScheme="critical"
-                            mt="1rem"
                           >
-                            Delete option
+                            Delete highlight
                           </Button>
                         </Editable.Section>
                       </Editable.DraggableAccordionItem>
@@ -185,7 +185,7 @@ export const HeroHighlightSection = ({
         leftIcon={<BiPlus fontSize="1.5rem" />}
         isDisabled={highlights.length >= MAX_HIGHLIGHTS}
       >
-        Add option
+        Add highlight
       </Button>
     </Box>
   )

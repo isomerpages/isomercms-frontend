@@ -62,7 +62,7 @@ export const CardsSection = ({
             subtitle={CONTACTUS_EMPTY_SECTION_SUBTITLE[contactUsType]}
             isEmpty={cardFrontMatter.length === 0}
           >
-            <VStack p={0} spacing="1.125rem">
+            <VStack p={0} spacing="1.25rem">
               {cardFrontMatter.map((card, index) => (
                 <>
                   {contactUsType === "locations" ? (

@@ -20,6 +20,7 @@ export const AddSectionButton = ({
             isStretch
             isOpen={isOpen}
             rightIcon={undefined}
+            size="lg"
             {...rest}
           >
             <HStack spacing="0.5rem" justify="center">
