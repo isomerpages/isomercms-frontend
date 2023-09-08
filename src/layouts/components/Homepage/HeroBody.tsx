@@ -292,7 +292,8 @@ const HeroLayoutForm = ({ children }: HeroLayoutFormProps): JSX.Element => {
   )
 
   return (
-    <>
+    <VStack spacing="1rem" align="flex-start" w="100%">
+      <Text textStyle="h5">Customise layout</Text>
       <FormControl isRequired>
         <FormLabel textStyle="subhead-1">Layout</FormLabel>
         <SingleSelect
@@ -307,7 +308,7 @@ const HeroLayoutForm = ({ children }: HeroLayoutFormProps): JSX.Element => {
       <VStack spacing="1rem" w="100%">
         {children({ currentSelectedOption: currentLayout })}
       </VStack>
-    </>
+    </VStack>
   )
 }
 
@@ -395,8 +396,11 @@ export const HeroBody = ({
       <Divider my="1.5rem" />
       <Editable.Section spacing="0.75rem">
         <Box w="100%">
-          <Text textStyle="h5" mb="1rem">
-            Customise Layout
+          <Text textStyle="h5" mb="0.75rem">
+            Hero Interactions
+          </Text>
+          <Text textStyle="subhead-2" mb="0.25rem">
+            Content type
           </Text>
           <Radio.RadioGroup
             onChange={(nextSectionType: HeroSectionType) => {
