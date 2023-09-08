@@ -152,7 +152,7 @@ type SectionAlignment = "left" | "right"
 
 type SectionBackgroundColor = "black" | "white" | "translucent gray"
 
-interface HeroSideSectionProps {
+interface HeroSideSectionProps extends HeroCenteredLayoutProps {
   background: string
   index: number
   errors: {
@@ -169,35 +169,25 @@ const HeroSideSectionLayout = ({
   background,
   index,
   errors,
+  title,
+  subtitle,
   size = "half",
   alignment = "left",
   backgroundColor = "black",
 }: HeroSideSectionProps) => {
-  const { onChange } = useEditableContext()
   const [, setSectionSize] = useState(size)
   const [, setSectionAlignment] = useState(alignment)
   const [, setSectionBackgroundColor] = useState(backgroundColor)
 
   return (
     <>
-      <Box w="100%">
-        {/* TODO: migrate this to design system components */}
-        <FormContext
-          hasError={!!errors.background}
-          onFieldChange={onChange}
-          isRequired
-        >
-          <Box mb="0.5rem">
-            <FormTitle>Hero background image</FormTitle>
-          </Box>
-          <FormFieldMedia
-            value={background}
-            id={`section-${index}-hero-background`}
-            inlineButtonText="Select"
-          />
-          <FormError>{errors.background}</FormError>
-        </FormContext>
-      </Box>
+      <HeroCenteredLayout
+        index={index}
+        background={background}
+        errors={errors}
+        title={title}
+        subtitle={subtitle}
+      />
       <Box>
         <Text textStyle="subhead-1">Section size</Text>
         <Radio.RadioGroup
