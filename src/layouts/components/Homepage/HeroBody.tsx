@@ -30,6 +30,7 @@ import { useEditableContext } from "contexts/EditableContext"
 
 import { Editable } from "layouts/components/Editable"
 
+import { BxGrayTranslucent } from "assets"
 import { HeroBannerLayouts, HighlightOption } from "types/homepage"
 
 import { HeroDropdownFormFields } from "./HeroDropdownSection"
@@ -251,6 +252,7 @@ const HeroSideSectionLayout = ({
           <IconButton
             {...getIconButtonProps("grey")}
             onClick={() => setSectionBackgroundColor("translucent gray")}
+            icon={<BxGrayTranslucent />}
           />
         </HStack>
       </Box>
