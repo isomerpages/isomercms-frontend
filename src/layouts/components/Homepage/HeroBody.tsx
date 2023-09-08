@@ -24,11 +24,13 @@ import { BiInfoCircle } from "react-icons/bi"
 import { FormContext, FormError, FormTitle } from "components/Form"
 import FormFieldMedia from "components/FormFieldMedia"
 
+import { HERO_LAYOUTS } from "constants/homepage"
+
 import { useEditableContext } from "contexts/EditableContext"
 
 import { Editable } from "layouts/components/Editable"
 
-import { HighlightOption } from "types/homepage"
+import { HeroBannerLayouts, HighlightOption } from "types/homepage"
 
 import { HeroDropdownFormFields } from "./HeroDropdownSection"
 
@@ -265,8 +267,6 @@ const HeroSideSectionLayout = ({
     </>
   )
 }
-
-type HeroBannerLayouts = typeof HERO_LAYOUTS[keyof typeof HERO_LAYOUTS]["value"]
 
 interface HeroLayoutFormProps {
   variant: HeroBannerLayouts
