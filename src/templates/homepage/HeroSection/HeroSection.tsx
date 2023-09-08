@@ -138,33 +138,15 @@ export const TemplateHeroSection = forwardRef<
           className={getClassNames(editorStyles, ["bp-hero", "bg-hero"])}
           style={heroStyle}
         >
-          <div className={editorStyles["bp-hero-body"]}>
-            <div
-              className={getClassNames(editorStyles, [
-                "bp-container",
-                "margin--top--lg",
-              ])}
-            >
-              <div
-                className={getClassNames(editorStyles, [
-                  "row",
-                  "is-vcentered",
-                  "is-centered",
-                  "ma",
-                ])}
-              >
-                {variant === "center" ? (
-                  <HeroCenteredLayout
-                    hero={hero}
-                    dropdownIsActive={dropdownIsActive}
-                    toggleDropdown={toggleDropdown}
-                  />
-                ) : (
-                  <HeroImageOnlyLayout />
-                )}
-              </div>
-            </div>
-          </div>
+          {variant === "center" ? (
+            <HeroCenteredLayout
+              hero={hero}
+              dropdownIsActive={dropdownIsActive}
+              toggleDropdown={toggleDropdown}
+            />
+          ) : (
+            <HeroImageOnlyLayout />
+          )}
         </section>
         {/* Key highlights */}
         {!hero.dropdown && hero.key_highlights ? (

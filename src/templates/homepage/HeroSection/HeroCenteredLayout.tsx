@@ -142,45 +142,65 @@ export const HeroCenteredLayout = ({
 }: HeroCenteredLayoutProps) => {
   return (
     <div
-      className={getClassNames(editorStyles, [
-        "col",
-        "is-9",
-        "has-text-centered",
-        "has-text-white",
-      ])}
+      className={getClassNames(editorStyles, ["bp-hero-body", "gray-overlay"])}
     >
-      <h1
+      <div
         className={getClassNames(editorStyles, [
-          "display",
-          "padding--bottom--lg",
-          "margin--none",
+          "bp-container",
+          "margin--top--lg",
         ])}
       >
-        <b className={editorStyles["is-hidden-touch"]}>{hero.title}</b>
-        <b className={editorStyles["is-hidden-desktop"]}>{hero.title}</b>
-      </h1>
-      {/* Hero subtitle */}
-      {hero.subtitle ? (
-        <p
+        <div
           className={getClassNames(editorStyles, [
-            "is-hidden-mobile",
-            "padding--bottom--lg",
+            "row",
+            "is-vcentered",
+            "is-centered",
+            "ma",
           ])}
         >
-          {hero.subtitle}
-        </p>
-      ) : null}
-      {/* Hero dropdown */}
-      {hero.dropdown ? (
-        <HeroDropdown
-          title={hero.dropdown.title}
-          options={hero.dropdown.options}
-          isActive={dropdownIsActive}
-          toggleDropdown={toggleDropdown}
-        />
-      ) : (
-        <HeroButton button={hero.button} />
-      )}
+          <div
+            className={getClassNames(editorStyles, [
+              "col",
+              "is-9",
+              "has-text-centered",
+              "has-text-white",
+            ])}
+          >
+            <h1
+              className={getClassNames(editorStyles, [
+                "display",
+                "padding--bottom--lg",
+                "margin--none",
+              ])}
+            >
+              <b className={editorStyles["is-hidden-touch"]}>{hero.title}</b>
+              <b className={editorStyles["is-hidden-desktop"]}>{hero.title}</b>
+            </h1>
+            {/* Hero subtitle */}
+            {hero.subtitle ? (
+              <p
+                className={getClassNames(editorStyles, [
+                  "is-hidden-mobile",
+                  "padding--bottom--lg",
+                ])}
+              >
+                {hero.subtitle}
+              </p>
+            ) : null}
+            {/* Hero dropdown */}
+            {hero.dropdown ? (
+              <HeroDropdown
+                title={hero.dropdown.title}
+                options={hero.dropdown.options}
+                isActive={dropdownIsActive}
+                toggleDropdown={toggleDropdown}
+              />
+            ) : (
+              <HeroButton button={hero.button} />
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   )
 }
