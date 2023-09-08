@@ -11,119 +11,14 @@ import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 import { getClassNames } from "templates/utils/stylingUtils"
 
+import { HeroBannerLayouts } from "types/homepage"
+
+import { HeroCenteredLayout } from "./HeroCenteredLayout"
+import { HeroImageOnlyLayout } from "./HeroImageOnlyLayout"
+
 /* eslint
   react/no-array-index-key: 0
  */
-
-interface HeroButtonProps {
-  button?: string
-}
-const HeroButton = ({ button }: HeroButtonProps) => (
-  <>
-    {button ? (
-      <div
-        className={getClassNames(editorStyles, [
-          "bp-button",
-          "is-uppercase",
-          "search-button",
-          "default",
-          "is-secondary",
-        ])}
-      >
-        {button}
-      </div>
-    ) : null}
-  </>
-)
-
-interface HeroDropdownElemProps {
-  title: string
-}
-const HeroDropdownElem = ({ title }: HeroDropdownElemProps) => (
-  <div className={editorStyles["bp-dropdown-item"]}>
-    <h5>{title}</h5>
-  </div>
-)
-
-interface HeroDropdownProps {
-  title: string
-  isActive?: boolean
-  options: { title: string }[]
-  toggleDropdown: () => void
-}
-const HeroDropdown = ({
-  title,
-  options,
-  isActive,
-  toggleDropdown,
-}: HeroDropdownProps) => (
-  <div
-    className={getClassNames(editorStyles, [
-      "bp-dropdown",
-      "margin--top--sm",
-      `${isActive ? "is-active" : null}`,
-    ])}
-  >
-    <div className={editorStyles["bp-dropdown-trigger"]}>
-      <a
-        className={getClassNames(editorStyles, [
-          "bp-button",
-          "bp-dropdown-button",
-          "hero-dropdown",
-          "is-centered",
-        ])}
-        role="button"
-        tabIndex={0}
-        aria-haspopup="true"
-        aria-controls="hero-dropdown-menu"
-        onClick={toggleDropdown}
-        onKeyDown={toggleDropdown}
-      >
-        <span>
-          <b>
-            <p>{title}</p>
-          </b>
-        </span>
-        <span className={getClassNames(editorStyles, ["icon", "is-small"])}>
-          <i
-            className={getClassNames(editorStyles, [
-              "sgds-icon",
-              "sgds-icon-chevron-down",
-              "is-size-4",
-            ])}
-            aria-hidden="true"
-          />
-        </span>
-      </a>
-    </div>
-    <div
-      className={getClassNames(editorStyles, [
-        "bp-dropdown-menu",
-        "has-text-left",
-      ])}
-      id={editorStyles["hero-dropdown-menu"]}
-      role="menu"
-    >
-      <div
-        className={getClassNames(editorStyles, [
-          "bp-dropdown-content",
-          "is-centered",
-        ])}
-      >
-        {options
-          ? options.map((option, index) =>
-              option.title ? (
-                <HeroDropdownElem
-                  key={`dropdown-${index}`}
-                  title={option.title}
-                />
-              ) : null
-            )
-          : null}
-      </div>
-    </div>
-  </div>
-)
 
 interface KeyHighlightElemProps {
   title?: string
@@ -214,11 +109,20 @@ interface TemplateHeroSectionProps {
   }
   dropdownIsActive: boolean
   toggleDropdown: () => void
+  variant: HeroBannerLayouts
 }
 
-export default forwardRef<HTMLDivElement, TemplateHeroSectionProps>(
+export const TemplateHeroSection = forwardRef<
+  HTMLDivElement,
+  TemplateHeroSectionProps
+>(
   (
-    { hero, dropdownIsActive, toggleDropdown }: TemplateHeroSectionProps,
+    {
+      hero,
+      dropdownIsActive,
+      toggleDropdown,
+      variant,
+    }: TemplateHeroSectionProps,
     ref
   ) => {
     const loadedImageURL = useFetchPreviewMedia(hero.background)
@@ -249,51 +153,15 @@ export default forwardRef<HTMLDivElement, TemplateHeroSectionProps>(
                   "ma",
                 ])}
               >
-                <div
-                  className={getClassNames(editorStyles, [
-                    "col",
-                    "is-9",
-                    "has-text-centered",
-                    "has-text-white",
-                  ])}
-                >
-                  <h1
-                    className={getClassNames(editorStyles, [
-                      "display",
-                      "padding--bottom--lg",
-                      "margin--none",
-                    ])}
-                  >
-                    <b className={editorStyles["is-hidden-touch"]}>
-                      {hero.title}
-                    </b>
-                    <b className={editorStyles["is-hidden-desktop"]}>
-                      {hero.title}
-                    </b>
-                  </h1>
-                  {/* Hero subtitle */}
-                  {hero.subtitle ? (
-                    <p
-                      className={getClassNames(editorStyles, [
-                        "is-hidden-mobile",
-                        "padding--bottom--lg",
-                      ])}
-                    >
-                      {hero.subtitle}
-                    </p>
-                  ) : null}
-                  {/* Hero dropdown */}
-                  {hero.dropdown ? (
-                    <HeroDropdown
-                      title={hero.dropdown.title}
-                      options={hero.dropdown.options}
-                      isActive={dropdownIsActive}
-                      toggleDropdown={toggleDropdown}
-                    />
-                  ) : (
-                    <HeroButton button={hero.button} />
-                  )}
-                </div>
+                {variant === "center" ? (
+                  <HeroCenteredLayout
+                    hero={hero}
+                    dropdownIsActive={dropdownIsActive}
+                    toggleDropdown={toggleDropdown}
+                  />
+                ) : (
+                  <HeroImageOnlyLayout />
+                )}
               </div>
             </div>
           </div>

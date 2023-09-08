@@ -1,4 +1,6 @@
-import type { IterableElement } from "type-fest"
+import type { IterableElement, SetOptional } from "type-fest"
+
+import { HERO_LAYOUTS } from "constants/homepage"
 
 export type DropdownOption = {
   title: string
@@ -99,9 +101,10 @@ export type PossibleEditorSections = IterableElement<
   | EditorHeroDropdownSection["dropdown"]["options"]
 >
 
-export type HomepageEditorHeroSection =
-  | EditorHeroDropdownSection
-  | EditorHeroHighlightsSection
+export type HeroBannerLayouts = typeof HERO_LAYOUTS[keyof typeof HERO_LAYOUTS]["value"]
+
+export type HomepageEditorHeroSection = EditorHeroDropdownSection &
+  EditorHeroHighlightsSection & { variant: HeroBannerLayouts }
 
 export type HeroFrontmatterSection = { hero: HomepageEditorHeroSection }
 export type ResourcesFrontmatterSection = { resources: ResourcesSection }
@@ -164,7 +167,8 @@ export interface EditorHomepageState {
 
 export interface EditorHeroDropdownSection {
   dropdown: {
-    options: Partial<DropdownOption>[]
+    title: string
+    options: SetOptional<DropdownOption, "url">[]
   }
 }
 
