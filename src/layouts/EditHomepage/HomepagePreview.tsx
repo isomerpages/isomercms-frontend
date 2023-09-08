@@ -105,7 +105,7 @@ export const HomepagePreview = ({
                 dropdownIsActive={dropdownIsActive}
                 toggleDropdown={toggleDropdown}
                 ref={scrollRefs[sectionIndex] as Ref<HTMLDivElement>}
-                variant={section.hero.variant}
+                variant={section.hero.variant ?? "center"}
               />
             </>
           )}
