@@ -49,13 +49,18 @@ const getIconButtonProps = (color: "black" | "grey" | "white") => {
     "aria-label": `${color} background`,
     border: "1px solid",
     borderColor: "border.input.default",
-    bg: color,
+    bg: color === "grey" ? "base.divider.strong" : color,
     colorScheme: color,
     size: "sm",
     isRound: true,
     _focus: {
       boxShadow: "0 0 0 2px var(--chakra-colors-border-action-default)",
     },
+    ...(color === "grey" && {
+      _hover: {
+        bg: "base.divider.strong",
+      },
+    }),
   }
 }
 
