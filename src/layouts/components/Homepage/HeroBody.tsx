@@ -44,21 +44,6 @@ export interface HeroBodyFormFields {
   background: string
 }
 
-const HERO_LAYOUTS = {
-  CENTERED: {
-    value: "center",
-    label: "Centre-aligned text",
-  },
-  IMAGE_ONLY: {
-    value: "image",
-    label: "Image only",
-  },
-  SIDE_SECTION: {
-    value: "side",
-    label: "Side section",
-  },
-} as const
-
 const getIconButtonProps = (color: "black" | "grey" | "white") => {
   return {
     "aria-label": `${color} background`,
