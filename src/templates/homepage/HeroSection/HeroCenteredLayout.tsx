@@ -142,7 +142,11 @@ export const HeroCenteredLayout = ({
 }: HeroCenteredLayoutProps) => {
   return (
     <div
-      className={getClassNames(editorStyles, ["bp-hero-body", "gray-overlay"])}
+      className={getClassNames(editorStyles, [
+        "bp-hero-body",
+        "gray-overlay",
+        "with-padding",
+      ])}
     >
       <div
         className={getClassNames(editorStyles, [
