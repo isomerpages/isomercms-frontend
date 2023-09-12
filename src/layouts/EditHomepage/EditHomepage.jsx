@@ -978,6 +978,7 @@ const EditHomepage = ({ match }) => {
                                       ...errors.sections[0].hero,
                                     }}
                                     highlights={section.hero.key_highlights}
+                                    {...section.hero}
                                   />
                                 )
                               }
