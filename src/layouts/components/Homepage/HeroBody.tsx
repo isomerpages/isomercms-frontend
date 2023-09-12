@@ -31,6 +31,11 @@ import { useEditableContext } from "contexts/EditableContext"
 import { Editable } from "layouts/components/Editable"
 
 import { BxGrayTranslucent } from "assets"
+import {
+  SectionSize,
+  SectionAlignment,
+  SectionBackgroundColor,
+} from "types/hero"
 import { HeroBannerLayouts, HighlightOption } from "types/homepage"
 
 import { HeroDropdownFormFields } from "./HeroDropdownSection"
@@ -153,12 +158,6 @@ const HeroImageOnlyLayout = ({
     </Box>
   )
 }
-
-type SectionSize = "half" | "one-third"
-
-type SectionAlignment = "left" | "right"
-
-type SectionBackgroundColor = "black" | "white" | "translucent gray"
 
 interface HeroSideSectionProps extends HeroCenteredLayoutProps {
   background: string
