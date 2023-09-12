@@ -2,6 +2,7 @@
 
 @include meta.load-css("sgds-govtech/css/sgds");
 @include meta.load-css("./isomer-template.scss");
+@include meta.load-css("./isomer-template/styles.scss");
 
 /*! minireset.css v0.0.2 | MIT License | github.com/jgthms/minireset.css */
 blockquote,
