@@ -134,7 +134,6 @@ const HeroCenteredLayout = ({
 const HeroImageOnlyLayout = ({
   errors,
   background,
-  index,
 }: Omit<HeroCenteredLayoutProps, "subtitle" | "title">) => {
   const { onChange } = useEditableContext()
   return (
@@ -150,7 +149,7 @@ const HeroImageOnlyLayout = ({
         </Box>
         <FormFieldMedia
           value={background}
-          id={`section-${index}-hero-background`}
+          id="section-0-hero-background"
           inlineButtonText="Select"
         />
         <FormError>{errors.background}</FormError>
@@ -169,7 +168,6 @@ interface HeroSideSectionProps extends HeroCenteredLayoutProps {
   } & HeroBodyFormFields
   size: SectionSize
   alignment: SectionAlignment
-  backgroundColor: SectionBackgroundColor
 }
 
 const HeroSideSectionLayout = ({
@@ -178,13 +176,10 @@ const HeroSideSectionLayout = ({
   errors,
   title,
   subtitle,
-  size = "half",
+  size = "50%",
   alignment = "left",
-  backgroundColor = "black",
 }: HeroSideSectionProps) => {
-  const [, setSectionSize] = useState(size)
-  const [, setSectionAlignment] = useState(alignment)
-  const [, setSectionBackgroundColor] = useState(backgroundColor)
+  const { onChange } = useEditableContext()
 
   return (
     <>
@@ -199,16 +194,22 @@ const HeroSideSectionLayout = ({
         <Text textStyle="subhead-1">Section size</Text>
         <Radio.RadioGroup
           onChange={(nextSectionSize) => {
-            setSectionSize(nextSectionSize as SectionSize)
+            onChange({
+              target: {
+                id: "section-0-hero-size",
+                value: nextSectionSize,
+              },
+            })
           }}
-          defaultValue="half"
+          // section-0-hero-background
+          defaultValue={size || "half"}
         >
           <HStack spacing="0.5rem">
-            <Radio value="half" size="xs" w="50%" allowDeselect={false}>
+            <Radio value="50%" size="xs" w="50%" allowDeselect={false}>
               Half (1/2) of banner
             </Radio>
             <Spacer />
-            <Radio value="one-third" size="xs" w="50%" allowDeselect={false}>
+            <Radio value="33%" size="xs" w="50%" allowDeselect={false}>
               Third (1/3) of banner
             </Radio>
           </HStack>
@@ -218,9 +219,14 @@ const HeroSideSectionLayout = ({
         <Text textStyle="subhead-1">Alignment</Text>
         <Radio.RadioGroup
           onChange={(nextSectionAlignment) => {
-            setSectionAlignment(nextSectionAlignment as SectionAlignment)
+            onChange({
+              target: {
+                id: "section-0-hero-alignment",
+                value: nextSectionAlignment,
+              },
+            })
           }}
-          defaultValue="left"
+          defaultValue={alignment || "left"}
         >
           <HStack spacing="0.5rem">
             <Radio value="left" size="xs" w="50%" allowDeselect={false}>
@@ -238,19 +244,40 @@ const HeroSideSectionLayout = ({
         <HStack spacing="0.75rem" alignItems="flex-start">
           <IconButton
             {...getIconButtonProps("black")}
-            onClick={() => setSectionBackgroundColor("black")}
+            onClick={() =>
+              onChange({
+                target: {
+                  id: "section-0-hero-backgroundColor",
+                  value: "black",
+                },
+              })
+            }
           >
             <Icon as={BiInfoCircle} fill="black" fontSize="1rem" />
           </IconButton>
           <IconButton
             {...getIconButtonProps("white")}
-            onClick={() => setSectionBackgroundColor("white")}
+            onClick={() =>
+              onChange({
+                target: {
+                  id: "section-0-hero-backgroundColor",
+                  value: "white",
+                },
+              })
+            }
           >
             <Icon as={BiInfoCircle} fill="white" fontSize="1rem" />
           </IconButton>
           <IconButton
             {...getIconButtonProps("grey")}
-            onClick={() => setSectionBackgroundColor("translucent gray")}
+            onClick={() =>
+              onChange({
+                target: {
+                  id: "section-0-hero-backgroundColor",
+                  value: "gray",
+                },
+              })
+            }
             icon={<BxGrayTranslucent />}
           />
         </HStack>
@@ -317,6 +344,8 @@ interface HeroBodyProps extends HeroBodyFormFields {
   }) => React.ReactNode
   initialSectionType: HeroSectionType
   variant: HeroBannerLayouts
+  size: SectionSize
+  alignment: SectionAlignment
 }
 
 export const HeroBody = ({
@@ -369,14 +398,7 @@ export const HeroBody = ({
             }
 
             if (currentSelectedOption === HERO_LAYOUTS.SIDE_SECTION.value) {
-              return (
-                <HeroSideSectionLayout
-                  {...rest}
-                  size="half"
-                  alignment="left"
-                  backgroundColor="black"
-                />
-              )
+              return <HeroSideSectionLayout {...rest} />
             }
 
             const unmatchedOption: never = currentSelectedOption

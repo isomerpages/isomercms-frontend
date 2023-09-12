@@ -11,7 +11,11 @@ import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 import { getClassNames } from "templates/utils/stylingUtils"
 
-import { SectionAlignment, SectionSize } from "types/hero"
+import {
+  SectionAlignment,
+  SectionBackgroundColor,
+  SectionSize,
+} from "types/hero"
 import { HeroBannerLayouts } from "types/homepage"
 
 import { HeroCenteredLayout } from "./HeroCenteredLayout"
@@ -110,6 +114,7 @@ interface TemplateHeroSectionProps {
     }[]
     alignment: SectionAlignment
     size: SectionSize
+    backgroundColor: SectionBackgroundColor
   }
   dropdownIsActive: boolean
   toggleDropdown: () => void

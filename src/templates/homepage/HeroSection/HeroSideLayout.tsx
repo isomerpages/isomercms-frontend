@@ -2,6 +2,8 @@ import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 import { getClassNames } from "templates/utils/stylingUtils"
 
+import { SectionBackgroundColor, SectionSize } from "types/hero"
+
 interface HeroInfoboxProps {
   title: string
   subtitle?: string
@@ -55,57 +57,45 @@ const HeroInfobox = ({ title, subtitle, url, button }: HeroInfoboxProps) => {
 }
 
 interface HeroInfoboxDesktopProps extends HeroInfoboxProps {
-  size: "half" | "one-third"
+  size: SectionSize
+  backgroundColor: SectionBackgroundColor
 }
-const HeroInfoboxDesktop = ({ size, ...rest }: HeroInfoboxDesktopProps) => {
+const HeroInfoboxDesktop = ({
+  size,
+  backgroundColor,
+  ...rest
+}: HeroInfoboxDesktopProps) => {
   return (
-    <>
-      {size === "half" ? (
-        <div
-          className={getClassNames(editorStyles, [
-            "bg-white",
-            "p16",
-            "is-hidden-mobile",
-          ])}
-          style={{
-            width: "50%",
-          }}
-        >
-          <HeroInfobox {...rest} />
-        </div>
-      ) : (
-        <div
-          className={getClassNames(editorStyles, [
-            "bg-white",
-            "p16",
-            "is-hidden-mobile",
-          ])}
-          style={{
-            width: "33%",
-          }}
-        >
-          <HeroInfobox {...rest} />
-        </div>
-      )}
-    </>
+    <div
+      className={getClassNames(editorStyles, ["p16", "is-hidden-mobile"])}
+      style={{
+        width: size,
+        backgroundColor: backgroundColor === "white" ? "white" : "black",
+        opacity: backgroundColor === "gray" ? "50%" : "100%",
+      }}
+    >
+      <HeroInfobox {...rest} />
+    </div>
   )
 }
 
 interface HeroSideLayoutProps {
   alignment: "left" | "right"
-  size: "half" | "one-third"
+  size: SectionSize
   url?: string
   button?: string
   subtitle?: string
   title: string
+  backgroundColor: SectionBackgroundColor
 }
 export const HeroSideLayout = ({
   alignment = "left",
-  size = "half",
+  size = "50%",
   url,
   title,
   subtitle,
   button,
+  backgroundColor,
 }: HeroSideLayoutProps) => {
   return (
     <div className={getClassNames(editorStyles, ["bp-hero-body"])}>
@@ -117,6 +107,7 @@ export const HeroSideLayout = ({
           button={button}
           title={title}
           subtitle={subtitle}
+          backgroundColor={backgroundColor}
         />
       ) : (
         <div className={getClassNames(editorStyles, ["is-flex", "flex-end"])}>
@@ -126,6 +117,7 @@ export const HeroSideLayout = ({
             button={button}
             title={title}
             subtitle={subtitle}
+            backgroundColor={backgroundColor}
           />
         </div>
       )}
@@ -147,7 +139,6 @@ export const HeroSideLayout = ({
       >
         <div
           className={getClassNames(editorStyles, [
-            "bg-white",
             "p8",
             "row",
             "is-vcentered",
@@ -156,6 +147,8 @@ export const HeroSideLayout = ({
           ])}
           style={{
             flexDirection: "column",
+            backgroundColor: backgroundColor === "white" ? "white" : "black",
+            opacity: backgroundColor === "gray" ? "50%" : "100%",
           }}
         >
           <div className={getClassNames(editorStyles, ["mb8"])}>
