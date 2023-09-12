@@ -2,7 +2,7 @@ import type { IterableElement, SetOptional } from "type-fest"
 
 import { HERO_LAYOUTS } from "constants/homepage"
 
-import { SectionAlignment, SectionSize } from "./hero"
+import { SectionAlignment, SectionBackgroundColor, SectionSize } from "./hero"
 
 export type DropdownOption = {
   title: string
@@ -110,6 +110,7 @@ export type HomepageEditorHeroSection = EditorHeroDropdownSection &
     variant: HeroBannerLayouts
     alignment: SectionAlignment
     size: SectionSize
+    backgroundColor: SectionBackgroundColor
   }
 
 export type HeroFrontmatterSection = { hero: HomepageEditorHeroSection }
