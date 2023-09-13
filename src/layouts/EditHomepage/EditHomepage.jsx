@@ -961,9 +961,9 @@ const EditHomepage = ({ match }) => {
                                 handleHighlightDropdownToggle
                               }
                               initialSectionType={
-                                section.hero.key_highlights
-                                  ? "highlights"
-                                  : "dropdown"
+                                section.hero.dropdown
+                                  ? "dropdown"
+                                  : "highlights"
                               }
                             >
                               {({ currentSelectedOption }) =>
