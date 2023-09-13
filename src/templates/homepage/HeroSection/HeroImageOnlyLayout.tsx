@@ -2,7 +2,20 @@ import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 import { getClassNames } from "templates/utils/stylingUtils"
 
-export const HeroImageOnlyLayout = () => {
+import { EditorHeroDropdownSection } from "types/homepage"
+
+import { HeroDropdown } from "./HeroDropdown"
+
+interface HeroImageOnlyLayoutProps {
+  dropdown?: EditorHeroDropdownSection["dropdown"]
+  dropdownIsActive: boolean
+  toggleDropdown: () => void
+}
+export const HeroImageOnlyLayout = ({
+  dropdown,
+  dropdownIsActive,
+  toggleDropdown,
+}: HeroImageOnlyLayoutProps) => {
   return (
     <div
       className={getClassNames(editorStyles, ["bp-hero-body, with-padding"])}
@@ -21,7 +34,23 @@ export const HeroImageOnlyLayout = () => {
             "ma",
           ])}
         >
-          <div className={getClassNames(editorStyles, ["min-height-mobile"])} />
+          <div
+            className={getClassNames(editorStyles, [
+              "min-height-mobile",
+              "is-flex",
+              "row",
+              "is-vcentered",
+            ])}
+          >
+            {dropdown && (
+              <HeroDropdown
+                title={dropdown.title}
+                options={dropdown.options}
+                isActive={dropdownIsActive}
+                toggleDropdown={toggleDropdown}
+              />
+            )}
+          </div>
         </div>
       </div>
     </div>
