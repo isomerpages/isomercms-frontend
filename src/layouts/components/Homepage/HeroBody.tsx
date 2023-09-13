@@ -16,6 +16,7 @@ import {
   Input,
   Radio,
   SingleSelect,
+  Tooltip,
 } from "@opengovsg/design-system-react"
 import _ from "lodash"
 import { useState } from "react"
@@ -180,6 +181,13 @@ const HeroSideSectionLayout = ({
   alignment = "left",
 }: HeroSideSectionProps) => {
   const { onChange } = useEditableContext()
+  const onClick = (value: string) =>
+    onChange({
+      target: {
+        id: "section-0-hero-backgroundColor",
+        value,
+      },
+    })
 
   return (
     <>
@@ -242,44 +250,29 @@ const HeroSideSectionLayout = ({
       <Box w="100%">
         <Text textStyle="subhead-1">Section background colour</Text>
         <HStack spacing="0.75rem" alignItems="flex-start">
-          <IconButton
-            {...getIconButtonProps("black")}
-            onClick={() =>
-              onChange({
-                target: {
-                  id: "section-0-hero-backgroundColor",
-                  value: "black",
-                },
-              })
-            }
-          >
-            <Icon as={BiInfoCircle} fill="black" fontSize="1rem" />
-          </IconButton>
-          <IconButton
-            {...getIconButtonProps("white")}
-            onClick={() =>
-              onChange({
-                target: {
-                  id: "section-0-hero-backgroundColor",
-                  value: "white",
-                },
-              })
-            }
-          >
-            <Icon as={BiInfoCircle} fill="white" fontSize="1rem" />
-          </IconButton>
-          <IconButton
-            {...getIconButtonProps("grey")}
-            onClick={() =>
-              onChange({
-                target: {
-                  id: "section-0-hero-backgroundColor",
-                  value: "gray",
-                },
-              })
-            }
-            icon={<BxGrayTranslucent />}
-          />
+          <Tooltip label="black" hasArrow>
+            <IconButton
+              {...getIconButtonProps("black")}
+              onClick={() => onClick("black")}
+            >
+              <Icon as={BiInfoCircle} fill="black" fontSize="1rem" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip label="white" hasArrow>
+            <IconButton
+              {...getIconButtonProps("white")}
+              onClick={() => onClick("white")}
+            >
+              <Icon as={BiInfoCircle} fill="white" fontSize="1rem" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip label="translucent gray" hasArrow>
+            <IconButton
+              {...getIconButtonProps("grey")}
+              onClick={() => onClick("gray")}
+              icon={<BxGrayTranslucent />}
+            />
+          </Tooltip>
         </HStack>
       </Box>
     </>
