@@ -4,6 +4,8 @@ import { getClassNames } from "templates/utils/stylingUtils"
 
 import { SectionBackgroundColor, SectionSize } from "types/hero"
 
+const TRANSLUCENT_GRAY = "#00000080"
+
 interface HeroInfoboxProps {
   title: string
   subtitle?: string
@@ -70,8 +72,8 @@ const HeroInfoboxDesktop = ({
       className={getClassNames(editorStyles, ["p16", "is-hidden-mobile"])}
       style={{
         width: size,
-        backgroundColor: backgroundColor === "white" ? "white" : "black",
-        opacity: backgroundColor === "gray" ? "50%" : "100%",
+        background:
+          backgroundColor === "gray" ? TRANSLUCENT_GRAY : backgroundColor,
       }}
     >
       <HeroInfobox {...rest} />
