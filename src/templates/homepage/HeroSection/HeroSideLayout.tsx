@@ -149,8 +149,8 @@ export const HeroSideLayout = ({
           ])}
           style={{
             flexDirection: "column",
-            backgroundColor: backgroundColor === "white" ? "white" : "black",
-            opacity: backgroundColor === "gray" ? "50%" : "100%",
+            background:
+              backgroundColor === "gray" ? TRANSLUCENT_GRAY : backgroundColor,
           }}
         >
           <div className={getClassNames(editorStyles, ["mb8"])}>
