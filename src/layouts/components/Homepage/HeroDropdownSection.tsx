@@ -31,7 +31,7 @@ interface HeroDropdownSectionProps extends EditorHeroDropdownSection {
 
 export const HeroDropdownSection = ({
   errors,
-  dropdown,
+  dropdown = { options: [] },
   title,
 }: HeroDropdownSectionProps) => {
   const {
