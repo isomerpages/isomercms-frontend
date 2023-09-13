@@ -964,8 +964,8 @@ const EditHomepage = ({ match }) => {
                               {({ currentSelectedOption }) =>
                                 currentSelectedOption === "dropdown" ? (
                                   <HeroDropdownSection
+                                    {...section.hero}
                                     {...section.hero.dropdown}
-                                    state={section.hero}
                                     errors={{
                                       ...errors,
                                       ...errors.sections[0].hero,
@@ -978,6 +978,7 @@ const EditHomepage = ({ match }) => {
                                       ...errors.sections[0].hero,
                                     }}
                                     highlights={section.hero.key_highlights}
+                                    {...section.hero}
                                   />
                                 )
                               }
