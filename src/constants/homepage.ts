@@ -11,4 +11,8 @@ export const HERO_LAYOUTS = {
     value: "side",
     label: "Side section",
   },
+  FLOATING_SECTION: {
+    value: "floating",
+    label: "Floating section",
+  },
 } as const
