@@ -74,7 +74,7 @@ export interface ResourcesSection {
 export interface AnnouncementBlockSection {
   title?: string
   subtitle?: string
-  announcement_items?: AnnouncementOption[]
+  announcement_items: AnnouncementOption[]
 }
 
 export interface HomepageDto {
@@ -91,7 +91,7 @@ export interface HomepageDto {
         | InfobarSection
         | InfopicSection
         | ResourcesSection
-        | AnnouncementsSection
+        | AnnouncementBlockSection
       )[]
     }
     pageBody?: string
@@ -130,8 +130,8 @@ export type InfobarFrontmatterSection = {
   infobar: InfobarSection
 }
 
-export type AnnouncementsFrontmatterSection = {
-  announcements: AnnouncementsSection
+export type AnnouncementBlockFrontmatterSection = {
+  announcements: AnnouncementBlockSection
 }
 
 export type EditorHomepageFrontmatterSection =
@@ -139,7 +139,7 @@ export type EditorHomepageFrontmatterSection =
   | ResourcesFrontmatterSection
   | InfopicFrontmatterSection
   | InfobarFrontmatterSection
-  | AnnouncementsFrontmatterSection
+  | AnnouncementBlockFrontmatterSection
 
 export const EditorHomepageFrontmatterSection = {
   isHero: (
@@ -160,8 +160,8 @@ export const EditorHomepageFrontmatterSection = {
     !!(section as InfobarFrontmatterSection).infobar,
   isAnnouncements: (
     section: EditorHomepageFrontmatterSection
-  ): section is AnnouncementsFrontmatterSection =>
-    !!(section as AnnouncementsFrontmatterSection).announcements,
+  ): section is AnnouncementBlockFrontmatterSection =>
+    !!(section as AnnouncementBlockFrontmatterSection).announcements,
   isAnnouncement: (
     section: PossibleEditorSections
   ): section is AnnouncementOption =>

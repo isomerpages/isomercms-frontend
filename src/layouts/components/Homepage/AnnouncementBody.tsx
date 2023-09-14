@@ -5,7 +5,6 @@ import {
   Input,
   FormErrorMessage,
   Button,
-  DateRangePicker,
   DatePicker,
   Textarea,
 } from "@opengovsg/design-system-react"
@@ -16,17 +15,12 @@ import { useEditableContext } from "contexts/EditableContext"
 
 import { Editable } from "layouts/components/Editable"
 
-import { Announcement } from "types/announcements"
 import { AnnouncementOption } from "types/homepage"
 
 const MAX_ANNOUNCEMENTS = 5
 
-interface AnnouncementBodyFormFields {
-  button: string
-  url: string
-}
-interface AnnouncementBodyProps extends AnnouncementBodyFormFields {
-  errors: AnnouncementBodyFormFields & {
+interface AnnouncementBodyProps {
+  errors: {
     announcements: AnnouncementOption[]
   }
   announcements: Partial<AnnouncementOption>[]
@@ -34,8 +28,6 @@ interface AnnouncementBodyProps extends AnnouncementBodyFormFields {
 
 export const AnnouncementBody = ({
   errors,
-  button,
-  url,
   announcements = [],
 }: AnnouncementBodyProps) => {
   const {
@@ -45,8 +37,6 @@ export const AnnouncementBody = ({
     onDelete,
     onDisplay,
   } = useEditableContext()
-  console.log("in announcement body")
-  console.log({ errors, button, url, announcements })
   return (
     <Box w="full">
       <DragDropContext onDragEnd={onDragEnd}>
@@ -73,15 +63,15 @@ export const AnnouncementBody = ({
                       title: announcementTitle,
                       date: announcementDate,
                       announcementContent,
-                      linkText: announcementLinkText,
-                      linkUrl: announcementLinkUrl,
+                      link_text: announcementLinkText,
+                      link_url: announcementLinkUrl,
                     },
                     announcementIndex
                   ) => {
                     return (
                       <Editable.DraggableAccordionItem
                         title={announcementTitle || "New announcement"}
-                        draggableId={`announcement-${announcementIndex}-draggable`}
+                        draggableId={`announcements-${announcementIndex}-draggable`}
                         index={announcementIndex}
                         isInvalid={_.some(
                           errors.announcements[announcementIndex]
@@ -98,7 +88,7 @@ export const AnnouncementBody = ({
                             <FormLabel>Title</FormLabel>
                             <Input
                               placeholder="Announcement title"
-                              id={`announcement-${announcementIndex}-title`}
+                              id={`announcements-${announcementIndex}-title`}
                               value={announcementTitle}
                               onChange={onChange}
                             />
@@ -115,13 +105,12 @@ export const AnnouncementBody = ({
                             <FormLabel>Date</FormLabel>
                             <DatePicker
                               placeholder="announcement description"
-                              id={`announcement-${announcementIndex}-date`}
+                              id={`announcements-${announcementIndex}-date`}
                               inputValue={announcementDate}
                               onInputValueChange={(value) => {
-                                console.log(value)
                                 onChange({
                                   target: {
-                                    id: `announcement-${announcementIndex}-date`,
+                                    id: `announcements-${announcementIndex}-date`,
                                     value,
                                   },
                                 })
@@ -141,7 +130,7 @@ export const AnnouncementBody = ({
                             <FormLabel>Announcement</FormLabel>
                             <Textarea
                               placeholder="This is a space for your announcement. This text appears next to the announcement title. You can link a relevant page if you need to elaborate on your announcement."
-                              id={`announcement-${announcementIndex}-announcementContent`}
+                              id={`announcements-${announcementIndex}-announcement`}
                               value={announcementContent}
                               onChange={onChange}
                             />
@@ -154,36 +143,40 @@ export const AnnouncementBody = ({
                           </FormControl>
                           <FormControl
                             isInvalid={
-                              !!errors.announcements[announcementIndex].linkText
+                              !!errors.announcements[announcementIndex]
+                                .link_text
                             }
                             isRequired
                           >
                             <FormLabel optionalIndicator>Link text</FormLabel>
                             <Input
                               placeholder="Learn more"
-                              id={`announcement-${announcementIndex}-linkText`}
+                              id={`announcement-${announcementIndex}-link_text`}
                               value={announcementLinkText}
                               onChange={onChange}
                             />
                             <FormErrorMessage>
-                              {errors.announcements[announcementIndex].linkText}
+                              {
+                                errors.announcements[announcementIndex]
+                                  .link_text
+                              }
                             </FormErrorMessage>
                           </FormControl>
                           <FormControl
                             isInvalid={
-                              !!errors.announcements[announcementIndex].linkUrl
+                              !!errors.announcements[announcementIndex].link_url
                             }
                             isRequired
                           >
                             <FormLabel optionalIndicator>Link URL</FormLabel>
                             <Input
                               placeholder="Insert /page-url or https:  "
-                              id={`announcement-${announcementIndex}-linkUrl`}
+                              id={`announcement-${announcementIndex}-link_url`}
                               value={announcementLinkUrl}
                               onChange={onChange}
                             />
                             <FormErrorMessage>
-                              {errors.announcements[announcementIndex].linkUrl}
+                              {errors.announcements[announcementIndex].link_url}
                             </FormErrorMessage>
                           </FormControl>
                           <Button

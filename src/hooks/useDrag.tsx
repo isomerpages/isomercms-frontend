@@ -364,7 +364,7 @@ export const onCreate = <E,>(
     case "announcement": {
       const announcementKeyExist = !_.isEmpty(
         frontMatter.sections.find((section) =>
-          EditorHomepageFrontmatterSection.isAnnouncementBlock(section)
+          EditorHomepageFrontmatterSection.isAnnouncements(section)
         )
       )
       if (!announcementKeyExist) {
@@ -373,13 +373,13 @@ export const onCreate = <E,>(
       }
 
       const announcementBlockIndex = frontMatter.sections.findIndex((section) =>
-        EditorHomepageFrontmatterSection.isAnnouncementBlock(section)
+        EditorHomepageFrontmatterSection.isAnnouncements(section)
       )
       const announcementBlockSection: AnnouncementBlockFrontmatterSection = frontMatter
         .sections[announcementBlockIndex] as AnnouncementBlockFrontmatterSection
 
       const announcements = createElement(
-        announcementBlockSection.announcementBlock.announcements,
+        announcementBlockSection.announcements.announcement_items,
         val as AnnouncementOption
       )
 
@@ -476,7 +476,7 @@ export const onDelete = (
     case "announcement": {
       const announcementKeyExist = !_.isEmpty(
         frontMatter.sections.find((section) =>
-          EditorHomepageFrontmatterSection.isAnnouncementBlock(section)
+          EditorHomepageFrontmatterSection.isAnnouncements(section)
         )
       )
       if (!announcementKeyExist) {
@@ -485,13 +485,13 @@ export const onDelete = (
       }
 
       const announcementBlockIndex = frontMatter.sections.findIndex((section) =>
-        EditorHomepageFrontmatterSection.isAnnouncementBlock(section)
+        EditorHomepageFrontmatterSection.isAnnouncements(section)
       )
       const announcementBlockSection: AnnouncementBlockFrontmatterSection = frontMatter
         .sections[announcementBlockIndex] as AnnouncementBlockFrontmatterSection
 
       const newAnnouncementOptions = deleteElement(
-        announcementBlockSection.announcementBlock.announcements,
+        announcementBlockSection.announcements.announcement_items,
         indexToDelete
       )
       const newAnnouncementErrors = deleteElement(
