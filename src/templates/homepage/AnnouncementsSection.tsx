@@ -1,0 +1,170 @@
+import { forwardRef } from "react"
+
+import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
+
+import { getClassNames } from "templates/utils/stylingUtils"
+
+import { AnnouncementsSection } from "types/homepage"
+
+type TemplateAnnouncementsSectionProps = Omit<
+  AnnouncementsSection,
+  "announcement_items"
+> & {
+  announcementItems: AnnouncementsSection["announcement_items"]
+  sectionIndex: number
+}
+
+export const TemplateAnnouncementsSection = forwardRef<
+  HTMLDivElement,
+  TemplateAnnouncementsSectionProps
+>(
+  (
+    {
+      title,
+      subtitle,
+      announcementItems,
+      sectionIndex,
+    }: TemplateAnnouncementsSectionProps,
+    ref
+  ) => {
+    return (
+      <div ref={ref}>
+        <section
+          className={getClassNames(editorStyles, [
+            `bp-section`,
+            sectionIndex % 2 === 1 ? "bg-newssection" : "",
+          ])}
+        >
+          <div
+            className={getClassNames(editorStyles, [
+              "bp-container",
+              "is-fluid",
+            ])}
+          >
+            <div className={editorStyles.row}>
+              <div
+                className={getClassNames(editorStyles, [
+                  "col",
+                  "is-full",
+                  "p-16",
+                ])}
+              >
+                <>
+                  {subtitle && (
+                    <p
+                      className={getClassNames(editorStyles, [
+                        "eyebrow",
+                        "is-uppercase",
+                        "pb-4",
+                        "has-text-centered",
+                      ])}
+                    >
+                      {subtitle}
+                    </p>
+                  )}
+                  {title && (
+                    <h1
+                      className={getClassNames(editorStyles, [
+                        "has-text-secondary",
+                        "pb-4",
+                        "has-text-centered",
+                      ])}
+                    >
+                      <b>{title}</b>
+                    </h1>
+                  )}
+
+                  <hr
+                    className={getClassNames(editorStyles, [
+                      "my-8",
+                      "announcements-divider",
+                    ])}
+                  />
+
+                  {announcementItems &&
+                    announcementItems.map((announcement, index) => {
+                      return (
+                        <>
+                          <div
+                            className={getClassNames(editorStyles, [
+                              "row",
+                              "is-desktop",
+                              "announcements-announcement-row-px-desktop",
+                            ])}
+                          >
+                            <div
+                              className={getClassNames(editorStyles, [
+                                "col",
+                                "is-4-desktop",
+                                "announcements-announcement-col-px-desktop",
+                                "announcements-announcement-title-mr-desktop",
+                              ])}
+                            >
+                              <h3
+                                className={getClassNames(editorStyles, [
+                                  "announcements-announcement-title",
+                                  "mb-4",
+                                ])}
+                              >
+                                <b>{announcement.title}</b>
+                              </h3>
+                              <p
+                                className={
+                                  editorStyles[
+                                    "announcements-announcement-subtitle"
+                                  ]
+                                }
+                              >
+                                {announcement.date}
+                              </p>
+                            </div>
+                            <div
+                              className={getClassNames(editorStyles, [
+                                "col",
+                                "announcements-announcement-col-px-desktop",
+                              ])}
+                            >
+                              <p>{announcement.announcement}</p>
+                              {announcement.link_text && announcement.link_url && (
+                                <div className={editorStyles["mt-4"]}>
+                                  <div
+                                    className={getClassNames(editorStyles, [
+                                      "announcements-announcement-link",
+                                      "bp-sec-button",
+                                    ])}
+                                  >
+                                    <span>{announcement.link_text}</span>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          {announcementItems &&
+                          announcementItems.length === index + 1 ? (
+                            <hr
+                              className={getClassNames(editorStyles, [
+                                "mt-8",
+                                "mb-0",
+                                "announcements-divider",
+                              ])}
+                            />
+                          ) : (
+                            <hr
+                              className={getClassNames(editorStyles, [
+                                "my-8",
+                                "announcements-divider",
+                              ])}
+                            />
+                          )}
+                        </>
+                      )
+                    })}
+                </>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    )
+  }
+)

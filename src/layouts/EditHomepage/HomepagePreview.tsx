@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom"
 
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
+import { TemplateAnnouncementsSection } from "templates/homepage/AnnouncementsSection"
 import TemplateHeroSection from "templates/homepage/HeroSection"
 import TemplateInfobarSection from "templates/homepage/InfobarSection"
 import TemplateInfopicLeftSection from "templates/homepage/InfopicLeftSection"
@@ -164,6 +165,19 @@ export const HomepagePreview = ({
                   ref={scrollRefs[sectionIndex]}
                 />
               )}
+            </>
+          )}
+          {/* Announcements section */}
+          {EditorHomepageFrontmatterSection.isAnnouncements(section) && (
+            <>
+              <TemplateAnnouncementsSection
+                key={`section-${sectionIndex}`}
+                title={section.announcements.title}
+                subtitle={section.announcements.subtitle}
+                announcementItems={section.announcements.announcement_items}
+                sectionIndex={sectionIndex}
+                ref={scrollRefs[sectionIndex] as Ref<HTMLDivElement>}
+              />
             </>
           )}
         </>
