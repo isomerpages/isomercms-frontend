@@ -5,7 +5,7 @@ import { Ref, useState } from "react"
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 import { TemplateAnnouncementsSection } from "templates/homepage/AnnouncementsSection"
-import { TemplateHeroSection } from "templates/homepage/HeroSection"
+import TemplateHeroSection from "templates/homepage/HeroSection"
 import TemplateInfobarSection from "templates/homepage/InfobarSection"
 import TemplateInfopicLeftSection from "templates/homepage/InfopicLeftSection"
 import TemplateInfopicRightSection from "templates/homepage/InfopicRightSection"
