@@ -74,12 +74,20 @@ const HeroInfoboxDesktop = ({
           )}
 
           {dropdown ? (
-            <HeroDropdown
-              title={dropdown.title}
-              options={dropdown.options}
-              isActive={dropdownIsActive}
-              toggleDropdown={toggleDropdown}
-            />
+            <div
+              className={getClassNames(editorStyles, ["is-flex"])}
+              style={{
+                justifyContent: "center",
+                alignContent: "center",
+              }}
+            >
+              <HeroDropdown
+                title={dropdown.title}
+                options={dropdown.options}
+                isActive={dropdownIsActive}
+                toggleDropdown={toggleDropdown}
+              />
+            </div>
           ) : (
             // NOTE: This is to mirror the template structure
             // as closely as possible.
