@@ -8,6 +8,6 @@ $breakpoints: (
   xxl: 1408px,
 );
 
-@import "helpers";
+@use "helpers";
 
-@import "homepage/announcements";
+@use "homepage/announcements";
