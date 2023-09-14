@@ -49,7 +49,7 @@ export interface InfopicSection {
   description?: string
   button?: string
   url?: string
-  images?: string
+  image?: string
   alt?: string
 }
 
@@ -57,6 +57,18 @@ export interface ResourcesSection {
   title?: string
   subtitle?: string
   button?: string
+}
+
+export interface AnnouncementsSection {
+  title?: string
+  subtitle?: string
+  announcement_items?: Array<{
+    title?: string
+    date?: string
+    announcement?: string
+    link_text?: string
+    link_url?: string
+  }>
 }
 
 export interface HomepageDto {
@@ -73,6 +85,7 @@ export interface HomepageDto {
         | InfobarSection
         | InfopicSection
         | ResourcesSection
+        | AnnouncementsSection
       )[]
     }
     pageBody?: string
@@ -91,20 +104,18 @@ export type HomepageEditorHeroSection =
   | EditorHeroHighlightsSection
 
 export type HeroFrontmatterSection = { hero: HomepageEditorHeroSection }
-// TODO: add properties here instead of typing as `Record<string, unknown>`
-// we can find them in `HomepagePreview`
-export type ResourcesFrontmatterSection = { resources: Record<string, unknown> }
+export type ResourcesFrontmatterSection = { resources: ResourcesSection }
 
-// TODO: add properties here instead of typing as `Record<string, unknown>`
-// we can find them in `HomepagePreview`
 export type InfopicFrontmatterSection = {
-  infopic: Record<string, unknown>
+  infopic: InfopicSection
 }
 
-// TODO: add properties here instead of typing as `Record<string, unknown>`
-// we can find them in `HomepagePreview`
 export type InfobarFrontmatterSection = {
-  infobar: Record<string, unknown>
+  infobar: InfobarSection
+}
+
+export type AnnouncementsFrontmatterSection = {
+  announcements: AnnouncementsSection
 }
 
 export type EditorHomepageFrontmatterSection =
@@ -112,6 +123,7 @@ export type EditorHomepageFrontmatterSection =
   | ResourcesFrontmatterSection
   | InfopicFrontmatterSection
   | InfobarFrontmatterSection
+  | AnnouncementsFrontmatterSection
 
 export const EditorHomepageFrontmatterSection = {
   isHero: (
@@ -130,6 +142,10 @@ export const EditorHomepageFrontmatterSection = {
     section: EditorHomepageFrontmatterSection
   ): section is InfobarFrontmatterSection =>
     !!(section as InfobarFrontmatterSection).infobar,
+  isAnnouncements: (
+    section: EditorHomepageFrontmatterSection
+  ): section is AnnouncementsFrontmatterSection =>
+    !!(section as AnnouncementsFrontmatterSection).announcements,
 }
 
 export interface EditorHomepageState {
