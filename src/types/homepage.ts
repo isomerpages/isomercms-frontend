@@ -20,6 +20,14 @@ export type HighlightOption = {
   url: string
 }
 
+export type AnnouncementOption = {
+  title: string
+  date: string
+  announcementContent: string
+  link_text: string
+  link_url: string
+}
+
 interface BaseHeroSection {
   background: string
   subtitle: string
@@ -63,16 +71,10 @@ export interface ResourcesSection {
   button?: string
 }
 
-export interface AnnouncementsSection {
+export interface AnnouncementBlockSection {
   title?: string
   subtitle?: string
-  announcement_items?: Array<{
-    title?: string
-    date?: string
-    announcement?: string
-    link_text?: string
-    link_url?: string
-  }>
+  announcement_items?: AnnouncementOption[]
 }
 
 export interface HomepageDto {
@@ -97,7 +99,11 @@ export interface HomepageDto {
   sha: string
 }
 
-export type EditorHomepageElement = "section" | "dropdownelem" | "highlight"
+export type EditorHomepageElement =
+  | "section"
+  | "dropdownelem"
+  | "highlight"
+  | "announcement"
 export type PossibleEditorSections = IterableElement<
   | EditorHomepageState["frontMatter"]["sections"]
   | EditorHeroDropdownSection["dropdown"]["options"]
@@ -156,6 +162,10 @@ export const EditorHomepageFrontmatterSection = {
     section: EditorHomepageFrontmatterSection
   ): section is AnnouncementsFrontmatterSection =>
     !!(section as AnnouncementsFrontmatterSection).announcements,
+  isAnnouncement: (
+    section: PossibleEditorSections
+  ): section is AnnouncementOption =>
+    !!(section as AnnouncementOption).announcementContent,
 }
 
 export interface EditorHomepageState {
@@ -166,10 +176,12 @@ export interface EditorHomepageState {
     sections: unknown[]
     dropdownElems: unknown[]
     highlights: unknown[]
+    announcements: unknown[]
   }
   displaySections: unknown[]
   displayDropdownElems: unknown[]
   displayHighlights: unknown[]
+  displayAnnouncements: unknown[]
 }
 
 export interface EditorHeroDropdownSection {

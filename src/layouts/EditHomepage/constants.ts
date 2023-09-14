@@ -3,6 +3,26 @@ export const RESOURCES_SECTION = {
   subtitle: "Add a preview and link to your Resource Room",
   id: "resources",
 } as const
+export const LocalDateTimeNow = new Date().toLocaleString("en-SG", {
+  timeZone: "Asia/Singapore",
+})
+
+export const ANNOUNCEMENT_SECTION = {
+  title: "Announcement",
+  date: LocalDateTimeNow,
+  announcement: "Announcement content",
+  linkText: "Learn more",
+  linkUrl: "Insert /page-url of https://",
+} as const
+
+export type AnnouncementSectionType = typeof ANNOUNCEMENT_SECTION
+export const ANNOUNCEMENT_BLOCK = {
+  title: "New announcements block",
+  addSectionTitle: "Announcements",
+  id: "announcementBlock",
+  subtitle: "Add a list of announcements with dates",
+  announcements: [] as AnnouncementSectionType[],
+} as const
 
 export const INFOBAR_SECTION = {
   title: "Infobar",
