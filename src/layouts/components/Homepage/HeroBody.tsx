@@ -51,6 +51,7 @@ interface HeroBodyProps extends HeroBodyFormFields {
   children: (props: {
     currentSelectedOption: HeroSectionType
   }) => React.ReactNode
+  initialSectionType: HeroSectionType
 }
 
 export const HeroBody = ({
@@ -62,9 +63,10 @@ export const HeroBody = ({
   handleHighlightDropdownToggle,
   notification,
   children,
+  initialSectionType,
 }: HeroBodyProps) => {
   const [heroSectionType, setHeroSectionType] = useState<HeroSectionType>(
-    "highlights"
+    initialSectionType
   )
   const { onChange } = useEditableContext()
 
@@ -147,7 +149,7 @@ export const HeroBody = ({
                 },
               })
             }}
-            defaultValue="highlights"
+            defaultValue={initialSectionType}
           >
             <HStack spacing="2rem">
               <Radio

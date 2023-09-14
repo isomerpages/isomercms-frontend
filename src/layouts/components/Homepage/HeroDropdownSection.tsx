@@ -20,19 +20,18 @@ export interface HeroDropdownFormFields {
   url: string
 }
 
-interface HeroDropdownSectionProps {
+interface HeroDropdownSectionProps extends EditorHeroDropdownSection {
   errors: {
     dropdownElems: HeroDropdownFormFields[]
     title: string
     dropdown: string
   }
-  state: EditorHeroDropdownSection
   title: string
 }
 
 export const HeroDropdownSection = ({
   errors,
-  state,
+  dropdown = { options: [] },
   title,
 }: HeroDropdownSectionProps) => {
   const {
@@ -67,10 +66,10 @@ export const HeroDropdownSection = ({
             <Editable.EmptySection
               title="Options you add will appear here"
               subtitle="Add options to allow users to quickly navigate your site"
-              isEmpty={state.dropdown.options.length === 0}
+              isEmpty={dropdown.options.length === 0}
             >
               <Editable.Section px={0} spacing="0.75rem" py="1.5rem">
-                {state.dropdown.options.map(
+                {dropdown.options.map(
                   (
                     { title: optionTitle, url: optionUrl },
                     dropdownOptionIndex
@@ -145,7 +144,7 @@ export const HeroDropdownSection = ({
         </Editable.Droppable>
       </DragDropContext>
       <Button
-        id={`dropdownelem-${state.dropdown.options.length}-create`}
+        id={`dropdownelem-${dropdown.options.length}-create`}
         onClick={() => onCreate({ target: { id: "dropdownelem" } })}
         variant="outline"
         w="full"
