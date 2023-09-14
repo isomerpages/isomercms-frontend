@@ -2,6 +2,8 @@ import { DropResult } from "@hello-pangea/dnd"
 import update from "immutability-helper"
 import _ from "lodash"
 
+import { ANNOUNCEMENT_BLOCK } from "layouts/EditHomepage/constants"
+
 import {
   EditorHeroDropdownSection,
   EditorHeroHighlightsSection,
@@ -9,6 +11,9 @@ import {
   EditorHomepageState,
   HeroFrontmatterSection,
   PossibleEditorSections,
+  EditorHomepageFrontmatterSection,
+  AnnouncementBlockFrontmatterSection,
+  AnnouncementOption,
 } from "types/homepage"
 
 const updatePositions = <T,>(
@@ -53,6 +58,29 @@ const updateEditorSection = (
   },
   errors: { ...homepageState.errors, sections: newSectionErrors },
 })
+
+const updateAnnouncementSection = (
+  homepageState: EditorHomepageState,
+  newDisplayAnnouncements: unknown[],
+  newAnnouncementOptions: unknown[],
+  newAnnouncementErrors: unknown[],
+  announcementBlockIndex: number
+): EditorHomepageState => {
+  return {
+    ...homepageState,
+    displayHighlights: newDisplayAnnouncements,
+    frontMatter: {
+      ...homepageState.frontMatter,
+      sections: _.set(
+        // NOTE: Deep clone here to avoid mutation
+        _.cloneDeep(homepageState.frontMatter.sections),
+        [announcementBlockIndex, ANNOUNCEMENT_BLOCK.id, "announcements"],
+        newAnnouncementOptions
+      ),
+    },
+    errors: { ...homepageState.errors, announcements: newAnnouncementErrors },
+  }
+}
 
 const updateDropdownSection = (
   homepageState: EditorHomepageState,
@@ -260,6 +288,7 @@ export const onCreate = <E,>(
     displaySections,
     displayDropdownElems,
     displayHighlights,
+    displayAnnouncements,
   } = homepageState
 
   switch (elemType) {
@@ -332,6 +361,43 @@ export const onCreate = <E,>(
 
       return updateHighlightsSection(homepageState, [true], [val], [err])
     }
+    case "announcement": {
+      const announcementKeyExist = !_.isEmpty(
+        frontMatter.sections.find((section) =>
+          EditorHomepageFrontmatterSection.isAnnouncementBlock(section)
+        )
+      )
+      if (!announcementKeyExist) {
+        // should not reach here, but defensively return the original state
+        return homepageState
+      }
+
+      const announcementBlockIndex = frontMatter.sections.findIndex((section) =>
+        EditorHomepageFrontmatterSection.isAnnouncementBlock(section)
+      )
+      const announcementBlockSection: AnnouncementBlockFrontmatterSection = frontMatter
+        .sections[announcementBlockIndex] as AnnouncementBlockFrontmatterSection
+
+      const announcements = createElement(
+        announcementBlockSection.announcementBlock.announcements,
+        val as AnnouncementOption
+      )
+
+      const resetDisplaySections = _.fill(
+        Array(displayAnnouncements.length),
+        false
+      )
+      const newDisplayAnnouncements = createElement(resetDisplaySections, true)
+
+      const newAnnouncementErrors = createElement(errors.announcements, err)
+      return updateAnnouncementSection(
+        homepageState,
+        newDisplayAnnouncements,
+        announcements,
+        newAnnouncementErrors,
+        announcementBlockIndex
+      )
+    }
     default:
       return homepageState
   }
@@ -348,6 +414,7 @@ export const onDelete = (
     displaySections,
     displayDropdownElems,
     displayHighlights,
+    displayAnnouncements,
   } = homepageState
 
   switch (elemType) {
@@ -404,6 +471,45 @@ export const onDelete = (
         newDisplayHighlights,
         newHighlightOptions,
         newHighlightErrors
+      )
+    }
+    case "announcement": {
+      const announcementKeyExist = !_.isEmpty(
+        frontMatter.sections.find((section) =>
+          EditorHomepageFrontmatterSection.isAnnouncementBlock(section)
+        )
+      )
+      if (!announcementKeyExist) {
+        // should not reach here, but defensively return the original state
+        return homepageState
+      }
+
+      const announcementBlockIndex = frontMatter.sections.findIndex((section) =>
+        EditorHomepageFrontmatterSection.isAnnouncementBlock(section)
+      )
+      const announcementBlockSection: AnnouncementBlockFrontmatterSection = frontMatter
+        .sections[announcementBlockIndex] as AnnouncementBlockFrontmatterSection
+
+      const newAnnouncementOptions = deleteElement(
+        announcementBlockSection.announcementBlock.announcements,
+        indexToDelete
+      )
+      const newAnnouncementErrors = deleteElement(
+        errors.announcements,
+        indexToDelete
+      )
+
+      const newDisplayAnnouncements = deleteElement(
+        displayAnnouncements,
+        indexToDelete
+      )
+
+      return updateAnnouncementSection(
+        homepageState,
+        newDisplayAnnouncements,
+        newAnnouncementOptions,
+        newAnnouncementErrors,
+        announcementBlockIndex
       )
     }
     default:
