@@ -40,6 +40,7 @@ export const HeroImageOnlyLayout = ({
               "is-flex",
               "row",
               "is-vcentered",
+              "is-centered",
             ])}
           >
             {dropdown && (
