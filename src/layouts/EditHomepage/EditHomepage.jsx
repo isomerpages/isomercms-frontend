@@ -35,12 +35,17 @@ import {
   validateSections,
   validateHighlights,
   validateDropdownElems,
+  validateAnnouncements,
 } from "utils/validators"
 
 import { HomepageStartEditingImage } from "assets"
 import { DEFAULT_RETRY_MSG } from "utils"
 
 import { useDrag, onCreate, onDelete } from "../../hooks/useDrag"
+import { CustomiseSectionsHeader, Editable } from "../components/Editable"
+import { AddSectionButton } from "../components/Editable/AddSectionButton"
+import { AnnouncementBody } from "../components/Homepage/AnnouncementBody"
+import { AnnouncementSection } from "../components/Homepage/AnnouncementSection"
 import { HeroBody } from "../components/Homepage/HeroBody"
 import { HeroDropdownSection } from "../components/Homepage/HeroDropdownSection"
 import { HeroHighlightSection } from "../components/Homepage/HeroHighlightSection"
@@ -55,6 +60,8 @@ import {
   INFOPIC_SECTION,
   KEY_HIGHLIGHT_SECTION,
   RESOURCES_SECTION,
+  ANNOUNCEMENT_BLOCK,
+  ANNOUNCEMENT_SECTION,
 } from "./constants"
 import { HomepagePreview } from "./HomepagePreview"
 import { getErrorValues } from "./utils"
@@ -120,6 +127,11 @@ const enumSection = (type, isError) => {
         ? { infopic: getErrorValues(INFOPIC_SECTION) }
         : { infopic: INFOPIC_SECTION }
 
+    case "announcementBlock":
+      return isError
+        ? { announcementBlock: getErrorValues(ANNOUNCEMENT_BLOCK) }
+        : { announcementBlock: ANNOUNCEMENT_BLOCK }
+
     default:
       return isError
         ? { infobar: getErrorValues(INFOBAR_SECTION) }
@@ -140,6 +152,7 @@ const EditHomepage = ({ match }) => {
     image: "",
     notification: "",
     sections: [],
+    announcementBlock: {},
   })
   const [originalFrontMatter, setOriginalFrontMatter] = useState({
     title: "",
@@ -151,12 +164,14 @@ const EditHomepage = ({ match }) => {
   })
   const [sha, setSha] = useState(null)
   const [displaySections, setDisplaySections] = useState([])
+  const [displayAnnouncements, setDisplayAnnouncements] = useState([])
   const [displayHighlights, setDisplayHighlights] = useState([])
   const [displayDropdownElems, setDisplayDropdownElems] = useState([])
   const [errors, setErrors] = useState({
     sections: [],
     highlights: [],
     dropdownElems: [],
+    announcements: [],
   })
   const [itemPendingForDelete, setItemPendingForDelete] = useState({
     id: "",
@@ -173,6 +188,7 @@ const EditHomepage = ({ match }) => {
     displayDropdownElems,
     displayHighlights,
     displaySections,
+    displayAnnouncements,
   }
   const onDrag = useDrag(homepageState)
   const setHomepageState = ({
@@ -217,6 +233,7 @@ const EditHomepage = ({ match }) => {
         const sectionsErrors = []
         let dropdownElemsErrors = []
         let highlightsErrors = []
+        const announcementErrors = []
         const scrollRefs = []
         frontMatter.sections.forEach((section) => {
           scrollRefs.push(createRef())
@@ -268,6 +285,12 @@ const EditHomepage = ({ match }) => {
             sectionsErrors.push({ infopic: getErrorValues(INFOPIC_SECTION) })
           }
 
+          if (section.announcementBlock) {
+            sectionsErrors.push({
+              announcementBlock: getErrorValues(ANNOUNCEMENT_BLOCK),
+            })
+          }
+
           // Minimize all sections by default
           displaySections.push(false)
         })
@@ -277,6 +300,7 @@ const EditHomepage = ({ match }) => {
           sections: sectionsErrors,
           highlights: highlightsErrors,
           dropdownElems: dropdownElemsErrors,
+          announcements: announcementErrors,
         }
 
         setFrontMatter(frontMatter)
@@ -333,7 +357,7 @@ const EditHomepage = ({ match }) => {
 
           // sectionIndex is the index of the section array in the frontMatter
           const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT)
-          const sectionType = idArray[2] // e.g. "hero" or "infobar" or "resources"
+          const sectionType = idArray[2] // e.g. "hero" or "infobar" or "resources" or "announcement"
           const field = idArray[3] // e.g. "title" or "subtitle"
 
           const newSections = update(sections, {
@@ -439,6 +463,60 @@ const EditHomepage = ({ match }) => {
           })
           setErrors(newErrors)
 
+          scrollTo(scrollRefs[0])
+          break
+        }
+        case "announcement": {
+          // The field that changed belongs to a hero highlight
+          const { sections } = frontMatter
+
+          const announcementBlockIndex = sections.findIndex(
+            (value) => Object.keys(value)[0] === "announcementBlock"
+          )
+          // announcementIndex is the index of the announcements array
+          const announcementIndex = parseInt(idArray[1], RADIX_PARSE_INT)
+          const field = idArray[2] // e.g. "title" or "url"
+
+          const newSections = update(sections, {
+            [announcementBlockIndex]: {
+              announcementBlock: {
+                announcements: {
+                  [announcementIndex]: {
+                    [field]: {
+                      $set: value,
+                    },
+                  },
+                },
+              },
+            },
+          })
+
+          const newErrors = update(errors, {
+            announcements: {
+              [announcementIndex]: {
+                $set: validateAnnouncements(
+                  errors.announcements[announcementIndex],
+                  field,
+                  value
+                ),
+              },
+            },
+          })
+
+          // Additional validation that depends on other fields
+          const isLinkTextFilled = !!frontMatter.sections[
+            announcementBlockIndex
+          ].announcementBlock.announcements[announcementIndex].linkText
+          if (field === "linkUrl" && !value && isLinkTextFilled) {
+            newErrors.announcements[announcementIndex].linkText =
+              "Please specify a URL for your link"
+          }
+
+          setFrontMatter({
+            ...frontMatter,
+            sections: newSections,
+          })
+          setErrors(newErrors)
           scrollTo(scrollRefs[0])
           break
         }
@@ -581,6 +659,20 @@ const EditHomepage = ({ match }) => {
 
           setHomepageState(updatedHomepageState)
           setDisplayHighlights(displayHighlights)
+          break
+        }
+        case "announcement": {
+          const val = ANNOUNCEMENT_SECTION
+          const err = getErrorValues(ANNOUNCEMENT_SECTION)
+          const updatedHomepageState = onCreate(
+            homepageState,
+            elemType,
+            val,
+            err
+          )
+          const newScrollRefs = update(scrollRefs, { $push: [createRef()] })
+          setHomepageState(updatedHomepageState)
+          setScrollRefs(newScrollRefs)
           break
         }
         default:
@@ -788,8 +880,21 @@ const EditHomepage = ({ match }) => {
           })
 
           setDisplaySections(newDisplaySections)
+          scrollTo(scrollRefs[index])
+          break
+        }
+        case "announcement": {
+          const resetAnnouncementSections = _.fill(
+            Array(displayAnnouncements.length),
+            false
+          )
+          resetAnnouncementSections[index] = !displayAnnouncements[index]
+          const newDisplayAnnouncements = update(displayAnnouncements, {
+            $set: resetAnnouncementSections,
+          })
 
           scrollTo(scrollRefs[index])
+          setDisplayAnnouncements(newDisplayAnnouncements)
           break
         }
         case "highlight": {
@@ -862,7 +967,7 @@ const EditHomepage = ({ match }) => {
     }
   }
 
-  // NOTE: sectionType is one of `resources`, `infopic` or `infobar`
+  // NOTE: sectionType is one of `announcementBlock, `resources`, `infopic` or `infobar`
   const onClick = (sectionType) => {
     createHandler({
       target: {
@@ -1083,6 +1188,51 @@ const EditHomepage = ({ match }) => {
                                       />
                                     </Editable.DraggableAccordionItem>
                                   )}
+
+                                  {section.announcementBlock && (
+                                    <Editable.DraggableAccordionItem
+                                      index={sectionIndex}
+                                      tag={
+                                        <Tag variant="subtle">Announcement</Tag>
+                                      }
+                                      title={
+                                        section.announcementBlock.title ||
+                                        "New Announcement"
+                                      }
+                                      isInvalid={_.some(
+                                        errors.sections[sectionIndex]
+                                          .announcementBlock
+                                      )}
+                                    >
+                                      <AnnouncementSection
+                                        {...section.announcementBlock}
+                                        title={
+                                          section.announcementBlock.title ||
+                                          "New announcement"
+                                        }
+                                        subtitle={
+                                          section.announcementBlock.subtitle ||
+                                          "New subtitle "
+                                        }
+                                        index={sectionIndex}
+                                        errors={
+                                          errors.sections[sectionIndex]
+                                            .announcementBlock
+                                        }
+                                      >
+                                        <AnnouncementBody
+                                          {...section.announcementBlock}
+                                          announcements={
+                                            section.announcementBlock
+                                              .announcements
+                                          }
+                                          errors={{
+                                            ...errors,
+                                          }}
+                                        />
+                                      </AnnouncementSection>
+                                    </Editable.DraggableAccordionItem>
+                                  )}
                                 </>
                               )
                             )}
@@ -1110,6 +1260,19 @@ const EditHomepage = ({ match }) => {
                         subtitle={INFOBAR_SECTION.subtitle}
                         onClick={() => onClick(INFOBAR_SECTION.id)}
                       />
+                      {/* NOTE: Check if the sections contain any `announcement` 
+                                and if it does, prevent creation of another `resources` section
+                            */}
+                      {!frontMatter.sections.some(
+                        ({ announcementBlock }) => !!announcementBlock
+                      ) && (
+                        <AddSectionButton.Option
+                          title={ANNOUNCEMENT_BLOCK.title}
+                          subtitle={ANNOUNCEMENT_BLOCK.subtitle}
+                          onClick={() => onClick(ANNOUNCEMENT_BLOCK.id)}
+                        />
+                      )}
+
                       {/* NOTE: Check if the sections contain any `resources` 
                                 and if it does, prevent creation of another `resources` section
                             */}
