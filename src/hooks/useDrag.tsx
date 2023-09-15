@@ -330,7 +330,7 @@ const updateHomepageState = (
         newDisplayAnnouncementItems,
         newAnnouncementsOptions,
         newAnnouncementErrors,
-        source.index
+        announcementsIndex
       )
     }
 

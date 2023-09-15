@@ -232,10 +232,10 @@ const EditHomepage = ({ match }) => {
       }
 
       try {
-        const {
+        let {
           content: { frontMatter },
-          sha,
         } = homepageData
+        const { sha } = homepageData
         // Set displaySections
         const displaySections = []
         let displayHighlights = []
@@ -303,6 +303,22 @@ const EditHomepage = ({ match }) => {
               section.announcements.announcement_items,
               () => getErrorValues(ANNOUNCEMENT_SECTION)
             )
+            if (!section.announcements.announcement_items) {
+              // define an empty array to announcement_items to prevent error
+              frontMatter = update(frontMatter, {
+                sections: {
+                  [frontMatter.sections.findIndex((section) =>
+                    EditorHomepageFrontmatterSection.isAnnouncements(section)
+                  )]: {
+                    announcements: {
+                      announcement_items: {
+                        $set: [],
+                      },
+                    },
+                  },
+                },
+              })
+            }
           }
 
           // Minimize all sections by default
@@ -383,6 +399,8 @@ const EditHomepage = ({ match }) => {
               },
             },
           })
+          console.log({ newSections })
+          console.log({ sections })
 
           let newSectionError
 
@@ -1013,7 +1031,9 @@ const EditHomepage = ({ match }) => {
       },
     })
   }
-
+  console.log({ errors, sections: frontMatter.sections })
+  if (errors.sections[2]?.announcements?.subtitle)
+    console.log({ errors }, "error is empty")
   return (
     <>
       <WarningModal
@@ -1226,53 +1246,53 @@ const EditHomepage = ({ match }) => {
                                     </Editable.DraggableAccordionItem>
                                   )}
 
-                                  {section.announcements && (
-                                    <Editable.DraggableAccordionItem
-                                      index={sectionIndex}
-                                      tag={
-                                        <Tag variant="subtle">Announcement</Tag>
-                                      }
-                                      title={
-                                        section.announcements.title ||
-                                        "New Announcement"
-                                      }
-                                      isInvalid={
-                                        _.some(
-                                          errors.sections[sectionIndex]
-                                            .announcements
-                                        ) ||
-                                        getHasError(errors.announcementItems)
-                                      }
-                                    >
-                                      <AnnouncementSection
-                                        {...section.announcements}
+                                  {section.announcements &&
+                                    errors.sections[sectionIndex]
+                                      .announcements && (
+                                      <Editable.DraggableAccordionItem
+                                        index={sectionIndex}
+                                        tag={
+                                          <Tag variant="subtle">
+                                            Announcement
+                                          </Tag>
+                                        }
                                         title={
                                           section.announcements.title ||
-                                          "New announcement"
+                                          "New Announcement"
                                         }
-                                        subtitle={
-                                          section.announcements.subtitle ||
-                                          "New subtitle "
-                                        }
-                                        index={sectionIndex}
-                                        errors={
-                                          errors.sections[sectionIndex]
-                                            .announcements
+                                        isInvalid={
+                                          _.some(
+                                            errors.sections[sectionIndex]
+                                              .announcements
+                                          ) ||
+                                          getHasError(errors.announcementItems)
                                         }
                                       >
-                                        <AnnouncementBody
+                                        <AnnouncementSection
                                           {...section.announcements}
-                                          announcementItems={
-                                            section.announcements
-                                              .announcement_items
+                                          title={section.announcements.title}
+                                          subtitle={
+                                            section.announcements.subtitle
                                           }
-                                          errors={{
-                                            ...errors,
-                                          }}
-                                        />
-                                      </AnnouncementSection>
-                                    </Editable.DraggableAccordionItem>
-                                  )}
+                                          index={sectionIndex}
+                                          errors={
+                                            errors.sections[sectionIndex]
+                                              .announcements
+                                          }
+                                        >
+                                          <AnnouncementBody
+                                            {...section.announcements}
+                                            announcementItems={
+                                              section.announcements
+                                                .announcement_items
+                                            }
+                                            errors={{
+                                              ...errors,
+                                            }}
+                                          />
+                                        </AnnouncementSection>
+                                      </Editable.DraggableAccordionItem>
+                                    )}
                                 </>
                               )
                             )}

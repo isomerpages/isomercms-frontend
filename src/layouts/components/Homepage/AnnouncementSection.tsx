@@ -41,7 +41,7 @@ export const AnnouncementSection = ({
         />
         <FormErrorMessage>{errors.subtitle}</FormErrorMessage>
       </FormControl>
-      <FormControl isRequired isInvalid={!!errors.title}>
+      <FormControl isRequired isInvalid={!!errors?.title}>
         <FormLabel>Title</FormLabel>
         <Input
           placeholder="Your title goes here"

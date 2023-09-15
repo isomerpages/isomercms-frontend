@@ -20,7 +20,6 @@ export const ANNOUNCEMENT_SECTION = {
 export type AnnouncementSectionType = typeof ANNOUNCEMENT_SECTION
 export const ANNOUNCEMENT_BLOCK = {
   title: "New announcements block",
-  addSectionTitle: "Announcements",
   id: "announcements",
   subtitle: "Add a list of announcements with dates",
   announcement_items: [] as AnnouncementSectionType[],
