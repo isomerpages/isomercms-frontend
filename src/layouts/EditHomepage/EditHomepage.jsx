@@ -1014,7 +1014,6 @@ const EditHomepage = ({ match }) => {
     })
   }
 
-  console.log({ errors })
   return (
     <>
       <WarningModal
