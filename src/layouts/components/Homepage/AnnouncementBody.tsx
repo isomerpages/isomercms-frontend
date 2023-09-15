@@ -73,7 +73,6 @@ export const AnnouncementBody = ({
                       <Editable.DraggableAccordionItem
                         title={announcementTitle || "New announcement"}
                         draggableId={`announcement-${announcementIndex}-draggable`}
-                        key={`announcement-draggable-${uuid()}`}
                         index={announcementIndex}
                         isInvalid={_.some(
                           errors.announcementItems[announcementIndex]
