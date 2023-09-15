@@ -1031,9 +1031,7 @@ const EditHomepage = ({ match }) => {
       },
     })
   }
-  console.log({ errors, sections: frontMatter.sections })
-  if (errors.sections[2]?.announcements?.subtitle)
-    console.log({ errors }, "error is empty")
+
   return (
     <>
       <WarningModal
