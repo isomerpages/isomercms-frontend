@@ -10,7 +10,6 @@ import {
 } from "@opengovsg/design-system-react"
 import _ from "lodash"
 import { BiPlus } from "react-icons/bi"
-import { v4 as uuid } from "uuid"
 
 import { useEditableContext } from "contexts/EditableContext"
 
@@ -149,40 +148,40 @@ export const AnnouncementBody = ({
                           <FormControl
                             isInvalid={
                               !!errors.announcementItems[announcementIndex]
-                                .linkText
+                                .link_text
                             }
                           >
                             <FormLabel>Link text</FormLabel>
                             <Input
                               placeholder="Learn more"
-                              id={`announcement-${announcementIndex}-linkText`}
+                              id={`announcement-${announcementIndex}-link_text`}
                               value={announcementLinkText}
                               onChange={onChange}
                             />
                             <FormErrorMessage>
                               {
                                 errors.announcementItems[announcementIndex]
-                                  .linkText
+                                  .link_text
                               }
                             </FormErrorMessage>
                           </FormControl>
                           <FormControl
                             isInvalid={
                               !!errors.announcementItems[announcementIndex]
-                                .linkUrl
+                                .link_url
                             }
                           >
                             <FormLabel>Link URL</FormLabel>
                             <Input
                               placeholder="Insert /page-url or https:  "
-                              id={`announcement-${announcementIndex}-linkUrl`}
+                              id={`announcement-${announcementIndex}-link_url`}
                               value={announcementLinkUrl}
                               onChange={onChange}
                             />
                             <FormErrorMessage>
                               {
                                 errors.announcementItems[announcementIndex]
-                                  .linkUrl
+                                  .link_url
                               }
                             </FormErrorMessage>
                           </FormControl>

@@ -274,7 +274,7 @@ const validateAnnouncementItems = (announcementError, field, value) => {
       }
       break
     }
-    case "linkText": {
+    case "link_text": {
       // Link text is too long
       if (value.length > ANNOUNCEMENT_LINK_TEXT_URL_MAX_LENGTH) {
         errorMessage = `The link text should be shorter than ${ANNOUNCEMENT_LINK_TEXT_URL_MAX_LENGTH} characters.`

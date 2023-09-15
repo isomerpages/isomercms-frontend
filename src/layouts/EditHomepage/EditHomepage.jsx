@@ -11,6 +11,7 @@ import { DragDropContext } from "@hello-pangea/dnd"
 import { Button, Tag } from "@opengovsg/design-system-react"
 import update from "immutability-helper"
 import _ from "lodash"
+import moment from "moment-timezone"
 import { useEffect, createRef, useState } from "react"
 
 import { CustomiseSectionsHeader, Editable } from "components/Editable"
@@ -103,8 +104,14 @@ const getHasErrors = (errors) => {
 
   const hasHighlightErrors = getHasError(errors.highlights)
   const hasDropdownElemErrors = getHasError(errors.dropdownElems)
+  const hasAnnouncementErrors = getHasError(errors.announcementItems)
 
-  return hasSectionErrors || hasHighlightErrors || hasDropdownElemErrors
+  return (
+    hasSectionErrors ||
+    hasHighlightErrors ||
+    hasDropdownElemErrors ||
+    hasAnnouncementErrors
+  )
 }
 
 // Constants
@@ -236,7 +243,7 @@ const EditHomepage = ({ match }) => {
         const sectionsErrors = []
         let dropdownElemsErrors = []
         let highlightsErrors = []
-        const announcementItemErrors = []
+        let announcementItemErrors = []
         const scrollRefs = []
         frontMatter.sections.forEach((section) => {
           scrollRefs.push(createRef())
@@ -292,6 +299,10 @@ const EditHomepage = ({ match }) => {
             sectionsErrors.push({
               announcements: getErrorValues(ANNOUNCEMENT_BLOCK),
             })
+            announcementItemErrors = _.map(
+              section.announcements.announcement_items,
+              () => getErrorValues(ANNOUNCEMENT_SECTION)
+            )
           }
 
           // Minimize all sections by default
@@ -508,17 +519,17 @@ const EditHomepage = ({ match }) => {
 
           // Additional validation that depends on other fields
           const isLinkTextFilled = !!newSections[announcementsIndex]
-            .announcements.announcement_items[announcementItemsIndex].linkText
+            .announcements.announcement_items[announcementItemsIndex].link_text
           const isLinkUrlFilled = !!newSections[announcementsIndex]
-            .announcements.announcement_items[announcementItemsIndex].linkUrl
+            .announcements.announcement_items[announcementItemsIndex].link_url
 
           const isLinkUrlError = isLinkTextFilled && !isLinkUrlFilled
           const isLinkUrlOrTextChanged =
-            field === "linkUrl" || field === "linkText"
+            field === "link_text" || field === "link_url"
           if (isLinkUrlOrTextChanged) {
             newErrors.announcementItems[
               announcementItemsIndex
-            ].linkUrl = isLinkUrlError
+            ].link_url = isLinkUrlError
               ? "Please specify a URL for your link"
               : ""
           }
@@ -961,6 +972,20 @@ const EditHomepage = ({ match }) => {
         return newSection
       })
 
+      // Modify announcements date time object
+      if (filteredFrontMatter.announcements) {
+        filteredFrontMatter.announcements.announcement_items = filteredFrontMatter.announcements.announcement_items.map(
+          (announcement) => {
+            return announcement.$set(
+              "date",
+              moment(announcement.date_time, "DD/MM/YYYY").format(
+                "DD MMMM YYYY"
+              )
+            )
+          }
+        )
+      }
+
       const params = {
         content: {
           frontMatter: filteredFrontMatter,
@@ -989,6 +1014,7 @@ const EditHomepage = ({ match }) => {
     })
   }
 
+  console.log({ errors })
   return (
     <>
       <WarningModal
@@ -1211,10 +1237,13 @@ const EditHomepage = ({ match }) => {
                                         section.announcements.title ||
                                         "New Announcement"
                                       }
-                                      isInvalid={_.some(
-                                        errors.sections[sectionIndex]
-                                          .announcements
-                                      )}
+                                      isInvalid={
+                                        _.some(
+                                          errors.sections[sectionIndex]
+                                            .announcements
+                                        ) ||
+                                        getHasError(errors.announcementItems)
+                                      }
                                     >
                                       <AnnouncementSection
                                         {...section.announcements}

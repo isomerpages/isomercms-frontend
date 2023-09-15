@@ -28,13 +28,7 @@ export type AnnouncementOption = {
   link_url: string
 }
 
-export type AnnouncementError = Omit<
-  AnnouncementOption,
-  "link_text" | "link_url"
-> & {
-  linkText: string
-  linkUrl: string
-}
+export type AnnouncementError = AnnouncementOption
 
 interface BaseHeroSection {
   background: string

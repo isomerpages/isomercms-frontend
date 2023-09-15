@@ -3,16 +3,18 @@ export const RESOURCES_SECTION = {
   subtitle: "Add a preview and link to your Resource Room",
   id: "resources",
 } as const
-export const LocalDateTimeNow = new Date().toLocaleString("en-SG", {
-  timeZone: "Asia/Singapore",
-})
+export const LocalDateTimeNow = new Date()
+  .toLocaleString("en-SG", {
+    timeZone: "Asia/Singapore",
+  })
+  .slice(0, "dd/mm/yyyy".length)
 
 export const ANNOUNCEMENT_SECTION = {
   title: "Announcement",
   date: LocalDateTimeNow,
   announcement: "Announcement content",
-  linkText: "",
-  linkUrl: "",
+  link_text: "",
+  link_url: "",
 } as const
 
 export type AnnouncementSectionType = typeof ANNOUNCEMENT_SECTION
