@@ -23,9 +23,17 @@ export type HighlightOption = {
 export type AnnouncementOption = {
   title: string
   date: string
-  announcementContent: string
+  announcement: string
   link_text: string
   link_url: string
+}
+
+export type AnnouncementError = Omit<
+  AnnouncementOption,
+  "link_text" | "link_url"
+> & {
+  linkText: string
+  linkUrl: string
 }
 
 interface BaseHeroSection {
@@ -71,7 +79,7 @@ export interface ResourcesSection {
   button?: string
 }
 
-export interface AnnouncementBlockSection {
+export interface AnnouncementsBlockSection {
   title?: string
   subtitle?: string
   announcement_items: AnnouncementOption[]
@@ -91,7 +99,7 @@ export interface HomepageDto {
         | InfobarSection
         | InfopicSection
         | ResourcesSection
-        | AnnouncementBlockSection
+        | AnnouncementsBlockSection
       )[]
     }
     pageBody?: string
@@ -130,8 +138,8 @@ export type InfobarFrontmatterSection = {
   infobar: InfobarSection
 }
 
-export type AnnouncementBlockFrontmatterSection = {
-  announcements: AnnouncementBlockSection
+export type AnnouncementsFrontmatterSection = {
+  announcements: AnnouncementsBlockSection
 }
 
 export type EditorHomepageFrontmatterSection =
@@ -139,7 +147,7 @@ export type EditorHomepageFrontmatterSection =
   | ResourcesFrontmatterSection
   | InfopicFrontmatterSection
   | InfobarFrontmatterSection
-  | AnnouncementBlockFrontmatterSection
+  | AnnouncementsFrontmatterSection
 
 export const EditorHomepageFrontmatterSection = {
   isHero: (
@@ -160,12 +168,12 @@ export const EditorHomepageFrontmatterSection = {
     !!(section as InfobarFrontmatterSection).infobar,
   isAnnouncements: (
     section: EditorHomepageFrontmatterSection
-  ): section is AnnouncementBlockFrontmatterSection =>
-    !!(section as AnnouncementBlockFrontmatterSection).announcements,
+  ): section is AnnouncementsFrontmatterSection =>
+    !!(section as AnnouncementsFrontmatterSection).announcements,
   isAnnouncement: (
     section: PossibleEditorSections
   ): section is AnnouncementOption =>
-    !!(section as AnnouncementOption).announcementContent,
+    !!(section as AnnouncementOption).announcement,
 }
 
 export interface EditorHomepageState {
@@ -176,12 +184,12 @@ export interface EditorHomepageState {
     sections: unknown[]
     dropdownElems: unknown[]
     highlights: unknown[]
-    announcements: unknown[]
+    announcementItems: unknown[]
   }
   displaySections: unknown[]
   displayDropdownElems: unknown[]
   displayHighlights: unknown[]
-  displayAnnouncements: unknown[]
+  displayAnnouncementItems: unknown[]
 }
 
 export interface EditorHeroDropdownSection {

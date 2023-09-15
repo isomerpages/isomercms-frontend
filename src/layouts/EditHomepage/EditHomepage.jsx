@@ -35,10 +35,11 @@ import {
   validateSections,
   validateHighlights,
   validateDropdownElems,
-  validateAnnouncements,
+  validateAnnouncementItems,
 } from "utils/validators"
 
 import { HomepageStartEditingImage } from "assets"
+import { EditorHomepageFrontmatterSection } from "types/homepage"
 import { DEFAULT_RETRY_MSG } from "utils"
 
 import { useDrag, onCreate, onDelete } from "../../hooks/useDrag"
@@ -127,10 +128,10 @@ const enumSection = (type, isError) => {
         ? { infopic: getErrorValues(INFOPIC_SECTION) }
         : { infopic: INFOPIC_SECTION }
 
-    case "announcementBlock":
+    case "announcements":
       return isError
-        ? { announcementBlock: getErrorValues(ANNOUNCEMENT_BLOCK) }
-        : { announcementBlock: ANNOUNCEMENT_BLOCK }
+        ? { announcements: getErrorValues(ANNOUNCEMENT_BLOCK) }
+        : { announcements: ANNOUNCEMENT_BLOCK }
 
     default:
       return isError
@@ -152,7 +153,7 @@ const EditHomepage = ({ match }) => {
     image: "",
     notification: "",
     sections: [],
-    announcementBlock: {},
+    announcements: {},
   })
   const [originalFrontMatter, setOriginalFrontMatter] = useState({
     title: "",
@@ -164,14 +165,14 @@ const EditHomepage = ({ match }) => {
   })
   const [sha, setSha] = useState(null)
   const [displaySections, setDisplaySections] = useState([])
-  const [displayAnnouncements, setDisplayAnnouncements] = useState([])
+  const [displayAnnouncementItems, setDisplayAnnouncementItems] = useState([])
   const [displayHighlights, setDisplayHighlights] = useState([])
   const [displayDropdownElems, setDisplayDropdownElems] = useState([])
   const [errors, setErrors] = useState({
     sections: [],
     highlights: [],
     dropdownElems: [],
-    announcements: [],
+    announcementItems: [],
   })
   const [itemPendingForDelete, setItemPendingForDelete] = useState({
     id: "",
@@ -188,7 +189,7 @@ const EditHomepage = ({ match }) => {
     displayDropdownElems,
     displayHighlights,
     displaySections,
-    displayAnnouncements,
+    displayAnnouncementItems,
   }
   const onDrag = useDrag(homepageState)
   const setHomepageState = ({
@@ -197,12 +198,14 @@ const EditHomepage = ({ match }) => {
     displayDropdownElems,
     displayHighlights,
     displaySections,
+    displayAnnouncementItems,
   }) => {
     setDisplaySections(displaySections)
     setFrontMatter(frontMatter)
     setErrors(errors)
     setDisplayDropdownElems(displayDropdownElems)
     setDisplayHighlights(displayHighlights)
+    setDisplayAnnouncementItems(displayAnnouncementItems)
   }
   const heroSection = frontMatter.sections.filter((section) => !!section.hero)
 
@@ -233,7 +236,7 @@ const EditHomepage = ({ match }) => {
         const sectionsErrors = []
         let dropdownElemsErrors = []
         let highlightsErrors = []
-        const announcementErrors = []
+        const announcementItemErrors = []
         const scrollRefs = []
         frontMatter.sections.forEach((section) => {
           scrollRefs.push(createRef())
@@ -285,9 +288,9 @@ const EditHomepage = ({ match }) => {
             sectionsErrors.push({ infopic: getErrorValues(INFOPIC_SECTION) })
           }
 
-          if (section.announcementBlock) {
+          if (section.announcements) {
             sectionsErrors.push({
-              announcementBlock: getErrorValues(ANNOUNCEMENT_BLOCK),
+              announcements: getErrorValues(ANNOUNCEMENT_BLOCK),
             })
           }
 
@@ -300,7 +303,7 @@ const EditHomepage = ({ match }) => {
           sections: sectionsErrors,
           highlights: highlightsErrors,
           dropdownElems: dropdownElemsErrors,
-          announcements: announcementErrors,
+          announcementItems: announcementItemErrors,
         }
 
         setFrontMatter(frontMatter)
@@ -357,7 +360,7 @@ const EditHomepage = ({ match }) => {
 
           // sectionIndex is the index of the section array in the frontMatter
           const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT)
-          const sectionType = idArray[2] // e.g. "hero" or "infobar" or "resources" or "announcement"
+          const sectionType = idArray[2] // e.g. "hero" or "infobar" or "resources" or "announcements"
           const field = idArray[3] // e.g. "title" or "subtitle"
 
           const newSections = update(sections, {
@@ -467,21 +470,21 @@ const EditHomepage = ({ match }) => {
           break
         }
         case "announcement": {
-          // The field that changed belongs to a hero highlight
+          // The field that changed belongs to a announcements
           const { sections } = frontMatter
 
-          const announcementBlockIndex = sections.findIndex(
-            (value) => Object.keys(value)[0] === "announcementBlock"
+          const announcementsIndex = frontMatter.sections.findIndex((section) =>
+            EditorHomepageFrontmatterSection.isAnnouncements(section)
           )
-          // announcementIndex is the index of the announcements array
-          const announcementIndex = parseInt(idArray[1], RADIX_PARSE_INT)
+          // announcementIndex is the index of the announcement items array
+          const announcementItemsIndex = parseInt(idArray[1], RADIX_PARSE_INT)
           const field = idArray[2] // e.g. "title" or "url"
 
           const newSections = update(sections, {
-            [announcementBlockIndex]: {
-              announcementBlock: {
-                announcements: {
-                  [announcementIndex]: {
+            [announcementsIndex]: {
+              announcements: {
+                announcement_items: {
+                  [announcementItemsIndex]: {
                     [field]: {
                       $set: value,
                     },
@@ -492,10 +495,10 @@ const EditHomepage = ({ match }) => {
           })
 
           const newErrors = update(errors, {
-            announcements: {
-              [announcementIndex]: {
-                $set: validateAnnouncements(
-                  errors.announcements[announcementIndex],
+            announcementItems: {
+              [announcementItemsIndex]: {
+                $set: validateAnnouncementItems(
+                  errors.announcementItems[announcementItemsIndex],
                   field,
                   value
                 ),
@@ -504,12 +507,20 @@ const EditHomepage = ({ match }) => {
           })
 
           // Additional validation that depends on other fields
-          const isLinkTextFilled = !!frontMatter.sections[
-            announcementBlockIndex
-          ].announcementBlock.announcements[announcementIndex].linkText
-          if (field === "linkUrl" && !value && isLinkTextFilled) {
-            newErrors.announcements[announcementIndex].linkText =
-              "Please specify a URL for your link"
+          const isLinkTextFilled = !!newSections[announcementsIndex]
+            .announcements.announcement_items[announcementItemsIndex].linkText
+          const isLinkUrlFilled = !!newSections[announcementsIndex]
+            .announcements.announcement_items[announcementItemsIndex].linkUrl
+
+          const isLinkUrlError = isLinkTextFilled && !isLinkUrlFilled
+          const isLinkUrlOrTextChanged =
+            field === "linkUrl" || field === "linkText"
+          if (isLinkUrlOrTextChanged) {
+            newErrors.announcementItems[
+              announcementItemsIndex
+            ].linkUrl = isLinkUrlError
+              ? "Please specify a URL for your link"
+              : ""
           }
 
           setFrontMatter({
@@ -517,7 +528,7 @@ const EditHomepage = ({ match }) => {
             sections: newSections,
           })
           setErrors(newErrors)
-          scrollTo(scrollRefs[0])
+          scrollTo(scrollRefs[announcementsIndex])
           break
         }
         case "dropdownelem": {
@@ -670,9 +681,7 @@ const EditHomepage = ({ match }) => {
             val,
             err
           )
-          const newScrollRefs = update(scrollRefs, { $push: [createRef()] })
           setHomepageState(updatedHomepageState)
-          setScrollRefs(newScrollRefs)
           break
         }
         default:
@@ -884,17 +893,20 @@ const EditHomepage = ({ match }) => {
           break
         }
         case "announcement": {
+          const announcementsIndex = frontMatter.sections.findIndex((section) =>
+            EditorHomepageFrontmatterSection.isAnnouncements(section)
+          )
           const resetAnnouncementSections = _.fill(
-            Array(displayAnnouncements.length),
+            Array(displayAnnouncementItems.length),
             false
           )
-          resetAnnouncementSections[index] = !displayAnnouncements[index]
-          const newDisplayAnnouncements = update(displayAnnouncements, {
+          resetAnnouncementSections[index] = !displayAnnouncementItems[index]
+          const newDisplayAnnouncements = update(displayAnnouncementItems, {
             $set: resetAnnouncementSections,
           })
 
-          scrollTo(scrollRefs[index])
-          setDisplayAnnouncements(newDisplayAnnouncements)
+          scrollTo(scrollRefs[announcementsIndex])
+          setDisplayAnnouncementItems(newDisplayAnnouncements)
           break
         }
         case "highlight": {
@@ -967,7 +979,7 @@ const EditHomepage = ({ match }) => {
     }
   }
 
-  // NOTE: sectionType is one of `announcementBlock, `resources`, `infopic` or `infobar`
+  // NOTE: sectionType is one of `announcements, `resources`, `infopic` or `infobar`
   const onClick = (sectionType) => {
     createHandler({
       target: {
@@ -1189,42 +1201,42 @@ const EditHomepage = ({ match }) => {
                                     </Editable.DraggableAccordionItem>
                                   )}
 
-                                  {section.announcementBlock && (
+                                  {section.announcements && (
                                     <Editable.DraggableAccordionItem
                                       index={sectionIndex}
                                       tag={
                                         <Tag variant="subtle">Announcement</Tag>
                                       }
                                       title={
-                                        section.announcementBlock.title ||
+                                        section.announcements.title ||
                                         "New Announcement"
                                       }
                                       isInvalid={_.some(
                                         errors.sections[sectionIndex]
-                                          .announcementBlock
+                                          .announcements
                                       )}
                                     >
                                       <AnnouncementSection
-                                        {...section.announcementBlock}
+                                        {...section.announcements}
                                         title={
-                                          section.announcementBlock.title ||
+                                          section.announcements.title ||
                                           "New announcement"
                                         }
                                         subtitle={
-                                          section.announcementBlock.subtitle ||
+                                          section.announcements.subtitle ||
                                           "New subtitle "
                                         }
                                         index={sectionIndex}
                                         errors={
                                           errors.sections[sectionIndex]
-                                            .announcementBlock
+                                            .announcements
                                         }
                                       >
                                         <AnnouncementBody
-                                          {...section.announcementBlock}
-                                          announcements={
-                                            section.announcementBlock
-                                              .announcements
+                                          {...section.announcements}
+                                          announcementItems={
+                                            section.announcements
+                                              .announcement_items
                                           }
                                           errors={{
                                             ...errors,
@@ -1264,7 +1276,7 @@ const EditHomepage = ({ match }) => {
                                 and if it does, prevent creation of another `resources` section
                             */}
                       {!frontMatter.sections.some(
-                        ({ announcementBlock }) => !!announcementBlock
+                        ({ announcements }) => !!announcements
                       ) && (
                         <AddSectionButton.Option
                           title={ANNOUNCEMENT_BLOCK.title}

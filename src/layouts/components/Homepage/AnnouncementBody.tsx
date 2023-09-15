@@ -10,25 +10,26 @@ import {
 } from "@opengovsg/design-system-react"
 import _ from "lodash"
 import { BiPlus } from "react-icons/bi"
+import { v4 as uuid } from "uuid"
 
 import { useEditableContext } from "contexts/EditableContext"
 
 import { Editable } from "layouts/components/Editable"
 
-import { AnnouncementOption } from "types/homepage"
+import { AnnouncementError, AnnouncementOption } from "types/homepage"
 
 const MAX_ANNOUNCEMENTS = 5
 
 interface AnnouncementBodyProps {
   errors: {
-    announcements: AnnouncementOption[]
+    announcementItems: AnnouncementError[]
   }
-  announcements: Partial<AnnouncementOption>[]
+  announcementItems: Partial<AnnouncementOption>[]
 }
 
 export const AnnouncementBody = ({
   errors,
-  announcements = [],
+  announcementItems = [],
 }: AnnouncementBodyProps) => {
   const {
     onDragEnd,
@@ -52,17 +53,17 @@ export const AnnouncementBody = ({
 
           <Editable.Accordion onChange={() => onDisplay("announcement")}>
             <Editable.EmptySection
-              isEmpty={announcements.length === 0}
+              isEmpty={announcementItems.length === 0}
               title="Announcements you add will appear here"
               subtitle=""
             >
               <Editable.Section px={0} spacing="0.75rem" py="1.5rem">
-                {announcements.map(
+                {announcementItems.map(
                   (
                     {
                       title: announcementTitle,
                       date: announcementDate,
-                      announcementContent,
+                      announcement: announcementContent,
                       link_text: announcementLinkText,
                       link_url: announcementLinkUrl,
                     },
@@ -71,34 +72,39 @@ export const AnnouncementBody = ({
                     return (
                       <Editable.DraggableAccordionItem
                         title={announcementTitle || "New announcement"}
-                        draggableId={`announcements-${announcementIndex}-draggable`}
+                        draggableId={`announcement-${announcementIndex}-draggable`}
+                        key={`announcement-draggable-${uuid()}`}
                         index={announcementIndex}
                         isInvalid={_.some(
-                          errors.announcements[announcementIndex]
+                          errors.announcementItems[announcementIndex]
                         )}
                         isNested
                       >
                         <Editable.Section>
                           <FormControl
                             isInvalid={
-                              !!errors.announcements[announcementIndex].title
+                              !!errors.announcementItems[announcementIndex]
+                                .title
                             }
                             isRequired
                           >
                             <FormLabel>Title</FormLabel>
                             <Input
                               placeholder="Announcement title"
-                              id={`announcements-${announcementIndex}-title`}
+                              id={`announcement-${announcementIndex}-title`}
                               value={announcementTitle}
                               onChange={onChange}
                             />
                             <FormErrorMessage>
-                              {errors.announcements[announcementIndex].title}
+                              {
+                                errors.announcementItems[announcementIndex]
+                                  .title
+                              }
                             </FormErrorMessage>
                           </FormControl>
                           <FormControl
                             isInvalid={
-                              !!errors.announcements[announcementIndex].date
+                              !!errors.announcementItems[announcementIndex].date
                             }
                             isRequired
                           >
@@ -110,73 +116,75 @@ export const AnnouncementBody = ({
                               onInputValueChange={(value) => {
                                 onChange({
                                   target: {
-                                    id: `announcements-${announcementIndex}-date`,
+                                    id: `announcement-${announcementIndex}-date`,
                                     value,
                                   },
                                 })
                               }}
                             />
                             <FormErrorMessage>
-                              {errors.announcements[announcementIndex].date}
+                              {errors.announcementItems[announcementIndex].date}
                             </FormErrorMessage>
                           </FormControl>
                           <FormControl
                             isInvalid={
-                              !!errors.announcements[announcementIndex]
-                                .announcementContent
+                              !!errors.announcementItems[announcementIndex]
+                                .announcement
                             }
                             isRequired
                           >
                             <FormLabel>Announcement</FormLabel>
                             <Textarea
                               placeholder="This is a space for your announcement. This text appears next to the announcement title. You can link a relevant page if you need to elaborate on your announcement."
-                              id={`announcements-${announcementIndex}-announcement`}
+                              id={`announcement-${announcementIndex}-announcement`}
                               value={announcementContent}
                               onChange={onChange}
                             />
                             <FormErrorMessage>
                               {
-                                errors.announcements[announcementIndex]
-                                  .announcementContent
+                                errors.announcementItems[announcementIndex]
+                                  .announcement
                               }
                             </FormErrorMessage>
                           </FormControl>
                           <FormControl
                             isInvalid={
-                              !!errors.announcements[announcementIndex]
-                                .link_text
+                              !!errors.announcementItems[announcementIndex]
+                                .linkText
                             }
-                            isRequired
                           >
-                            <FormLabel optionalIndicator>Link text</FormLabel>
+                            <FormLabel>Link text</FormLabel>
                             <Input
                               placeholder="Learn more"
-                              id={`announcement-${announcementIndex}-link_text`}
+                              id={`announcement-${announcementIndex}-linkText`}
                               value={announcementLinkText}
                               onChange={onChange}
                             />
                             <FormErrorMessage>
                               {
-                                errors.announcements[announcementIndex]
-                                  .link_text
+                                errors.announcementItems[announcementIndex]
+                                  .linkText
                               }
                             </FormErrorMessage>
                           </FormControl>
                           <FormControl
                             isInvalid={
-                              !!errors.announcements[announcementIndex].link_url
+                              !!errors.announcementItems[announcementIndex]
+                                .linkUrl
                             }
-                            isRequired
                           >
-                            <FormLabel optionalIndicator>Link URL</FormLabel>
+                            <FormLabel>Link URL</FormLabel>
                             <Input
                               placeholder="Insert /page-url or https:  "
-                              id={`announcement-${announcementIndex}-link_url`}
+                              id={`announcement-${announcementIndex}-linkUrl`}
                               value={announcementLinkUrl}
                               onChange={onChange}
                             />
                             <FormErrorMessage>
-                              {errors.announcements[announcementIndex].link_url}
+                              {
+                                errors.announcementItems[announcementIndex]
+                                  .linkUrl
+                              }
                             </FormErrorMessage>
                           </FormControl>
                           <Button
@@ -204,12 +212,12 @@ export const AnnouncementBody = ({
         </Editable.Droppable>
       </DragDropContext>
       <Button
-        id={`announcement-${announcements.length}-create`}
+        id={`announcement-${announcementItems.length}-create`}
         onClick={() => onCreate({ target: { id: "announcement" } })}
         variant="outline"
         w="full"
         leftIcon={<BiPlus fontSize="1.5rem" />}
-        isDisabled={announcements.length >= MAX_ANNOUNCEMENTS}
+        isDisabled={announcementItems.length >= MAX_ANNOUNCEMENTS}
       >
         Add Announcement
       </Button>

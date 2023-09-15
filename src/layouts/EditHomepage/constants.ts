@@ -11,17 +11,17 @@ export const ANNOUNCEMENT_SECTION = {
   title: "Announcement",
   date: LocalDateTimeNow,
   announcement: "Announcement content",
-  linkText: "Learn more",
-  linkUrl: "Insert /page-url of https://",
+  linkText: "",
+  linkUrl: "",
 } as const
 
 export type AnnouncementSectionType = typeof ANNOUNCEMENT_SECTION
 export const ANNOUNCEMENT_BLOCK = {
   title: "New announcements block",
   addSectionTitle: "Announcements",
-  id: "announcementBlock",
+  id: "announcements",
   subtitle: "Add a list of announcements with dates",
-  announcements: [] as AnnouncementSectionType[],
+  announcement_items: [] as AnnouncementSectionType[],
 } as const
 
 export const INFOBAR_SECTION = {

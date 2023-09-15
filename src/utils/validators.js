@@ -239,7 +239,7 @@ const validateHighlights = (highlightError, field, value) => {
   return newHighlightError
 }
 
-const validateAnnouncements = (announcementError, field, value) => {
+const validateAnnouncementItems = (announcementError, field, value) => {
   const newAnnouncementError = announcementError
   let errorMessage = ""
   switch (field) {
@@ -263,7 +263,7 @@ const validateAnnouncements = (announcementError, field, value) => {
       }
       break
     }
-    case "announcementContent": {
+    case "announcement": {
       // Announcement content is too short
       if (value.length < ANNOUNCEMENT_DESCRIPTION_MIN_LENGTH) {
         errorMessage = `The announcement content should not be empty.`
@@ -566,7 +566,7 @@ const validateInfopicSection = (sectionError, sectionType, field, value) => {
   return newSectionError
 }
 
-const validateAnnouncementBlockSection = (
+const validateAnnouncementsSection = (
   sectionError,
   sectionType,
   field,
@@ -636,8 +636,8 @@ const validateSections = (sectionError, sectionType, field, value) => {
       )
       break
     }
-    case "announcementBlock": {
-      newSectionError = validateAnnouncementBlockSection(
+    case "announcements": {
+      newSectionError = validateAnnouncementsSection(
         sectionError,
         sectionType,
         field,
@@ -1069,7 +1069,7 @@ export {
   validateLocationType,
   validateLink,
   validateHighlights,
-  validateAnnouncements,
+  validateAnnouncementItems,
   validateDropdownElems,
   validateSections,
   validatePageSettings,

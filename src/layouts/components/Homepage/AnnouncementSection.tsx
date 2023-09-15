@@ -10,15 +10,15 @@ import { useEditableContext } from "contexts/EditableContext"
 
 import { Editable } from "../Editable"
 
-interface AnnouncementBlockFormFields {
+interface AnnouncementsFormFields {
   title: string
   subtitle: string
-  children: React.ReactNode
 }
 
-interface AnnouncementBodyProps extends AnnouncementBlockFormFields {
+interface AnnouncementSectionProps extends AnnouncementsFormFields {
   index: number
-  errors: AnnouncementBlockFormFields
+  errors: AnnouncementsFormFields
+  children: React.ReactNode
 }
 
 export const AnnouncementSection = ({
@@ -27,16 +27,15 @@ export const AnnouncementSection = ({
   index,
   errors,
   children,
-}: AnnouncementBodyProps) => {
+}: AnnouncementSectionProps) => {
   const { onChange, onDelete } = useEditableContext()
-
   return (
     <Editable.Section>
       <FormControl isInvalid={!!errors.subtitle}>
         <FormLabel>Subtitle</FormLabel>
         <Input
           placeholder="This subtitle appears above the title"
-          id={`section-${index}-announcementBlock-subtitle`}
+          id={`section-${index}-announcements-subtitle`}
           value={subtitle}
           onChange={onChange}
         />
@@ -46,7 +45,7 @@ export const AnnouncementSection = ({
         <FormLabel>Title</FormLabel>
         <Input
           placeholder="Your title goes here"
-          id={`section-${index}-announcementBlock-title`}
+          id={`section-${index}-announcements-title`}
           value={title}
           onChange={onChange}
         />
