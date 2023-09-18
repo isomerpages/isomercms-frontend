@@ -801,6 +801,7 @@ const EditContactUs = ({ match }) => {
 
       filteredFrontMatter.contacts = newContacts
       filteredFrontMatter.locations = newLocations
+      filteredFrontMatter.feedback = frontMatter.feedback || ""
 
       // If array is empty, delete the object
       if (!filteredFrontMatter.contacts.length)
