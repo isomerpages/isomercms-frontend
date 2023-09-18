@@ -72,3 +72,17 @@ export const DROPDOWN_SECTION = {
   title: "Hero Dropdown Title",
   options: [],
 } as const
+
+export const TEXTCARDS_BLOCK_SECTION = {
+  title: "Text Cards",
+  subtitle: "Add informational text",
+  id: "textcards",
+  description: "Text card description",
+} as const
+
+export const TEXTCARDS_ITEM_SECTION = {
+  title: "Card",
+  description: "Card description",
+  linktext: "Learn more",
+  url: "", // No default value so that no broken link is created
+} as const
