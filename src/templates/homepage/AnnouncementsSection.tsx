@@ -33,22 +33,20 @@ export const TemplateAnnouncementsSection = forwardRef<
           className={getClassNames(editorStyles, [
             `bp-section`,
             sectionIndex % 2 === 1 ? "bg-newssection" : "",
+            "px-14",
+            "px-md-24",
+            "py-24",
           ])}
         >
           <div
             className={getClassNames(editorStyles, [
               "bp-container",
               "is-fluid",
+              "m-0",
             ])}
           >
             <div className={editorStyles.row}>
-              <div
-                className={getClassNames(editorStyles, [
-                  "col",
-                  "is-full",
-                  "p-16",
-                ])}
-              >
+              <div className={getClassNames(editorStyles, ["col", "is-full"])}>
                 <>
                   {subtitle && (
                     <p
@@ -89,15 +87,14 @@ export const TemplateAnnouncementsSection = forwardRef<
                             className={getClassNames(editorStyles, [
                               "row",
                               "is-desktop",
-                              "announcements-announcement-row-px-desktop",
                             ])}
                           >
                             <div
                               className={getClassNames(editorStyles, [
                                 "col",
                                 "is-4-desktop",
-                                "announcements-announcement-col-px-desktop",
-                                "announcements-announcement-title-mr-desktop",
+                                "px-lg-6",
+                                "mr-lg-6",
                               ])}
                             >
                               <h3
@@ -121,17 +118,18 @@ export const TemplateAnnouncementsSection = forwardRef<
                             <div
                               className={getClassNames(editorStyles, [
                                 "col",
-                                "announcements-announcement-col-px-desktop",
+                                "px-lg-6",
                               ])}
                             >
                               <p>{announcement.announcement}</p>
                               {announcement.link_text && announcement.link_url && (
                                 <div className={editorStyles["mt-4"]}>
                                   <div
-                                    className={getClassNames(editorStyles, [
-                                      "announcements-announcement-link",
-                                      "bp-sec-button",
-                                    ])}
+                                    className={
+                                      editorStyles[
+                                        "announcements-announcement-link"
+                                      ]
+                                    }
                                   >
                                     <span>{announcement.link_text}</span>
                                   </div>
