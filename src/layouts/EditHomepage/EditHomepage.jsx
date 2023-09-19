@@ -1316,7 +1316,7 @@ const EditHomepage = ({ match }) => {
                         subtitle={INFOBAR_SECTION.subtitle}
                         onClick={() => onClick(INFOBAR_SECTION.id)}
                       />
-                      {/* NOTE: Check if the sections contain any `announcement` 
+                      {/* NOTE: Check if the sections contain any `announcements` 
                                 and if it does, prevent creation of another `resources` section
                             */}
                       {!frontMatter.sections.some(
