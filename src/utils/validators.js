@@ -122,7 +122,7 @@ const ANNOUNCEMENT_BLOCK_TITLE_MAX_LENGTH = 50
 const ANNOUNCEMENT_TITLE_MIN_LENGTH = 0
 const ANNOUNCEMENT_TITLE_MAX_LENGTH = 100
 const ANNOUNCEMENT_DESCRIPTION_MIN_LENGTH = 0
-const ANNOUNCEMENT_DESCRIPTION_MAX_LENGTH = 100
+const ANNOUNCEMENT_DESCRIPTION_MAX_LENGTH = 300
 const ANNOUNCEMENT_LINK_TEXT_URL_MAX_LENGTH = 50
 
 // Contact Us Editor
@@ -189,7 +189,8 @@ const validateNonFutureAnnouncementDate = (dateStr) => {
   const today = new Date(moment().tz("Asia/Singapore").format("YYYY-MM-DD"))
   const IsoDateStr = dateStr.split("/").reverse().join("-")
   const chosenDate = new Date(IsoDateStr)
-  return today > chosenDate
+  const daysDiff = today - chosenDate
+  return daysDiff >= 0
 }
 
 // Homepage Editor
@@ -245,7 +246,7 @@ const validateAnnouncementItems = (announcementError, field, value) => {
   switch (field) {
     case "title": {
       // Title is too short
-      if (value.length < ANNOUNCEMENT_TITLE_MIN_LENGTH) {
+      if (value.length <= ANNOUNCEMENT_TITLE_MIN_LENGTH) {
         errorMessage = `The title should not be empty.`
       }
       // Title is too long
@@ -265,7 +266,7 @@ const validateAnnouncementItems = (announcementError, field, value) => {
     }
     case "announcement": {
       // Announcement content is too short
-      if (value.length < ANNOUNCEMENT_DESCRIPTION_MIN_LENGTH) {
+      if (value.length <= ANNOUNCEMENT_DESCRIPTION_MIN_LENGTH) {
         errorMessage = `The announcement content should not be empty.`
       }
       // Announcement content is too long
