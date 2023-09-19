@@ -9,6 +9,7 @@ export type Announcement = {
 }
 
 export type AnnouncementBatch = {
-  link: string
+  link?: string
   announcements: Announcement[]
+  onCloseButtonText: string
 }
