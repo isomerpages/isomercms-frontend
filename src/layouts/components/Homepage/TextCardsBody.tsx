@@ -7,12 +7,13 @@ import {
   Input,
 } from "@opengovsg/design-system-react"
 import _ from "lodash"
+import { BiPlus } from "react-icons/bi"
 
 import { useEditableContext } from "contexts/EditableContext"
 
 import { Editable } from "../Editable"
-import { AddSectionButton } from "../Editable/AddSectionButton"
 
+const NUM_MAX_CARDS = 4
 interface TextCardFormFields {
   title: string
   description?: string
@@ -42,7 +43,6 @@ export const TextCardsSectionBody = ({
   errors,
   cardErrors = [],
 }: TextCardsSectionProps) => {
-  console.log(cards)
   const { onChange, onDelete, onDragEnd, onCreate } = useEditableContext()
 
   return (
@@ -187,10 +187,13 @@ export const TextCardsSectionBody = ({
           </Editable.Droppable>
         </DragDropContext>
       </FormControl>
-      <AddSectionButton
-        w="100%"
+      <Button
+        id={`textcardcard-${index}-create`}
+        variant="outline"
+        w="full"
         pt="0.5rem"
-        buttonText="Add card"
+        leftIcon={<BiPlus fontSize="1.5rem" />}
+        isDisabled={cards.length >= NUM_MAX_CARDS}
         onClick={() => {
           onCreate({
             target: {
@@ -198,7 +201,9 @@ export const TextCardsSectionBody = ({
             },
           })
         }}
-      />
+      >
+        Add card
+      </Button>
       <Button
         id={`section-${index}`}
         onClick={() => onDelete(`section-${index}`, "Text Cards Section")}
