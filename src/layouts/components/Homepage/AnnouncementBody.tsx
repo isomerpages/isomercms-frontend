@@ -107,7 +107,6 @@ export const AnnouncementBody = ({
                           >
                             <FormLabel>Date</FormLabel>
                             <DatePicker
-                              placeholder="announcement description"
                               id={`announcements-${announcementIndex}-date`}
                               inputValue={announcementDate}
                               onInputValueChange={(value) => {
