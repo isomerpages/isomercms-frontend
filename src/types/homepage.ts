@@ -164,10 +164,6 @@ export const EditorHomepageFrontmatterSection = {
     section: EditorHomepageFrontmatterSection
   ): section is AnnouncementsFrontmatterSection =>
     !!(section as AnnouncementsFrontmatterSection).announcements,
-  isAnnouncement: (
-    section: PossibleEditorSections
-  ): section is AnnouncementOption =>
-    !!(section as AnnouncementOption).announcement,
 }
 
 export interface EditorHomepageState {
