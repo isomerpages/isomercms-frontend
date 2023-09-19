@@ -140,7 +140,7 @@ const SitesContent = ({ siteNames }: { siteNames?: SiteData[] }) => {
 }
 
 export const Sites = (): JSX.Element => {
-  const { email, userId, contactNumber } = useLoginContext()
+  const { email, contactNumber } = useLoginContext()
   const { data: siteRequestData } = useGetAllSites(email)
   const { announcements, link, onCloseButtonText } = useAnnouncements()
   const [isOpen, setIsOpen] = useState(announcements.length > 0)
