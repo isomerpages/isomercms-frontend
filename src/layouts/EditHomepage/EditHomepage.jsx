@@ -160,7 +160,6 @@ const EditHomepage = ({ match }) => {
     image: "",
     notification: "",
     sections: [],
-    announcements: {},
   })
   const [originalFrontMatter, setOriginalFrontMatter] = useState({
     title: "",
