@@ -78,6 +78,19 @@ export interface AnnouncementsBlockSection {
   subtitle?: string
   announcement_items: AnnouncementOption[]
 }
+export interface TextcardsCard {
+  title: string
+  description?: string
+  linktext: string
+  url: string
+}
+
+export interface TextcardsSection {
+  title: string
+  subtitle?: string
+  description?: string
+  cards: TextcardsCard[]
+}
 
 export interface HomepageDto {
   content: {
@@ -94,6 +107,7 @@ export interface HomepageDto {
         | InfopicSection
         | ResourcesSection
         | AnnouncementsBlockSection
+        | TextcardsSection
       )[]
     }
     pageBody?: string
@@ -106,6 +120,7 @@ export type EditorHomepageElement =
   | "dropdownelem"
   | "highlight"
   | "announcement"
+  | `textcardcard`
 export type PossibleEditorSections = IterableElement<
   | EditorHomepageState["frontMatter"]["sections"]
   | EditorHeroDropdownSection["dropdown"]["options"]
@@ -136,12 +151,27 @@ export type AnnouncementsFrontmatterSection = {
   announcements: AnnouncementsBlockSection
 }
 
+export interface EditorTextcardCardsSection {
+  cards: []
+}
+
+export interface EditorTextcardSection extends EditorTextcardCardsSection {
+  title: string
+  subtitle: string
+  description: string
+}
+
+export type TextcardFrontmatterSection = {
+  textcards: EditorTextcardSection
+}
+
 export type EditorHomepageFrontmatterSection =
   | HeroFrontmatterSection
   | ResourcesFrontmatterSection
   | InfopicFrontmatterSection
   | InfobarFrontmatterSection
   | AnnouncementsFrontmatterSection
+  | TextcardFrontmatterSection
 
 export const EditorHomepageFrontmatterSection = {
   isHero: (
@@ -164,6 +194,10 @@ export const EditorHomepageFrontmatterSection = {
     section: EditorHomepageFrontmatterSection
   ): section is AnnouncementsFrontmatterSection =>
     !!(section as AnnouncementsFrontmatterSection).announcements,
+  isTextcard: (
+    section: EditorHomepageFrontmatterSection
+  ): section is TextcardFrontmatterSection =>
+    !!(section as TextcardFrontmatterSection).textcards,
 }
 
 export interface EditorHomepageState {
@@ -175,6 +209,7 @@ export interface EditorHomepageState {
     dropdownElems: unknown[]
     highlights: unknown[]
     announcementItems: unknown[]
+    textcards: unknown[][]
   }
   displaySections: unknown[]
   displayDropdownElems: unknown[]
