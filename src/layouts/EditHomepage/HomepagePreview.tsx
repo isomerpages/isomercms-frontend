@@ -179,6 +179,20 @@ export const HomepagePreview = ({
               />
             </>
           )}
+          {/* Textcard section placeholder */}
+          {EditorHomepageFrontmatterSection.isTextcard(section) && (
+            <>
+              <TemplateInfobarSection
+                key={`section-${sectionIndex}`}
+                title={section.textcards.title}
+                subtitle={section.textcards.subtitle}
+                description={section.textcards.description}
+                button=""
+                sectionIndex={sectionIndex}
+                ref={scrollRefs[sectionIndex]}
+              />
+            </>
+          )}
         </>
       ))}
     </div>
