@@ -143,7 +143,7 @@ export const Sites = (): JSX.Element => {
   const { email, userId, contactNumber } = useLoginContext()
   const { data: siteRequestData } = useGetAllSites(email)
   const { announcements, link, onCloseButtonText } = useAnnouncements()
-  const [isOpen, setIsOpen] = useState(announcements.length > 0 && !userId)
+  const [isOpen, setIsOpen] = useState(announcements.length > 0)
   useEffect(() => {
     if (!siteRequestData) return
     const siteData = siteRequestData.siteNames
@@ -165,6 +165,7 @@ export const Sites = (): JSX.Element => {
    */
   const shouldShowAnnouncementModel =
     announcements.length > 0 && !!contactNumber && !!email
+
   return (
     <>
       {shouldShowAnnouncementModel && (
