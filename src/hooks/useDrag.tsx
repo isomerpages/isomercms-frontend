@@ -9,12 +9,17 @@ import {
   EditorHeroHighlightsSection,
   EditorHomepageElement,
   EditorHomepageState,
+  EditorTextcardCardsSection,
+  EditorTextcardSection,
   HeroFrontmatterSection,
   PossibleEditorSections,
   EditorHomepageFrontmatterSection,
   AnnouncementsFrontmatterSection,
   AnnouncementOption,
+  TextcardFrontmatterSection,
 } from "types/homepage"
+
+const RADIX_PARSE_INT = 10
 
 const updatePositions = <T,>(
   section: T[],
@@ -50,11 +55,24 @@ const deleteElement = <T,>(section: T[], indexToDelete: number): T[] => {
   })
 }
 
+const updateElement = <T,>(
+  section: T[],
+  elem: T,
+  indexToUpdate: number
+): T[] => {
+  return update(section, {
+    [indexToUpdate]: {
+      $set: elem,
+    },
+  })
+}
+
 const updateEditorSection = (
   homepageState: EditorHomepageState,
   newDisplaySections: unknown[],
   newFrontMatterSection: EditorHomepageState["frontMatter"]["sections"],
-  newSectionErrors: unknown[]
+  newSectionErrors: unknown[],
+  newTextcardErrors: unknown[][]
 ): EditorHomepageState => ({
   ...homepageState,
   displaySections: newDisplaySections,
@@ -62,7 +80,11 @@ const updateEditorSection = (
     ...homepageState.frontMatter,
     sections: newFrontMatterSection,
   },
-  errors: { ...homepageState.errors, sections: newSectionErrors },
+  errors: {
+    ...homepageState.errors,
+    sections: newSectionErrors,
+    textcards: newTextcardErrors,
+  },
 })
 
 const updateAnnouncementSection = (
@@ -131,6 +153,37 @@ const updateHighlightsSection = (
   errors: { ...homepageState.errors, highlights: newHighlightErrors },
 })
 
+const updateTextCardsCardSection = (
+  homepageState: EditorHomepageState,
+  sectionIndex: number,
+  newTextCards: unknown[],
+  newTextCardErrors: unknown[]
+): EditorHomepageState => ({
+  ...homepageState,
+  frontMatter: {
+    ...homepageState.frontMatter,
+    sections: _.set(
+      // NOTE: Deep clone here to avoid mutation
+      _.cloneDeep(homepageState.frontMatter.sections),
+      [sectionIndex, "textcards", "cards"],
+      newTextCards
+    ),
+  },
+  errors: {
+    ...homepageState.errors,
+    textcards: _.set(
+      // NOTE: Deep clone here to avoid mutation
+      _.cloneDeep(homepageState.errors.textcards),
+      [sectionIndex],
+      newTextCardErrors
+    ),
+    // {
+    //   ...homepageState.errors.textcards,
+    //   [sectionIndex]: newTextCardErrors,
+    // },
+  },
+})
+
 type OnDragEndResponseWrapper = (
   state: EditorHomepageState
 ) => (result: DropResult) => EditorHomepageState
@@ -170,7 +223,8 @@ const updateHomepageState = (
   )
     return homepageState
 
-  switch (type) {
+  const typeArray = type.split("-")
+  switch (typeArray[0]) {
     case "editor": {
       const draggedElem = frontMatter.sections[source.index]
       const newSections = updatePositions(
@@ -187,6 +241,14 @@ const updateHomepageState = (
         draggedError
       )
 
+      const draggedTextcardError = errors.textcards[source.index]
+      const newCardErrors = updatePositions(
+        errors.textcards,
+        source.index,
+        destination.index,
+        draggedTextcardError
+      )
+
       const displayBool = displaySections[source.index]
       const newDisplaySections = updatePositions(
         displaySections,
@@ -199,7 +261,8 @@ const updateHomepageState = (
         homepageState,
         newDisplaySections,
         newSections,
-        newSectionErrors
+        newSectionErrors,
+        newCardErrors
       )
     }
     // inner dnd for hero
@@ -333,7 +396,35 @@ const updateHomepageState = (
         announcementsIndex
       )
     }
+    case "textcardcard": {
+      const parentId = parseInt(typeArray[1], RADIX_PARSE_INT)
+      const draggedElem = ((frontMatter.sections[
+        parentId
+      ] as TextcardFrontmatterSection).textcards as EditorTextcardSection)
+        .cards[source.index]
+      const newTextcards = updatePositions(
+        ((frontMatter.sections[parentId] as TextcardFrontmatterSection)
+          .textcards as EditorTextcardSection).cards,
+        source.index,
+        destination.index,
+        draggedElem
+      )
 
+      const draggedError = errors.textcards[parentId][source.index]
+      const newTextcardErrors = updatePositions(
+        errors.textcards[parentId],
+        source.index,
+        destination.index,
+        draggedError
+      )
+
+      return updateTextCardsCardSection(
+        homepageState,
+        parentId,
+        newTextcards,
+        newTextcardErrors
+      )
+    }
     default:
       return homepageState
   }
@@ -345,7 +436,8 @@ export const onCreate = <E,>(
   homepageState: EditorHomepageState,
   elemType: EditorHomepageElement,
   val: PossibleEditorSections,
-  err: E
+  err: E,
+  parentId = 0
 ): EditorHomepageState => {
   const {
     errors,
@@ -364,11 +456,14 @@ export const onCreate = <E,>(
       const resetDisplaySections = _.fill(Array(displaySections.length), false)
       const newDisplaySections = createElement(resetDisplaySections, true)
 
+      const newTextcardErrors = createElement(errors.textcards, [])
+
       return updateEditorSection(
         homepageState,
         newDisplaySections,
         sections as EditorHomepageState["frontMatter"]["sections"],
-        newErrorSections
+        newErrorSections,
+        newTextcardErrors
       )
     }
     case "dropdownelem": {
@@ -470,6 +565,28 @@ export const onCreate = <E,>(
         announcementsIndex
       )
     }
+    case "textcardcard": {
+      if (
+        !_.isEmpty(
+          ((frontMatter.sections[parentId] as TextcardFrontmatterSection)
+            .textcards as EditorTextcardCardsSection).cards
+        )
+      ) {
+        const newTextCards = createElement(
+          ((frontMatter.sections[parentId] as TextcardFrontmatterSection)
+            .textcards as EditorTextcardCardsSection).cards,
+          val
+        )
+        const newTextcardErrors = createElement(errors.textcards[parentId], err)
+        return updateTextCardsCardSection(
+          homepageState,
+          parentId,
+          newTextCards,
+          newTextcardErrors
+        )
+      }
+      return updateTextCardsCardSection(homepageState, parentId, [val], [err])
+    }
     default:
       return homepageState
   }
@@ -478,7 +595,8 @@ export const onCreate = <E,>(
 export const onDelete = (
   homepageState: EditorHomepageState,
   elemType: EditorHomepageElement,
-  indexToDelete: number
+  indexToDelete: number,
+  subindexToDelete = 0
 ): EditorHomepageState => {
   const {
     errors,
@@ -494,12 +612,14 @@ export const onDelete = (
       const sections = deleteElement(frontMatter.sections, indexToDelete)
       const newErrorSections = deleteElement(errors.sections, indexToDelete)
       const newDisplaySections = deleteElement(displaySections, indexToDelete)
+      const newTextcardErrors = deleteElement(errors.textcards, indexToDelete)
 
       return updateEditorSection(
         homepageState,
         newDisplaySections,
         sections,
-        newErrorSections
+        newErrorSections,
+        newTextcardErrors
       )
     }
 
@@ -582,6 +702,23 @@ export const onDelete = (
         newAnnouncementOptions,
         newAnnouncementErrors,
         announcementsIndex
+      )
+    }
+    case "textcardcard": {
+      const newTextCards = deleteElement(
+        ((frontMatter.sections[indexToDelete] as TextcardFrontmatterSection)
+          .textcards as EditorTextcardCardsSection).cards,
+        subindexToDelete
+      )
+      const newTextcardErrors = deleteElement(
+        errors.textcards[indexToDelete],
+        subindexToDelete
+      )
+      return updateTextCardsCardSection(
+        homepageState,
+        indexToDelete,
+        newTextCards,
+        newTextcardErrors
       )
     }
     default:
