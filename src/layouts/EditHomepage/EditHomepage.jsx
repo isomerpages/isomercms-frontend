@@ -399,8 +399,6 @@ const EditHomepage = ({ match }) => {
               },
             },
           })
-          console.log({ newSections })
-          console.log({ sections })
 
           let newSectionError
 
