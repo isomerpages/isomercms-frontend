@@ -1,4 +1,5 @@
 import axios from "axios"
+import tinycolor from "tinycolor2"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -31,6 +32,7 @@ const createPageStyleSheet = (repoName, primaryColor, secondaryColor) => {
   styleElement.setAttribute("title", styleTitle)
   document.head.appendChild(styleElement)
 
+  const secondaryColorHover = tinycolor(secondaryColor).lighten(10).toString()
   const customStyleSheet = getStyleSheet(styleTitle)
 
   // breadcrumb - primary color
@@ -128,6 +130,11 @@ const createPageStyleSheet = (repoName, primaryColor, secondaryColor) => {
   )
   customStyleSheet.insertRule(
     `.sgds-icon.bx-chevron-down:before { color: ${secondaryColor} !important;}`,
+    0
+  )
+
+  customStyleSheet.insertRule(
+    `:root { --site-primary-color: ${primaryColor} !important; --site-secondary-color: ${secondaryColor} !important; --site-secondary-color-hover: ${secondaryColorHover} !important;}`,
     0
   )
 }
