@@ -25,17 +25,19 @@ import { Announcement } from "types/announcements"
 
 import { NewFeatureTag } from "./components/NewFeatureTag"
 
-interface AnnouncementModalProps {
+export interface AnnouncementModalProps {
   isOpen: boolean
   onClose: () => void
   announcements: Announcement[]
-  link: string
+  onCloseButtonText: string
+  link?: string
 }
 
 export const AnnouncementModal = ({
   isOpen,
   announcements,
   onClose,
+  onCloseButtonText,
   link,
 }: AnnouncementModalProps): JSX.Element => {
   const [currActiveIdx, setCurrActiveIdx] = useState<number>(0)
@@ -112,10 +114,13 @@ export const AnnouncementModal = ({
             />
             {isLastAnnouncement ? (
               <Flex gap="1.5rem" alignItems="center">
-                <Link isExternal href={link}>
-                  See release notes
-                </Link>
-                <Button onClick={handleNextClick}>Done</Button>
+                {link && (
+                  <Link isExternal href={link}>
+                    See release notes
+                  </Link>
+                )}
+
+                <Button onClick={handleNextClick}>{onCloseButtonText}</Button>
               </Flex>
             ) : (
               <Button

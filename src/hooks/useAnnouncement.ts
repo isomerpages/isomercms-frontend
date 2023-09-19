@@ -38,5 +38,6 @@ export const useAnnouncements = (): UseAnnouncementsReturn => {
       setLastSeenAnnouncementsStore(lastSeenAnnouncementsStore)
     },
     link: possibleAnnouncements?.link || "",
+    onCloseButtonText: possibleAnnouncements?.onCloseButtonText || "",
   }
 }

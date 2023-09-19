@@ -142,7 +142,7 @@ const SitesContent = ({ siteNames }: { siteNames?: SiteData[] }) => {
 export const Sites = (): JSX.Element => {
   const { email, userId, contactNumber } = useLoginContext()
   const { data: siteRequestData } = useGetAllSites(email)
-  const { announcements, link } = useAnnouncements()
+  const { announcements, link, onCloseButtonText } = useAnnouncements()
   const [isOpen, setIsOpen] = useState(announcements.length > 0 && !userId)
   useEffect(() => {
     if (!siteRequestData) return
@@ -173,6 +173,7 @@ export const Sites = (): JSX.Element => {
           announcements={announcements}
           link={link}
           onClose={() => setIsOpen(false)}
+          onCloseButtonText={onCloseButtonText}
         />
       )}
       <AllSitesHeader />
