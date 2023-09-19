@@ -57,6 +57,21 @@ const HERO_LAYOUTS = {
   },
 } as const
 
+const getIconButtonProps = (color: "black" | "grey" | "white") => {
+  return {
+    "aria-label": `${color} background`,
+    border: "1px solid",
+    borderColor: "border.input.default",
+    bg: color,
+    colorScheme: color,
+    size: "sm",
+    isRound: true,
+    _focus: {
+      boxShadow: "0 0 0 2px var(--chakra-colors-border-action-default)",
+    },
+  }
+}
+
 interface HeroCenteredLayoutProps extends HeroBodyFormFields {
   index: number
   errors: {
@@ -230,46 +245,19 @@ const HeroSideSectionLayout = ({
         <Text textStyle="subhead-1">Section background colour</Text>
         <HStack spacing="0.75rem" alignItems="flex-start">
           <IconButton
-            aria-label="black background"
-            border="1px solid"
-            borderColor="border.input.default"
-            bg="black"
-            colorScheme="black"
-            isRound
-            size="sm"
+            {...getIconButtonProps("black")}
             onClick={() => setSectionBackgroundColor("black")}
-            _focus={{
-              boxShadow: "0 0 0 2px var(--chakra-colors-border-action-default)",
-            }}
           >
             <Icon as={BiInfoCircle} fill="black" fontSize="1rem" />
           </IconButton>
           <IconButton
-            border="1px solid"
-            borderColor="border.input.default"
-            bg="white"
-            colorScheme="white"
-            isRound
-            size="sm"
-            aria-label="white background"
-            _focus={{
-              boxShadow: "0 0 0 2px var(--chakra-colors-border-action-default)",
-            }}
+            {...getIconButtonProps("white")}
             onClick={() => setSectionBackgroundColor("white")}
           >
             <Icon as={BiInfoCircle} fill="white" fontSize="1rem" />
           </IconButton>
           <IconButton
-            border="1px solid"
-            borderColor="border.input.default"
-            aria-label="gray background"
-            bg="gray"
-            colorScheme="grey"
-            isRound
-            size="sm"
-            _focus={{
-              boxShadow: "0 0 0 2px var(--chakra-colors-border-action-default)",
-            }}
+            {...getIconButtonProps("grey")}
             onClick={() => setSectionBackgroundColor("translucent gray")}
           />
         </HStack>
