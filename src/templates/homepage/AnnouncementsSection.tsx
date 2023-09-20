@@ -87,6 +87,7 @@ export const TemplateAnnouncementsSection = forwardRef<
                             className={getClassNames(editorStyles, [
                               "row",
                               "is-desktop",
+                              "px-lg-3",
                             ])}
                           >
                             <div
