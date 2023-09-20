@@ -127,7 +127,7 @@ export const TemplateHeroSection = forwardRef<
       hero,
       dropdownIsActive,
       toggleDropdown,
-      variant,
+      variant = "center",
     }: TemplateHeroSectionProps,
     ref
   ) => {

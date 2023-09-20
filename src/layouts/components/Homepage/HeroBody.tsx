@@ -9,6 +9,7 @@ import {
   HStack,
   Spacer,
 } from "@chakra-ui/react"
+import { useFeatureIsOn } from "@growthbook/growthbook-react"
 import {
   FormErrorMessage,
   FormLabel,
@@ -25,6 +26,7 @@ import { BiInfoCircle } from "react-icons/bi"
 import { FormContext, FormError, FormTitle } from "components/Form"
 import FormFieldMedia from "components/FormFieldMedia"
 
+import { FEATURE_FLAGS } from "constants/featureFlags"
 import { HERO_LAYOUTS } from "constants/homepage"
 
 import { useEditableContext } from "contexts/EditableContext"
@@ -290,29 +292,34 @@ const HeroLayoutForm = ({
   children,
 }: HeroLayoutFormProps): JSX.Element => {
   const { onChange } = useEditableContext()
+  const showNewLayouts = useFeatureIsOn(FEATURE_FLAGS.HOMEPAGE_TEMPLATES)
 
   return (
     <VStack spacing="1rem" align="flex-start" w="100%">
-      <Text textStyle="h5">Customise layout</Text>
-      <FormControl isRequired>
-        <FormLabel textStyle="subhead-1">Layout</FormLabel>
-        <SingleSelect
-          isClearable={false}
-          name="hero layout options"
-          value={variant}
-          items={_.values(HERO_LAYOUTS)}
-          // NOTE: Safe cast - the possible values are given by `HERO_LAYOUTS`
-          onChange={(val) => {
-            onChange({
-              target: {
-                // NOTE: Format is field type, index, section type, field
-                id: "section-0-hero-variant",
-                value: val as HeroBannerLayouts,
-              },
-            })
-          }}
-        />
-      </FormControl>
+      <Text textStyle="h5">{`Customise ${
+        showNewLayouts ? "Layout" : "Hero"
+      }`}</Text>
+      {showNewLayouts && (
+        <FormControl isRequired>
+          <FormLabel textStyle="subhead-1">Layout</FormLabel>
+          <SingleSelect
+            isClearable={false}
+            name="hero layout options"
+            value={variant}
+            items={_.values(HERO_LAYOUTS)}
+            // NOTE: Safe cast - the possible values are given by `HERO_LAYOUTS`
+            onChange={(val) => {
+              onChange({
+                target: {
+                  // NOTE: Format is field type, index, section type, field
+                  id: "section-0-hero-variant",
+                  value: val as HeroBannerLayouts,
+                },
+              })
+            }}
+          />
+        </FormControl>
+      )}
       <VStack spacing="1rem" w="100%">
         {children({ currentSelectedOption: variant })}
       </VStack>
@@ -352,6 +359,7 @@ export const HeroBody = ({
     initialSectionType
   )
   const { onChange } = useEditableContext()
+  const showNewLayouts = useFeatureIsOn(FEATURE_FLAGS.HOMEPAGE_TEMPLATES)
 
   return (
     <>
@@ -381,6 +389,12 @@ export const HeroBody = ({
         <Divider my="0.25rem" />
         <HeroLayoutForm variant={variant}>
           {({ currentSelectedOption }) => {
+            // NOTE: If the flag is turned off, we always show the centered layout
+            // as it is the current existing layout.
+            if (!showNewLayouts) {
+              return <HeroCenteredLayout {...rest} />
+            }
+
             if (currentSelectedOption === HERO_LAYOUTS.CENTERED.value) {
               return <HeroCenteredLayout {...rest} />
             }
