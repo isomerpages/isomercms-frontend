@@ -1,9 +1,13 @@
 import { ButtonProps } from "@opengovsg/design-system-react"
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 import { useState } from "react"
+import { Step } from "react-joyride"
 
 import { FeatureTourContext } from "./FeatureTourContext"
-import { DASHBOARD_FEATURE_STEPS } from "./FeatureTourSequence"
+import {
+  DASHBOARD_FEATURE_STEPS,
+  HERO_OPTIONS_FEATURE_STEPS,
+} from "./FeatureTourSequence"
 import {
   FeatureTourStep,
   FeatureTourTooltip,
@@ -18,26 +22,27 @@ export default {
   },
 } as Meta
 
-const Template: Story<FeatureTourTooltipProps> = (args) => {
-  const { index, isLastStep } = args
+const Template: StoryFn<FeatureTourTooltipProps & { steps: Step[] }> = (
+  args
+) => {
+  const { index, isLastStep, steps = DASHBOARD_FEATURE_STEPS } = args
   const [featureStep, setFeatureStep] = useState<number>(index ?? 0)
 
   const handleNextClick = () => {
-    featureStep === DASHBOARD_FEATURE_STEPS.length - 1
+    featureStep === steps.length - 1
       ? setFeatureStep(featureStep)
       : setFeatureStep(featureStep + 1)
   }
 
   const getFeatureTourTooltipContent = (step: number): FeatureTourStep => {
     return {
-      title: DASHBOARD_FEATURE_STEPS[step].title,
-      content: DASHBOARD_FEATURE_STEPS[step].content,
+      title: steps[step].title,
+      content: steps[step].content,
     }
   }
 
   const featureTourTooltipContent = getFeatureTourTooltipContent(featureStep)
-  const isThisLastStep =
-    isLastStep ?? featureStep === DASHBOARD_FEATURE_STEPS.length - 1
+  const isThisLastStep = isLastStep ?? featureStep === steps.length - 1
   const mockPrimaryProps: ButtonProps = {
     onClick: handleNextClick,
   }
@@ -53,6 +58,7 @@ const Template: Story<FeatureTourTooltipProps> = (args) => {
         primaryProps={mockPrimaryProps}
         isLastStep={isThisLastStep}
         index={featureStep}
+        size={steps.length}
       />
     </FeatureTourContext.Provider>
   )
@@ -64,4 +70,13 @@ export const LastFeatureStep = Template.bind({})
 LastFeatureStep.args = {
   index: DASHBOARD_FEATURE_STEPS.length - 1,
   isLastStep: true,
+}
+
+export const HeroBannerStep = Template.bind({})
+
+HeroBannerStep.args = {
+  index: 0,
+  isLastStep: true,
+  steps: HERO_OPTIONS_FEATURE_STEPS,
+  isTipBadgeShown: false,
 }

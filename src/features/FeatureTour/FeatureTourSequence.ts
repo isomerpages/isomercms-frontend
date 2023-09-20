@@ -1,4 +1,9 @@
+import React from "react"
 import { Step } from "react-joyride"
+
+import { HeroBannerToolTipImage } from "assets/images"
+
+import { HeroOptionsFeatureTourContent } from "./FeatureTourContent"
 
 export const DASHBOARD_FEATURE_STEPS: Array<Step> = [
   {
@@ -60,5 +65,15 @@ export const STORYBOOK_FEATURE_STEPS: Array<Step> = [
       "Loerm ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
     floaterProps: { placement: "bottom-end" },
     placement: "top-end",
+  },
+]
+
+export const HERO_OPTIONS_FEATURE_STEPS: Array<Step> = [
+  {
+    target: "#isomer-hero-feature-tour-step-1",
+    content: React.createElement("div", {}, HeroOptionsFeatureTourContent()),
+    floaterProps: { placement: "right-end" },
+    placement: "right-end",
+    title: React.createElement("div", {}, HeroBannerToolTipImage({})),
   },
 ]

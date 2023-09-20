@@ -5,4 +5,5 @@ export enum LOCAL_STORAGE_KEYS {
   DashboardFeatureTour = "dashboard-identity-feature-tour-v1",
   WorkspaceFeatureTour = "workspace-identity-feature-tour-v1",
   Feedback = "feedback",
+  HeroOptionsFeatureTour = "hero-options-feature-tour-v1",
 }
