@@ -75,5 +75,6 @@ export const HERO_OPTIONS_FEATURE_STEPS: Array<Step> = [
     floaterProps: { placement: "right-end" },
     placement: "right-end",
     title: React.createElement("div", {}, HeroBannerToolTipImage({})),
+    disableBeacon: true,
   },
 ]
