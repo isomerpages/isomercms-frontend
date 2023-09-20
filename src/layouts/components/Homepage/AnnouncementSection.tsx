@@ -1,4 +1,4 @@
-import { FormControl } from "@chakra-ui/react"
+import { Divider, FormControl } from "@chakra-ui/react"
 import {
   Button,
   FormErrorMessage,
@@ -51,6 +51,7 @@ export const AnnouncementSection = ({
         />
         <FormErrorMessage>{errors.title}</FormErrorMessage>
       </FormControl>
+      <Divider />
 
       {children}
       <Button

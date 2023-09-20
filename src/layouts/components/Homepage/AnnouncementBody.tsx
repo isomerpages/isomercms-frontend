@@ -58,9 +58,7 @@ export const AnnouncementBody = ({
     <Box w="full">
       <DragDropContext onDragEnd={onDragEnd}>
         <Editable.Droppable editableId="announcement">
-          <Text mt="1.5rem" textStyle="h6">
-            Announcements
-          </Text>
+          <Text textStyle="h6">Announcements</Text>
           <Text mt="0.5rem" textStyle="body-2" textColor="base.content.medium">
             {`You can display up to ${MAX_ANNOUNCEMENTS} announcements at a time. Newly added
             announcements are shown on the top of the list`}
@@ -236,7 +234,7 @@ export const AnnouncementBody = ({
         leftIcon={<BiPlus fontSize="1.5rem" />}
         isDisabled={announcementItems.length >= MAX_ANNOUNCEMENTS}
       >
-        Add Announcement
+        Add announcement
       </Button>
     </Box>
   )
