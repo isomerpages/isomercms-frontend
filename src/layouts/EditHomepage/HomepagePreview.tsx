@@ -1,12 +1,11 @@
 // NOTE: Below eslint disable is inherited from our legacy code :(
 /* eslint-disable react/no-array-index-key */
 import { Ref, useState } from "react"
-import { useParams } from "react-router-dom"
 
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 import { TemplateAnnouncementsSection } from "templates/homepage/AnnouncementsSection"
-import TemplateHeroSection from "templates/homepage/HeroSection"
+import { TemplateHeroSection } from "templates/homepage/HeroSection"
 import TemplateInfobarSection from "templates/homepage/InfobarSection"
 import TemplateInfopicLeftSection from "templates/homepage/InfopicLeftSection"
 import TemplateInfopicRightSection from "templates/homepage/InfopicRightSection"
@@ -39,7 +38,6 @@ export const HomepagePreview = ({
   frontMatter,
   scrollRefs,
 }: HomepagePreviewProps) => {
-  const { siteName } = useParams<{ siteName: string }>()
   const [dropdownIsActive, setDropdownIsActive] = useState(false)
 
   const toggleDropdown = () => setDropdownIsActive((prevState) => !prevState)
@@ -106,7 +104,8 @@ export const HomepagePreview = ({
                 hero={section.hero}
                 dropdownIsActive={dropdownIsActive}
                 toggleDropdown={toggleDropdown}
-                ref={scrollRefs[sectionIndex]}
+                ref={scrollRefs[sectionIndex] as Ref<HTMLDivElement>}
+                variant={section.hero.variant ?? "center"}
               />
             </>
           )}

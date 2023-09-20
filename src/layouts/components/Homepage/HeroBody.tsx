@@ -24,11 +24,14 @@ import { BiInfoCircle } from "react-icons/bi"
 import { FormContext, FormError, FormTitle } from "components/Form"
 import FormFieldMedia from "components/FormFieldMedia"
 
+import { HERO_LAYOUTS } from "constants/homepage"
+
 import { useEditableContext } from "contexts/EditableContext"
 
 import { Editable } from "layouts/components/Editable"
 
-import { HighlightOption } from "types/homepage"
+import { BxGrayTranslucent } from "assets"
+import { HeroBannerLayouts, HighlightOption } from "types/homepage"
 
 import { HeroDropdownFormFields } from "./HeroDropdownSection"
 
@@ -42,33 +45,23 @@ export interface HeroBodyFormFields {
   background: string
 }
 
-const HERO_LAYOUTS = {
-  CENTERED: {
-    value: "center",
-    label: "Centre-aligned text",
-  },
-  IMAGE_ONLY: {
-    value: "image",
-    label: "Image only",
-  },
-  SIDE_SECTION: {
-    value: "side",
-    label: "Side section",
-  },
-} as const
-
 const getIconButtonProps = (color: "black" | "grey" | "white") => {
   return {
     "aria-label": `${color} background`,
     border: "1px solid",
     borderColor: "border.input.default",
-    bg: color,
+    bg: color === "grey" ? "base.divider.strong" : color,
     colorScheme: color,
     size: "sm",
     isRound: true,
     _focus: {
       boxShadow: "0 0 0 2px var(--chakra-colors-border-action-default)",
     },
+    ...(color === "grey" && {
+      _hover: {
+        bg: "base.divider.strong",
+      },
+    }),
   }
 }
 
@@ -259,6 +252,7 @@ const HeroSideSectionLayout = ({
           <IconButton
             {...getIconButtonProps("grey")}
             onClick={() => setSectionBackgroundColor("translucent gray")}
+            icon={<BxGrayTranslucent />}
           />
         </HStack>
       </Box>
@@ -266,18 +260,18 @@ const HeroSideSectionLayout = ({
   )
 }
 
-type HeroBannerLayouts = typeof HERO_LAYOUTS[keyof typeof HERO_LAYOUTS]["value"]
-
 interface HeroLayoutFormProps {
+  variant: HeroBannerLayouts
   children: (props: {
     currentSelectedOption: HeroBannerLayouts
   }) => React.ReactNode
 }
 
-const HeroLayoutForm = ({ children }: HeroLayoutFormProps): JSX.Element => {
-  const [currentLayout, setCurrentLayout] = useState<HeroBannerLayouts>(
-    HERO_LAYOUTS.CENTERED.value
-  )
+const HeroLayoutForm = ({
+  variant,
+  children,
+}: HeroLayoutFormProps): JSX.Element => {
+  const { onChange } = useEditableContext()
 
   return (
     <VStack spacing="1rem" align="flex-start" w="100%">
@@ -287,14 +281,22 @@ const HeroLayoutForm = ({ children }: HeroLayoutFormProps): JSX.Element => {
         <SingleSelect
           isClearable={false}
           name="hero layout options"
-          value={currentLayout}
+          value={variant}
           items={_.values(HERO_LAYOUTS)}
           // NOTE: Safe cast - the possible values are given by `HERO_LAYOUTS`
-          onChange={(val) => setCurrentLayout(val as HeroBannerLayouts)}
+          onChange={(val) => {
+            onChange({
+              target: {
+                // NOTE: Format is field type, index, section type, field
+                id: "section-0-hero-variant",
+                value: val as HeroBannerLayouts,
+              },
+            })
+          }}
         />
       </FormControl>
       <VStack spacing="1rem" w="100%">
-        {children({ currentSelectedOption: currentLayout })}
+        {children({ currentSelectedOption: variant })}
       </VStack>
     </VStack>
   )
@@ -315,9 +317,11 @@ interface HeroBodyProps extends HeroBodyFormFields {
     currentSelectedOption: HeroSectionType
   }) => React.ReactNode
   initialSectionType: HeroSectionType
+  variant: HeroBannerLayouts
 }
 
 export const HeroBody = ({
+  variant = "center",
   handleHighlightDropdownToggle,
   notification,
   children,
@@ -355,7 +359,7 @@ export const HeroBody = ({
           </Flex>
         </FormControl>
         <Divider my="0.25rem" />
-        <HeroLayoutForm>
+        <HeroLayoutForm variant={variant}>
           {({ currentSelectedOption }) => {
             if (currentSelectedOption === HERO_LAYOUTS.CENTERED.value) {
               return <HeroCenteredLayout {...rest} />
