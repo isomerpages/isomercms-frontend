@@ -108,6 +108,7 @@ export const AnnouncementBody = ({
                           >
                             <FormLabel>Date</FormLabel>
                             <DatePicker
+                              placeholder="dd/mm/yyyy"
                               id={`announcements-${announcementIndex}-date`}
                               inputValue={moment(
                                 announcementDate,
@@ -177,7 +178,7 @@ export const AnnouncementBody = ({
                           >
                             <FormLabel>Link URL</FormLabel>
                             <Input
-                              placeholder="Insert /page-url or https:  "
+                              placeholder="Insert /page-url or https://"
                               id={`announcement-${announcementIndex}-link_url`}
                               value={announcementLinkUrl}
                               onChange={onChange}
