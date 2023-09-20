@@ -1,3 +1,5 @@
+import moment from "moment"
+
 export const RESOURCES_SECTION = {
   title: "Resources",
   subtitle: "Add a preview and link to your Resource Room",
@@ -15,11 +17,14 @@ export type AnnouncementSectionType = {
 export const getDefaultAnnouncementSection = (): AnnouncementSectionType => {
   return {
     title: "Announcement",
-    date: new Date()
-      .toLocaleString("en-SG", {
-        timeZone: "Asia/Singapore",
-      })
-      .slice(0, "dd/mm/yyyy".length),
+    date: moment(
+      new Date()
+        .toLocaleString("en-SG", {
+          timeZone: "Asia/Singapore",
+        })
+        .slice(0, "dd/mm/yyyy".length),
+      "DD/MM/YYYY"
+    ).format("DD MMMM YYYY"),
     announcement: "Announcement content",
     link_text: "",
     link_url: "",

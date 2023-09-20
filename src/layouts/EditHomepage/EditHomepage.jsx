@@ -11,7 +11,6 @@ import { DragDropContext } from "@hello-pangea/dnd"
 import { Button, Tag } from "@opengovsg/design-system-react"
 import update from "immutability-helper"
 import _ from "lodash"
-import moment from "moment-timezone"
 import { useEffect, createRef, useState } from "react"
 
 import { CustomiseSectionsHeader, Editable } from "components/Editable"
@@ -986,20 +985,6 @@ const EditHomepage = ({ match }) => {
         })
         return newSection
       })
-
-      // Modify announcements date time object
-      if (filteredFrontMatter.announcements) {
-        filteredFrontMatter.announcements.announcement_items = filteredFrontMatter.announcements.announcement_items.map(
-          (announcement) => {
-            return announcement.$set(
-              "date",
-              moment(announcement.date_time, "DD/MM/YYYY").format(
-                "DD MMMM YYYY"
-              )
-            )
-          }
-        )
-      }
 
       const params = {
         content: {

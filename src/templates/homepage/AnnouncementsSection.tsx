@@ -1,4 +1,3 @@
-import moment from "moment-timezone"
 import { forwardRef } from "react"
 
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
@@ -113,9 +112,7 @@ export const TemplateAnnouncementsSection = forwardRef<
                                   ]
                                 }
                               >
-                                {moment(announcement.date, "DD/MM/YYYY").format(
-                                  "DD MMMM YYYY"
-                                )}
+                                {announcement.date}
                               </p>
                             </div>
                             <div

@@ -9,6 +9,7 @@ import {
   Textarea,
 } from "@opengovsg/design-system-react"
 import _ from "lodash"
+import moment from "moment"
 import { BiPlus } from "react-icons/bi"
 
 import { useEditableContext } from "contexts/EditableContext"
@@ -108,12 +109,17 @@ export const AnnouncementBody = ({
                             <FormLabel>Date</FormLabel>
                             <DatePicker
                               id={`announcements-${announcementIndex}-date`}
-                              inputValue={announcementDate}
+                              inputValue={moment(
+                                announcementDate,
+                                "DD MMMM YYYY"
+                              ).format("DD/MM/YYYY")}
                               onInputValueChange={(value) => {
                                 onChange({
                                   target: {
                                     id: `announcement-${announcementIndex}-date`,
-                                    value,
+                                    value: moment(value, "DD/MM/YYYY").format(
+                                      "DD MMMM YYYY"
+                                    ),
                                   },
                                 })
                               }}
