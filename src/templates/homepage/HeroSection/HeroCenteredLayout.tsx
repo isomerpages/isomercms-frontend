@@ -4,28 +4,8 @@ import { getClassNames } from "templates/utils/stylingUtils"
 
 import { EditorHeroDropdownSection } from "types/homepage"
 
+import { HeroButton } from "./HeroButton"
 import { HeroDropdown } from "./HeroDropdown"
-
-interface HeroButtonProps {
-  button?: string
-}
-const HeroButton = ({ button }: HeroButtonProps) => (
-  <>
-    {button ? (
-      <div
-        className={getClassNames(editorStyles, [
-          "bp-button",
-          "is-uppercase",
-          "search-button",
-          "default",
-          "is-secondary",
-        ])}
-      >
-        {button}
-      </div>
-    ) : null}
-  </>
-)
 
 interface HeroCenteredLayoutProps {
   hero: {

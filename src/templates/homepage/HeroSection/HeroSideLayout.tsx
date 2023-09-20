@@ -10,6 +10,7 @@ import { getClassNames } from "templates/utils/stylingUtils"
 import { SectionBackgroundColor, SectionSize } from "types/hero"
 import { EditorHeroDropdownSection } from "types/homepage"
 
+import { HeroButton } from "./HeroButton"
 import { HeroDropdown } from "./HeroDropdown"
 
 const TRANSLUCENT_GRAY = "#00000080"
@@ -72,41 +73,28 @@ const HeroInfoboxDesktop = ({
               {subtitle}
             </p>
           )}
-
-          {dropdown ? (
-            <div
-              className={getClassNames(editorStyles, ["is-flex"])}
-              style={{
-                justifyContent: "center",
-                alignContent: "center",
-              }}
-            >
-              <HeroDropdown
-                title={dropdown.title}
-                options={dropdown.options}
-                isActive={dropdownIsActive}
-                toggleDropdown={toggleDropdown}
-              />
-            </div>
-          ) : (
-            // NOTE: This is to mirror the template structure
-            // as closely as possible.
-            url &&
-            button && (
-              <a
-                href="/"
-                className={getClassNames(editorStyles, [
-                  "bp-button",
-                  "is-secondary",
-                  "is-uppercase",
-                  "search-button",
-                ])}
-              >
-                {button}
-              </a>
-            )
-          )}
         </div>
+
+        {dropdown ? (
+          <div
+            className={getClassNames(editorStyles, ["is-flex"])}
+            style={{
+              justifyContent: "center",
+              alignContent: "center",
+            }}
+          >
+            <HeroDropdown
+              title={dropdown.title}
+              options={dropdown.options}
+              isActive={dropdownIsActive}
+              toggleDropdown={toggleDropdown}
+            />
+          </div>
+        ) : (
+          // NOTE: This is to mirror the template structure
+          // as closely as possible.
+          url && button && <HeroButton button={button} />
+        )}
       </div>
     </div>
   )

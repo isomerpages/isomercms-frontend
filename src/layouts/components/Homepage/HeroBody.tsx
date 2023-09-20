@@ -393,6 +393,10 @@ export const HeroBody = ({
               return <HeroSideSectionLayout {...rest} />
             }
 
+            if (currentSelectedOption === HERO_LAYOUTS.FLOATING_SECTION.value) {
+              return <HeroSideSectionLayout {...rest} />
+            }
+
             const unmatchedOption: never = currentSelectedOption
             throw new Error(`Unmatched option for layout: ${unmatchedOption}`)
           }}

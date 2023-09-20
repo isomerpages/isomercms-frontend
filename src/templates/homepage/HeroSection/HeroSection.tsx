@@ -166,6 +166,16 @@ export const TemplateHeroSection = forwardRef<
               toggleDropdown={toggleDropdown}
             />
           )}
+          {variant === "floating" && (
+            <div className={getClassNames(editorStyles, ["hero-floating"])}>
+              <HeroSideLayout
+                {...hero}
+                title={hero.title || ""}
+                dropdownIsActive={dropdownIsActive}
+                toggleDropdown={toggleDropdown}
+              />
+            </div>
+          )}
         </section>
         {/* Key highlights */}
         {!hero.dropdown && hero.key_highlights ? (
