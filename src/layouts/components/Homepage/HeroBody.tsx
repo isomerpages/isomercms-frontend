@@ -16,6 +16,7 @@ import {
   Input,
   Radio,
   SingleSelect,
+  Tooltip,
 } from "@opengovsg/design-system-react"
 import _ from "lodash"
 import { useState } from "react"
@@ -31,6 +32,11 @@ import { useEditableContext } from "contexts/EditableContext"
 import { Editable } from "layouts/components/Editable"
 
 import { BxGrayTranslucent } from "assets"
+import {
+  SectionSize,
+  SectionAlignment,
+  SectionBackgroundColor,
+} from "types/hero"
 import { HeroBannerLayouts, HighlightOption } from "types/homepage"
 
 import { HeroDropdownFormFields } from "./HeroDropdownSection"
@@ -45,19 +51,19 @@ export interface HeroBodyFormFields {
   background: string
 }
 
-const getIconButtonProps = (color: "black" | "grey" | "white") => {
+const getIconButtonProps = (color: SectionBackgroundColor) => {
   return {
     "aria-label": `${color} background`,
     border: "1px solid",
     borderColor: "border.input.default",
-    bg: color === "grey" ? "base.divider.strong" : color,
+    bg: color === "gray" ? "base.divider.strong" : color,
     colorScheme: color,
     size: "sm",
     isRound: true,
     _focus: {
       boxShadow: "0 0 0 2px var(--chakra-colors-border-action-default)",
     },
-    ...(color === "grey" && {
+    ...(color === "gray" && {
       _hover: {
         bg: "base.divider.strong",
       },
@@ -129,7 +135,6 @@ const HeroCenteredLayout = ({
 const HeroImageOnlyLayout = ({
   errors,
   background,
-  index,
 }: Omit<HeroCenteredLayoutProps, "subtitle" | "title">) => {
   const { onChange } = useEditableContext()
   return (
@@ -145,7 +150,7 @@ const HeroImageOnlyLayout = ({
         </Box>
         <FormFieldMedia
           value={background}
-          id={`section-${index}-hero-background`}
+          id="section-0-hero-background"
           inlineButtonText="Select"
         />
         <FormError>{errors.background}</FormError>
@@ -153,12 +158,6 @@ const HeroImageOnlyLayout = ({
     </Box>
   )
 }
-
-type SectionSize = "half" | "one-third"
-
-type SectionAlignment = "left" | "right"
-
-type SectionBackgroundColor = "black" | "white" | "translucent gray"
 
 interface HeroSideSectionProps extends HeroCenteredLayoutProps {
   background: string
@@ -170,7 +169,6 @@ interface HeroSideSectionProps extends HeroCenteredLayoutProps {
   } & HeroBodyFormFields
   size: SectionSize
   alignment: SectionAlignment
-  backgroundColor: SectionBackgroundColor
 }
 
 const HeroSideSectionLayout = ({
@@ -179,13 +177,17 @@ const HeroSideSectionLayout = ({
   errors,
   title,
   subtitle,
-  size = "half",
+  size = "50%",
   alignment = "left",
-  backgroundColor = "black",
 }: HeroSideSectionProps) => {
-  const [, setSectionSize] = useState(size)
-  const [, setSectionAlignment] = useState(alignment)
-  const [, setSectionBackgroundColor] = useState(backgroundColor)
+  const { onChange } = useEditableContext()
+  const onIconButtonClick = (value: SectionBackgroundColor) =>
+    onChange({
+      target: {
+        id: "section-0-hero-backgroundColor",
+        value,
+      },
+    })
 
   return (
     <>
@@ -200,16 +202,21 @@ const HeroSideSectionLayout = ({
         <Text textStyle="subhead-1">Section size</Text>
         <Radio.RadioGroup
           onChange={(nextSectionSize) => {
-            setSectionSize(nextSectionSize as SectionSize)
+            onChange({
+              target: {
+                id: "section-0-hero-size",
+                value: nextSectionSize,
+              },
+            })
           }}
-          defaultValue="half"
+          defaultValue={size}
         >
           <HStack spacing="0.5rem">
-            <Radio value="half" size="xs" w="50%" allowDeselect={false}>
+            <Radio value="50%" size="xs" w="50%" allowDeselect={false}>
               Half (1/2) of banner
             </Radio>
             <Spacer />
-            <Radio value="one-third" size="xs" w="50%" allowDeselect={false}>
+            <Radio value="33%" size="xs" w="50%" allowDeselect={false}>
               Third (1/3) of banner
             </Radio>
           </HStack>
@@ -219,9 +226,14 @@ const HeroSideSectionLayout = ({
         <Text textStyle="subhead-1">Alignment</Text>
         <Radio.RadioGroup
           onChange={(nextSectionAlignment) => {
-            setSectionAlignment(nextSectionAlignment as SectionAlignment)
+            onChange({
+              target: {
+                id: "section-0-hero-alignment",
+                value: nextSectionAlignment,
+              },
+            })
           }}
-          defaultValue="left"
+          defaultValue={alignment}
         >
           <HStack spacing="0.5rem">
             <Radio value="left" size="xs" w="50%" allowDeselect={false}>
@@ -237,23 +249,29 @@ const HeroSideSectionLayout = ({
       <Box w="100%">
         <Text textStyle="subhead-1">Section background colour</Text>
         <HStack spacing="0.75rem" alignItems="flex-start">
-          <IconButton
-            {...getIconButtonProps("black")}
-            onClick={() => setSectionBackgroundColor("black")}
-          >
-            <Icon as={BiInfoCircle} fill="black" fontSize="1rem" />
-          </IconButton>
-          <IconButton
-            {...getIconButtonProps("white")}
-            onClick={() => setSectionBackgroundColor("white")}
-          >
-            <Icon as={BiInfoCircle} fill="white" fontSize="1rem" />
-          </IconButton>
-          <IconButton
-            {...getIconButtonProps("grey")}
-            onClick={() => setSectionBackgroundColor("translucent gray")}
-            icon={<BxGrayTranslucent />}
-          />
+          <Tooltip label="black" hasArrow>
+            <IconButton
+              {...getIconButtonProps("black")}
+              onClick={() => onIconButtonClick("black")}
+            >
+              <Icon as={BiInfoCircle} fill="black" fontSize="1rem" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip label="white" hasArrow>
+            <IconButton
+              {...getIconButtonProps("white")}
+              onClick={() => onIconButtonClick("white")}
+            >
+              <Icon as={BiInfoCircle} fill="white" fontSize="1rem" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip label="translucent gray" hasArrow>
+            <IconButton
+              {...getIconButtonProps("gray")}
+              onClick={() => onIconButtonClick("gray")}
+              icon={<BxGrayTranslucent />}
+            />
+          </Tooltip>
         </HStack>
       </Box>
     </>
@@ -318,6 +336,8 @@ interface HeroBodyProps extends HeroBodyFormFields {
   }) => React.ReactNode
   initialSectionType: HeroSectionType
   variant: HeroBannerLayouts
+  size: SectionSize
+  alignment: SectionAlignment
 }
 
 export const HeroBody = ({
@@ -370,14 +390,7 @@ export const HeroBody = ({
             }
 
             if (currentSelectedOption === HERO_LAYOUTS.SIDE_SECTION.value) {
-              return (
-                <HeroSideSectionLayout
-                  {...rest}
-                  size="half"
-                  alignment="left"
-                  backgroundColor="black"
-                />
-              )
+              return <HeroSideSectionLayout {...rest} />
             }
 
             const unmatchedOption: never = currentSelectedOption

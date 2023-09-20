@@ -2,6 +2,8 @@ import type { IterableElement, SetOptional } from "type-fest"
 
 import { HERO_LAYOUTS } from "constants/homepage"
 
+import { SectionAlignment, SectionBackgroundColor, SectionSize } from "./hero"
+
 export type DropdownOption = {
   title: string
   url: string
@@ -104,7 +106,12 @@ export type PossibleEditorSections = IterableElement<
 export type HeroBannerLayouts = typeof HERO_LAYOUTS[keyof typeof HERO_LAYOUTS]["value"]
 
 export type HomepageEditorHeroSection = EditorHeroDropdownSection &
-  EditorHeroHighlightsSection & { variant: HeroBannerLayouts }
+  EditorHeroHighlightsSection & {
+    variant: HeroBannerLayouts
+    alignment: SectionAlignment
+    size: SectionSize
+    backgroundColor: SectionBackgroundColor
+  }
 
 export type HeroFrontmatterSection = { hero: HomepageEditorHeroSection }
 export type ResourcesFrontmatterSection = { resources: ResourcesSection }

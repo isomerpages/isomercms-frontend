@@ -11,10 +11,16 @@ import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 import { getClassNames } from "templates/utils/stylingUtils"
 
+import {
+  SectionAlignment,
+  SectionBackgroundColor,
+  SectionSize,
+} from "types/hero"
 import { HeroBannerLayouts } from "types/homepage"
 
 import { HeroCenteredLayout } from "./HeroCenteredLayout"
 import { HeroImageOnlyLayout } from "./HeroImageOnlyLayout"
+import { HeroSideLayout } from "./HeroSideLayout"
 
 /* eslint
   react/no-array-index-key: 0
@@ -106,6 +112,9 @@ interface TemplateHeroSectionProps {
       title?: string
       description?: string
     }[]
+    alignment: SectionAlignment
+    size: SectionSize
+    backgroundColor: SectionBackgroundColor
   }
   dropdownIsActive: boolean
   toggleDropdown: () => void
@@ -138,14 +147,16 @@ export const TemplateHeroSection = forwardRef<
           className={getClassNames(editorStyles, ["bp-hero", "bg-hero"])}
           style={heroStyle}
         >
-          {variant === "center" ? (
+          {variant === "center" && (
             <HeroCenteredLayout
               hero={hero}
               dropdownIsActive={dropdownIsActive}
               toggleDropdown={toggleDropdown}
             />
-          ) : (
-            <HeroImageOnlyLayout />
+          )}
+          {variant === "image" && <HeroImageOnlyLayout />}
+          {variant === "side" && (
+            <HeroSideLayout {...hero} title={hero.title || ""} />
           )}
         </section>
         {/* Key highlights */}

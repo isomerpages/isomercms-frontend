@@ -4,7 +4,9 @@ import { getClassNames } from "templates/utils/stylingUtils"
 
 export const HeroImageOnlyLayout = () => {
   return (
-    <div className={getClassNames(editorStyles, ["bp-hero-body"])}>
+    <div
+      className={getClassNames(editorStyles, ["bp-hero-body, with-padding"])}
+    >
       <div
         className={getClassNames(editorStyles, [
           "bp-container",
