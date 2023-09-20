@@ -496,7 +496,7 @@ const EditHomepage = ({ match }) => {
           break
         }
         case "announcement": {
-          // The field that changed belongs to a announcements
+          // The field that changed belongs to an announcement item
           const { sections } = frontMatter
 
           const announcementsIndex = frontMatter.sections.findIndex((section) =>
