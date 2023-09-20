@@ -280,12 +280,12 @@ const updateHomepageState = (
       )
     }
     case "announcement": {
-      const announcementKeyExist = !_.isEmpty(
+      const doesAnnouncementKeyExist = !_.isEmpty(
         frontMatter.sections.find((section) =>
           EditorHomepageFrontmatterSection.isAnnouncements(section)
         )
       )
-      if (!announcementKeyExist) {
+      if (!doesAnnouncementKeyExist) {
         // should not reach here, but defensively return the original state
         return homepageState
       }
