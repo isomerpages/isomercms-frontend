@@ -181,7 +181,7 @@ const HeroSideSectionLayout = ({
   alignment = "left",
 }: HeroSideSectionProps) => {
   const { onChange } = useEditableContext()
-  const onClick = (value: SectionBackgroundColor) =>
+  const onIconButtonClick = (value: SectionBackgroundColor) =>
     onChange({
       target: {
         id: "section-0-hero-backgroundColor",
@@ -209,8 +209,7 @@ const HeroSideSectionLayout = ({
               },
             })
           }}
-          // section-0-hero-background
-          defaultValue={size || "half"}
+          defaultValue={size}
         >
           <HStack spacing="0.5rem">
             <Radio value="50%" size="xs" w="50%" allowDeselect={false}>
@@ -234,7 +233,7 @@ const HeroSideSectionLayout = ({
               },
             })
           }}
-          defaultValue={alignment || "left"}
+          defaultValue={alignment}
         >
           <HStack spacing="0.5rem">
             <Radio value="left" size="xs" w="50%" allowDeselect={false}>
@@ -253,7 +252,7 @@ const HeroSideSectionLayout = ({
           <Tooltip label="black" hasArrow>
             <IconButton
               {...getIconButtonProps("black")}
-              onClick={() => onClick("black")}
+              onClick={() => onIconButtonClick("black")}
             >
               <Icon as={BiInfoCircle} fill="black" fontSize="1rem" />
             </IconButton>
@@ -261,7 +260,7 @@ const HeroSideSectionLayout = ({
           <Tooltip label="white" hasArrow>
             <IconButton
               {...getIconButtonProps("white")}
-              onClick={() => onClick("white")}
+              onClick={() => onIconButtonClick("white")}
             >
               <Icon as={BiInfoCircle} fill="white" fontSize="1rem" />
             </IconButton>
@@ -269,7 +268,7 @@ const HeroSideSectionLayout = ({
           <Tooltip label="translucent gray" hasArrow>
             <IconButton
               {...getIconButtonProps("gray")}
-              onClick={() => onClick("gray")}
+              onClick={() => onIconButtonClick("gray")}
               icon={<BxGrayTranslucent />}
             />
           </Tooltip>
