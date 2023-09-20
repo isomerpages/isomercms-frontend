@@ -7,7 +7,7 @@ export const RESOURCES_SECTION = {
 } as const
 
 export type AnnouncementSectionType = {
-  readonly title: "Announcement"
+  readonly title: "New Announcement"
   readonly date: string
   readonly announcement: "Announcement content"
   readonly link_text: ""
@@ -16,7 +16,7 @@ export type AnnouncementSectionType = {
 
 export const getDefaultAnnouncementSection = (): AnnouncementSectionType => {
   return {
-    title: "Announcement",
+    title: "New Announcement",
     date: moment(
       new Date()
         .toLocaleString("en-SG", {
@@ -31,7 +31,7 @@ export const getDefaultAnnouncementSection = (): AnnouncementSectionType => {
   }
 }
 export const ANNOUNCEMENT_BLOCK = {
-  title: "New announcements block",
+  title: "Announcements",
   id: "announcements",
   subtitle: "Add a list of announcements with dates",
   announcement_items: [] as AnnouncementSectionType[],
