@@ -1,3 +1,8 @@
+// NOTE: jsx-ally is disabled for this file as the output of this
+// should match jekyll output as closely as possible.
+// As jekyll outputs an <a /> tag like so, this behaviour is preserved here.
+/* eslint-disable jsx-a11y/anchor-is-valid */
+
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 import { getClassNames } from "templates/utils/stylingUtils"
@@ -42,7 +47,6 @@ const HeroInfobox = ({ title, subtitle, url, button }: HeroInfoboxProps) => {
 
         {url && button && (
           <a
-            href="/"
             className={getClassNames(editorStyles, [
               "bp-button",
               "is-secondary",
