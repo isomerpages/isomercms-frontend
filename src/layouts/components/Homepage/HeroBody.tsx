@@ -22,6 +22,7 @@ import {
 import _ from "lodash"
 import { useState } from "react"
 import { BiInfoCircle } from "react-icons/bi"
+import { useInView } from "react-intersection-observer"
 
 import { Editable } from "components/Editable"
 import { FormContext, FormError, FormTitle } from "components/Form"
@@ -29,15 +30,14 @@ import FormFieldMedia from "components/FormFieldMedia"
 
 import { FEATURE_FLAGS } from "constants/featureFlags"
 import { HERO_LAYOUTS } from "constants/homepage"
+import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 
 import { useEditableContext } from "contexts/EditableContext"
 
 import { BxGrayTranslucent } from "assets"
-import {
-  SectionSize,
-  SectionAlignment,
-  SectionBackgroundColor,
-} from "types/hero"
+import { FeatureTourHandler } from "features/FeatureTour/FeatureTour"
+import { HERO_OPTIONS_FEATURE_STEPS } from "features/FeatureTour/FeatureTourSequence"
+import { SectionSize, SectionAlignment } from "types/hero"
 import { HeroBannerLayouts, HighlightOption } from "types/homepage"
 
 import { HeroDropdownFormFields } from "./HeroDropdownSection"
@@ -293,6 +293,13 @@ const HeroLayoutForm = ({
   const { onChange } = useEditableContext()
   const showNewLayouts = useFeatureIsOn(FEATURE_FLAGS.HOMEPAGE_TEMPLATES)
 
+  // We only want to show the feature tour when the
+  // DOM elements are in view. Else, the feature tour
+  // does not work properly
+  const { ref, inView } = useInView({
+    threshold: 0,
+  })
+
   return (
     <VStack spacing="1rem" align="flex-start" w="100%">
       <Text textStyle="h5">{`Customise ${
@@ -322,7 +329,7 @@ const HeroLayoutForm = ({
       <VStack spacing="1rem" w="100%">
         {children({ currentSelectedOption: variant })}
       </VStack>
-    </VStack>
+    </>
   )
 }
 
