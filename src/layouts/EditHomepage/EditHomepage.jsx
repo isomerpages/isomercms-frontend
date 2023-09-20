@@ -63,7 +63,7 @@ import {
   KEY_HIGHLIGHT_SECTION,
   RESOURCES_SECTION,
   ANNOUNCEMENT_BLOCK,
-  ANNOUNCEMENT_SECTION,
+  getDefaultAnnouncementSection,
 } from "./constants"
 import { HomepagePreview } from "./HomepagePreview"
 import { getErrorValues } from "./utils"
@@ -300,7 +300,7 @@ const EditHomepage = ({ match }) => {
             })
             announcementItemErrors = _.map(
               section.announcements.announcement_items,
-              () => getErrorValues(ANNOUNCEMENT_SECTION)
+              () => getErrorValues(getDefaultAnnouncementSection())
             )
             if (!section.announcements.announcement_items) {
               // define an empty array to announcement_items to prevent error
@@ -699,8 +699,8 @@ const EditHomepage = ({ match }) => {
           break
         }
         case "announcement": {
-          const val = ANNOUNCEMENT_SECTION
-          const err = getErrorValues(ANNOUNCEMENT_SECTION)
+          const val = getDefaultAnnouncementSection()
+          const err = getErrorValues(getDefaultAnnouncementSection())
           const updatedHomepageState = onCreate(
             homepageState,
             elemType,

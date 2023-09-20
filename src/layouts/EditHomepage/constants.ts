@@ -3,21 +3,28 @@ export const RESOURCES_SECTION = {
   subtitle: "Add a preview and link to your Resource Room",
   id: "resources",
 } as const
-export const LocalDateTimeNow = new Date()
-  .toLocaleString("en-SG", {
-    timeZone: "Asia/Singapore",
-  })
-  .slice(0, "dd/mm/yyyy".length)
 
-export const ANNOUNCEMENT_SECTION = {
-  title: "Announcement",
-  date: LocalDateTimeNow,
-  announcement: "Announcement content",
-  link_text: "",
-  link_url: "",
-} as const
+export type AnnouncementSectionType = {
+  readonly title: "Announcement"
+  readonly date: string
+  readonly announcement: "Announcement content"
+  readonly link_text: ""
+  readonly link_url: ""
+}
 
-export type AnnouncementSectionType = typeof ANNOUNCEMENT_SECTION
+export const getDefaultAnnouncementSection = (): AnnouncementSectionType => {
+  return {
+    title: "Announcement",
+    date: new Date()
+      .toLocaleString("en-SG", {
+        timeZone: "Asia/Singapore",
+      })
+      .slice(0, "dd/mm/yyyy".length),
+    announcement: "Announcement content",
+    link_text: "",
+    link_url: "",
+  }
+}
 export const ANNOUNCEMENT_BLOCK = {
   title: "New announcements block",
   id: "announcements",
