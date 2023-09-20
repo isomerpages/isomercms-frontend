@@ -187,8 +187,8 @@ const validateNonFutureResourceDate = (dateStr) => {
 
 const validateNonFutureAnnouncementDate = (dateStr) => {
   const today = new Date(moment().tz("Asia/Singapore").format("YYYY-MM-DD"))
-  const IsoDateStr = dateStr.split("/").reverse().join("-")
-  const chosenDate = new Date(IsoDateStr)
+  const isoDateStr = dateStr.split("/").reverse().join("-")
+  const chosenDate = new Date(isoDateStr)
   const daysDiff = today - chosenDate
   return daysDiff >= 0
 }
