@@ -16,7 +16,7 @@ import {
   SectionBackgroundColor,
   SectionSize,
 } from "types/hero"
-import { HeroBannerLayouts } from "types/homepage"
+import { EditorHeroDropdownSection, HeroBannerLayouts } from "types/homepage"
 
 import { HeroCenteredLayout } from "./HeroCenteredLayout"
 import { HeroImageOnlyLayout } from "./HeroImageOnlyLayout"
@@ -103,10 +103,7 @@ interface TemplateHeroSectionProps {
     title?: string
     subtitle?: string
     button?: string
-    dropdown: {
-      title: string
-      options: { title: string }[]
-    }
+    dropdown: EditorHeroDropdownSection["dropdown"]
     // eslint-disable-next-line camelcase
     key_highlights: {
       title?: string
@@ -156,7 +153,12 @@ export const TemplateHeroSection = forwardRef<
           )}
           {variant === "image" && <HeroImageOnlyLayout />}
           {variant === "side" && (
-            <HeroSideLayout {...hero} title={hero.title || ""} />
+            <HeroSideLayout
+              {...hero}
+              title={hero.title || ""}
+              dropdownIsActive={dropdownIsActive}
+              toggleDropdown={toggleDropdown}
+            />
           )}
         </section>
         {/* Key highlights */}
