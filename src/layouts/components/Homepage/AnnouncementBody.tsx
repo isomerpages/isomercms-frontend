@@ -27,6 +27,22 @@ interface AnnouncementBodyProps {
   announcementItems: Partial<AnnouncementOption>[]
 }
 
+const toTemplateDateFormat = (date?: string) => {
+  const formattedDate = moment(date, "DD/MM/YYYY", true).format("DD MMMM YYYY")
+  if (formattedDate === "Invalid date") {
+    return date
+  }
+  return formattedDate
+}
+
+const toCmsPanelDateFormat = (date?: string) => {
+  const formattedDate = moment(date, "DD MMMM YYYY", true).format("DD/MM/YYYY")
+  if (formattedDate === "Invalid date") {
+    return date
+  }
+  return formattedDate
+}
+
 export const AnnouncementBody = ({
   errors,
   announcementItems = [],
@@ -68,6 +84,7 @@ export const AnnouncementBody = ({
                     },
                     announcementIndex
                   ) => {
+                    console.log({ announcementDate })
                     return (
                       <Editable.DraggableAccordionItem
                         title={announcementTitle || "New announcement"}
@@ -108,19 +125,16 @@ export const AnnouncementBody = ({
                           >
                             <FormLabel>Date</FormLabel>
                             <DatePicker
-                              placeholder="dd/mm/yyyy"
                               id={`announcements-${announcementIndex}-date`}
-                              inputValue={moment(
-                                announcementDate,
-                                "DD MMMM YYYY"
-                              ).format("DD/MM/YYYY")}
+                              inputValue={toCmsPanelDateFormat(
+                                announcementDate
+                              )}
                               onInputValueChange={(value) => {
+                                console.log({ value })
                                 onChange({
                                   target: {
                                     id: `announcement-${announcementIndex}-date`,
-                                    value: moment(value, "DD/MM/YYYY").format(
-                                      "DD MMMM YYYY"
-                                    ),
+                                    value: toTemplateDateFormat(value),
                                   },
                                 })
                               }}

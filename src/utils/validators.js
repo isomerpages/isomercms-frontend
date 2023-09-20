@@ -186,11 +186,11 @@ const validateNonFutureResourceDate = (dateStr) => {
 }
 
 const validateNonFutureAnnouncementDate = (dateStr) => {
-  const today = new Date(moment().tz("Asia/Singapore").format("YYYY-MM-DD"))
-  const isoDateStr = dateStr.split("/").reverse().join("-")
-  const chosenDate = new Date(isoDateStr)
-  const daysDiff = today - chosenDate
-  return daysDiff >= 0
+  const today = moment().tz("Asia/Singapore")
+  const isoDateStr = moment(dateStr, "DD MMMM YYYY", true)
+  console.log({ today, isoDateStr })
+  console.log(isoDateStr.isAfter(today))
+  return isoDateStr.isAfter(today)
 }
 
 // Homepage Editor
@@ -243,6 +243,7 @@ const validateHighlights = (highlightError, field, value) => {
 const validateAnnouncementItems = (announcementError, field, value) => {
   const newAnnouncementError = announcementError
   let errorMessage = ""
+
   switch (field) {
     case "title": {
       // Title is too short
@@ -256,12 +257,12 @@ const validateAnnouncementItems = (announcementError, field, value) => {
       break
     }
     case "date": {
-      if (!validateNonFutureAnnouncementDate(value)) {
+      if (!moment(value, "DD MMMM YYYY", true).isValid()) {
+        errorMessage = `Date is invalid`
+      } else if (validateNonFutureAnnouncementDate(value)) {
         errorMessage = `Date cannot be in the future`
       }
-      if (!announcementDateRegexTest.test(value)) {
-        errorMessage = `Date is invalid`
-      }
+
       break
     }
     case "announcement": {
