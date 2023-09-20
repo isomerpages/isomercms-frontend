@@ -1022,7 +1022,7 @@ const EditHomepage = ({ match }) => {
           setItemPendingForDelete({ id: null, type: "" })
           onClose()
         }}
-        displayTitle={`Delete ${itemPendingForDelete.type} section`}
+        displayTitle={`Delete ${itemPendingForDelete.type}`}
         displayText={
           <Text>
             Are you sure you want to delete {itemPendingForDelete.type}?

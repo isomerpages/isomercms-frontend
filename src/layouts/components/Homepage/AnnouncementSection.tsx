@@ -55,7 +55,7 @@ export const AnnouncementSection = ({
       {children}
       <Button
         id={`section-${index}`}
-        onClick={() => onDelete(`section-${index}`, "Announcement Section")}
+        onClick={() => onDelete(`section-${index}`, "Announcement Block")}
         alignSelf="center"
         variant="clear"
         colorScheme="critical"
