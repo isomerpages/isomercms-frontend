@@ -51,19 +51,19 @@ export interface HeroBodyFormFields {
   background: string
 }
 
-const getIconButtonProps = (color: "black" | "grey" | "white") => {
+const getIconButtonProps = (color: SectionBackgroundColor) => {
   return {
     "aria-label": `${color} background`,
     border: "1px solid",
     borderColor: "border.input.default",
-    bg: color === "grey" ? "base.divider.strong" : color,
+    bg: color === "gray" ? "base.divider.strong" : color,
     colorScheme: color,
     size: "sm",
     isRound: true,
     _focus: {
       boxShadow: "0 0 0 2px var(--chakra-colors-border-action-default)",
     },
-    ...(color === "grey" && {
+    ...(color === "gray" && {
       _hover: {
         bg: "base.divider.strong",
       },
@@ -181,7 +181,7 @@ const HeroSideSectionLayout = ({
   alignment = "left",
 }: HeroSideSectionProps) => {
   const { onChange } = useEditableContext()
-  const onClick = (value: string) =>
+  const onClick = (value: SectionBackgroundColor) =>
     onChange({
       target: {
         id: "section-0-hero-backgroundColor",
@@ -268,7 +268,7 @@ const HeroSideSectionLayout = ({
           </Tooltip>
           <Tooltip label="translucent gray" hasArrow>
             <IconButton
-              {...getIconButtonProps("grey")}
+              {...getIconButtonProps("gray")}
               onClick={() => onClick("gray")}
               icon={<BxGrayTranslucent />}
             />
