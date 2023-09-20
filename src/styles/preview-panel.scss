@@ -1,4 +1,5 @@
 @use "sass:meta";
+@use 'templates/components/hero.scss';
 
 @include meta.load-css("sgds-govtech/css/sgds");
 @include meta.load-css("./isomer-template.scss");
