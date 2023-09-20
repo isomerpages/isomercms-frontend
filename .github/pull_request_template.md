@@ -46,6 +46,8 @@ Closes [insert issue #]
 - [ ] e2e tests (comment on this PR with the text `!run e2e`)
 - [ ] Smoke tests
 
+!run-chromatic
+
 ## Deploy Notes
 
 <!-- Notes regarding deployment of the contained body of work.  -->
