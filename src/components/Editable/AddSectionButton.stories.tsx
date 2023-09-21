@@ -11,13 +11,6 @@ import { AddSectionButton } from "./AddSectionButton"
 const addSectionButtonMeta = {
   title: "Components/AddSectionButton",
   component: AddSectionButton,
-  parameters: {
-    docs: {
-      story: {
-        layout: "fullscreen",
-      },
-    },
-  },
 } as Meta<typeof AddSectionButton>
 
 interface AddSectionButtonTemplateArgs {
