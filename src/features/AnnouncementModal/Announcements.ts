@@ -2,6 +2,8 @@ import { HomepageNewFeatures, IsomerThumbsUp } from "assets"
 import { IsomerWaitingLine } from "assets/images/IsomerWaitingLine"
 import { AnnouncementBatch } from "types/announcements"
 
+import { AnnouncementDescription } from "./components/AnnouncementDescription"
+
 export const ANNOUNCEMENT_BATCH: AnnouncementBatch[] = [
   {
     link: "https://guide.isomer.gov.sg/updates",
@@ -27,9 +29,8 @@ export const ANNOUNCEMENT_BATCH: AnnouncementBatch[] = [
     onCloseButtonText: "Got it",
     announcements: [
       {
-        title: "Introducing: new Hero banner layout options!",
-        description:
-          "Now, you can change what your Hero banner looks like by customising the layout! We've added multiple layout combinations for you — add a unique touch to your website by experimenting with them.",
+        title: "Customise your Hero banner with IsomerCMS",
+        description: AnnouncementDescription(),
         image: HomepageNewFeatures,
         tags: ["New Feature"],
       },

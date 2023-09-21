@@ -3,7 +3,7 @@ export type TagVariant = "New Feature"
 
 export type Announcement = {
   title: string
-  description: string
+  description: string | JSX.Element
   image: (props: React.SVGProps<SVGSVGElement>) => JSX.Element
   tags: TagVariant[]
 }

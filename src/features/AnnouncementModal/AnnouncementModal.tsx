@@ -60,6 +60,18 @@ export const AnnouncementModal = ({
 
   const { title, description, image, tags } = announcements[currActiveIdx]
 
+  let descComponent: JSX.Element = <></>
+  if (typeof description === "string") {
+    descComponent = (
+      <Text textStyle="body-1" color="base.content.default">
+        {" "}
+        {description}{" "}
+      </Text>
+    )
+  } else {
+    descComponent = description
+  }
+
   return (
     <Modal
       isOpen={isOpen && announcements.length > 0}
@@ -94,11 +106,7 @@ export const AnnouncementModal = ({
           })}
           <Text mt="0.625rem">{title}</Text>
         </ModalHeader>
-        <ModalBody whiteSpace="pre-wrap">
-          <Text textStyle="body-1" color="base.content.default">
-            {description}
-          </Text>
-        </ModalBody>
+        <ModalBody whiteSpace="pre-wrap">{descComponent}</ModalBody>
         <ModalFooter>
           <Stack
             direction="row"
