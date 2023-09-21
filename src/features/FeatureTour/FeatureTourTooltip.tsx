@@ -34,6 +34,29 @@ export const FeatureTourTooltip = ({
 }: FeatureTourTooltipProps): JSX.Element => {
   const { paginationCallback } = useFeatureTourContext()
   const showProgressIndicator = size > 1
+
+  let titleComponent: React.ReactNode
+  if (typeof step.title === "string") {
+    titleComponent = (
+      <Text textStyle="subhead-1" color="base.content.dark" marginTop="1.25rem">
+        {step.title}
+      </Text>
+    )
+  } else {
+    titleComponent = step.title
+  }
+
+  let contentComponent: React.ReactNode
+  if (typeof step.content === "string") {
+    contentComponent = (
+      <Text textStyle="body-2" color="base.content.default" marginTop="0.5rem">
+        {step.content}
+      </Text>
+    )
+  } else {
+    contentComponent = step.content
+  }
+
   return (
     <Box
       padding="1.5rem"
@@ -61,15 +84,12 @@ export const FeatureTourTooltip = ({
         </Badge>
       )}
 
-      <Text textStyle="subhead-1" color="base.content.dark" marginTop="1.25rem">
-        {step.title}
-      </Text>
-      <Text textStyle="body-2" color="base.content.default" marginTop="0.5rem">
-        {step.content}
-      </Text>
+      {titleComponent}
+      {contentComponent}
+
       <Flex
         flexDirection="row"
-        marginTop="2.5rem"
+        marginTop="2rem"
         alignItems="center"
         justifyContent="space-between"
       >
