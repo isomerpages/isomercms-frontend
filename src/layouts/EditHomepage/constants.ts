@@ -7,11 +7,11 @@ export const RESOURCES_SECTION = {
 } as const
 
 export type AnnouncementSectionType = {
-  readonly title: "New Announcement"
+  readonly title: string
   readonly date: string
-  readonly announcement: "Announcement content"
-  readonly link_text: ""
-  readonly link_url: ""
+  readonly announcement: string
+  readonly link_text: string
+  readonly link_url: string
 }
 
 export const getDefaultAnnouncementSection = (): AnnouncementSectionType => {
