@@ -8,9 +8,9 @@ import {
 import _ from "lodash"
 import { ChangeEvent, useState } from "react"
 
-import { useEditableContext } from "contexts/EditableContext"
+import { Editable } from "components/Editable"
 
-import { Editable } from "../Editable"
+import { useEditableContext } from "contexts/EditableContext"
 
 type PhonePrefix = "singapore" | "toll-free"
 

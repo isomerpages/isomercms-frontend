@@ -1,10 +1,10 @@
 import { Text, VStack } from "@chakra-ui/react"
 import { DragDropContext } from "@hello-pangea/dnd"
 
-import { useEditableContext } from "contexts/EditableContext"
+import { Editable } from "components/Editable"
+import { AddSectionButton } from "components/Editable/AddSectionButton"
 
-import { Editable } from "../Editable"
-import { AddSectionButton } from "../Editable/AddSectionButton"
+import { useEditableContext } from "contexts/EditableContext"
 
 import { ContactCard, ContactCardFrontMatter } from "./ContactCard"
 import { LocationCard, LocationCardFrontMatter } from "./LocationCard"

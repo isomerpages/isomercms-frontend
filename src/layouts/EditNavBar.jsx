@@ -7,6 +7,8 @@ import PropTypes from "prop-types"
 import { useEffect, useState } from "react"
 import { useQuery } from "react-query"
 
+import { Editable } from "components/Editable"
+import { AddSectionButton } from "components/Editable/AddSectionButton"
 import { Footer } from "components/Footer"
 import Header from "components/Header"
 import { LoadingButton } from "components/LoadingButton"
@@ -31,8 +33,6 @@ import { validateLink } from "utils/validators"
 import { getEditNavBarData } from "api"
 import { DEFAULT_RETRY_MSG, deslugifyDirectory, isEmpty } from "utils"
 
-import { Editable } from "./components/Editable"
-import { AddSectionButton } from "./components/Editable/AddSectionButton"
 import { FolderMenuBody } from "./components/NavBar/FolderMenuBody"
 import { GroupMenuBody } from "./components/NavBar/GroupMenuBody"
 import { PageMenuBody } from "./components/NavBar/PageMenuBody"
@@ -766,7 +766,7 @@ const EditNavBar = ({ match }) => {
                   <Box px="1.5rem">
                     <AddSectionButton buttonText="Add menu item">
                       <AddSectionButton.List>
-                        {/* NOTE: Check if the site contains any collections in `options` 
+                        {/* NOTE: Check if the site contains any collections in `options`
                             if it does not, prevent creation of a `folder` section
                           */}
                         {options && options.length > 0 && (
@@ -807,7 +807,7 @@ const EditNavBar = ({ match }) => {
                             })
                           }}
                         />
-                        {/* NOTE: Check if the site does not contain a resource room or any sections contain `resource_room` 
+                        {/* NOTE: Check if the site does not contain a resource room or any sections contain `resource_room`
                             If either condition is fulfilled, prevent creation of a `resource_room` section */}
                         {hasResourceRoom &&
                           !links.some(

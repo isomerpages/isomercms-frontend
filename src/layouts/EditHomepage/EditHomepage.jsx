@@ -13,10 +13,14 @@ import update from "immutability-helper"
 import _ from "lodash"
 import { useEffect, createRef, useState } from "react"
 
+import { CustomiseSectionsHeader, Editable } from "components/Editable"
+import { AddSectionButton } from "components/Editable/AddSectionButton"
 import { Footer } from "components/Footer"
 import Header from "components/Header"
 import { LoadingButton } from "components/LoadingButton"
 import { WarningModal } from "components/WarningModal"
+
+import { EditableContextProvider } from "contexts/EditableContext"
 
 // Import hooks
 import { useGetHomepageHook } from "hooks/homepageHooks"
@@ -36,10 +40,7 @@ import {
 import { HomepageStartEditingImage } from "assets"
 import { DEFAULT_RETRY_MSG } from "utils"
 
-import { EditableContextProvider } from "../../contexts/EditableContext"
 import { useDrag, onCreate, onDelete } from "../../hooks/useDrag"
-import { CustomiseSectionsHeader, Editable } from "../components/Editable"
-import { AddSectionButton } from "../components/Editable/AddSectionButton"
 import { HeroBody } from "../components/Homepage/HeroBody"
 import { HeroDropdownSection } from "../components/Homepage/HeroDropdownSection"
 import { HeroHighlightSection } from "../components/Homepage/HeroHighlightSection"
@@ -1091,9 +1092,9 @@ const EditHomepage = ({ match }) => {
                     </DragDropContext>
                   </VStack>
                 </Editable.Accordion>
-                {/* NOTE: Set the padding here - 
-                        We cannot let the button be part of the `Draggable` 
-                        as otherwise, when dragging, 
+                {/* NOTE: Set the padding here -
+                        We cannot let the button be part of the `Draggable`
+                        as otherwise, when dragging,
                         the component will appear over the button
                     */}
                 <Box px="1.5rem">

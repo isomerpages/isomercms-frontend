@@ -14,6 +14,7 @@ import _ from "lodash"
 import PropTypes from "prop-types"
 import { createRef, useEffect, useState } from "react"
 
+import { Editable } from "components/Editable"
 import { Footer } from "components/Footer"
 import Header from "components/Header"
 import { LoadingButton } from "components/LoadingButton"
@@ -46,7 +47,6 @@ import { DEFAULT_RETRY_MSG, isEmpty } from "utils"
 
 import { CardsSection } from "./components/ContactUs/CardsSection"
 import { GeneralInfoSection } from "./components/ContactUs/GeneralInfoSection"
-import { Editable } from "./components/Editable"
 
 /* eslint-disable react/no-array-index-key */
 
