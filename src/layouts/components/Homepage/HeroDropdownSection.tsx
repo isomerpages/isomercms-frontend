@@ -9,9 +9,9 @@ import {
 import _ from "lodash"
 import { BiPlus } from "react-icons/bi"
 
-import { useEditableContext } from "contexts/EditableContext"
+import { Editable } from "components/Editable"
 
-import { Editable } from "layouts/components/Editable"
+import { useEditableContext } from "contexts/EditableContext"
 
 import { EditorHeroDropdownSection } from "types/homepage"
 

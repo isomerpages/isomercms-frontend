@@ -8,10 +8,10 @@ import {
 } from "@opengovsg/design-system-react"
 import _ from "lodash"
 
-import { useEditableContext } from "contexts/EditableContext"
+import { Editable } from "components/Editable"
+import { AddSectionButton } from "components/Editable/AddSectionButton"
 
-import { Editable } from "../Editable"
-import { AddSectionButton } from "../Editable/AddSectionButton"
+import { useEditableContext } from "contexts/EditableContext"
 
 interface SublinkFormFields {
   title: string
