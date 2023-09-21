@@ -318,23 +318,25 @@ const HeroLayoutForm = ({
         }`}</Text>
         {showNewLayouts && (
           <FormControl isRequired>
-            <FormLabel textStyle="subhead-1">Layout</FormLabel>
-            <SingleSelect
-              isClearable={false}
-              name="hero layout options"
-              value={variant}
-              items={_.values(HERO_LAYOUTS)}
-              // NOTE: Safe cast - the possible values are given by `HERO_LAYOUTS`
-              onChange={(val) => {
-                onChange({
-                  target: {
-                    // NOTE: Format is field type, index, section type, field
-                    id: "section-0-hero-variant",
-                    value: val as HeroBannerLayouts,
-                  },
-                })
-              }}
-            />
+            <Box id="isomer-hero-feature-tour-step-1">
+              <FormLabel textStyle="subhead-1">Layout</FormLabel>
+              <SingleSelect
+                isClearable={false}
+                name="hero layout options"
+                value={variant}
+                items={_.values(HERO_LAYOUTS)}
+                // NOTE: Safe cast - the possible values are given by `HERO_LAYOUTS`
+                onChange={(val) => {
+                  onChange({
+                    target: {
+                      // NOTE: Format is field type, index, section type, field
+                      id: "section-0-hero-variant",
+                      value: val as HeroBannerLayouts,
+                    },
+                  })
+                }}
+              />
+            </Box>
           </FormControl>
         )}
         <VStack spacing="1rem" w="100%">
