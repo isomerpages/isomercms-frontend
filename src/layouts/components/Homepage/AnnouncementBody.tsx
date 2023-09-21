@@ -27,17 +27,31 @@ interface AnnouncementBodyProps {
   announcementItems: Partial<AnnouncementOption>[]
 }
 
+/**
+ * User to input a date like 01/01/2000.
+ * To be parsed into 01 January 2000.
+ * @param date user input string
+ * @returns front matter date string
+ */
 const toTemplateDateFormat = (date?: string) => {
   const formattedDate = moment(date, "DD/MM/YYYY", true).format("DD MMMM YYYY")
   if (formattedDate === "Invalid date") {
+    // return original string for validators to catch
     return date
   }
   return formattedDate
 }
 
+/**
+ * This will parse a date like 01 January 2000
+ * into 01/01/2000 for the CMS panel.
+ * @param date front matter date string
+ * @returns cms panel date string
+ */
 const toCmsPanelDateFormat = (date?: string) => {
   const formattedDate = moment(date, "DD MMMM YYYY", true).format("DD/MM/YYYY")
   if (formattedDate === "Invalid date") {
+    // return original string for validators to catch
     return date
   }
   return formattedDate
