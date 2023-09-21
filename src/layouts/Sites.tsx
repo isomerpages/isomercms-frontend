@@ -8,6 +8,7 @@ import {
   Flex,
   Image,
 } from "@chakra-ui/react"
+import { useFeatureIsOn } from "@growthbook/growthbook-react"
 import { Infobox } from "@opengovsg/design-system-react"
 import _ from "lodash"
 import { useEffect, useState } from "react"
@@ -15,6 +16,7 @@ import { Link } from "react-router-dom"
 
 import { AllSitesHeader } from "components/Header/AllSitesHeader"
 
+import { FEATURE_FLAGS } from "constants/featureFlags"
 import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 
 import { useLoginContext } from "contexts/LoginContext"
@@ -30,6 +32,7 @@ import { convertUtcToTimeDiff } from "utils/dateUtils"
 import { EmptySitesImage, IsomerLogoNoText } from "assets"
 import { AnnouncementModal } from "features/AnnouncementModal/AnnouncementModal"
 import { SiteData } from "types/sites"
+import { UserTypes } from "types/user"
 
 const SitePreviewImage = ({ imageUrl }: { imageUrl?: string }) => {
   return (
@@ -140,10 +143,11 @@ const SitesContent = ({ siteNames }: { siteNames?: SiteData[] }) => {
 }
 
 export const Sites = (): JSX.Element => {
-  const { email, contactNumber } = useLoginContext()
+  const { email, userId, contactNumber, userType } = useLoginContext()
   const { data: siteRequestData } = useGetAllSites(email)
   const { announcements, link, onCloseButtonText } = useAnnouncements()
   const [isOpen, setIsOpen] = useState(announcements.length > 0)
+
   useEffect(() => {
     if (!siteRequestData) return
     const siteData = siteRequestData.siteNames
@@ -159,12 +163,17 @@ export const Sites = (): JSX.Element => {
     )
   }, [siteRequestData])
 
+  const showNewLayouts = useFeatureIsOn(FEATURE_FLAGS.HOMEPAGE_TEMPLATES)
+  const isGithubUser = userType === UserTypes.Github
   /**
    * Currently the announcement modal takes in all the keyboard events,
    * thus preventing the user from typing in the verify otp input field.
    */
   const shouldShowAnnouncementModel =
-    announcements.length > 0 && !!contactNumber && !!email
+    announcements.length > 0 &&
+    !!contactNumber &&
+    !!email &&
+    (showNewLayouts || isGithubUser)
 
   return (
     <>
