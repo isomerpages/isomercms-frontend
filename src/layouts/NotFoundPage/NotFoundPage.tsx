@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react"
 import { Link as RouterLink, useLocation } from "react-router-dom"
 
-import { NotFoundSubmarineImage } from "assets/images/NotFoundSubmarineImage"
+import { NotFoundSubmarineImage } from "assets/images"
 
 const GRID_LAYOUT: Pick<
   GridProps,

@@ -20,7 +20,7 @@ import useSiteColorsHook from "hooks/useSiteColorsHook"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
-import TemplateHeroSection from "templates/homepage/HeroSection"
+import { TemplateHeroSection } from "templates/homepage/HeroSection"
 import TemplateInfobarSection from "templates/homepage/InfobarSection"
 import TemplateInfopicLeftSection from "templates/homepage/InfopicLeftSection"
 import TemplateInfopicRightSection from "templates/homepage/InfopicRightSection"

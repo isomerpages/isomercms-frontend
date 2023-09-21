@@ -1,4 +1,11 @@
 @charset "UTF-8";
+@use 'templates/components/hero.scss';
+@use "templates/theme/padding.scss";
+@use "templates/theme/text-styles.scss";
+@use "templates/theme/margin.scss";
+@use "templates/theme/layout.scss";
+@use "templates/theme/background.scss";
+
 .bg-media-color-0 {
   background-color: #4b268e;
 }
@@ -10886,10 +10893,8 @@ a.navbar-link:hover {
 }
 
 .bp-hero-body {
-  background: rgba(0, 0, 0, 0.25);
   flex-grow: 1;
   flex-shrink: 0;
-  padding: 3rem 1.5rem;
 }
 
 @media screen and (min-width: 1024px) {

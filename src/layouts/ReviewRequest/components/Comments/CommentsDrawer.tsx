@@ -23,7 +23,7 @@ import { useGetComments, useUpdateReadComments } from "hooks/commentsHooks"
 
 import { getDateTimeFromUnixTime } from "utils/date"
 
-import { EmptyChatImage } from "assets/images/EmptyChatImage"
+import { EmptyChatImage } from "assets/images"
 import { CommentProps } from "types/comments"
 
 import { SendCommentForm } from "./SendCommentForm"

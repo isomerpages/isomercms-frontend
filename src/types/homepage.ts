@@ -1,4 +1,8 @@
-import type { IterableElement } from "type-fest"
+import type { IterableElement, SetOptional } from "type-fest"
+
+import { HERO_LAYOUTS } from "constants/homepage"
+
+import { SectionAlignment, SectionBackgroundColor, SectionSize } from "./hero"
 
 export type DropdownOption = {
   title: string
@@ -49,7 +53,7 @@ export interface InfopicSection {
   description?: string
   button?: string
   url?: string
-  images?: string
+  image?: string
   alt?: string
 }
 
@@ -57,6 +61,18 @@ export interface ResourcesSection {
   title?: string
   subtitle?: string
   button?: string
+}
+
+export interface AnnouncementsSection {
+  title?: string
+  subtitle?: string
+  announcement_items?: Array<{
+    title?: string
+    date?: string
+    announcement?: string
+    link_text?: string
+    link_url?: string
+  }>
 }
 
 export interface HomepageDto {
@@ -73,6 +89,7 @@ export interface HomepageDto {
         | InfobarSection
         | InfopicSection
         | ResourcesSection
+        | AnnouncementsSection
       )[]
     }
     pageBody?: string
@@ -86,25 +103,29 @@ export type PossibleEditorSections = IterableElement<
   | EditorHeroDropdownSection["dropdown"]["options"]
 >
 
-export type HomepageEditorHeroSection =
-  | EditorHeroDropdownSection
-  | EditorHeroHighlightsSection
+export type HeroBannerLayouts = typeof HERO_LAYOUTS[keyof typeof HERO_LAYOUTS]["value"]
+
+export type HomepageEditorHeroSection = EditorHeroDropdownSection &
+  EditorHeroHighlightsSection & {
+    variant: HeroBannerLayouts
+    alignment: SectionAlignment
+    size: SectionSize
+    backgroundColor: SectionBackgroundColor
+  }
 
 export type HeroFrontmatterSection = { hero: HomepageEditorHeroSection }
-// TODO: add properties here instead of typing as `Record<string, unknown>`
-// we can find them in `HomepagePreview`
-export type ResourcesFrontmatterSection = { resources: Record<string, unknown> }
+export type ResourcesFrontmatterSection = { resources: ResourcesSection }
 
-// TODO: add properties here instead of typing as `Record<string, unknown>`
-// we can find them in `HomepagePreview`
 export type InfopicFrontmatterSection = {
-  infopic: Record<string, unknown>
+  infopic: InfopicSection
 }
 
-// TODO: add properties here instead of typing as `Record<string, unknown>`
-// we can find them in `HomepagePreview`
 export type InfobarFrontmatterSection = {
-  infobar: Record<string, unknown>
+  infobar: InfobarSection
+}
+
+export type AnnouncementsFrontmatterSection = {
+  announcements: AnnouncementsSection
 }
 
 export type EditorHomepageFrontmatterSection =
@@ -112,6 +133,7 @@ export type EditorHomepageFrontmatterSection =
   | ResourcesFrontmatterSection
   | InfopicFrontmatterSection
   | InfobarFrontmatterSection
+  | AnnouncementsFrontmatterSection
 
 export const EditorHomepageFrontmatterSection = {
   isHero: (
@@ -130,6 +152,10 @@ export const EditorHomepageFrontmatterSection = {
     section: EditorHomepageFrontmatterSection
   ): section is InfobarFrontmatterSection =>
     !!(section as InfobarFrontmatterSection).infobar,
+  isAnnouncements: (
+    section: EditorHomepageFrontmatterSection
+  ): section is AnnouncementsFrontmatterSection =>
+    !!(section as AnnouncementsFrontmatterSection).announcements,
 }
 
 export interface EditorHomepageState {
@@ -148,7 +174,8 @@ export interface EditorHomepageState {
 
 export interface EditorHeroDropdownSection {
   dropdown: {
-    options: Partial<DropdownOption>[]
+    title: string
+    options: SetOptional<DropdownOption, "url">[]
   }
 }
 

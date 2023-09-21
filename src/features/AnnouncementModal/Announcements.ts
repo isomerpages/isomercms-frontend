@@ -1,5 +1,5 @@
 import { IsomerThumbsUp } from "assets"
-import { IsomerWaitingLine } from "assets/images/IsomerWaitingLine"
+import { IsomerWaitingLine } from "assets/images"
 import { AnnouncementBatch } from "types/announcements"
 
 export const ANNOUNCEMENT_BATCH: AnnouncementBatch[] = [
