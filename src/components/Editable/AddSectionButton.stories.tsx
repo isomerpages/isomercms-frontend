@@ -13,44 +13,22 @@ const addSectionButtonMeta = {
   component: AddSectionButton,
 } as Meta<typeof AddSectionButton>
 
+interface AddSectionButtonOptions {
+  title: string
+  subtitle: string
+  overlayTitle?: string
+  overlayDescription?: string
+  overlayImage?: JSX.Element
+}
+
 interface AddSectionButtonTemplateArgs {
   buttonText: string
-  firstTitle: string
-  firstSubtitle: string
-  secondTitle: string
-  secondSubtitle: string
-  secondOverlayTitle: string
-  secondOverlayDescription: string
-  secondOverlayImage?: JSX.Element
-  thirdTitle: string
-  thirdSubtitle: string
-  thirdOverlayTitle: string
-  thirdOverlayDescription: string
-  fourthTitle: string
-  fourthSubtitle: string
-  fourthOverlayTitle: string
-  fourthOverlayDescription: string
-  fourthOverlayImage?: JSX.Element
+  options: AddSectionButtonOptions[]
 }
 
 const Template: StoryFn<AddSectionButtonTemplateArgs> = ({
   buttonText,
-  firstTitle,
-  firstSubtitle,
-  secondTitle,
-  secondSubtitle,
-  secondOverlayTitle,
-  secondOverlayDescription,
-  secondOverlayImage,
-  thirdTitle,
-  thirdSubtitle,
-  thirdOverlayTitle,
-  thirdOverlayDescription,
-  fourthTitle,
-  fourthSubtitle,
-  fourthOverlayTitle,
-  fourthOverlayDescription,
-  fourthOverlayImage,
+  options,
 }: AddSectionButtonTemplateArgs) => {
   return (
     <Box height="50vh" width="450px">
@@ -64,39 +42,29 @@ const Template: StoryFn<AddSectionButtonTemplateArgs> = ({
       </Center>
       <AddSectionButton buttonText={buttonText}>
         <AddSectionButton.List>
-          <AddSectionButton.Option
-            title={firstTitle}
-            subtitle={firstSubtitle}
-          />
-          <AddSectionButton.HelpOverlay
-            title={secondOverlayTitle}
-            description={secondOverlayDescription}
-            image={secondOverlayImage}
-          >
-            <AddSectionButton.Option
-              title={secondTitle}
-              subtitle={secondSubtitle}
-            />
-          </AddSectionButton.HelpOverlay>
-          <AddSectionButton.HelpOverlay
-            title={thirdOverlayTitle}
-            description={thirdOverlayDescription}
-          >
-            <AddSectionButton.Option
-              title={thirdTitle}
-              subtitle={thirdSubtitle}
-            />
-          </AddSectionButton.HelpOverlay>
-          <AddSectionButton.HelpOverlay
-            title={fourthOverlayTitle}
-            description={fourthOverlayDescription}
-            image={fourthOverlayImage}
-          >
-            <AddSectionButton.Option
-              title={fourthTitle}
-              subtitle={fourthSubtitle}
-            />
-          </AddSectionButton.HelpOverlay>
+          {options.map((option) => {
+            if (option.overlayTitle && option.overlayDescription) {
+              return (
+                <AddSectionButton.HelpOverlay
+                  title={option.overlayTitle}
+                  description={option.overlayDescription}
+                  image={option.overlayImage}
+                >
+                  <AddSectionButton.Option
+                    title={option.title}
+                    subtitle={option.subtitle}
+                  />
+                </AddSectionButton.HelpOverlay>
+              )
+            }
+
+            return (
+              <AddSectionButton.Option
+                title={option.title}
+                subtitle={option.subtitle}
+              />
+            )
+          })}
         </AddSectionButton.List>
       </AddSectionButton>
     </Box>
@@ -106,25 +74,35 @@ const Template: StoryFn<AddSectionButtonTemplateArgs> = ({
 export const Default = Template.bind({})
 Default.args = {
   buttonText: "Add section",
-  firstTitle: "Infopic",
-  firstSubtitle: "Add an image and text",
-  secondTitle: "Text cards",
-  secondSubtitle: "Add up to 4 clickable cards with text",
-  secondOverlayTitle: "Text cards",
-  secondOverlayDescription:
-    "Add clickable cards with bite-sized information to your homepage. You can link any page or external URL, such as blog posts, articles, and more.",
-  secondOverlayImage: <HomepageTextCardsSampleImage />,
-  thirdTitle: "Info-columns",
-  thirdSubtitle: "Add snippets of text in 2- or 3-column layouts",
-  thirdOverlayTitle: "Info-Columns",
-  thirdOverlayDescription:
-    "Add bite-sized snippets of text in a multi-column layout. These texts aren’t clickable. Perfect for showing informative text that describes your organisation.",
-  fourthTitle: "Announcements",
-  fourthSubtitle: "Add a list of announcements with dates",
-  fourthOverlayTitle: "Announcements",
-  fourthOverlayDescription:
-    "Make exciting news from your organisation stand out by adding a list of announcements with dates on your homepage.",
-  fourthOverlayImage: <HomepageAnnouncementsSampleImage />,
+  options: [
+    {
+      title: "Infopic",
+      subtitle: "Add an image and text",
+    },
+    {
+      title: "Text cards",
+      subtitle: "Add up to 4 clickable cards with text",
+      overlayTitle: "Text cards",
+      overlayDescription:
+        "Add clickable cards with bite-sized information to your homepage. You can link any page or external URL, such as blog posts, articles, and more.",
+      overlayImage: <HomepageTextCardsSampleImage />,
+    },
+    {
+      title: "Info-columns",
+      subtitle: "Add snippets of text in 2- or 3-column layouts",
+      overlayTitle: "Info-Columns",
+      overlayDescription:
+        "Add bite-sized snippets of text in a multi-column layout. These texts aren’t clickable. Perfect for showing informative text that describes your organisation.",
+    },
+    {
+      title: "Announcements",
+      subtitle: "Add a list of announcements with dates",
+      overlayTitle: "Announcements",
+      overlayDescription:
+        "Make exciting news from your organisation stand out by adding a list of announcements with dates on your homepage.",
+      overlayImage: <HomepageAnnouncementsSampleImage />,
+    },
+  ],
 }
 
 export default addSectionButtonMeta
