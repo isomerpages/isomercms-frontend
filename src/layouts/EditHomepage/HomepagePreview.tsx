@@ -10,7 +10,7 @@ import TemplateInfobarSection from "templates/homepage/InfobarSection"
 import TemplateInfopicLeftSection from "templates/homepage/InfopicLeftSection"
 import TemplateInfopicRightSection from "templates/homepage/InfopicRightSection"
 import TemplateResourcesSection from "templates/homepage/ResourcesSection"
-import TextCardsSection from "templates/homepage/TextCardsSection"
+import TemplateTextCardsSection from "templates/homepage/TextCardsSection"
 import { getClassNames } from "templates/utils/stylingUtils"
 
 import {
@@ -183,12 +183,14 @@ export const HomepagePreview = ({
           {/* Textcard section */}
           {EditorHomepageFrontmatterSection.isTextcard(section) && (
             <>
-              <TextCardsSection
+              <TemplateTextCardsSection
                 key={`section-${sectionIndex}`}
                 title={section.textcards.title}
                 subtitle={section.textcards.subtitle}
                 description={section.textcards.description}
                 cards={section.textcards.cards}
+                sectionIndex={sectionIndex}
+                ref={scrollRefs[sectionIndex] as Ref<HTMLDivElement>}
               />
             </>
           )}
