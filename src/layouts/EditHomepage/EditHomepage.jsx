@@ -1232,6 +1232,11 @@ const EditHomepage = ({ match }) => {
 
                                   {showNewLayouts &&
                                     section.announcements &&
+                                    /**
+                                     * Somehow, the errors are undefined for 2 renders, not sure
+                                     * of the core reason. To avoid the CMS panel from crashing,
+                                     * wrapping this around a check for defined errors
+                                     */
                                     errors.sections[sectionIndex]
                                       .announcements && (
                                       <Editable.DraggableAccordionItem
