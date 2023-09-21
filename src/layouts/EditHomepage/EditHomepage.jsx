@@ -669,7 +669,8 @@ const EditHomepage = ({ match }) => {
           setHomepageState(updatedHomepageState)
           setScrollRefs(newScrollRefs)
 
-          // Edge case for announcement where we need to create a default
+          // Edge case for announcements where we need to
+          // create a default announcement item
           if (val.announcements) {
             const updatedAnnouncementState = onCreate(
               updatedHomepageState,
