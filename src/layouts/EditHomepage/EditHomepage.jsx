@@ -678,7 +678,6 @@ const EditHomepage = ({ match }) => {
               getErrorValues(getDefaultAnnouncementSection())
             )
             setHomepageState(updatedAnnouncementState)
-            setScrollRefs(newScrollRefs)
           }
           break
         }
