@@ -668,6 +668,18 @@ const EditHomepage = ({ match }) => {
 
           setHomepageState(updatedHomepageState)
           setScrollRefs(newScrollRefs)
+
+          // Edge case for announcement where we need to create a default
+          if (val.announcements) {
+            const updatedAnnouncementState = onCreate(
+              updatedHomepageState,
+              "announcement",
+              getDefaultAnnouncementSection(),
+              getErrorValues(getDefaultAnnouncementSection())
+            )
+            setHomepageState(updatedAnnouncementState)
+            setScrollRefs(newScrollRefs)
+          }
           break
         }
         case "dropdownelem": {

@@ -34,9 +34,7 @@ export const ANNOUNCEMENT_BLOCK = {
   title: "Announcements",
   id: "announcements",
   subtitle: "Add a list of announcements with dates",
-  announcement_items: [
-    getDefaultAnnouncementSection(),
-  ] as AnnouncementSectionType[],
+  announcement_items: [] as AnnouncementSectionType[],
 } as const
 
 export const INFOBAR_SECTION = {
