@@ -37,7 +37,11 @@ import { useEditableContext } from "contexts/EditableContext"
 import { BxGrayTranslucent } from "assets"
 import { FeatureTourHandler } from "features/FeatureTour/FeatureTour"
 import { HERO_OPTIONS_FEATURE_STEPS } from "features/FeatureTour/FeatureTourSequence"
-import { SectionSize, SectionAlignment } from "types/hero"
+import {
+  SectionSize,
+  SectionAlignment,
+  SectionBackgroundColor,
+} from "types/hero"
 import { HeroBannerLayouts, HighlightOption } from "types/homepage"
 
 import { HeroDropdownFormFields } from "./HeroDropdownSection"
@@ -301,33 +305,41 @@ const HeroLayoutForm = ({
   })
 
   return (
-    <VStack spacing="1rem" align="flex-start" w="100%">
-      <Text textStyle="h5">{`Customise ${
-        showNewLayouts ? "Layout" : "Hero"
-      }`}</Text>
-      {showNewLayouts && (
-        <FormControl isRequired>
-          <FormLabel textStyle="subhead-1">Layout</FormLabel>
-          <SingleSelect
-            isClearable={false}
-            name="hero layout options"
-            value={variant}
-            items={_.values(HERO_LAYOUTS)}
-            // NOTE: Safe cast - the possible values are given by `HERO_LAYOUTS`
-            onChange={(val) => {
-              onChange({
-                target: {
-                  // NOTE: Format is field type, index, section type, field
-                  id: "section-0-hero-variant",
-                  value: val as HeroBannerLayouts,
-                },
-              })
-            }}
-          />
-        </FormControl>
+    <>
+      {showNewLayouts && inView && (
+        <FeatureTourHandler
+          localStorageKey={LOCAL_STORAGE_KEYS.HeroOptionsFeatureTour}
+          steps={HERO_OPTIONS_FEATURE_STEPS}
+        />
       )}
-      <VStack spacing="1rem" w="100%">
-        {children({ currentSelectedOption: variant })}
+      <VStack spacing="1rem" align="flex-start" w="100%" ref={ref}>
+        <Text textStyle="h5">{`Customise ${
+          showNewLayouts ? "Layout" : "Hero"
+        }`}</Text>
+        {showNewLayouts && (
+          <FormControl isRequired>
+            <FormLabel textStyle="subhead-1">Layout</FormLabel>
+            <SingleSelect
+              isClearable={false}
+              name="hero layout options"
+              value={variant}
+              items={_.values(HERO_LAYOUTS)}
+              // NOTE: Safe cast - the possible values are given by `HERO_LAYOUTS`
+              onChange={(val) => {
+                onChange({
+                  target: {
+                    // NOTE: Format is field type, index, section type, field
+                    id: "section-0-hero-variant",
+                    value: val as HeroBannerLayouts,
+                  },
+                })
+              }}
+            />
+          </FormControl>
+        )}
+        <VStack spacing="1rem" w="100%">
+          {children({ currentSelectedOption: variant })}
+        </VStack>
       </VStack>
     </>
   )
