@@ -82,7 +82,6 @@ export const AnnouncementBody = ({
                     },
                     announcementIndex
                   ) => {
-                    console.log({ announcementDate })
                     return (
                       <Editable.DraggableAccordionItem
                         title={announcementTitle || "New announcement"}
