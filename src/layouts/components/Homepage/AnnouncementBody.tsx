@@ -141,7 +141,6 @@ export const AnnouncementBody = ({
                                 announcementDate
                               )}
                               onInputValueChange={(value) => {
-                                console.log({ value })
                                 onChange({
                                   target: {
                                     id: `announcement-${announcementIndex}-date`,
