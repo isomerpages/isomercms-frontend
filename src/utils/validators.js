@@ -188,8 +188,6 @@ const validateNonFutureResourceDate = (dateStr) => {
 const validateNonFutureAnnouncementDate = (dateStr) => {
   const today = moment().tz("Asia/Singapore")
   const isoDateStr = moment(dateStr, "DD MMMM YYYY", true)
-  console.log({ today, isoDateStr })
-  console.log(isoDateStr.isAfter(today))
   return isoDateStr.isAfter(today)
 }
 
