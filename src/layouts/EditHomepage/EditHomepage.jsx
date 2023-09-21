@@ -1255,10 +1255,6 @@ const EditHomepage = ({ match }) => {
                                       >
                                         <AnnouncementSection
                                           {...section.announcements}
-                                          title={section.announcements.title}
-                                          subtitle={
-                                            section.announcements.subtitle
-                                          }
                                           index={sectionIndex}
                                           errors={
                                             errors.sections[sectionIndex]
