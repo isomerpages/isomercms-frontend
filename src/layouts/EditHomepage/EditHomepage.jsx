@@ -7,6 +7,7 @@ import {
   VStack,
   Divider,
 } from "@chakra-ui/react"
+import { useFeatureIsOn } from "@growthbook/growthbook-react"
 import { DragDropContext } from "@hello-pangea/dnd"
 import { Button, Tag } from "@opengovsg/design-system-react"
 import update from "immutability-helper"
@@ -19,6 +20,8 @@ import { Footer } from "components/Footer"
 import Header from "components/Header"
 import { LoadingButton } from "components/LoadingButton"
 import { WarningModal } from "components/WarningModal"
+
+import { FEATURE_FLAGS } from "constants/featureFlags"
 
 import { EditableContextProvider } from "contexts/EditableContext"
 
@@ -1014,6 +1017,7 @@ const EditHomepage = ({ match }) => {
     })
   }
 
+  const showNewLayouts = useFeatureIsOn(FEATURE_FLAGS.HOMEPAGE_TEMPLATES)
   return (
     <>
       <WarningModal
@@ -1226,7 +1230,8 @@ const EditHomepage = ({ match }) => {
                                     </Editable.DraggableAccordionItem>
                                   )}
 
-                                  {section.announcements &&
+                                  {showNewLayouts &&
+                                    section.announcements &&
                                     errors.sections[sectionIndex]
                                       .announcements && (
                                       <Editable.DraggableAccordionItem
@@ -1303,15 +1308,16 @@ const EditHomepage = ({ match }) => {
                       {/* NOTE: Check if the sections contain any `announcements` 
                                 and if it does, prevent creation of another `resources` section
                             */}
-                      {!frontMatter.sections.some(
-                        ({ announcements }) => !!announcements
-                      ) && (
-                        <AddSectionButton.Option
-                          title={ANNOUNCEMENT_BLOCK.title}
-                          subtitle={ANNOUNCEMENT_BLOCK.subtitle}
-                          onClick={() => onClick(ANNOUNCEMENT_BLOCK.id)}
-                        />
-                      )}
+                      {showNewLayouts &&
+                        !frontMatter.sections.some(
+                          ({ announcements }) => !!announcements
+                        ) && (
+                          <AddSectionButton.Option
+                            title={ANNOUNCEMENT_BLOCK.title}
+                            subtitle={ANNOUNCEMENT_BLOCK.subtitle}
+                            onClick={() => onClick(ANNOUNCEMENT_BLOCK.id)}
+                          />
+                        )}
 
                       {/* NOTE: Check if the sections contain any `resources` 
                                 and if it does, prevent creation of another `resources` section
