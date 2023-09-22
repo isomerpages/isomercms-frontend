@@ -12,9 +12,9 @@ import _ from "lodash"
 import moment from "moment"
 import { BiPlus } from "react-icons/bi"
 
-import { useEditableContext } from "contexts/EditableContext"
+import { Editable } from "components/Editable/Editable"
 
-import { Editable } from "layouts/components/Editable"
+import { useEditableContext } from "contexts/EditableContext"
 
 import { AnnouncementError, AnnouncementOption } from "types/homepage"
 
