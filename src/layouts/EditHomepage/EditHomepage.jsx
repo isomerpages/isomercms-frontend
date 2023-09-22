@@ -23,9 +23,9 @@ import { WarningModal } from "components/WarningModal"
 
 import { FEATURE_FLAGS } from "constants/featureFlags"
 
+// Import hooks
 import { EditableContextProvider } from "contexts/EditableContext"
 
-// Import hooks
 import { useGetHomepageHook } from "hooks/homepageHooks"
 import { useUpdateHomepageHook } from "hooks/homepageHooks/useUpdateHomepageHook"
 import { useAfterFirstLoad } from "hooks/useAfterFirstLoad"
@@ -46,8 +46,6 @@ import { EditorHomepageFrontmatterSection } from "types/homepage"
 import { DEFAULT_RETRY_MSG } from "utils"
 
 import { useDrag, onCreate, onDelete } from "../../hooks/useDrag"
-import { CustomiseSectionsHeader, Editable } from "../components/Editable"
-import { AddSectionButton } from "../components/Editable/AddSectionButton"
 import { AnnouncementBody } from "../components/Homepage/AnnouncementBody"
 import { AnnouncementSection } from "../components/Homepage/AnnouncementSection"
 import { HeroBody } from "../components/Homepage/HeroBody"
