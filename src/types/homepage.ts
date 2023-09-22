@@ -151,16 +151,6 @@ export type AnnouncementsFrontmatterSection = {
   announcements: AnnouncementsBlockSection
 }
 
-export interface EditorTextcardCardsSection {
-  cards: []
-}
-
-export interface EditorTextcardSection extends EditorTextcardCardsSection {
-  title: string
-  subtitle: string
-  description: string
-}
-
 export type TextcardFrontmatterSection = {
   textcards: EditorTextcardSection
 }
