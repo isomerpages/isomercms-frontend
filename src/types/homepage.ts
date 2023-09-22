@@ -20,6 +20,16 @@ export type HighlightOption = {
   url: string
 }
 
+export type AnnouncementOption = {
+  title: string
+  date: string
+  announcement: string
+  link_text: string
+  link_url: string
+}
+
+export type AnnouncementError = AnnouncementOption
+
 interface BaseHeroSection {
   background: string
   subtitle: string
@@ -63,16 +73,10 @@ export interface ResourcesSection {
   button?: string
 }
 
-export interface AnnouncementsSection {
+export interface AnnouncementsBlockSection {
   title?: string
   subtitle?: string
-  announcement_items?: Array<{
-    title?: string
-    date?: string
-    announcement?: string
-    link_text?: string
-    link_url?: string
-  }>
+  announcement_items: AnnouncementOption[]
 }
 
 export interface HomepageDto {
@@ -89,7 +93,7 @@ export interface HomepageDto {
         | InfobarSection
         | InfopicSection
         | ResourcesSection
-        | AnnouncementsSection
+        | AnnouncementsBlockSection
       )[]
     }
     pageBody?: string
@@ -97,7 +101,11 @@ export interface HomepageDto {
   sha: string
 }
 
-export type EditorHomepageElement = "section" | "dropdownelem" | "highlight"
+export type EditorHomepageElement =
+  | "section"
+  | "dropdownelem"
+  | "highlight"
+  | "announcement"
 export type PossibleEditorSections = IterableElement<
   | EditorHomepageState["frontMatter"]["sections"]
   | EditorHeroDropdownSection["dropdown"]["options"]
@@ -125,7 +133,7 @@ export type InfobarFrontmatterSection = {
 }
 
 export type AnnouncementsFrontmatterSection = {
-  announcements: AnnouncementsSection
+  announcements: AnnouncementsBlockSection
 }
 
 export type EditorHomepageFrontmatterSection =
@@ -166,10 +174,12 @@ export interface EditorHomepageState {
     sections: unknown[]
     dropdownElems: unknown[]
     highlights: unknown[]
+    announcementItems: unknown[]
   }
   displaySections: unknown[]
   displayDropdownElems: unknown[]
   displayHighlights: unknown[]
+  displayAnnouncementItems: unknown[]
 }
 
 export interface EditorHeroDropdownSection {

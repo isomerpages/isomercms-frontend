@@ -124,7 +124,7 @@ export const InfopicBody = ({
       </FormControl>
       <Button
         id={`section-${index}`}
-        onClick={() => onDelete(`section-${index}`, "Infopic Section")}
+        onClick={() => onDelete(`section-${index}`, "Infopic")}
         alignSelf="center"
         variant="clear"
         colorScheme="critical"

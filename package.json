@@ -46,6 +46,7 @@
     "libphonenumber-js": "^1.9.48",
     "lodash": "^4.17.21",
     "marked": "^4.0.12",
+    "moment": "^2.29.4",
     "moment-timezone": "^0.5.35",
     "postcss": "^8.4.21",
     "postcss-loader": "^7.2.4",

@@ -79,7 +79,7 @@ export const ResourcesBody = ({
       </FormControl>
       <Button
         id={`section-${index}`}
-        onClick={() => onDelete(`section-${index}`, "Resources Section")}
+        onClick={() => onDelete(`section-${index}`, "Resources")}
         alignSelf="center"
         variant="clear"
         colorScheme="critical"

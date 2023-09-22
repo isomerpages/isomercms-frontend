@@ -35,7 +35,8 @@ export const PASSWORD_REGEX =
   "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$"
 const EMAIL_REGEX =
   '^(([^<>()\\[\\]\\.,;:\\s@\\"]+(\\.[^<>()\\[\\]\\.,;:\\s@\\"]+)*)|(".+"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z-0-9]+\\.)+[a-zA-Z]{2,}))$'
-const DATE_REGEX = "^([0-9]{4}-[0-9]{2}-[0-9]{2})$"
+const DATE_REGEX_Y_M_D = "^([0-9]{4}-[0-9]{2}-[0-9]{2})$"
+const DATE_REGEX_D_M_Y = "^([0-9]{2}/[0-9]{2}/[0-9]{4})$"
 const ALPHABETS_ONLY_REGEX = '^[a-zA-Z" "\\._-]+$'
 const ALPHANUMERICS_ONLY_REGEX = '^[a-zA-Z0-9" "\\._\\-:]+$'
 
@@ -43,7 +44,8 @@ export const permalinkRegexTest = RegExp(PERMALINK_REGEX)
 export const phoneRegexTest = RegExp(PHONE_REGEX)
 export const tollFreePhoneRegexText = RegExp(TOLL_FREE_PHONE_REGEX)
 export const emailRegexTest = RegExp(EMAIL_REGEX)
-export const dateRegexTest = RegExp(DATE_REGEX)
+export const resourceDateRegexTest = RegExp(DATE_REGEX_Y_M_D)
+export const announcementDateRegexTest = RegExp(DATE_REGEX_D_M_Y)
 export const alphabetsRegexTest = RegExp(ALPHABETS_ONLY_REGEX)
 export const alphanumericRegexTest = RegExp(ALPHANUMERICS_ONLY_REGEX)
 export const fileNameRegexTest = /^[a-zA-Z0-9" "_-]+$/
@@ -112,10 +114,16 @@ const HERO_TITLE_MIN_LENGTH = 0
 const HERO_TITLE_MAX_LENGTH = 60
 const HERO_SUBTITLE_MIN_LENGTH = 0
 const HERO_SUBTITLE_MAX_LENGTH = 160
-// const HERO_BUTTON_TEXT_MIN_LENGTH = 2;
-// const HERO_BUTTON_TEXT_MAX_LENGTH = 30;
 const HERO_DROPDOWN_MIN_LENGTH = 0
 const HERO_DROPDOWN_MAX_LENGTH = 30
+// Announcement
+const ANNOUNCEMENT_BLOCK_SUBTITLE_MAX_LENGTH = 30
+const ANNOUNCEMENT_BLOCK_TITLE_MAX_LENGTH = 50
+const ANNOUNCEMENT_TITLE_MIN_LENGTH = 0
+const ANNOUNCEMENT_TITLE_MAX_LENGTH = 100
+const ANNOUNCEMENT_DESCRIPTION_MIN_LENGTH = 0
+const ANNOUNCEMENT_DESCRIPTION_MAX_LENGTH = 300
+const ANNOUNCEMENT_LINK_TEXT_URL_MAX_LENGTH = 50
 
 // Contact Us Editor
 // ===============
@@ -127,7 +135,6 @@ const CONTACT_DESCRIPTION_MAX_LENGTH = 400
 // Locations
 const LOCATION_TITLE_MIN_LENGTH = 1
 const LOCATION_TITLE_MAX_LENGTH = 30
-// const LOCATION_ADDRESS_MIN_LENGTH = 2
 const LOCATION_ADDRESS_MAX_LENGTH = 30
 const LOCATION_OPERATING_DAYS_MIN_LENGTH = 2
 const LOCATION_OPERATING_DAYS_MAX_LENGTH = 30
@@ -170,6 +177,19 @@ export const DIRECTORY_SETTINGS_TITLE_MAX_LENGTH = 30
 export const MEDIA_SETTINGS_TITLE_MIN_LENGTH = 6
 export const MEDIA_SETTINGS_TITLE_MAX_LENGTH = 100
 export const MEDIA_FILE_MAX_SIZE = 5242880 // 5MB -> 5242880B
+
+const validateNonFutureResourceDate = (dateStr) => {
+  const today = new Date(moment().tz("Asia/Singapore").format("YYYY-MM-DD"))
+  const chosenDate = new Date(dateStr)
+  const daysDiff = today - chosenDate
+  return daysDiff >= 0
+}
+
+const validateNonFutureAnnouncementDate = (dateStr) => {
+  const today = moment().tz("Asia/Singapore")
+  const isoDateStr = moment(dateStr, "DD MMMM YYYY", true)
+  return isoDateStr.isAfter(today)
+}
 
 // Homepage Editor
 // ==========
@@ -216,6 +236,58 @@ const validateHighlights = (highlightError, field, value) => {
   }
   newHighlightError[field] = errorMessage
   return newHighlightError
+}
+
+const validateAnnouncementItems = (announcementError, field, value) => {
+  const newAnnouncementError = announcementError
+  let errorMessage = ""
+
+  switch (field) {
+    case "title": {
+      // Title is too short
+      if (value.length <= ANNOUNCEMENT_TITLE_MIN_LENGTH) {
+        errorMessage = `The title should not be empty.`
+      }
+      // Title is too long
+      if (value.length > ANNOUNCEMENT_TITLE_MAX_LENGTH) {
+        errorMessage = `The title should be shorter than ${ANNOUNCEMENT_TITLE_MAX_LENGTH} characters.`
+      }
+      break
+    }
+    case "date": {
+      if (!moment(value, "DD MMMM YYYY", true).isValid()) {
+        errorMessage = `Date is invalid`
+      } else if (validateNonFutureAnnouncementDate(value)) {
+        errorMessage = `Date cannot be in the future`
+      }
+
+      break
+    }
+    case "announcement": {
+      // Announcement content is too short
+      if (value.length <= ANNOUNCEMENT_DESCRIPTION_MIN_LENGTH) {
+        errorMessage = `The announcement content should not be empty.`
+      }
+      // Announcement content is too long
+      if (value.length > ANNOUNCEMENT_DESCRIPTION_MAX_LENGTH) {
+        errorMessage = `You have exceeded the number of characters allowed (${value.length}/${ANNOUNCEMENT_DESCRIPTION_MAX_LENGTH})`
+      }
+      break
+    }
+    case "link_text": {
+      // Link text is too long
+      if (value.length > ANNOUNCEMENT_LINK_TEXT_URL_MAX_LENGTH) {
+        errorMessage = `The link text should be shorter than ${ANNOUNCEMENT_LINK_TEXT_URL_MAX_LENGTH} characters.`
+      }
+      break
+    }
+
+    default:
+      break
+  }
+
+  newAnnouncementError[field] = errorMessage
+  return newAnnouncementError
 }
 
 // Returns errors.dropdownElems[dropdownsIndex] object
@@ -494,6 +566,37 @@ const validateInfopicSection = (sectionError, sectionType, field, value) => {
   return newSectionError
 }
 
+const validateAnnouncementsSection = (
+  sectionError,
+  sectionType,
+  field,
+  value
+) => {
+  const newSectionError = sectionError
+  let errorMessage = ""
+
+  switch (field) {
+    case "title": {
+      // Title is too long
+      if (value.length > ANNOUNCEMENT_BLOCK_TITLE_MAX_LENGTH) {
+        errorMessage = `Title should be shorter than ${ANNOUNCEMENT_BLOCK_TITLE_MAX_LENGTH} characters.`
+      }
+      break
+    }
+    case "subtitle": {
+      // Subtitle is too long
+      if (value.length > ANNOUNCEMENT_BLOCK_SUBTITLE_MAX_LENGTH) {
+        errorMessage = `Subtitle should be shorter than ${ANNOUNCEMENT_BLOCK_SUBTITLE_MAX_LENGTH} characters.`
+      }
+      break
+    }
+    default:
+      break
+  }
+  newSectionError[sectionType][field] = errorMessage
+  return newSectionError
+}
+
 const validateSections = (sectionError, sectionType, field, value) => {
   let newSectionError = sectionError
   switch (sectionType) {
@@ -526,6 +629,15 @@ const validateSections = (sectionError, sectionType, field, value) => {
     }
     case "infopic": {
       newSectionError = validateInfopicSection(
+        sectionError,
+        sectionType,
+        field,
+        value
+      )
+      break
+    }
+    case "announcements": {
+      newSectionError = validateAnnouncementsSection(
         sectionError,
         sectionType,
         field,
@@ -803,13 +915,6 @@ const validateDayOfMonth = (month, day) => {
   }
 }
 
-const validateNonFutureDate = (dateStr) => {
-  const today = new Date(moment().tz("Asia/Singapore").format("YYYY-MM-DD"))
-  const chosenDate = new Date(dateStr)
-  const daysDiff = today - chosenDate
-  return daysDiff >= 0
-}
-
 const validateResourceSettings = (id, value, folderOrderArray) => {
   let errorMessage = ""
   switch (id) {
@@ -836,11 +941,11 @@ const validateResourceSettings = (id, value, folderOrderArray) => {
     }
     case "date": {
       // Date is in the future
-      if (!validateNonFutureDate(value)) {
+      if (!validateNonFutureResourceDate(value)) {
         errorMessage = "Selected date is greater than today's date."
       }
       // Date is in wrong format
-      if (!dateRegexTest.test(value)) {
+      if (!resourceDateRegexTest.test(value)) {
         errorMessage = "The date should be in the format YYYY-MM-DD."
       } else {
         const dateTokens = value.split("-")
@@ -964,6 +1069,7 @@ export {
   validateLocationType,
   validateLink,
   validateHighlights,
+  validateAnnouncementItems,
   validateDropdownElems,
   validateSections,
   validatePageSettings,

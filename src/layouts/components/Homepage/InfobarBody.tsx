@@ -89,7 +89,7 @@ export const InfobarBody = ({
       </FormControl>
       <Button
         id={`section-${index}`}
-        onClick={() => onDelete(`section-${index}`, "Infobar Section")}
+        onClick={() => onDelete(`section-${index}`, "Infobar")}
         alignSelf="center"
         variant="clear"
         colorScheme="critical"
