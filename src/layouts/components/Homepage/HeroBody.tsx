@@ -302,6 +302,8 @@ const HeroLayoutForm = ({
   // does not work properly
   const { ref, inView } = useInView({
     threshold: 0,
+    // we want the animation to fully load before rendering the feature tour
+    delay: 100,
   })
 
   return (
