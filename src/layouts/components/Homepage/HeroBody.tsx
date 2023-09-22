@@ -307,45 +307,52 @@ const HeroLayoutForm = ({
   })
 
   return (
-    <>
+    <VStack spacing="1rem" align="flex-start" w="100%" ref={ref}>
       {showNewLayouts && inView && (
-        <FeatureTourHandler
-          localStorageKey={LOCAL_STORAGE_KEYS.HeroOptionsFeatureTour}
-          steps={HERO_OPTIONS_FEATURE_STEPS}
-        />
+        /**
+         * Because of the VStack, this renders as a valid child with padding
+         * which messes up the layout. The caller of this method also wraps
+         * this around a VStack, so placing the FeatureTourHandler outside of this
+         * parent VStack does not solve the issue. As a workaround, the margin
+         * top is set to -1 to 'undo' the spacing by VStack.
+         */
+        <Box mt="-1rem">
+          <FeatureTourHandler
+            localStorageKey={LOCAL_STORAGE_KEYS.HeroOptionsFeatureTour}
+            steps={HERO_OPTIONS_FEATURE_STEPS}
+          />
+        </Box>
       )}
-      <VStack spacing="1rem" align="flex-start" w="100%" ref={ref}>
-        <Text textStyle="h5">{`Customise ${
-          showNewLayouts ? "Layout" : "Hero"
-        }`}</Text>
-        {showNewLayouts && (
-          <FormControl isRequired>
-            <Box id="isomer-hero-feature-tour-step-1">
-              <FormLabel textStyle="subhead-1">Layout</FormLabel>
-              <SingleSelect
-                isClearable={false}
-                name="hero layout options"
-                value={variant}
-                items={_.values(HERO_LAYOUTS)}
-                // NOTE: Safe cast - the possible values are given by `HERO_LAYOUTS`
-                onChange={(val) => {
-                  onChange({
-                    target: {
-                      // NOTE: Format is field type, index, section type, field
-                      id: "section-0-hero-variant",
-                      value: val as HeroBannerLayouts,
-                    },
-                  })
-                }}
-              />
-            </Box>
-          </FormControl>
-        )}
-        <VStack spacing="1rem" w="100%">
-          {children({ currentSelectedOption: variant })}
-        </VStack>
+      <Text textStyle="h5">{`Customise ${
+        showNewLayouts ? "Layout" : "Hero"
+      }`}</Text>
+      {showNewLayouts && (
+        <FormControl isRequired>
+          <Box id="isomer-hero-feature-tour-step-1">
+            <FormLabel textStyle="subhead-1">Layout</FormLabel>
+            <SingleSelect
+              isClearable={false}
+              name="hero layout options"
+              value={variant}
+              items={_.values(HERO_LAYOUTS)}
+              // NOTE: Safe cast - the possible values are given by `HERO_LAYOUTS`
+              onChange={(val) => {
+                onChange({
+                  target: {
+                    // NOTE: Format is field type, index, section type, field
+                    id: "section-0-hero-variant",
+                    value: val as HeroBannerLayouts,
+                  },
+                })
+              }}
+            />
+          </Box>
+        </FormControl>
+      )}
+      <VStack spacing="1rem" w="100%">
+        {children({ currentSelectedOption: variant })}
       </VStack>
-    </>
+    </VStack>
   )
 }
 
