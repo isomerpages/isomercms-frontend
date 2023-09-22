@@ -78,5 +78,4 @@ HeroBannerStep.args = {
   index: 0,
   isLastStep: true,
   steps: HERO_OPTIONS_FEATURE_STEPS,
-  isTipBadgeShown: false,
 }

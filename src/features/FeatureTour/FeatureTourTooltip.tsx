@@ -19,7 +19,6 @@ export interface FeatureTourTooltipProps {
   closeProps: ButtonProps
   isLastStep: boolean
   index: number
-  isTipBadgeShown?: boolean
 }
 
 export const FeatureTourTooltip = ({
@@ -30,11 +29,11 @@ export const FeatureTourTooltip = ({
   closeProps,
   isLastStep,
   index,
-  isTipBadgeShown = true,
 }: FeatureTourTooltipProps): JSX.Element => {
   const { paginationCallback } = useFeatureTourContext()
   const showProgressIndicator = size > 1
 
+  let isTipBadgeShown = true
   let titleComponent: React.ReactNode
   if (typeof step.title === "string") {
     titleComponent = (
@@ -44,6 +43,7 @@ export const FeatureTourTooltip = ({
     )
   } else {
     titleComponent = step.title
+    isTipBadgeShown = false
   }
 
   let contentComponent: React.ReactNode
