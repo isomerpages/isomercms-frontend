@@ -20,7 +20,7 @@ import {
   Tooltip,
 } from "@opengovsg/design-system-react"
 import _ from "lodash"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { BiInfoCircle } from "react-icons/bi"
 import { useInView } from "react-intersection-observer"
 
