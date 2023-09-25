@@ -6,9 +6,9 @@ import {
   Input,
 } from "@opengovsg/design-system-react"
 
-import { useEditableContext } from "contexts/EditableContext"
+import { Editable } from "components/Editable"
 
-import { Editable } from "../Editable"
+import { useEditableContext } from "contexts/EditableContext"
 
 interface ResourcesFormFields {
   title: string

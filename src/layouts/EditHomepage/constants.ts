@@ -1,7 +1,40 @@
+import moment from "moment"
+
 export const RESOURCES_SECTION = {
   title: "Resources",
   subtitle: "Add a preview and link to your Resource Room",
   id: "resources",
+} as const
+
+export type AnnouncementSectionType = {
+  readonly title: string
+  readonly date: string
+  readonly announcement: string
+  readonly link_text: string
+  readonly link_url: string
+}
+
+export const getDefaultAnnouncementSection = (): AnnouncementSectionType => {
+  return {
+    title: "New Announcement",
+    date: moment(
+      new Date()
+        .toLocaleString("en-SG", {
+          timeZone: "Asia/Singapore",
+        })
+        .slice(0, "dd/mm/yyyy".length),
+      "DD/MM/YYYY"
+    ).format("DD MMMM YYYY"),
+    announcement: "Announcement content",
+    link_text: "",
+    link_url: "",
+  }
+}
+export const ANNOUNCEMENT_BLOCK = {
+  title: "Announcements",
+  id: "announcements",
+  subtitle: "Add a list of announcements with dates",
+  announcement_items: [] as AnnouncementSectionType[],
 } as const
 
 export const INFOBAR_SECTION = {

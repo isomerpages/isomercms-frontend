@@ -23,6 +23,7 @@ import _ from "lodash"
 import { useState } from "react"
 import { BiInfoCircle } from "react-icons/bi"
 
+import { Editable } from "components/Editable"
 import { FormContext, FormError, FormTitle } from "components/Form"
 import FormFieldMedia from "components/FormFieldMedia"
 
@@ -30,8 +31,6 @@ import { FEATURE_FLAGS } from "constants/featureFlags"
 import { HERO_LAYOUTS } from "constants/homepage"
 
 import { useEditableContext } from "contexts/EditableContext"
-
-import { Editable } from "layouts/components/Editable"
 
 import { BxGrayTranslucent } from "assets"
 import {

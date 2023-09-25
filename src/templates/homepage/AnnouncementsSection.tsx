@@ -4,13 +4,13 @@ import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 import { getClassNames } from "templates/utils/stylingUtils"
 
-import { AnnouncementsSection } from "types/homepage"
+import { AnnouncementsBlockSection } from "types/homepage"
 
 type TemplateAnnouncementsSectionProps = Omit<
-  AnnouncementsSection,
+  AnnouncementsBlockSection,
   "announcement_items"
 > & {
-  announcementItems: AnnouncementsSection["announcement_items"]
+  announcementItems: AnnouncementsBlockSection["announcement_items"]
   sectionIndex: number
 }
 
@@ -87,7 +87,6 @@ export const TemplateAnnouncementsSection = forwardRef<
                             className={getClassNames(editorStyles, [
                               "row",
                               "is-desktop",
-                              "px-lg-3",
                             ])}
                           >
                             <div

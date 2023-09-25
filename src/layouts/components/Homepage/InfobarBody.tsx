@@ -7,9 +7,9 @@ import {
   Textarea,
 } from "@opengovsg/design-system-react"
 
-import { useEditableContext } from "contexts/EditableContext"
+import { Editable } from "components/Editable"
 
-import { Editable } from "../Editable"
+import { useEditableContext } from "contexts/EditableContext"
 
 interface InfobarFormFields {
   title: string
@@ -89,7 +89,7 @@ export const InfobarBody = ({
       </FormControl>
       <Button
         id={`section-${index}`}
-        onClick={() => onDelete(`section-${index}`, "Infobar Section")}
+        onClick={() => onDelete(`section-${index}`, "Infobar")}
         alignSelf="center"
         variant="clear"
         colorScheme="critical"

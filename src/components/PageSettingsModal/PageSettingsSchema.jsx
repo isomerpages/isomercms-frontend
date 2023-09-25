@@ -5,7 +5,7 @@ import {
   permalinkRegexTest,
   specialCharactersRegexTest,
   jekyllFirstCharacterRegexTest,
-  dateRegexTest,
+  resourceDateRegexTest,
   PAGE_SETTINGS_PERMALINK_MIN_LENGTH,
   PAGE_SETTINGS_PERMALINK_MAX_LENGTH,
   PAGE_SETTINGS_TITLE_MIN_LENGTH,
@@ -71,7 +71,10 @@ export const PageSettingsSchema = (existingTitlesArray = []) =>
         layout
           ? schema
               .required("Date is required")
-              .matches(dateRegexTest, "Date must be formatted as YYYY-MM-DD")
+              .matches(
+                resourceDateRegexTest,
+                "Date must be formatted as YYYY-MM-DD"
+              )
               .test(
                 "Date cannot be in the future",
                 "Date cannot be in the future",

@@ -7,18 +7,25 @@ import {
   VStack,
   Divider,
 } from "@chakra-ui/react"
+import { useFeatureIsOn } from "@growthbook/growthbook-react"
 import { DragDropContext } from "@hello-pangea/dnd"
 import { Button, Tag } from "@opengovsg/design-system-react"
 import update from "immutability-helper"
 import _ from "lodash"
 import { useEffect, createRef, useState } from "react"
 
+import { CustomiseSectionsHeader, Editable } from "components/Editable"
+import { AddSectionButton } from "components/Editable/AddSectionButton"
 import { Footer } from "components/Footer"
 import Header from "components/Header"
 import { LoadingButton } from "components/LoadingButton"
 import { WarningModal } from "components/WarningModal"
 
+import { FEATURE_FLAGS } from "constants/featureFlags"
+
 // Import hooks
+import { EditableContextProvider } from "contexts/EditableContext"
+
 import { useGetHomepageHook } from "hooks/homepageHooks"
 import { useUpdateHomepageHook } from "hooks/homepageHooks/useUpdateHomepageHook"
 import { useAfterFirstLoad } from "hooks/useAfterFirstLoad"
@@ -31,15 +38,16 @@ import {
   validateSections,
   validateHighlights,
   validateDropdownElems,
+  validateAnnouncementItems,
 } from "utils/validators"
 
 import { HomepageStartEditingImage } from "assets"
+import { EditorHomepageFrontmatterSection } from "types/homepage"
 import { DEFAULT_RETRY_MSG } from "utils"
 
-import { EditableContextProvider } from "../../contexts/EditableContext"
 import { useDrag, onCreate, onDelete } from "../../hooks/useDrag"
-import { CustomiseSectionsHeader, Editable } from "../components/Editable"
-import { AddSectionButton } from "../components/Editable/AddSectionButton"
+import { AnnouncementBody } from "../components/Homepage/AnnouncementBody"
+import { AnnouncementSection } from "../components/Homepage/AnnouncementSection"
 import { HeroBody } from "../components/Homepage/HeroBody"
 import { HeroDropdownSection } from "../components/Homepage/HeroDropdownSection"
 import { HeroHighlightSection } from "../components/Homepage/HeroHighlightSection"
@@ -54,6 +62,8 @@ import {
   INFOPIC_SECTION,
   KEY_HIGHLIGHT_SECTION,
   RESOURCES_SECTION,
+  ANNOUNCEMENT_BLOCK,
+  getDefaultAnnouncementSection,
 } from "./constants"
 import { HomepagePreview } from "./HomepagePreview"
 import { getErrorValues } from "./utils"
@@ -94,8 +104,14 @@ const getHasErrors = (errors) => {
 
   const hasHighlightErrors = getHasError(errors.highlights)
   const hasDropdownElemErrors = getHasError(errors.dropdownElems)
+  const hasAnnouncementErrors = getHasError(errors.announcementItems)
 
-  return hasSectionErrors || hasHighlightErrors || hasDropdownElemErrors
+  return (
+    hasSectionErrors ||
+    hasHighlightErrors ||
+    hasDropdownElemErrors ||
+    hasAnnouncementErrors
+  )
 }
 
 // Constants
@@ -118,6 +134,11 @@ const enumSection = (type, isError) => {
       return isError
         ? { infopic: getErrorValues(INFOPIC_SECTION) }
         : { infopic: INFOPIC_SECTION }
+
+    case "announcements":
+      return isError
+        ? { announcements: getErrorValues(ANNOUNCEMENT_BLOCK) }
+        : { announcements: ANNOUNCEMENT_BLOCK }
 
     default:
       return isError
@@ -150,12 +171,14 @@ const EditHomepage = ({ match }) => {
   })
   const [sha, setSha] = useState(null)
   const [displaySections, setDisplaySections] = useState([])
+  const [displayAnnouncementItems, setDisplayAnnouncementItems] = useState([])
   const [displayHighlights, setDisplayHighlights] = useState([])
   const [displayDropdownElems, setDisplayDropdownElems] = useState([])
   const [errors, setErrors] = useState({
     sections: [],
     highlights: [],
     dropdownElems: [],
+    announcementItems: [],
   })
   const [itemPendingForDelete, setItemPendingForDelete] = useState({
     id: "",
@@ -172,6 +195,7 @@ const EditHomepage = ({ match }) => {
     displayDropdownElems,
     displayHighlights,
     displaySections,
+    displayAnnouncementItems,
   }
   const onDrag = useDrag(homepageState)
   const setHomepageState = ({
@@ -180,12 +204,14 @@ const EditHomepage = ({ match }) => {
     displayDropdownElems,
     displayHighlights,
     displaySections,
+    displayAnnouncementItems,
   }) => {
     setDisplaySections(displaySections)
     setFrontMatter(frontMatter)
     setErrors(errors)
     setDisplayDropdownElems(displayDropdownElems)
     setDisplayHighlights(displayHighlights)
+    setDisplayAnnouncementItems(displayAnnouncementItems)
   }
   const heroSection = frontMatter.sections.filter((section) => !!section.hero)
 
@@ -205,10 +231,10 @@ const EditHomepage = ({ match }) => {
       }
 
       try {
-        const {
+        let {
           content: { frontMatter },
-          sha,
         } = homepageData
+        const { sha } = homepageData
         // Set displaySections
         const displaySections = []
         let displayHighlights = []
@@ -216,6 +242,7 @@ const EditHomepage = ({ match }) => {
         const sectionsErrors = []
         let dropdownElemsErrors = []
         let highlightsErrors = []
+        let announcementItemErrors = []
         const scrollRefs = []
         frontMatter.sections.forEach((section) => {
           scrollRefs.push(createRef())
@@ -267,6 +294,32 @@ const EditHomepage = ({ match }) => {
             sectionsErrors.push({ infopic: getErrorValues(INFOPIC_SECTION) })
           }
 
+          if (section.announcements) {
+            sectionsErrors.push({
+              announcements: getErrorValues(ANNOUNCEMENT_BLOCK),
+            })
+            announcementItemErrors = _.map(
+              section.announcements.announcement_items,
+              () => getErrorValues(getDefaultAnnouncementSection())
+            )
+            if (!section.announcements.announcement_items) {
+              // define an empty array to announcement_items to prevent error
+              frontMatter = update(frontMatter, {
+                sections: {
+                  [frontMatter.sections.findIndex((section) =>
+                    EditorHomepageFrontmatterSection.isAnnouncements(section)
+                  )]: {
+                    announcements: {
+                      announcement_items: {
+                        $set: [],
+                      },
+                    },
+                  },
+                },
+              })
+            }
+          }
+
           // Minimize all sections by default
           displaySections.push(false)
         })
@@ -276,6 +329,7 @@ const EditHomepage = ({ match }) => {
           sections: sectionsErrors,
           highlights: highlightsErrors,
           dropdownElems: dropdownElemsErrors,
+          announcementItems: announcementItemErrors,
         }
 
         setFrontMatter(frontMatter)
@@ -332,7 +386,7 @@ const EditHomepage = ({ match }) => {
 
           // sectionIndex is the index of the section array in the frontMatter
           const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT)
-          const sectionType = idArray[2] // e.g. "hero" or "infobar" or "resources"
+          const sectionType = idArray[2] // e.g. "hero" or "infobar" or "resources" or "announcements"
           const field = idArray[3] // e.g. "title" or "subtitle"
 
           const newSections = update(sections, {
@@ -439,6 +493,68 @@ const EditHomepage = ({ match }) => {
           setErrors(newErrors)
 
           scrollTo(scrollRefs[0])
+          break
+        }
+        case "announcement": {
+          // The field that changed belongs to an announcement item
+          const { sections } = frontMatter
+
+          const announcementsIndex = frontMatter.sections.findIndex((section) =>
+            EditorHomepageFrontmatterSection.isAnnouncements(section)
+          )
+          // announcementIndex is the index of the announcement items array
+          const announcementItemsIndex = parseInt(idArray[1], RADIX_PARSE_INT)
+          const field = idArray[2] // e.g. "title" or "url"
+
+          const newSections = update(sections, {
+            [announcementsIndex]: {
+              announcements: {
+                announcement_items: {
+                  [announcementItemsIndex]: {
+                    [field]: {
+                      $set: value,
+                    },
+                  },
+                },
+              },
+            },
+          })
+
+          const newErrors = update(errors, {
+            announcementItems: {
+              [announcementItemsIndex]: {
+                $set: validateAnnouncementItems(
+                  errors.announcementItems[announcementItemsIndex],
+                  field,
+                  value
+                ),
+              },
+            },
+          })
+
+          // Additional validation that depends on other fields
+          const isLinkTextFilled = !!newSections[announcementsIndex]
+            .announcements.announcement_items[announcementItemsIndex].link_text
+          const isLinkUrlFilled = !!newSections[announcementsIndex]
+            .announcements.announcement_items[announcementItemsIndex].link_url
+
+          const isLinkUrlError = isLinkTextFilled && !isLinkUrlFilled
+          const isLinkUrlOrTextChanged =
+            field === "link_text" || field === "link_url"
+          if (isLinkUrlOrTextChanged) {
+            newErrors.announcementItems[
+              announcementItemsIndex
+            ].link_url = isLinkUrlError
+              ? "Please specify a URL for your link"
+              : ""
+          }
+
+          setFrontMatter({
+            ...frontMatter,
+            sections: newSections,
+          })
+          setErrors(newErrors)
+          scrollTo(scrollRefs[announcementsIndex])
           break
         }
         case "dropdownelem": {
@@ -550,6 +666,18 @@ const EditHomepage = ({ match }) => {
 
           setHomepageState(updatedHomepageState)
           setScrollRefs(newScrollRefs)
+
+          // Edge case for announcements where we need to
+          // create a default announcement item
+          if (val.announcements) {
+            const updatedAnnouncementState = onCreate(
+              updatedHomepageState,
+              "announcement",
+              getDefaultAnnouncementSection(),
+              getErrorValues(getDefaultAnnouncementSection())
+            )
+            setHomepageState(updatedAnnouncementState)
+          }
           break
         }
         case "dropdownelem": {
@@ -580,6 +708,18 @@ const EditHomepage = ({ match }) => {
 
           setHomepageState(updatedHomepageState)
           setDisplayHighlights(displayHighlights)
+          break
+        }
+        case "announcement": {
+          const val = getDefaultAnnouncementSection()
+          const err = getErrorValues(getDefaultAnnouncementSection())
+          const updatedHomepageState = onCreate(
+            homepageState,
+            elemType,
+            val,
+            err
+          )
+          setHomepageState(updatedHomepageState)
           break
         }
         default:
@@ -787,8 +927,24 @@ const EditHomepage = ({ match }) => {
           })
 
           setDisplaySections(newDisplaySections)
-
           scrollTo(scrollRefs[index])
+          break
+        }
+        case "announcement": {
+          const announcementsIndex = frontMatter.sections.findIndex((section) =>
+            EditorHomepageFrontmatterSection.isAnnouncements(section)
+          )
+          const resetAnnouncementSections = _.fill(
+            Array(displayAnnouncementItems.length),
+            false
+          )
+          resetAnnouncementSections[index] = !displayAnnouncementItems[index]
+          const newDisplayAnnouncements = update(displayAnnouncementItems, {
+            $set: resetAnnouncementSections,
+          })
+
+          scrollTo(scrollRefs[announcementsIndex])
+          setDisplayAnnouncementItems(newDisplayAnnouncements)
           break
         }
         case "highlight": {
@@ -861,7 +1017,7 @@ const EditHomepage = ({ match }) => {
     }
   }
 
-  // NOTE: sectionType is one of `resources`, `infopic` or `infobar`
+  // NOTE: sectionType is one of `announcements, `resources`, `infopic` or `infobar`
   const onClick = (sectionType) => {
     createHandler({
       target: {
@@ -871,6 +1027,7 @@ const EditHomepage = ({ match }) => {
     })
   }
 
+  const showNewLayouts = useFeatureIsOn(FEATURE_FLAGS.HOMEPAGE_TEMPLATES)
   return (
     <>
       <WarningModal
@@ -879,7 +1036,7 @@ const EditHomepage = ({ match }) => {
           setItemPendingForDelete({ id: null, type: "" })
           onClose()
         }}
-        displayTitle={`Delete ${itemPendingForDelete.type} section`}
+        displayTitle={`Delete ${itemPendingForDelete.type}`}
         displayText={
           <Text>
             Are you sure you want to delete {itemPendingForDelete.type}?
@@ -1082,6 +1239,56 @@ const EditHomepage = ({ match }) => {
                                       />
                                     </Editable.DraggableAccordionItem>
                                   )}
+
+                                  {showNewLayouts &&
+                                    section.announcements &&
+                                    /**
+                                     * Somehow, the errors are undefined for 2 renders, not sure
+                                     * of the core reason. To avoid the CMS panel from crashing,
+                                     * wrapping this around a check for defined errors
+                                     */
+                                    errors.sections[sectionIndex]
+                                      .announcements && (
+                                      <Editable.DraggableAccordionItem
+                                        index={sectionIndex}
+                                        tag={
+                                          <Tag variant="subtle">
+                                            Announcement
+                                          </Tag>
+                                        }
+                                        title={
+                                          section.announcements.title ||
+                                          "New Announcement"
+                                        }
+                                        isInvalid={
+                                          _.some(
+                                            errors.sections[sectionIndex]
+                                              .announcements
+                                          ) ||
+                                          getHasError(errors.announcementItems)
+                                        }
+                                      >
+                                        <AnnouncementSection
+                                          {...section.announcements}
+                                          index={sectionIndex}
+                                          errors={
+                                            errors.sections[sectionIndex]
+                                              .announcements
+                                          }
+                                        >
+                                          <AnnouncementBody
+                                            {...section.announcements}
+                                            announcementItems={
+                                              section.announcements
+                                                .announcement_items
+                                            }
+                                            errors={{
+                                              ...errors,
+                                            }}
+                                          />
+                                        </AnnouncementSection>
+                                      </Editable.DraggableAccordionItem>
+                                    )}
                                 </>
                               )
                             )}
@@ -1091,9 +1298,9 @@ const EditHomepage = ({ match }) => {
                     </DragDropContext>
                   </VStack>
                 </Editable.Accordion>
-                {/* NOTE: Set the padding here - 
-                        We cannot let the button be part of the `Draggable` 
-                        as otherwise, when dragging, 
+                {/* NOTE: Set the padding here -
+                        We cannot let the button be part of the `Draggable`
+                        as otherwise, when dragging,
                         the component will appear over the button
                     */}
                 <Box px="1.5rem">
@@ -1109,6 +1316,20 @@ const EditHomepage = ({ match }) => {
                         subtitle={INFOBAR_SECTION.subtitle}
                         onClick={() => onClick(INFOBAR_SECTION.id)}
                       />
+                      {/* NOTE: Check if the sections contain any `announcements` 
+                                and if it does, prevent creation of another `resources` section
+                            */}
+                      {showNewLayouts &&
+                        !frontMatter.sections.some(
+                          ({ announcements }) => !!announcements
+                        ) && (
+                          <AddSectionButton.Option
+                            title={ANNOUNCEMENT_BLOCK.title}
+                            subtitle={ANNOUNCEMENT_BLOCK.subtitle}
+                            onClick={() => onClick(ANNOUNCEMENT_BLOCK.id)}
+                          />
+                        )}
+
                       {/* NOTE: Check if the sections contain any `resources` 
                                 and if it does, prevent creation of another `resources` section
                             */}

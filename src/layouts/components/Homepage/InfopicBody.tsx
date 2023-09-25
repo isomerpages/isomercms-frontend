@@ -7,12 +7,11 @@ import {
   Textarea,
 } from "@opengovsg/design-system-react"
 
+import { Editable } from "components/Editable"
 import { FormContext, FormError, FormTitle } from "components/Form"
 import FormFieldMedia from "components/FormFieldMedia"
 
 import { useEditableContext } from "contexts/EditableContext"
-
-import { Editable } from "layouts/components/Editable"
 
 interface InfopicFormFields {
   title: string
@@ -125,7 +124,7 @@ export const InfopicBody = ({
       </FormControl>
       <Button
         id={`section-${index}`}
-        onClick={() => onDelete(`section-${index}`, "Infopic Section")}
+        onClick={() => onDelete(`section-${index}`, "Infopic")}
         alignSelf="center"
         variant="clear"
         colorScheme="critical"

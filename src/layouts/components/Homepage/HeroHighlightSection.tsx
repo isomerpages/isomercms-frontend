@@ -9,9 +9,9 @@ import {
 import _ from "lodash"
 import { BiPlus } from "react-icons/bi"
 
-import { useEditableContext } from "contexts/EditableContext"
+import { Editable } from "components/Editable"
 
-import { Editable } from "layouts/components/Editable"
+import { useEditableContext } from "contexts/EditableContext"
 
 import { HighlightOption } from "types/homepage"
 
@@ -55,7 +55,7 @@ export const HeroHighlightSection = ({
                 value={button}
                 onChange={onChange}
               />
-              {/* TODO: Validate button.  
+              {/* TODO: Validate button.
               This isn't being done on prod also.
              */}
               <FormErrorMessage>{errors.button}</FormErrorMessage>

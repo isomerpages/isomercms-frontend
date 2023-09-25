@@ -9,10 +9,10 @@ import {
 import _ from "lodash"
 import { BiInfoCircle } from "react-icons/bi"
 
-import { useEditableContext } from "contexts/EditableContext"
+import { Editable } from "components/Editable"
+import { AddSectionButton } from "components/Editable/AddSectionButton"
 
-import { Editable } from "../Editable"
-import { AddSectionButton } from "../Editable/AddSectionButton"
+import { useEditableContext } from "contexts/EditableContext"
 
 export type LocationCardFrontMatter = {
   address: string[]

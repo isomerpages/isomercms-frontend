@@ -162,7 +162,11 @@ const EditableSidebar = ({
   )
 }
 
-type HomepageDroppableZone = "dropdownelem" | "leftPane" | "highlight"
+type HomepageDroppableZone =
+  | "dropdownelem"
+  | "leftPane"
+  | "highlight"
+  | "announcement"
 type ContactUsDroppableZone =
   | "locations"
   | "contacts"
