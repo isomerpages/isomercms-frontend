@@ -41,7 +41,10 @@ import {
   validateAnnouncementItems,
 } from "utils/validators"
 
-import { HomepageStartEditingImage } from "assets"
+import {
+  HomepageStartEditingImage,
+  HomepageAnnouncementsSampleImage,
+} from "assets"
 import { EditorHomepageFrontmatterSection } from "types/homepage"
 import { DEFAULT_RETRY_MSG } from "utils"
 
@@ -1316,21 +1319,27 @@ const EditHomepage = ({ match }) => {
                         subtitle={INFOBAR_SECTION.subtitle}
                         onClick={() => onClick(INFOBAR_SECTION.id)}
                       />
-                      {/* NOTE: Check if the sections contain any `announcements` 
+                      {/* NOTE: Check if the sections contain any `announcements`
                                 and if it does, prevent creation of another `resources` section
                             */}
                       {showNewLayouts &&
                         !frontMatter.sections.some(
                           ({ announcements }) => !!announcements
                         ) && (
-                          <AddSectionButton.Option
-                            title={ANNOUNCEMENT_BLOCK.title}
-                            subtitle={ANNOUNCEMENT_BLOCK.subtitle}
-                            onClick={() => onClick(ANNOUNCEMENT_BLOCK.id)}
-                          />
+                          <AddSectionButton.HelpOverlay
+                            title="Announcements"
+                            description="Make exciting news from your organisation stand out by adding a list of announcements with dates on your homepage."
+                            image={<HomepageAnnouncementsSampleImage />}
+                          >
+                            <AddSectionButton.Option
+                              title={ANNOUNCEMENT_BLOCK.title}
+                              subtitle={ANNOUNCEMENT_BLOCK.subtitle}
+                              onClick={() => onClick(ANNOUNCEMENT_BLOCK.id)}
+                            />
+                          </AddSectionButton.HelpOverlay>
                         )}
 
-                      {/* NOTE: Check if the sections contain any `resources` 
+                      {/* NOTE: Check if the sections contain any `resources`
                                 and if it does, prevent creation of another `resources` section
                             */}
                       {!frontMatter.sections.some(
