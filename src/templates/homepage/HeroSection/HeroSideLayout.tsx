@@ -39,16 +39,16 @@ const HeroInfoboxDesktop = ({
 }: HeroInfoboxDesktopProps) => {
   return (
     <div
-      className={getClassNames(editorStyles, ["p16", "is-hidden-mobile"])}
+      className={getClassNames(editorStyles, ["p-16", "is-hidden-mobile"])}
       style={{
         width: size,
         background:
           backgroundColor === "gray" ? TRANSLUCENT_GRAY : backgroundColor,
       }}
     >
-      <div className={getClassNames(editorStyles, ["py16"])}>
-        <div className={getClassNames(editorStyles, ["mb8"])}>
-          <h1 className={getClassNames(editorStyles, ["hero-title", "mb4"])}>
+      <div className={getClassNames(editorStyles, ["py-16"])}>
+        <div className={getClassNames(editorStyles, ["mb-8"])}>
+          <h1 className={getClassNames(editorStyles, ["hero-title", "mb-4"])}>
             {title && (
               <>
                 <b className={getClassNames(editorStyles, ["is-hidden-touch"])}>
@@ -172,7 +172,7 @@ export const HeroSideLayout = ({
       >
         <div
           className={getClassNames(editorStyles, [
-            "p8",
+            "p-8",
             "row",
             "is-vcentered",
             "is-centered",
@@ -184,8 +184,8 @@ export const HeroSideLayout = ({
               backgroundColor === "gray" ? TRANSLUCENT_GRAY : backgroundColor,
           }}
         >
-          <div className={getClassNames(editorStyles, ["mb8"])}>
-            <h1 className={getClassNames(editorStyles, ["hero-title", "mb4"])}>
+          <div className={getClassNames(editorStyles, ["mb-8"])}>
+            <h1 className={getClassNames(editorStyles, ["hero-title", "mb-4"])}>
               <b className={getClassNames(editorStyles, ["is-hidden-desktop"])}>
                 {title}
               </b>
