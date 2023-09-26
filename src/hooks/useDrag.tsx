@@ -49,18 +49,6 @@ const deleteElement = <T,>(section: T[], indexToDelete: number): T[] => {
   })
 }
 
-const updateElement = <T,>(
-  section: T[],
-  elem: T,
-  indexToUpdate: number
-): T[] => {
-  return update(section, {
-    [indexToUpdate]: {
-      $set: elem,
-    },
-  })
-}
-
 const updateEditorSection = (
   homepageState: EditorHomepageState,
   newDisplaySections: unknown[],
