@@ -171,10 +171,6 @@ const updateTextCardsCardSection = (
       [sectionIndex],
       newTextCardErrors
     ),
-    // {
-    //   ...homepageState.errors.textcards,
-    //   [sectionIndex]: newTextCardErrors,
-    // },
   },
 })
 
