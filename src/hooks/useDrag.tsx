@@ -394,13 +394,12 @@ const updateHomepageState = (
     }
     case "textcardcard": {
       const parentId = parseInt(typeArray[1], RADIX_PARSE_INT)
-      const draggedElem = ((frontMatter.sections[
+      const textCardsItem = (frontMatter.sections[
         parentId
-      ] as TextcardFrontmatterSection).textcards as EditorTextcardSection)
-        .cards[source.index]
+      ] as TextcardFrontmatterSection).textcards as EditorTextcardSection
+      const draggedElem = textCardsItem.cards[source.index]
       const newTextcards = updatePositions(
-        ((frontMatter.sections[parentId] as TextcardFrontmatterSection)
-          .textcards as EditorTextcardSection).cards,
+        textCardsItem.cards,
         source.index,
         destination.index,
         draggedElem
