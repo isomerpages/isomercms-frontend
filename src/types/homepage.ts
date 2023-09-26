@@ -120,7 +120,7 @@ export type EditorHomepageElement =
   | "dropdownelem"
   | "highlight"
   | "announcement"
-  | `textCardItem`
+  | `textcardcard-${number}`
 export type PossibleEditorSections = IterableElement<
   | EditorHomepageState["frontMatter"]["sections"]
   | EditorHeroDropdownSection["dropdown"]["options"]

@@ -805,10 +805,9 @@ const EditHomepage = ({ match }) => {
           const err = getErrorValues(TEXTCARDS_ITEM_SECTION)
           const updatedHomepageState = onCreate(
             homepageState,
-            elemType,
+            `${elemType}-${parentId}`,
             val,
-            err,
-            parentId
+            err
           )
 
           setHomepageState(updatedHomepageState)
@@ -839,8 +838,7 @@ const EditHomepage = ({ match }) => {
 
         const newHomepageState = onDelete(
           homepageState,
-          elemType,
-          index,
+          `${elemType}-${index}`,
           childIndex
         )
         setHomepageState(newHomepageState)
