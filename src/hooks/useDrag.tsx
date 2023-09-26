@@ -146,27 +146,32 @@ const updateTextCardsCardSection = (
   sectionIndex: number,
   newTextCards: unknown[],
   newTextCardErrors: unknown[]
-): EditorHomepageState => ({
-  ...homepageState,
-  frontMatter: {
-    ...homepageState.frontMatter,
-    sections: _.set(
-      // NOTE: Deep clone here to avoid mutation
-      _.cloneDeep(homepageState.frontMatter.sections),
-      [sectionIndex, "textcards", "cards"],
-      newTextCards
-    ),
-  },
-  errors: {
-    ...homepageState.errors,
-    textcards: _.set(
-      // NOTE: Deep clone here to avoid mutation
-      _.cloneDeep(homepageState.errors.textcards),
-      [sectionIndex],
-      newTextCardErrors
-    ),
-  },
-})
+): EditorHomepageState => {
+  // Needs to be done separately - lodash's set seems to be buggy when handling arrays of objects
+  const modifiedSection = _.set(
+    _.cloneDeep(homepageState.frontMatter.sections[sectionIndex]),
+    ["textcards", "cards"],
+    newTextCards
+  )
+  const newSections = _.cloneDeep(homepageState.frontMatter.sections)
+  newSections[sectionIndex] = modifiedSection
+  return {
+    ...homepageState,
+    frontMatter: {
+      ...homepageState.frontMatter,
+      sections: newSections,
+    },
+    errors: {
+      ...homepageState.errors,
+      textcards: _.set(
+        // NOTE: Deep clone here to avoid mutation
+        _.cloneDeep(homepageState.errors.textcards),
+        [sectionIndex],
+        newTextCardErrors
+      ),
+    },
+  }
+}
 
 type OnDragEndResponseWrapper = (
   state: EditorHomepageState
