@@ -194,7 +194,7 @@ type UpdateHomepageType =
 const isUpdateHomepageType = (value: any): value is UpdateHomepageType => {
   if (typeof value === "string" && value.startsWith("textCardItem-")) {
     const valArr = value.split("-")
-    const number = valArr[1]
+    const possibleCardIndex = valArr[1]
     return (
       valArr.length === 2 &&
       !!possibleCardIndex &&
