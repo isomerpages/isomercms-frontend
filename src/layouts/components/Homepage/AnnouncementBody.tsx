@@ -84,12 +84,17 @@ export const AnnouncementBody = ({
               if (typeof idx === "number") {
                 onDisplay("announcement", idx)
               } else if (
+                /**
+                 * Should not reach here since we only allow one expanded item
+                 * This is done defensively since Accordion can have multiple expanded items
+                 */
                 idx instanceof Array &&
                 idx.length > 0 &&
                 typeof idx[0] === "number"
               ) {
                 onDisplay("announcement", idx[0])
               } else {
+                // Should not reach here as well, done defensively
                 onDisplay("announcement", -1)
               }
             }}
