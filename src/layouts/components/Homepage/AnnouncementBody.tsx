@@ -1,4 +1,4 @@
-import { Text, Box, FormControl } from "@chakra-ui/react"
+import { Text, Box, FormControl, ExpandedIndex } from "@chakra-ui/react"
 import { DragDropContext } from "@hello-pangea/dnd"
 import {
   FormLabel,
