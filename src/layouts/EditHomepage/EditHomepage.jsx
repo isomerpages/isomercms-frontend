@@ -114,7 +114,7 @@ const getHasErrors = (errors) => {
   const hasHighlightErrors = getHasError(errors.highlights)
   const hasDropdownElemErrors = getHasError(errors.dropdownElems)
   const hasAnnouncementErrors = getHasError(errors.announcementItems)
-  const hasTextcardCardErrors = _.some(errors.textcards, (section) =>
+  const hastextCardItemErrors = _.some(errors.textcards, (section) =>
     getHasError(section)
   )
 
@@ -123,7 +123,7 @@ const getHasErrors = (errors) => {
     hasHighlightErrors ||
     hasDropdownElemErrors ||
     hasAnnouncementErrors ||
-    hasTextcardCardErrors
+    hastextCardItemErrors
   )
 }
 
@@ -826,10 +826,9 @@ const EditHomepage = ({ match }) => {
           const err = getErrorValues(TEXTCARDS_ITEM_SECTION)
           const updatedHomepageState = onCreate(
             homepageState,
-            elemType,
+            `${elemType}-${parentId}`,
             val,
-            err,
-            parentId
+            err
           )
 
           setHomepageState(updatedHomepageState)
@@ -866,8 +865,7 @@ const EditHomepage = ({ match }) => {
 
         const newHomepageState = onDelete(
           homepageState,
-          elemType,
-          index,
+          `${elemType}-${index}`,
           childIndex
         )
         setHomepageState(newHomepageState)
