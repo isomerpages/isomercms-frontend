@@ -260,7 +260,7 @@ const EditHomepage = ({ match }) => {
         let dropdownElemsErrors = []
         let highlightsErrors = []
         let announcementItemErrors = []
-        const textcardCardErrors = []
+        const textCardItemErrors = []
         const scrollRefs = []
         frontMatter.sections.forEach((section) => {
           scrollRefs.push(createRef())
@@ -343,11 +343,11 @@ const EditHomepage = ({ match }) => {
             })
             const { cards } = section.textcards
             // Fill in dropdown elem errors array
-            textcardCardErrors.push(
+            textCardItemErrors.push(
               _.map(cards, () => getErrorValues(TEXTCARDS_ITEM_SECTION))
             )
           } else {
-            textcardCardErrors.push([])
+            textCardItemErrors.push([])
           }
 
           // Minimize all sections by default
@@ -360,7 +360,7 @@ const EditHomepage = ({ match }) => {
           highlights: highlightsErrors,
           dropdownElems: dropdownElemsErrors,
           announcementItems: announcementItemErrors,
-          textcards: textcardCardErrors,
+          textcards: textCardItemErrors,
         }
 
         setFrontMatter(frontMatter)
@@ -633,7 +633,7 @@ const EditHomepage = ({ match }) => {
           scrollTo(scrollRefs[0])
           break
         }
-        case "textcardcard": {
+        case "textCardItem": {
           // The field that changed is a text card element
           const { sections } = frontMatter
 
@@ -798,7 +798,7 @@ const EditHomepage = ({ match }) => {
           setHomepageState(updatedHomepageState)
           break
         }
-        case "textcardcard": {
+        case "textCardItem": {
           const parentId = parseInt(idArray[1], RADIX_PARSE_INT)
           const val = TEXTCARDS_ITEM_SECTION
           const err = getErrorValues(TEXTCARDS_ITEM_SECTION)
@@ -833,7 +833,7 @@ const EditHomepage = ({ match }) => {
 
         setScrollRefs(newScrollRefs)
       }
-      if (elemType === "textcardcard") {
+      if (elemType === "textCardItem") {
         const childIndex = parseInt(idArray[2], RADIX_PARSE_INT)
 
         const newHomepageState = onDelete(
