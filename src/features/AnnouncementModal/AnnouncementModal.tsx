@@ -64,8 +64,7 @@ export const AnnouncementModal = ({
   if (typeof description === "string") {
     descComponent = (
       <Text textStyle="body-1" color="base.content.default">
-        {" "}
-        {description}{" "}
+        {description}
       </Text>
     )
   } else {
