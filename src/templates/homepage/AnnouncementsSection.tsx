@@ -26,9 +26,7 @@ export const TemplateAnnouncementsSection = forwardRef<
       announcementItems,
       sectionIndex,
       announcementScrollRefs,
-    }: TemplateAnnouncementsSectionProps & {
-      announcementScrollRefs: Ref<HTMLDivElement>[]
-    },
+    }: TemplateAnnouncementsSectionProps,
     ref
   ) => {
     return (
