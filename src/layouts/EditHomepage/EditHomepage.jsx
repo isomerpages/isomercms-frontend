@@ -741,8 +741,8 @@ const EditHomepage = ({ match }) => {
               $push: [createRef()],
             })
           )
-          // We know this is the case since announcements are added from the top
-          const newAnnouncementIndex = 0
+          // We know this is the case since announcements are added from the bottom
+          const newAnnouncementIndex = announcementScrollRefs.length - 1
           scrollTo(announcementScrollRefs[newAnnouncementIndex])
           break
         }
