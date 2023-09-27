@@ -78,7 +78,7 @@ export interface AnnouncementsBlockSection {
   subtitle?: string
   announcement_items: AnnouncementOption[]
 }
-export interface TextcardsCard {
+export interface TextCardItem {
   title: string
   description?: string
   linktext: string
@@ -89,7 +89,7 @@ export interface TextcardsSection {
   title: string
   subtitle?: string
   description?: string
-  cards: TextcardsCard[]
+  cards: TextCardItem[]
 }
 
 export interface HomepageDto {
@@ -120,7 +120,7 @@ export type EditorHomepageElement =
   | "dropdownelem"
   | "highlight"
   | "announcement"
-  | `textcardcard`
+  | `textCardItem`
 export type PossibleEditorSections = IterableElement<
   | EditorHomepageState["frontMatter"]["sections"]
   | EditorHeroDropdownSection["dropdown"]["options"]

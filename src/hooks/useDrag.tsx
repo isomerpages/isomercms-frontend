@@ -379,7 +379,7 @@ const updateHomepageState = (
         announcementsIndex
       )
     }
-    case "textcardcard": {
+    case "textCardItem": {
       const parentId = parseInt(typeArray[1], RADIX_PARSE_INT)
       const textCardsItem = (frontMatter.sections[
         parentId
@@ -544,7 +544,7 @@ export const onCreate = <E,>(
         announcementsIndex
       )
     }
-    case "textcardcard": {
+    case "textCardItem": {
       if (
         !_.isEmpty(
           ((frontMatter.sections[parentId] as TextcardFrontmatterSection)
@@ -683,7 +683,7 @@ export const onDelete = (
         announcementsIndex
       )
     }
-    case "textcardcard": {
+    case "textCardItem": {
       const newTextCards = deleteElement(
         ((frontMatter.sections[indexToDelete] as TextcardFrontmatterSection)
           .textcards as EditorTextcardCardsSection).cards,

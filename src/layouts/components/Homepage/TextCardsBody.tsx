@@ -87,7 +87,7 @@ export const TextCardsSectionBody = ({
           Cards are displayed side by side on a desktop screens
         </Text>
         <DragDropContext onDragEnd={onDragEnd}>
-          <Editable.Droppable width="100%" editableId={`textcardcard-${index}`}>
+          <Editable.Droppable width="100%" editableId={`textCardItem-${index}`}>
             <Editable.EmptySection
               title="Add a card to get started"
               subtitle="You must add at least 1 card to this block"
@@ -97,7 +97,7 @@ export const TextCardsSectionBody = ({
                 <VStack p={0} spacing="0.75rem">
                   {cards.map((card, cardIndex) => (
                     <Editable.DraggableAccordionItem
-                      draggableId={`textcardcard-${index}-${cardIndex}-draggable`}
+                      draggableId={`textCardItem-${index}-${cardIndex}-draggable`}
                       index={cardIndex}
                       title={card.title}
                       isInvalid={_.some(cardErrors[cardIndex])}
@@ -111,7 +111,7 @@ export const TextCardsSectionBody = ({
                           <FormLabel>Title</FormLabel>
                           <Input
                             placeholder="This is a title for the card"
-                            id={`textcardcard-${index}-${cardIndex}-title`}
+                            id={`textCardItem-${index}-${cardIndex}-title`}
                             value={card.title}
                             onChange={onChange}
                           />
@@ -126,7 +126,7 @@ export const TextCardsSectionBody = ({
                           <FormLabel>Description</FormLabel>
                           <Input
                             placeholder="This is a description for the card. We recommend keeping it short and succinct."
-                            id={`textcardcard-${index}-${cardIndex}-description`}
+                            id={`textCardItem-${index}-${cardIndex}-description`}
                             value={card.description}
                             onChange={onChange}
                           />
@@ -141,7 +141,7 @@ export const TextCardsSectionBody = ({
                           <FormLabel>Link text</FormLabel>
                           <Input
                             placeholder="Learn more"
-                            id={`textcardcard-${index}-${cardIndex}-linktext`}
+                            id={`textCardItem-${index}-${cardIndex}-linktext`}
                             value={card.linktext}
                             onChange={onChange}
                           />
@@ -156,7 +156,7 @@ export const TextCardsSectionBody = ({
                           <FormLabel>Link URL</FormLabel>
                           <Input
                             placeholder="Enter a /page-url or link for this menu item"
-                            id={`textcardcard-${index}-${cardIndex}-url`}
+                            id={`textCardItem-${index}-${cardIndex}-url`}
                             value={card.url}
                             onChange={onChange}
                           />
@@ -165,10 +165,10 @@ export const TextCardsSectionBody = ({
                           </FormErrorMessage>
                         </FormControl>
                         <Button
-                          id={`textcardcard-${index}-${cardIndex}`}
+                          id={`textCardItem-${index}-${cardIndex}`}
                           onClick={() =>
                             onDelete(
-                              `textcardcard-${index}-${cardIndex}`,
+                              `textCardItem-${index}-${cardIndex}`,
                               "Card"
                             )
                           }
@@ -188,7 +188,7 @@ export const TextCardsSectionBody = ({
         </DragDropContext>
       </FormControl>
       <Button
-        id={`textcardcard-${index}-create`}
+        id={`textCardItem-${index}-create`}
         variant="outline"
         w="full"
         pt="0.5rem"
@@ -197,7 +197,7 @@ export const TextCardsSectionBody = ({
         onClick={() => {
           onCreate({
             target: {
-              id: `textcardcard-${index}`,
+              id: `textCardItem-${index}`,
             },
           })
         }}
