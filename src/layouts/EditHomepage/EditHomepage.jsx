@@ -47,6 +47,7 @@ import {
 import {
   HomepageStartEditingImage,
   HomepageAnnouncementsSampleImage,
+  HomepageTextCardsSampleImage,
 } from "assets"
 import { EditorHomepageFrontmatterSection } from "types/homepage"
 import { DEFAULT_RETRY_MSG } from "utils"
@@ -1486,11 +1487,19 @@ const EditHomepage = ({ match }) => {
                           onClick={() => onClick(RESOURCES_SECTION.id)}
                         />
                       )}
-                      <AddSectionButton.Option
-                        title={TEXTCARDS_BLOCK_SECTION.title}
-                        subtitle={TEXTCARDS_BLOCK_SECTION.subtitle}
-                        onClick={() => onClick(TEXTCARDS_BLOCK_SECTION.id)}
-                      />
+                      {showNewLayouts && (
+                        <AddSectionButton.HelpOverlay
+                          title="Text cards"
+                          description="Add clickable cards with bite-sized information to your homepage. You can link any page or external URL, such as blog posts, articles, and more."
+                          image={<HomepageTextCardsSampleImage />}
+                        >
+                          <AddSectionButton.Option
+                            title={TEXTCARDS_BLOCK_SECTION.title}
+                            subtitle={TEXTCARDS_BLOCK_SECTION.subtitle}
+                            onClick={() => onClick(TEXTCARDS_BLOCK_SECTION.id)}
+                          />
+                        </AddSectionButton.HelpOverlay>
+                      )}
                     </AddSectionButton.List>
                   </AddSectionButton>
                 </Box>
