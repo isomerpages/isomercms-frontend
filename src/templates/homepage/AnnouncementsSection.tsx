@@ -1,4 +1,4 @@
-import { forwardRef } from "react"
+import { Ref, forwardRef } from "react"
 
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
@@ -16,7 +16,9 @@ type TemplateAnnouncementsSectionProps = Omit<
 
 export const TemplateAnnouncementsSection = forwardRef<
   HTMLDivElement,
-  TemplateAnnouncementsSectionProps
+  TemplateAnnouncementsSectionProps & {
+    announcementScrollRefs: Ref<HTMLDivElement>[]
+  }
 >(
   (
     {
@@ -24,7 +26,10 @@ export const TemplateAnnouncementsSection = forwardRef<
       subtitle,
       announcementItems,
       sectionIndex,
-    }: TemplateAnnouncementsSectionProps,
+      announcementScrollRefs,
+    }: TemplateAnnouncementsSectionProps & {
+      announcementScrollRefs: Ref<HTMLDivElement>[]
+    },
     ref
   ) => {
     return (
@@ -82,7 +87,7 @@ export const TemplateAnnouncementsSection = forwardRef<
                   {announcementItems &&
                     announcementItems.map((announcement, index) => {
                       return (
-                        <>
+                        <div ref={announcementScrollRefs[index]}>
                           <div
                             className={getClassNames(editorStyles, [
                               "row",
@@ -154,7 +159,7 @@ export const TemplateAnnouncementsSection = forwardRef<
                               ])}
                             />
                           )}
-                        </>
+                        </div>
                       )
                     })}
                 </>
