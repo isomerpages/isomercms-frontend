@@ -1455,6 +1455,18 @@ const EditHomepage = ({ match }) => {
                         subtitle={INFOBAR_SECTION.subtitle}
                         onClick={() => onClick(INFOBAR_SECTION.id)}
                       />
+                      {/* NOTE: Check if the sections contain any `resources`
+                                and if it does, prevent creation of another `resources` section
+                            */}
+                      {!frontMatter.sections.some(
+                        ({ resources }) => !!resources
+                      ) && (
+                        <AddSectionButton.Option
+                          title={RESOURCES_SECTION.title}
+                          subtitle={RESOURCES_SECTION.subtitle}
+                          onClick={() => onClick(RESOURCES_SECTION.id)}
+                        />
+                      )}
                       {/* NOTE: Check if the sections contain any `announcements`
                                 and if it does, prevent creation of another `resources` section
                             */}
@@ -1474,19 +1486,6 @@ const EditHomepage = ({ match }) => {
                             />
                           </AddSectionButton.HelpOverlay>
                         )}
-
-                      {/* NOTE: Check if the sections contain any `resources`
-                                and if it does, prevent creation of another `resources` section
-                            */}
-                      {!frontMatter.sections.some(
-                        ({ resources }) => !!resources
-                      ) && (
-                        <AddSectionButton.Option
-                          title={RESOURCES_SECTION.title}
-                          subtitle={RESOURCES_SECTION.subtitle}
-                          onClick={() => onClick(RESOURCES_SECTION.id)}
-                        />
-                      )}
                       {showNewLayouts && (
                         <AddSectionButton.HelpOverlay
                           title="Text cards"
