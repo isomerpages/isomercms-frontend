@@ -156,6 +156,8 @@ const EditHomepage = ({ match }) => {
   const { siteName } = match.params
   const [hasLoaded, setHasLoaded] = useState(false)
   const [scrollRefs, setScrollRefs] = useState([])
+  const [announcementScrollRefs, setAnnouncementScrollRefs] = useState([])
+
   const [frontMatter, setFrontMatter] = useState({
     title: "",
     subtitle: "",
@@ -247,6 +249,7 @@ const EditHomepage = ({ match }) => {
         let highlightsErrors = []
         let announcementItemErrors = []
         const scrollRefs = []
+        const announcementScrollRefs = []
         frontMatter.sections.forEach((section) => {
           scrollRefs.push(createRef())
           // If this is the hero section, hide all highlights/dropdownelems by default
@@ -305,6 +308,9 @@ const EditHomepage = ({ match }) => {
               section.announcements.announcement_items,
               () => getErrorValues(getDefaultAnnouncementSection())
             )
+            _.map(section.announcements.announcement_items, () => {
+              announcementScrollRefs.push(createRef())
+            })
             if (!section.announcements.announcement_items) {
               // define an empty array to announcement_items to prevent error
               frontMatter = update(frontMatter, {
@@ -344,6 +350,7 @@ const EditHomepage = ({ match }) => {
         setErrors(errors)
         setHasLoaded(true)
         setScrollRefs(scrollRefs)
+        setAnnouncementScrollRefs(announcementScrollRefs)
       } catch (err) {
         // Set frontMatter to be same to prevent warning message when navigating away
         setFrontMatter(originalFrontMatter)
@@ -557,7 +564,7 @@ const EditHomepage = ({ match }) => {
             sections: newSections,
           })
           setErrors(newErrors)
-          scrollTo(scrollRefs[announcementsIndex])
+          scrollTo(announcementScrollRefs[announcementItemsIndex])
           break
         }
         case "dropdownelem": {
@@ -680,6 +687,12 @@ const EditHomepage = ({ match }) => {
               getErrorValues(getDefaultAnnouncementSection())
             )
             setHomepageState(updatedAnnouncementState)
+            setAnnouncementScrollRefs(
+              update(announcementScrollRefs, {
+                $push: [createRef()],
+              })
+            )
+            setDisplayAnnouncementItems(_.fill(Array(1), false))
           }
           break
         }
@@ -723,6 +736,14 @@ const EditHomepage = ({ match }) => {
             err
           )
           setHomepageState(updatedHomepageState)
+          setAnnouncementScrollRefs(
+            update(announcementScrollRefs, {
+              $push: [createRef()],
+            })
+          )
+          // We know this is the case since announcements are added from the bottom
+          const newAnnouncementIndex = announcementScrollRefs.length - 1
+          scrollTo(announcementScrollRefs[newAnnouncementIndex])
           break
         }
         default:
@@ -744,6 +765,13 @@ const EditHomepage = ({ match }) => {
         })
 
         setScrollRefs(newScrollRefs)
+      }
+
+      if (elemType === "announcement") {
+        const newAnnouncementScrollRefs = update(announcementScrollRefs, {
+          $splice: [[index, 1]],
+        })
+        setAnnouncementScrollRefs(newAnnouncementScrollRefs)
       }
 
       const newHomepageState = onDelete(homepageState, elemType, index)
@@ -934,9 +962,6 @@ const EditHomepage = ({ match }) => {
           break
         }
         case "announcement": {
-          const announcementsIndex = frontMatter.sections.findIndex((section) =>
-            EditorHomepageFrontmatterSection.isAnnouncements(section)
-          )
           const resetAnnouncementSections = _.fill(
             Array(displayAnnouncementItems.length),
             false
@@ -946,7 +971,7 @@ const EditHomepage = ({ match }) => {
             $set: resetAnnouncementSections,
           })
 
-          scrollTo(scrollRefs[announcementsIndex])
+          scrollTo(announcementScrollRefs[index])
           setDisplayAnnouncementItems(newDisplayAnnouncements)
           break
         }
@@ -1358,6 +1383,7 @@ const EditHomepage = ({ match }) => {
               <HomepagePreview
                 frontMatter={frontMatter}
                 scrollRefs={scrollRefs}
+                announcementScrollRefs={announcementScrollRefs}
               />
             </HStack>
             <Footer>

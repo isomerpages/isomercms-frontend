@@ -38,12 +38,6 @@ const createElement = <T,>(section: T[], elem: T): T[] => {
   })
 }
 
-const createElementFromTop = <T,>(section: T[], elem: T): T[] => {
-  return update(section, {
-    $unshift: [elem],
-  })
-}
-
 const deleteElement = <T,>(section: T[], indexToDelete: number): T[] => {
   return update(section, {
     $splice: [[indexToDelete, 1]],
@@ -443,7 +437,7 @@ export const onCreate = <E,>(
       const announcementBlockSection: AnnouncementsFrontmatterSection = frontMatter
         .sections[announcementsIndex] as AnnouncementsFrontmatterSection
 
-      const announcements = createElementFromTop(
+      const announcements = createElement(
         announcementBlockSection.announcements.announcement_items,
         val as AnnouncementOption
       )
@@ -452,15 +446,12 @@ export const onCreate = <E,>(
         Array(displayAnnouncementItems.length),
         false
       )
-      const newDisplayAnnouncementItems = createElementFromTop(
+      const newDisplayAnnouncementItems = createElement(
         resetDisplaySections,
         true
       )
 
-      const newAnnouncementErrors = createElementFromTop(
-        errors.announcementItems,
-        err
-      )
+      const newAnnouncementErrors = createElement(errors.announcementItems, err)
 
       return updateAnnouncementSection(
         homepageState,
