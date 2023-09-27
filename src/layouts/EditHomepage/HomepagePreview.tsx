@@ -33,7 +33,7 @@ const isLeftInfoPic = (
 interface HomepagePreviewProps {
   frontMatter: EditorHomepageState["frontMatter"]
   scrollRefs: Ref<unknown>[]
-  announcementScrollRefs: Ref<unknown>[]
+  announcementScrollRefs: Ref<HTMLDivElement>[]
 }
 export const HomepagePreview = ({
   frontMatter,
@@ -177,9 +177,7 @@ export const HomepagePreview = ({
                 subtitle={section.announcements.subtitle}
                 announcementItems={section.announcements.announcement_items}
                 sectionIndex={sectionIndex}
-                announcementScrollRefs={
-                  announcementScrollRefs as Ref<HTMLDivElement>[]
-                }
+                announcementScrollRefs={announcementScrollRefs}
                 ref={scrollRefs[sectionIndex] as Ref<HTMLDivElement>}
               />
             </>
