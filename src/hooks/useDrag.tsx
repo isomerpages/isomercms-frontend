@@ -192,7 +192,7 @@ type UpdateHomepageType =
   | `textCardItem-${number}`
 
 const isUpdateHomepageType = (
-  value: any
+  value: unknown
 ): value is UpdateHomepageType | EditorHomepageElement => {
   if (typeof value === "string" && value.startsWith("textCardItem-")) {
     const valArr = value.split("-")
