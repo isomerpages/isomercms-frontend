@@ -5,7 +5,6 @@ import { BiBulb, BiRightArrowAlt } from "react-icons/bi"
 import { ProgressIndicator } from "components/ProgressIndicator/ProgressIndicator"
 
 import { useFeatureTourContext } from "./FeatureTourContext"
-import { DASHBOARD_FEATURE_STEPS } from "./FeatureTourSequence"
 
 export interface FeatureTourStep {
   content: React.ReactNode
@@ -32,50 +31,78 @@ export const FeatureTourTooltip = ({
   index,
 }: FeatureTourTooltipProps): JSX.Element => {
   const { paginationCallback } = useFeatureTourContext()
+  const showProgressIndicator = size > 1
+
+  let isTipBadgeShown = true
+  let titleComponent: React.ReactNode
+  if (typeof step.title === "string") {
+    titleComponent = (
+      <Text textStyle="subhead-1" color="base.content.dark" marginTop="1.25rem">
+        {step.title}
+      </Text>
+    )
+  } else {
+    titleComponent = step.title
+    isTipBadgeShown = false
+  }
+
+  let contentComponent: React.ReactNode
+  if (typeof step.content === "string") {
+    contentComponent = (
+      <Text textStyle="body-2" color="base.content.default" marginTop="0.5rem">
+        {step.content}
+      </Text>
+    )
+  } else {
+    contentComponent = step.content
+  }
+
   return (
     <Box
       padding="1.5rem"
       alignItems="center"
       maxW="100%"
-      w="18rem"
+      w="20rem"
       color="secondary.500"
       bg="background.action.defaultInverse"
       borderRadius="4px"
       {...tooltipProps}
       position="relative"
     >
-      <Badge
-        colorScheme="success"
-        variant="solid"
-        display="flex"
-        width="fit-content"
-        backgroundColor="background.action.success"
-      >
-        <Icon as={BiBulb} mr="0.25rem" fontSize="1rem" color="text.inverse" />
-        <Text textStyle="caption-1" color="text.inverse">
-          Tip
-        </Text>
-      </Badge>
-      <Text textStyle="subhead-1" color="base.content.dark" marginTop="1.25rem">
-        {step.title}
-      </Text>
-      <Text textStyle="body-2" color="base.content.default" marginTop="0.5rem">
-        {step.content}
-      </Text>
+      {isTipBadgeShown && (
+        <Badge
+          colorScheme="success"
+          variant="solid"
+          display="flex"
+          width="fit-content"
+          backgroundColor="background.action.success"
+        >
+          <Icon as={BiBulb} mr="0.25rem" fontSize="1rem" color="text.inverse" />
+          <Text textStyle="caption-1" color="text.inverse">
+            Tip
+          </Text>
+        </Badge>
+      )}
+
+      {titleComponent}
+      {contentComponent}
+
       <Flex
         flexDirection="row"
-        marginTop="2.5rem"
+        marginTop="2rem"
         alignItems="center"
         justifyContent="space-between"
       >
-        <ProgressIndicator
-          numIndicators={size}
-          currActiveIdx={index}
-          onClick={paginationCallback}
-        />
+        {showProgressIndicator && (
+          <ProgressIndicator
+            numIndicators={size}
+            currActiveIdx={index}
+            onClick={paginationCallback}
+          />
+        )}
         {isLastStep ? (
           <Button {...primaryProps} title="Done">
-            Done
+            Got it
           </Button>
         ) : (
           <Button

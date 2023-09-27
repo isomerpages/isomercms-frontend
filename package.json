@@ -59,6 +59,7 @@
     "react-hook-form": "^7.32.0",
     "react-icons": "^4.4.0",
     "react-input-mask": "^2.0.4",
+    "react-intersection-observer": "^9.5.2",
     "react-joyride": "^2.5.3",
     "react-markdown": "^8.0.7",
     "react-query": "^3.34.16",
