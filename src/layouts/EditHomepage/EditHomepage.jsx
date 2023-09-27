@@ -564,7 +564,6 @@ const EditHomepage = ({ match }) => {
             sections: newSections,
           })
           setErrors(newErrors)
-          console.log({ announcementScrollRefs })
           scrollTo(announcementScrollRefs[announcementItemsIndex])
           break
         }
@@ -744,7 +743,6 @@ const EditHomepage = ({ match }) => {
           )
           // We know this is the case since announcements are added from the bottom
           const newAnnouncementIndex = announcementScrollRefs.length - 1
-          console.log({ announcementScrollRefs })
           scrollTo(announcementScrollRefs[newAnnouncementIndex])
           break
         }
@@ -974,7 +972,7 @@ const EditHomepage = ({ match }) => {
           const newDisplayAnnouncements = update(displayAnnouncementItems, {
             $set: resetAnnouncementSections,
           })
-          console.log({ announcementScrollRefs })
+
           scrollTo(announcementScrollRefs[index])
           setDisplayAnnouncementItems(newDisplayAnnouncements)
           break
