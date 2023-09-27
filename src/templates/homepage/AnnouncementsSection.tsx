@@ -12,13 +12,12 @@ type TemplateAnnouncementsSectionProps = Omit<
 > & {
   announcementItems: AnnouncementsBlockSection["announcement_items"]
   sectionIndex: number
+  announcementScrollRefs: Ref<HTMLDivElement>[]
 }
 
 export const TemplateAnnouncementsSection = forwardRef<
   HTMLDivElement,
-  TemplateAnnouncementsSectionProps & {
-    announcementScrollRefs: Ref<HTMLDivElement>[]
-  }
+  TemplateAnnouncementsSectionProps
 >(
   (
     {
