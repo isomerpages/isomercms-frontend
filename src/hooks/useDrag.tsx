@@ -317,7 +317,6 @@ const updateHomepageState = (
         destination.index,
         draggedError
       )
-      console.log(`source index: ${source.index}`)
       const displayBool = displayAnnouncementItems[source.index]
       const newDisplayAnnouncementItems = updatePositions(
         displayAnnouncementItems,

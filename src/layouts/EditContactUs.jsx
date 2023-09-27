@@ -425,7 +425,6 @@ const EditContactUs = ({ match }) => {
   }
 
   const onFieldChange = async (event) => {
-    console.log({ event })
     try {
       const { id, value } = event.target
       const idArray = id.split("-")
@@ -929,12 +928,7 @@ const EditContactUs = ({ match }) => {
             >
               <HStack className={elementStyles.wrapper}>
                 <Editable.Sidebar title="Contact Us">
-                  <Editable.Accordion
-                    onChange={(idx) => {
-                      console.log({ idx })
-                      displayHandler(idx)
-                    }}
-                  >
+                  <Editable.Accordion onChange={displayHandler}>
                     <VStack
                       bg="base.canvas.alt"
                       p="1.5rem"

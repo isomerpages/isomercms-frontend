@@ -1,4 +1,4 @@
-import { Text, Box, FormControl, ExpandedIndex } from "@chakra-ui/react"
+import { Text, Box, FormControl } from "@chakra-ui/react"
 import { DragDropContext } from "@hello-pangea/dnd"
 import {
   FormLabel,
@@ -10,7 +10,6 @@ import {
 } from "@opengovsg/design-system-react"
 import _ from "lodash"
 import moment from "moment"
-import React from "react"
 import { BiPlus } from "react-icons/bi"
 
 import { Editable } from "components/Editable/Editable"
@@ -26,7 +25,6 @@ interface AnnouncementBodyProps {
     announcementItems: AnnouncementError[]
   }
   announcementItems: Partial<AnnouncementOption>[]
-  displayAnnouncementItems: boolean[]
 }
 
 /**
@@ -62,7 +60,6 @@ const toCmsPanelDateFormat = (date?: string) => {
 export const AnnouncementBody = ({
   errors,
   announcementItems = [],
-  displayAnnouncementItems = [],
 }: AnnouncementBodyProps) => {
   const {
     onDragEnd,
@@ -71,15 +68,6 @@ export const AnnouncementBody = ({
     onDelete,
     onDisplay,
   } = useEditableContext()
-  const [openIndex, setOpenIndex] = React.useState<number>(0)
-  console.log(displayAnnouncementItems)
-
-  if (displayAnnouncementItems.length > 0) {
-    const newOpenIndex = displayAnnouncementItems.indexOf(true)
-    if (newOpenIndex !== openIndex) {
-      setOpenIndex(newOpenIndex)
-    }
-  }
   return (
     <Box w="full">
       <DragDropContext onDragEnd={onDragEnd}>
@@ -90,27 +78,7 @@ export const AnnouncementBody = ({
             announcements are shown on the top of the list`}
           </Text>
 
-          <Editable.Accordion
-            defaultIndex={0}
-            index={openIndex}
-            onChange={(idx: ExpandedIndex) => {
-              console.log(idx)
-              if (typeof idx === "number") {
-                // setOpenIndex(idx)
-                onDisplay("announcement", idx)
-              } else if (
-                idx instanceof Array &&
-                idx.length > 0 &&
-                typeof idx[0] === "number"
-              ) {
-                // setOpenIndex(idx[0])
-                onDisplay("announcement", idx[0])
-              } else {
-                // setOpenIndex(-1)
-                onDisplay("announcement", -1)
-              }
-            }}
-          >
+          <Editable.Accordion onChange={() => onDisplay("announcement")}>
             <Editable.EmptySection
               isEmpty={announcementItems.length === 0}
               title="Announcements you add will appear here"
@@ -138,12 +106,7 @@ export const AnnouncementBody = ({
                         )}
                         isNested
                       >
-                        <Editable.Section
-                          onChange={() => {
-                            console.log("changed in here")
-                            onDisplay("announcement", announcementIndex)
-                          }}
-                        >
+                        <Editable.Section>
                           <FormControl
                             isInvalid={
                               !!errors.announcementItems[announcementIndex]
