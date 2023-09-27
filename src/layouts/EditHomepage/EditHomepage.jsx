@@ -846,13 +846,15 @@ const EditHomepage = ({ match }) => {
       const idArray = id.split("-")
       const elemType = idArray[0]
       const index = parseInt(idArray[1], RADIX_PARSE_INT)
-
       if (elemType === "section") {
         const newScrollRefs = update(scrollRefs, {
           $splice: [[index, 1]],
         })
 
         setScrollRefs(newScrollRefs)
+        if (frontMatter.sections[index].announcements) {
+          setAnnouncementScrollRefs([])
+        }
       }
       if (elemType === "announcement") {
         const newAnnouncementScrollRefs = update(announcementScrollRefs, {
