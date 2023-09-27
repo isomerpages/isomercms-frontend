@@ -191,7 +191,9 @@ type UpdateHomepageType =
   | "announcement"
   | `textCardItem-${number}`
 
-const isUpdateHomepageType = (value: any): value is UpdateHomepageType => {
+const isUpdateHomepageType = (
+  value: any
+): value is UpdateHomepageType | EditorHomepageElement => {
   if (typeof value === "string" && value.startsWith("textCardItem-")) {
     const valArr = value.split("-")
     const possibleCardIndex = valArr[1]
@@ -206,7 +208,8 @@ const isUpdateHomepageType = (value: any): value is UpdateHomepageType => {
       value === "editor" ||
       value === "dropdownelem" ||
       value === "highlight" ||
-      value === "announcement"
+      value === "announcement" ||
+      value === "section"
     )
   }
 
@@ -414,6 +417,7 @@ const updateHomepageState = (
     )
   }
   if (type.startsWith("textCardItem")) {
+    // We've validated that type can only be such that the second item is a number
     const parentId = parseInt(type.split("-")[1], RADIX_PARSE_INT)
     const textCardsItem = (frontMatter.sections[
       parentId
@@ -460,6 +464,8 @@ export const onCreate = <E,>(
     displayHighlights,
     displayAnnouncementItems,
   } = homepageState
+
+  if (!isUpdateHomepageType(elemType)) return homepageState
 
   if (elemType === "section") {
     const sections = createElement(frontMatter.sections, val)
@@ -578,6 +584,7 @@ export const onCreate = <E,>(
     )
   }
   if (elemType.startsWith("textCardItem")) {
+    // We've validated that type can only be such that the second item is a number
     const parentId = parseInt(elemType.split("-")[1], RADIX_PARSE_INT)
     const sectionInfo = (frontMatter.sections[
       parentId
@@ -617,6 +624,7 @@ export const onDelete = (
     displayAnnouncementItems,
   } = homepageState
 
+  if (!isUpdateHomepageType(elemType)) return homepageState
   if (elemType === "section") {
     const sections = deleteElement(frontMatter.sections, indexToDelete)
     const newErrorSections = deleteElement(errors.sections, indexToDelete)
@@ -708,6 +716,7 @@ export const onDelete = (
     )
   }
   if (elemType.startsWith("textCardItem")) {
+    // We've validated that type can only be such that the second item is a number
     const parentId = parseInt(elemType.split("-")[1], RADIX_PARSE_INT)
     const newTextCards = deleteElement(
       ((frontMatter.sections[parentId] as TextcardFrontmatterSection)
