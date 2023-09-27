@@ -1,6 +1,6 @@
-import { Meta, Story } from "@storybook/react"
+import { Meta, StoryFn } from "@storybook/react"
 
-import { AnnouncementModal } from "./AnnouncementModal"
+import { AnnouncementModal, AnnouncementModalProps } from "./AnnouncementModal"
 import { ANNOUNCEMENT_BATCH } from "./Announcements"
 
 export default {
@@ -16,13 +16,24 @@ const onClose = () => {
   console.log("closed")
 }
 
-const Template: Story = () => (
-  <AnnouncementModal
-    onClose={onClose}
-    isOpen
-    announcements={ANNOUNCEMENT_BATCH[0].announcements}
-    link={ANNOUNCEMENT_BATCH[0].link}
-  />
-)
+const Template: StoryFn<typeof AnnouncementModal> = (
+  args: AnnouncementModalProps
+) => <AnnouncementModal {...args} />
 
-export const BasicUsage = Template.bind({})
+export const SiteCollaboratorsAnnouncement = Template.bind({})
+SiteCollaboratorsAnnouncement.args = {
+  onClose,
+  isOpen: true,
+  announcements: ANNOUNCEMENT_BATCH[0].announcements,
+  link: ANNOUNCEMENT_BATCH[0].link,
+  onCloseButtonText: ANNOUNCEMENT_BATCH[0].onCloseButtonText,
+}
+
+export const HeroBannerNewFeaturesAnnouncement = Template.bind({})
+
+HeroBannerNewFeaturesAnnouncement.args = {
+  onClose,
+  isOpen: true,
+  announcements: ANNOUNCEMENT_BATCH[1].announcements,
+  onCloseButtonText: ANNOUNCEMENT_BATCH[1].onCloseButtonText,
+}

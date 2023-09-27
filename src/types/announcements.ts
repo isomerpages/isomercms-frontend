@@ -3,12 +3,13 @@ export type TagVariant = "New Feature"
 
 export type Announcement = {
   title: string
-  description: string
+  description: string | JSX.Element
   image: (props: React.SVGProps<SVGSVGElement>) => JSX.Element
   tags: TagVariant[]
 }
 
 export type AnnouncementBatch = {
-  link: string
+  link?: string
   announcements: Announcement[]
+  onCloseButtonText: string
 }

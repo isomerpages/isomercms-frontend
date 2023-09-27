@@ -7,10 +7,10 @@ export const NewFeatureTag = (): JSX.Element => {
   return (
     <Badge
       variant="subtle"
+      colorScheme="brand.secondary"
       display="inline-flex"
       columnGap="0.5rem"
       alignItems="center"
-      color="secondary.500"
     >
       <Icon as={BxsRocket} />
       New feature
