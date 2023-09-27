@@ -9,7 +9,7 @@ import {
   EditorHeroHighlightsSection,
   EditorHomepageElement,
   EditorHomepageState,
-  EditorTextcardCardsSection,
+  EditortextCardItemsSection,
   EditorTextcardSection,
   HeroFrontmatterSection,
   PossibleEditorSections,
@@ -189,10 +189,10 @@ type UpdateHomepageType =
   | "dropdownelem"
   | "highlight"
   | "announcement"
-  | `textcardcard-${number}`
+  | `textCardItem-${number}`
 
 const isUpdateHomepageType = (value: any): value is UpdateHomepageType => {
-  if (typeof value === "string" && value.startsWith("textcardcard-")) {
+  if (typeof value === "string" && value.startsWith("textCardItem-")) {
     const valArr = value.split("-")
     const number = valArr[1]
     return valArr.length === 2 && !Number.isNaN(Number(number))
@@ -409,7 +409,7 @@ const updateHomepageState = (
       announcementsIndex
     )
   }
-  if (type.startsWith("textcardcard")) {
+  if (type.startsWith("textCardItem")) {
     const parentId = parseInt(type.split("-")[1], RADIX_PARSE_INT)
     const textCardsItem = (frontMatter.sections[
       parentId
@@ -573,11 +573,11 @@ export const onCreate = <E,>(
       announcementsIndex
     )
   }
-  if (elemType.startsWith("textcardcard")) {
+  if (elemType.startsWith("textCardItem")) {
     const parentId = parseInt(elemType.split("-")[1], RADIX_PARSE_INT)
     const sectionInfo = (frontMatter.sections[
       parentId
-    ] as TextcardFrontmatterSection).textcards as EditorTextcardCardsSection
+    ] as TextcardFrontmatterSection).textcards as EditortextCardItemsSection
     if (!_.isEmpty(sectionInfo.cards)) {
       const newTextCards = createElement(sectionInfo.cards, val)
       const newTextcardErrors = createElement(errors.textcards[parentId], err)
@@ -703,11 +703,11 @@ export const onDelete = (
       announcementsIndex
     )
   }
-  if (elemType.startsWith("textcardcard")) {
+  if (elemType.startsWith("textCardItem")) {
     const parentId = parseInt(elemType.split("-")[1], RADIX_PARSE_INT)
     const newTextCards = deleteElement(
       ((frontMatter.sections[parentId] as TextcardFrontmatterSection)
-        .textcards as EditorTextcardCardsSection).cards,
+        .textcards as EditortextCardItemsSection).cards,
       indexToDelete
     )
     const newTextcardErrors = deleteElement(

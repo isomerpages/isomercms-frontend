@@ -114,7 +114,7 @@ const getHasErrors = (errors) => {
   const hasHighlightErrors = getHasError(errors.highlights)
   const hasDropdownElemErrors = getHasError(errors.dropdownElems)
   const hasAnnouncementErrors = getHasError(errors.announcementItems)
-  const hasTextcardCardErrors = _.some(errors.textcards, (section) =>
+  const hastextCardItemErrors = _.some(errors.textcards, (section) =>
     getHasError(section)
   )
 
@@ -123,7 +123,7 @@ const getHasErrors = (errors) => {
     hasHighlightErrors ||
     hasDropdownElemErrors ||
     hasAnnouncementErrors ||
-    hasTextcardCardErrors
+    hastextCardItemErrors
   )
 }
 
