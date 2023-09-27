@@ -374,6 +374,7 @@ const EditHomepage = ({ match }) => {
   }, [scrollRefs, frontMatter.sections.length])
 
   const onFieldChange = async (event) => {
+    console.log({ event })
     try {
       const { id, value } = event.target
       const idArray = id.split("-")
@@ -743,7 +744,24 @@ const EditHomepage = ({ match }) => {
           )
           // We know this is the case since announcements are added from the top
           const newAnnouncementIndex = 0
+          // const resetAnnouncementSections = _.fill(
+          //   // this is the on create handler, adding one more announcement
+          //   Array(displayAnnouncementItems.length),
+          //   false
+          // )
+          // // open the new announcement that was created
+          // resetAnnouncementSections[newAnnouncementIndex] = true
+          // console.log({ resetAnnouncementSections })
+          // const newDisplayAnnouncements = update(displayAnnouncementItems, {
+          //   $set: resetAnnouncementSections,
+          // })
+
+          console.log(announcementScrollRefs)
           scrollTo(announcementScrollRefs[newAnnouncementIndex])
+          // console.log({ newDisplayAnnouncements })
+          // setDisplayAnnouncementItems(newDisplayAnnouncements)
+          console.log(updatedHomepageState.displayAnnouncementItems)
+
           break
         }
         default:
@@ -941,6 +959,7 @@ const EditHomepage = ({ match }) => {
   }
 
   const displayHandler = async (elemType, index) => {
+    console.log({ elemType, index })
     // NOTE: If index is less than 0,
     // this means that the accordion is being closed.
     // Hence, we don't trigger a scroll.
@@ -1113,7 +1132,11 @@ const EditHomepage = ({ match }) => {
             <HStack className={elementStyles.wrapper}>
               <Editable.Sidebar title="Homepage">
                 <Editable.Accordion
-                  onChange={(idx) => displayHandler("section", idx)}
+                  onChange={(idx) => {
+                    console.log({ idx })
+                    console.log("hhuh")
+                    displayHandler("section", idx)
+                  }}
                 >
                   <VStack
                     bg="base.canvas.alt"
@@ -1278,6 +1301,11 @@ const EditHomepage = ({ match }) => {
                                     errors.sections[sectionIndex]
                                       .announcements && (
                                       <Editable.DraggableAccordionItem
+                                        // onChange={(idx) => {
+                                        //   console.log({ idx })
+                                        //   // console.log("hehe")
+                                        //   displayHandler("announcement", idx)
+                                        // }}
                                         index={sectionIndex}
                                         tag={
                                           <Tag variant="subtle">
@@ -1313,6 +1341,9 @@ const EditHomepage = ({ match }) => {
                                             errors={{
                                               ...errors,
                                             }}
+                                            displayAnnouncementItems={
+                                              displayAnnouncementItems
+                                            }
                                           />
                                         </AnnouncementSection>
                                       </Editable.DraggableAccordionItem>
