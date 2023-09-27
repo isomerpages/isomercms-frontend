@@ -78,7 +78,22 @@ export const AnnouncementBody = ({
             announcements are shown on the top of the list`}
           </Text>
 
-          <Editable.Accordion onChange={() => onDisplay("announcement")}>
+          <Editable.Accordion
+            defaultIndex={0}
+            onChange={(idx: ExpandedIndex) => {
+              if (typeof idx === "number") {
+                onDisplay("announcement", idx)
+              } else if (
+                idx instanceof Array &&
+                idx.length > 0 &&
+                typeof idx[0] === "number"
+              ) {
+                onDisplay("announcement", idx[0])
+              } else {
+                onDisplay("announcement", -1)
+              }
+            }}
+          >
             <Editable.EmptySection
               isEmpty={announcementItems.length === 0}
               title="Announcements you add will appear here"
