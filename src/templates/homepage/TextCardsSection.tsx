@@ -27,67 +27,67 @@ const TemplateTextCardsSection = forwardRef<
     return (
       <section
         className={getClassNames(editorStyles, [
-          "textcards-section",
+          "px-8",
+          "px-sm-16",
+          "px-md-24",
+          "py-24",
           sectionIndex % 2 === 1 ? "bg-newssection" : "",
-          "is-flex",
-          "px-24",
-          "py-16",
         ])}
         ref={ref}
       >
-        <p
-          className={getClassNames(editorStyles, [
-            "textcards-subtitle",
-            "pb-2",
-          ])}
-        >
-          {subtitle}
-        </p>
-        <h1
-          className={getClassNames(editorStyles, [
-            "textcards-title",
-            "has-text-secondary",
-            "pb-4",
-          ])}
-        >
-          {title}
-        </h1>
-        <p
-          className={getClassNames(editorStyles, [
-            "textcards-description",
-            "pb-12",
-          ])}
-        >
-          {description}
-        </p>
         <div
           className={getClassNames(editorStyles, [
-            "textcards-card-section",
+            "textcards-section",
             "is-flex",
           ])}
         >
-          {!!cards &&
-            cards.map((card) => (
-              <>
-                <div
-                  className={getClassNames(editorStyles, [
-                    "textcards-card-body",
-                    "is-flex",
-                    "p-6",
-                  ])}
-                >
-                  <h3 className={editorStyles["textcards-card-title"]}>
-                    {card.title}
-                  </h3>
-                  <p className={editorStyles["textcards-card-description"]}>
-                    {card.description}
-                  </p>
-                  <p className={editorStyles["textcards-card-url"]}>
-                    {card.linktext}
-                  </p>
-                </div>
-              </>
-            ))}
+          <p className={getClassNames(editorStyles, ["subtitle-2", "pb-4"])}>
+            {subtitle}
+          </p>
+          <h1 className="h1 has-text-secondary has-text-centered pb-4">
+            {title}
+          </h1>
+          <p
+            className={getClassNames(editorStyles, [
+              "body-1",
+              "has-text-centered",
+              "pb-12",
+            ])}
+          >
+            {description}
+          </p>
+          <div
+            className={getClassNames(editorStyles, [
+              "textcards-card-section",
+              "has-text-left",
+              "is-flex",
+            ])}
+          >
+            {!!cards &&
+              cards.map((card) => (
+                <>
+                  <a
+                    className={getClassNames(editorStyles, [
+                      "textcards-card-body",
+                      "is-flex",
+                      "p-6",
+                    ])}
+                    href="{{ card.url }}"
+                  >
+                    <h3 className={editorStyles.h3}>{card.title}</h3>
+                    <p
+                      className={getClassNames(editorStyles, [
+                        "body-1",
+                        "textcards-card-description",
+                      ])}
+                    >
+                      {card.description}
+                    </p>
+                    <p className={editorStyles.link}>{card.linktext}</p>
+                  </a>
+                </>
+              ))}
+          </div>
         </div>
       </section>
     )
