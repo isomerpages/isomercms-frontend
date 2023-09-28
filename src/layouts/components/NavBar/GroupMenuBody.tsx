@@ -64,7 +64,7 @@ export const GroupMenuBody = ({
           Submenus
         </FormLabel>
         <Text textStyle="body-2" mb="1.5rem">
-          Cards are displayed side by side on a desktop screens
+          Cards are displayed side by side on a desktop screen
         </Text>
         <DragDropContext onDragEnd={onDragEnd}>
           <Editable.Droppable width="100%" editableId={`sublink-${index}`}>
