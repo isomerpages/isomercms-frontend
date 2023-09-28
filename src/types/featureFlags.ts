@@ -1,11 +1,9 @@
 import { FEATURE_FLAGS } from "constants/featureFlags"
 
-export type PrivatisationWhitelist = { repos: string[] }
-
 // Example usage: const gb = useGrowthBook<FeatureFlags>();
 export interface FeatureFlags {
   [FEATURE_FLAGS.STYLING_REVAMP]: boolean
-  [FEATURE_FLAGS.REPO_PRIVATISATION]: PrivatisationWhitelist
+  [FEATURE_FLAGS.REPO_PRIVATISATION]: boolean
 }
 
 export type GBAttributes = {

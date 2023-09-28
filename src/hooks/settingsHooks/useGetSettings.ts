@@ -6,7 +6,6 @@ import { SETTINGS_CONTENT_KEY } from "constants/queryKeys"
 
 import * as SettingsService from "services/SettingsService"
 
-import { PrivatisationWhitelist } from "types/featureFlags"
 import {
   BackendPasswordSettings,
   BackendSiteSettings,
@@ -129,7 +128,7 @@ const extractPassword = (
 export const useGetSettings = (
   siteName: string,
   isEmailLogin?: boolean,
-  repoPrivatisationWhitelist?: PrivatisationWhitelist
+  isPrivatisationAllowed?: boolean
 ): UseQueryResult<SiteSettings> => {
   const shouldGetPrivacyDetails =
     isEmailLogin === undefined ? false : isEmailLogin
@@ -138,7 +137,7 @@ export const useGetSettings = (
     async () => {
       const siteSettings = await SettingsService.get({ siteName })
       const isSitePrivatisationActive =
-        repoPrivatisationWhitelist?.repos.includes(siteName) || false
+        isPrivatisationAllowed === undefined ? false : isPrivatisationAllowed
       let passwordSettings
       if (shouldGetPrivacyDetails && isSitePrivatisationActive) {
         passwordSettings = await SettingsService.getPassword({ siteName })

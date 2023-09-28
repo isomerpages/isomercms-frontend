@@ -6,7 +6,7 @@ import {
   StackDivider,
   useDisclosure,
 } from "@chakra-ui/react"
-import { useGrowthBook } from "@growthbook/growthbook-react"
+import { useFeatureIsOn } from "@growthbook/growthbook-react"
 import { Button } from "@opengovsg/design-system-react"
 import _ from "lodash"
 import { useEffect, useRef } from "react"
@@ -24,7 +24,7 @@ import { useGetSettings, useUpdateSettings } from "hooks/settingsHooks"
 
 import { useErrorToast, useSuccessToast } from "utils/toasts"
 
-import { FeatureFlags, PrivatisationWhitelist } from "types/featureFlags"
+import { FeatureFlags } from "types/featureFlags"
 import { SiteSettings } from "types/settings"
 import { DEFAULT_RETRY_MSG } from "utils"
 
@@ -41,13 +41,9 @@ import { PrivacySettings } from "./PrivacySettings"
 import { SocialMediaSettings } from "./SocialMediaSettings"
 
 export const Settings = (): JSX.Element => {
-  const growthbook = useGrowthBook<FeatureFlags>()
-  const fallbackWhitelist: PrivatisationWhitelist = { repos: [] }
-  const repoPrivatisationWhitelist =
-    growthbook?.getFeatureValue(
-      FEATURE_FLAGS.REPO_PRIVATISATION,
-      fallbackWhitelist
-    ) || fallbackWhitelist
+  const isPrivatisationAllowed = useFeatureIsOn<FeatureFlags>(
+    FEATURE_FLAGS.REPO_PRIVATISATION
+  )
 
   const { siteName } = useParams<{ siteName: string }>()
   const { userId } = useLoginContext()
@@ -57,7 +53,7 @@ export const Settings = (): JSX.Element => {
     data: settingsData,
     isLoading: isGetSettingsLoading,
     isError: isGetSettingsError,
-  } = useGetSettings(siteName, !isGithubUser, repoPrivatisationWhitelist)
+  } = useGetSettings(siteName, !isGithubUser, isPrivatisationAllowed)
   const errorToast = useErrorToast()
 
   // Trigger an error toast informing the user if settings data could not be fetched
