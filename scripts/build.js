@@ -2,23 +2,28 @@
 const { spawn } = require("child_process")
 
 const axios = require("axios")
-const btoa = require("btoa")
 
-// login credentials
-const { PERSONAL_ACCESS_TOKEN, USERNAME } = process.env
-if (!PERSONAL_ACCESS_TOKEN || !USERNAME) {
+// Login credentials
+const {
+  CYPRESS_COOKIE_NAME,
+  CYPRESS_COOKIE_VALUE,
+  CYPRESS_BACKEND_URL,
+} = process.env
+if (!CYPRESS_COOKIE_NAME || !CYPRESS_COOKIE_VALUE) {
   throw new Error(
-    `E2E tests require env vars PERSONAL_ACCESS_TOKEN (${PERSONAL_ACCESS_TOKEN}) and USERNAME (${USERNAME}) to be set.`
+    `E2E tests require env vars CYPRESS_COOKIE_NAME (${CYPRESS_COOKIE_NAME}) and CYPRESS_COOKIE_VALUE (${CYPRESS_COOKIE_VALUE}) to be set.`
   )
 }
 
-const CREDENTIALS = `${USERNAME}:${PERSONAL_ACCESS_TOKEN}`
-const headers = {
-  authorization: `basic ${btoa(CREDENTIALS)}`,
-  accept: "application/json",
+const emailHeaders = {
+  Cookie: `${CYPRESS_COOKIE_NAME}=${CYPRESS_COOKIE_VALUE}; e2eUserType=Email admin; site=e2e email test site; email=admin@e2e.gov.sg`,
 }
 
-// cypress commands
+const githubHeaders = {
+  Cookie: `${CYPRESS_COOKIE_NAME}=${CYPRESS_COOKIE_VALUE}; e2eUserType=Github user`,
+}
+
+// Cypress test runner
 const cypressCommand = process.argv[2] // either `run` or `open`
 const baseCypressCommand = `npx cypress ${cypressCommand}`
 // if we are running tests, record them on the dashboard so that github will show the corresponding status
@@ -27,49 +32,40 @@ const runCypressCommand =
     ? `${baseCypressCommand} --record`
     : baseCypressCommand
 
-// reset e2e-test-repo
-const { E2E_COMMIT_HASH } = process.env
-if (!E2E_COMMIT_HASH) {
-  throw new Error(
-    `E2E tests require env var E2E_COMMIT_HASH (${E2E_COMMIT_HASH}) to be set.`
-  )
+// E2E test repositories
+const e2eTestRepositoriesWithHashes = {
+  "e2e-test-repo": "bcfe46da1288b3302c5bb5f72c5c58b50574f26c",
+  "e2e-email-test-repo": "93593ceb8ee8af690267e49ea787701fc73baed8",
+  "e2e-notggs-test-repo": "1ccc5253dd06e06a088d1e6ec86a38c870c0a3d6",
 }
-const GITHUB_ORG_NAME = "isomerpages"
-const E2E_GITHUB_REPO_NAME = "e2e-test-repo"
-const E2E_EMAIL_REPO_NAME = "e2e-email-test-repo"
-const E2E_EMAIL_COMMIT_HASH = "93593ceb8ee8af690267e49ea787701fc73baed8"
 
-const resetRepo = async (repo, hash, branch) => {
-  const endpoint = `https://api.github.com/repos/${GITHUB_ORG_NAME}/${repo}/git/refs/heads/${branch}`
-  await axios.patch(
+// Reset test repositories
+const resetRepository = async (repository, branchName, userType) => {
+  const endpoint = `${CYPRESS_BACKEND_URL}/sites/${repository}/admin/resetRepo`
+  const headers = userType === "github" ? githubHeaders : emailHeaders
+  await axios.post(
     endpoint,
     {
-      sha: hash,
-      force: true,
+      commitSha: e2eTestRepositoriesWithHashes[repository],
+      branchName,
     },
-    {
-      headers,
-    }
+    { headers },
+    { withCredentials: true }
   )
-  console.log(`Successfully reset ${repo} to ${hash}`)
+  console.log(
+    `Successfully reset ${repository} (${branchName}) to ${e2eTestRepositoriesWithHashes[repository]}}`
+  )
 }
 
-const resetGithubE2eTestRepo = () =>
-  resetRepo(E2E_GITHUB_REPO_NAME, E2E_COMMIT_HASH, "staging")
-
-const resetEmailE2eTestRepo = () => {
-  resetRepo(E2E_EMAIL_REPO_NAME, E2E_EMAIL_COMMIT_HASH, "staging")
-  resetRepo(E2E_EMAIL_REPO_NAME, E2E_EMAIL_COMMIT_HASH, "master")
+const resetE2ETestRepositories = async () => {
+  resetRepository("e2e-test-repo", "staging", "github")
+  resetRepository("e2e-notggs-test-repo", "staging", "github")
+  resetRepository("e2e-email-test-repo", "staging", "email")
+  resetRepository("e2e-email-test-repo", "master", "email")
 }
 
-const resetE2eTestRepo = async () => {
-  await resetGithubE2eTestRepo()
-  await resetEmailE2eTestRepo()
-}
-
-// resets the e2e repo then runs the corresponding cypress command
-const runE2eTests = async () =>
-  resetE2eTestRepo()
+const runE2ETests = async () => {
+  resetE2ETestRepositories()
     .then(() => {
       const child = spawn(runCypressCommand, { shell: true })
       child.stderr.on("data", (data) => {
@@ -83,7 +79,8 @@ const runE2eTests = async () =>
         // NOTE: Cypress uses the exit code to show the number of failed tests.
         // If we do not exit here, the child process (that's running the test) will not be able to feedback
         // to Github Actions if the tests pass.
-        process.exit(exitCode)
+        // If exitCode is null, means that the child process was killed by a signal.
+        process.exit(exitCode || 1)
       })
     })
     .catch((err) => {
@@ -92,8 +89,9 @@ const runE2eTests = async () =>
       // This also prevents CI from recording this as a successful step.
       process.exit(1)
     })
+}
 
 module.exports = {
-  runE2eTests,
-  resetE2eTestRepo,
+  runE2ETests,
+  resetE2ETestRepositories,
 }
