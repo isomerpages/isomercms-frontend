@@ -34,7 +34,7 @@
     "cypress-file-upload": "^5.0.8",
     "date-fns": "^2.26.0",
     "date-fns-tz": "^1.3.5",
-    "dompurify": "^2.3.8",
+    "dompurify": "^3.0.6",
     "downshift": "^6.1.7",
     "easymde": "^2.16.1",
     "escape-string-regexp": "^4.0.0",
