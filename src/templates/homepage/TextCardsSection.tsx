@@ -44,7 +44,14 @@ const TemplateTextCardsSection = forwardRef<
           <p className={getClassNames(editorStyles, ["subtitle-2", "pb-4"])}>
             {subtitle}
           </p>
-          <h1 className="h1 has-text-secondary has-text-centered pb-4">
+          <h1
+            className={getClassNames(editorStyles, [
+              "h1",
+              "has-text-secondary",
+              "has-text-centered",
+              "pb-4",
+            ])}
+          >
             {title}
           </h1>
           <p
@@ -66,13 +73,12 @@ const TemplateTextCardsSection = forwardRef<
             {!!cards &&
               cards.map((card) => (
                 <>
-                  <a
+                  <div
                     className={getClassNames(editorStyles, [
                       "textcards-card-body",
                       "is-flex",
                       "p-6",
                     ])}
-                    href="{{ card.url }}"
                   >
                     <h3 className={editorStyles.h3}>{card.title}</h3>
                     <p
@@ -84,7 +90,7 @@ const TemplateTextCardsSection = forwardRef<
                       {card.description}
                     </p>
                     <p className={editorStyles.link}>{card.linktext}</p>
-                  </a>
+                  </div>
                 </>
               ))}
           </div>
