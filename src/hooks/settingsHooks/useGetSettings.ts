@@ -137,7 +137,7 @@ export const useGetSettings = (
     async () => {
       const siteSettings = await SettingsService.get({ siteName })
       const isSitePrivatisationActive =
-        isPrivatisationAllowed === undefined ? false : isPrivatisationAllowed
+        isPrivatisationAllowed ?? false
       let passwordSettings
       if (shouldGetPrivacyDetails && isSitePrivatisationActive) {
         passwordSettings = await SettingsService.getPassword({ siteName })
