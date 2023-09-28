@@ -1,4 +1,4 @@
-import { forwardRef } from "react"
+import { Ref, forwardRef } from "react"
 
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
@@ -12,6 +12,7 @@ type TemplateAnnouncementsSectionProps = Omit<
 > & {
   announcementItems: AnnouncementsBlockSection["announcement_items"]
   sectionIndex: number
+  announcementScrollRefs: Ref<HTMLDivElement>[]
 }
 
 export const TemplateAnnouncementsSection = forwardRef<
@@ -24,6 +25,7 @@ export const TemplateAnnouncementsSection = forwardRef<
       subtitle,
       announcementItems,
       sectionIndex,
+      announcementScrollRefs,
     }: TemplateAnnouncementsSectionProps,
     ref
   ) => {
@@ -40,9 +42,9 @@ export const TemplateAnnouncementsSection = forwardRef<
         >
           <div
             className={getClassNames(editorStyles, [
-              "bp-container",
-              "is-fluid",
-              "m-0",
+              "announcements-section",
+              "mx-auto",
+              "is-flex",
             ])}
           >
             <div className={editorStyles.row}>
@@ -53,7 +55,7 @@ export const TemplateAnnouncementsSection = forwardRef<
                       className={getClassNames(editorStyles, [
                         "eyebrow",
                         "is-uppercase",
-                        "pb-4",
+                        "mb-2",
                         "has-text-centered",
                       ])}
                     >
@@ -64,7 +66,7 @@ export const TemplateAnnouncementsSection = forwardRef<
                     <h1
                       className={getClassNames(editorStyles, [
                         "has-text-secondary",
-                        "pb-4",
+                        "mb-12",
                         "has-text-centered",
                       ])}
                     >
@@ -74,7 +76,8 @@ export const TemplateAnnouncementsSection = forwardRef<
 
                   <hr
                     className={getClassNames(editorStyles, [
-                      "my-8",
+                      "mb-2",
+                      "mt-0",
                       "announcements-divider",
                     ])}
                   />
@@ -82,25 +85,33 @@ export const TemplateAnnouncementsSection = forwardRef<
                   {announcementItems &&
                     announcementItems.map((announcement, index) => {
                       return (
-                        <>
+                        <div ref={announcementScrollRefs[index]}>
                           <div
                             className={getClassNames(editorStyles, [
                               "row",
                               "is-desktop",
+                              "px-0",
+                              "py-6",
+                              "py-lg-0",
+                              "m-0",
                             ])}
                           >
                             <div
                               className={getClassNames(editorStyles, [
                                 "col",
                                 "is-4-desktop",
-                                "px-lg-6",
+                                "p-0",
+                                "p-lg-6",
+                                "mb-6",
+                                "mb-lg-0",
                                 "mr-lg-6",
                               ])}
                             >
                               <h3
                                 className={getClassNames(editorStyles, [
                                   "announcements-announcement-title",
-                                  "mb-4",
+                                  "mb-2",
+                                  "mb-lg-4",
                                 ])}
                               >
                                 <b>{announcement.title}</b>
@@ -118,12 +129,18 @@ export const TemplateAnnouncementsSection = forwardRef<
                             <div
                               className={getClassNames(editorStyles, [
                                 "col",
-                                "px-lg-6",
+                                "p-0",
+                                "p-lg-6",
                               ])}
                             >
                               <p>{announcement.announcement}</p>
                               {announcement.link_text && announcement.link_url && (
-                                <div className={editorStyles["mt-4"]}>
+                                <div
+                                  className={getClassNames(editorStyles, [
+                                    "mt-6",
+                                    "mt-lg-4",
+                                  ])}
+                                >
                                   <div
                                     className={
                                       editorStyles[
@@ -141,7 +158,7 @@ export const TemplateAnnouncementsSection = forwardRef<
                           announcementItems.length === index + 1 ? (
                             <hr
                               className={getClassNames(editorStyles, [
-                                "mt-8",
+                                "mt-2",
                                 "mb-0",
                                 "announcements-divider",
                               ])}
@@ -149,12 +166,12 @@ export const TemplateAnnouncementsSection = forwardRef<
                           ) : (
                             <hr
                               className={getClassNames(editorStyles, [
-                                "my-8",
+                                "my-2",
                                 "announcements-divider",
                               ])}
                             />
                           )}
-                        </>
+                        </div>
                       )
                     })}
                 </>

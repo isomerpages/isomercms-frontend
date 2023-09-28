@@ -31,6 +31,8 @@ import { useUpdateHomepageHook } from "hooks/homepageHooks/useUpdateHomepageHook
 import { useAfterFirstLoad } from "hooks/useAfterFirstLoad"
 import useSiteColorsHook from "hooks/useSiteColorsHook"
 
+import { TextCardsSectionBody } from "layouts/components/Homepage/TextCardsBody"
+
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 import { useErrorToast } from "utils/toasts"
@@ -39,9 +41,14 @@ import {
   validateHighlights,
   validateDropdownElems,
   validateAnnouncementItems,
+  validateTextcard,
 } from "utils/validators"
 
-import { HomepageStartEditingImage } from "assets"
+import {
+  HomepageStartEditingImage,
+  HomepageAnnouncementsSampleImage,
+  HomepageTextCardsSampleImage,
+} from "assets"
 import { EditorHomepageFrontmatterSection } from "types/homepage"
 import { DEFAULT_RETRY_MSG } from "utils"
 
@@ -64,6 +71,8 @@ import {
   RESOURCES_SECTION,
   ANNOUNCEMENT_BLOCK,
   getDefaultAnnouncementSection,
+  TEXTCARDS_BLOCK_SECTION,
+  TEXTCARDS_ITEM_SECTION,
 } from "./constants"
 import { HomepagePreview } from "./HomepagePreview"
 import { getErrorValues } from "./utils"
@@ -105,12 +114,16 @@ const getHasErrors = (errors) => {
   const hasHighlightErrors = getHasError(errors.highlights)
   const hasDropdownElemErrors = getHasError(errors.dropdownElems)
   const hasAnnouncementErrors = getHasError(errors.announcementItems)
+  const hastextCardItemErrors = _.some(errors.textcards, (section) =>
+    getHasError(section)
+  )
 
   return (
     hasSectionErrors ||
     hasHighlightErrors ||
     hasDropdownElemErrors ||
-    hasAnnouncementErrors
+    hasAnnouncementErrors ||
+    hastextCardItemErrors
   )
 }
 
@@ -140,6 +153,10 @@ const enumSection = (type, isError) => {
         ? { announcements: getErrorValues(ANNOUNCEMENT_BLOCK) }
         : { announcements: ANNOUNCEMENT_BLOCK }
 
+    case "textcards":
+      return isError
+        ? { textcards: getErrorValues(TEXTCARDS_BLOCK_SECTION) }
+        : { textcards: TEXTCARDS_BLOCK_SECTION }
     default:
       return isError
         ? { infobar: getErrorValues(INFOBAR_SECTION) }
@@ -153,6 +170,8 @@ const EditHomepage = ({ match }) => {
   const { siteName } = match.params
   const [hasLoaded, setHasLoaded] = useState(false)
   const [scrollRefs, setScrollRefs] = useState([])
+  const [announcementScrollRefs, setAnnouncementScrollRefs] = useState([])
+
   const [frontMatter, setFrontMatter] = useState({
     title: "",
     subtitle: "",
@@ -179,6 +198,7 @@ const EditHomepage = ({ match }) => {
     highlights: [],
     dropdownElems: [],
     announcementItems: [],
+    textcards: [],
   })
   const [itemPendingForDelete, setItemPendingForDelete] = useState({
     id: "",
@@ -243,7 +263,9 @@ const EditHomepage = ({ match }) => {
         let dropdownElemsErrors = []
         let highlightsErrors = []
         let announcementItemErrors = []
+        const textCardItemErrors = []
         const scrollRefs = []
+        const announcementScrollRefs = []
         frontMatter.sections.forEach((section) => {
           scrollRefs.push(createRef())
           // If this is the hero section, hide all highlights/dropdownelems by default
@@ -302,6 +324,9 @@ const EditHomepage = ({ match }) => {
               section.announcements.announcement_items,
               () => getErrorValues(getDefaultAnnouncementSection())
             )
+            _.map(section.announcements.announcement_items, () => {
+              announcementScrollRefs.push(createRef())
+            })
             if (!section.announcements.announcement_items) {
               // define an empty array to announcement_items to prevent error
               frontMatter = update(frontMatter, {
@@ -319,6 +344,18 @@ const EditHomepage = ({ match }) => {
               })
             }
           }
+          if (section.textcards) {
+            sectionsErrors.push({
+              textcards: getErrorValues(TEXTCARDS_BLOCK_SECTION),
+            })
+            const { cards } = section.textcards
+            // Fill in dropdown elem errors array
+            textCardItemErrors.push(
+              _.map(cards, () => getErrorValues(TEXTCARDS_ITEM_SECTION))
+            )
+          } else {
+            textCardItemErrors.push([])
+          }
 
           // Minimize all sections by default
           displaySections.push(false)
@@ -330,6 +367,7 @@ const EditHomepage = ({ match }) => {
           highlights: highlightsErrors,
           dropdownElems: dropdownElemsErrors,
           announcementItems: announcementItemErrors,
+          textcards: textCardItemErrors,
         }
 
         setFrontMatter(frontMatter)
@@ -341,6 +379,7 @@ const EditHomepage = ({ match }) => {
         setErrors(errors)
         setHasLoaded(true)
         setScrollRefs(scrollRefs)
+        setAnnouncementScrollRefs(announcementScrollRefs)
       } catch (err) {
         // Set frontMatter to be same to prevent warning message when navigating away
         setFrontMatter(originalFrontMatter)
@@ -554,7 +593,7 @@ const EditHomepage = ({ match }) => {
             sections: newSections,
           })
           setErrors(newErrors)
-          scrollTo(scrollRefs[announcementsIndex])
+          scrollTo(announcementScrollRefs[announcementItemsIndex])
           break
         }
         case "dropdownelem": {
@@ -600,6 +639,52 @@ const EditHomepage = ({ match }) => {
           setErrors(newErrors)
 
           scrollTo(scrollRefs[0])
+          break
+        }
+        case "textCardItem": {
+          // The field that changed is a text card element
+          const { sections } = frontMatter
+
+          // cardIndex is the index of the cards array
+          const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT)
+          const cardIndex = parseInt(idArray[2], RADIX_PARSE_INT)
+          const field = idArray[3] // e.g. "title" or "url"
+
+          const newSections = update(sections, {
+            [sectionIndex]: {
+              textcards: {
+                cards: {
+                  [cardIndex]: {
+                    [field]: {
+                      $set: value,
+                    },
+                  },
+                },
+              },
+            },
+          })
+
+          const newErrors = update(errors, {
+            textcards: {
+              [sectionIndex]: {
+                [cardIndex]: {
+                  $set: validateTextcard(
+                    errors.textcards[sectionIndex][cardIndex],
+                    field,
+                    value
+                  ),
+                },
+              },
+            },
+          })
+
+          setFrontMatter({
+            ...frontMatter,
+            sections: newSections,
+          })
+          setErrors(newErrors)
+
+          scrollTo(scrollRefs[sectionIndex])
           break
         }
         default: {
@@ -656,7 +741,6 @@ const EditHomepage = ({ match }) => {
           const err = enumSection(value, true)
 
           const newScrollRefs = update(scrollRefs, { $push: [createRef()] })
-
           const updatedHomepageState = onCreate(
             homepageState,
             elemType,
@@ -677,6 +761,12 @@ const EditHomepage = ({ match }) => {
               getErrorValues(getDefaultAnnouncementSection())
             )
             setHomepageState(updatedAnnouncementState)
+            setAnnouncementScrollRefs(
+              update(announcementScrollRefs, {
+                $push: [createRef()],
+              })
+            )
+            setDisplayAnnouncementItems(_.fill(Array(1), false))
           }
           break
         }
@@ -720,6 +810,28 @@ const EditHomepage = ({ match }) => {
             err
           )
           setHomepageState(updatedHomepageState)
+          setAnnouncementScrollRefs(
+            update(announcementScrollRefs, {
+              $push: [createRef()],
+            })
+          )
+          // We know this is the case since announcements are added from the bottom
+          const newAnnouncementIndex = announcementScrollRefs.length - 1
+          scrollTo(announcementScrollRefs[newAnnouncementIndex])
+          break
+        }
+        case "textCardItem": {
+          const parentId = parseInt(idArray[1], RADIX_PARSE_INT)
+          const val = TEXTCARDS_ITEM_SECTION
+          const err = getErrorValues(TEXTCARDS_ITEM_SECTION)
+          const updatedHomepageState = onCreate(
+            homepageState,
+            `${elemType}-${parentId}`,
+            val,
+            err
+          )
+
+          setHomepageState(updatedHomepageState)
           break
         }
         default:
@@ -734,15 +846,33 @@ const EditHomepage = ({ match }) => {
       const idArray = id.split("-")
       const elemType = idArray[0]
       const index = parseInt(idArray[1], RADIX_PARSE_INT)
-
       if (elemType === "section") {
         const newScrollRefs = update(scrollRefs, {
           $splice: [[index, 1]],
         })
 
         setScrollRefs(newScrollRefs)
+        if (frontMatter.sections[index].announcements) {
+          setAnnouncementScrollRefs([])
+        }
       }
+      if (elemType === "announcement") {
+        const newAnnouncementScrollRefs = update(announcementScrollRefs, {
+          $splice: [[index, 1]],
+        })
+        setAnnouncementScrollRefs(newAnnouncementScrollRefs)
+      }
+      if (elemType === "textCardItem") {
+        const childIndex = parseInt(idArray[2], RADIX_PARSE_INT)
 
+        const newHomepageState = onDelete(
+          homepageState,
+          `${elemType}-${index}`,
+          childIndex
+        )
+        setHomepageState(newHomepageState)
+        return
+      }
       const newHomepageState = onDelete(homepageState, elemType, index)
       setHomepageState(newHomepageState)
     } catch (err) {
@@ -931,9 +1061,6 @@ const EditHomepage = ({ match }) => {
           break
         }
         case "announcement": {
-          const announcementsIndex = frontMatter.sections.findIndex((section) =>
-            EditorHomepageFrontmatterSection.isAnnouncements(section)
-          )
           const resetAnnouncementSections = _.fill(
             Array(displayAnnouncementItems.length),
             false
@@ -943,7 +1070,7 @@ const EditHomepage = ({ match }) => {
             $set: resetAnnouncementSections,
           })
 
-          scrollTo(scrollRefs[announcementsIndex])
+          scrollTo(announcementScrollRefs[index])
           setDisplayAnnouncementItems(newDisplayAnnouncements)
           break
         }
@@ -1289,6 +1416,42 @@ const EditHomepage = ({ match }) => {
                                         </AnnouncementSection>
                                       </Editable.DraggableAccordionItem>
                                     )}
+                                  {section.textcards && (
+                                    <Editable.DraggableAccordionItem
+                                      index={sectionIndex}
+                                      tag={
+                                        <Tag variant="subtle">Text cards</Tag>
+                                      }
+                                      title={
+                                        section.textcards.title ||
+                                        "New cards block"
+                                      }
+                                      isInvalid={
+                                        _.some(
+                                          errors.sections[sectionIndex]
+                                            .textcards
+                                        ) ||
+                                        (errors.textcards[sectionIndex] &&
+                                          _.some(
+                                            errors.textcards[
+                                              sectionIndex
+                                            ].map((card) => _.some(card))
+                                          ))
+                                      }
+                                    >
+                                      <TextCardsSectionBody
+                                        index={sectionIndex}
+                                        errors={
+                                          errors.sections[sectionIndex]
+                                            .textcards
+                                        }
+                                        cardErrors={
+                                          errors.textcards[sectionIndex]
+                                        }
+                                        {...section.textcards}
+                                      />
+                                    </Editable.DraggableAccordionItem>
+                                  )}
                                 </>
                               )
                             )}
@@ -1316,21 +1479,7 @@ const EditHomepage = ({ match }) => {
                         subtitle={INFOBAR_SECTION.subtitle}
                         onClick={() => onClick(INFOBAR_SECTION.id)}
                       />
-                      {/* NOTE: Check if the sections contain any `announcements` 
-                                and if it does, prevent creation of another `resources` section
-                            */}
-                      {showNewLayouts &&
-                        !frontMatter.sections.some(
-                          ({ announcements }) => !!announcements
-                        ) && (
-                          <AddSectionButton.Option
-                            title={ANNOUNCEMENT_BLOCK.title}
-                            subtitle={ANNOUNCEMENT_BLOCK.subtitle}
-                            onClick={() => onClick(ANNOUNCEMENT_BLOCK.id)}
-                          />
-                        )}
-
-                      {/* NOTE: Check if the sections contain any `resources` 
+                      {/* NOTE: Check if the sections contain any `resources`
                                 and if it does, prevent creation of another `resources` section
                             */}
                       {!frontMatter.sections.some(
@@ -1342,6 +1491,38 @@ const EditHomepage = ({ match }) => {
                           onClick={() => onClick(RESOURCES_SECTION.id)}
                         />
                       )}
+                      {/* NOTE: Check if the sections contain any `announcements`
+                                and if it does, prevent creation of another `resources` section
+                            */}
+                      {showNewLayouts &&
+                        !frontMatter.sections.some(
+                          ({ announcements }) => !!announcements
+                        ) && (
+                          <AddSectionButton.HelpOverlay
+                            title="Announcements"
+                            description="Make exciting news from your organisation stand out by adding a list of announcements with dates on your homepage."
+                            image={<HomepageAnnouncementsSampleImage />}
+                          >
+                            <AddSectionButton.Option
+                              title={ANNOUNCEMENT_BLOCK.title}
+                              subtitle={ANNOUNCEMENT_BLOCK.subtitle}
+                              onClick={() => onClick(ANNOUNCEMENT_BLOCK.id)}
+                            />
+                          </AddSectionButton.HelpOverlay>
+                        )}
+                      {showNewLayouts && (
+                        <AddSectionButton.HelpOverlay
+                          title="Text cards"
+                          description="Add clickable cards with bite-sized information to your homepage. You can link any page or external URL, such as blog posts, articles, and more."
+                          image={<HomepageTextCardsSampleImage />}
+                        >
+                          <AddSectionButton.Option
+                            title={TEXTCARDS_BLOCK_SECTION.title}
+                            subtitle={TEXTCARDS_BLOCK_SECTION.subtitle}
+                            onClick={() => onClick(TEXTCARDS_BLOCK_SECTION.id)}
+                          />
+                        </AddSectionButton.HelpOverlay>
+                      )}
                     </AddSectionButton.List>
                   </AddSectionButton>
                 </Box>
@@ -1349,6 +1530,7 @@ const EditHomepage = ({ match }) => {
               <HomepagePreview
                 frontMatter={frontMatter}
                 scrollRefs={scrollRefs}
+                announcementScrollRefs={announcementScrollRefs}
               />
             </HStack>
             <Footer>

@@ -20,8 +20,9 @@ import {
   Tooltip,
 } from "@opengovsg/design-system-react"
 import _ from "lodash"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { BiInfoCircle } from "react-icons/bi"
+import { useInView } from "react-intersection-observer"
 
 import { Editable } from "components/Editable"
 import { FormContext, FormError, FormTitle } from "components/Form"
@@ -29,10 +30,13 @@ import FormFieldMedia from "components/FormFieldMedia"
 
 import { FEATURE_FLAGS } from "constants/featureFlags"
 import { HERO_LAYOUTS } from "constants/homepage"
+import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 
 import { useEditableContext } from "contexts/EditableContext"
 
 import { BxGrayTranslucent } from "assets"
+import { FeatureTourHandler } from "features/FeatureTour/FeatureTour"
+import { HERO_OPTIONS_FEATURE_STEPS } from "features/FeatureTour/FeatureTourSequence"
 import {
   SectionSize,
   SectionAlignment,
@@ -293,36 +297,63 @@ const HeroLayoutForm = ({
   const { onChange } = useEditableContext()
   const showNewLayouts = useFeatureIsOn(FEATURE_FLAGS.HOMEPAGE_TEMPLATES)
 
+  // We only want to show the feature tour when the
+  // DOM elements are in view. Else, the feature tour
+  // does not work properly
+  const { ref, inView } = useInView({
+    threshold: 0,
+    // we want the animation to fully load before rendering the feature tour
+    delay: 100,
+  })
+
+  const [showFeatureTour, setShowFeatureTour] = useState(false)
+  useEffect(() => {
+    // attempt to fix spotlight offset issue via useEffect
+    setShowFeatureTour(showNewLayouts && inView)
+  }, [inView, showNewLayouts])
+
   return (
-    <VStack spacing="1rem" align="flex-start" w="100%">
-      <Text textStyle="h5">{`Customise ${
-        showNewLayouts ? "Layout" : "Hero"
-      }`}</Text>
-      {showNewLayouts && (
-        <FormControl isRequired>
-          <FormLabel textStyle="subhead-1">Layout</FormLabel>
-          <SingleSelect
-            isClearable={false}
-            name="hero layout options"
-            value={variant}
-            items={_.values(HERO_LAYOUTS)}
-            // NOTE: Safe cast - the possible values are given by `HERO_LAYOUTS`
-            onChange={(val) => {
-              onChange({
-                target: {
-                  // NOTE: Format is field type, index, section type, field
-                  id: "section-0-hero-variant",
-                  value: val as HeroBannerLayouts,
-                },
-              })
-            }}
+    <Box>
+      {showFeatureTour && (
+        <Box>
+          <FeatureTourHandler
+            localStorageKey={LOCAL_STORAGE_KEYS.HeroOptionsFeatureTour}
+            steps={HERO_OPTIONS_FEATURE_STEPS}
           />
-        </FormControl>
+        </Box>
       )}
-      <VStack spacing="1rem" w="100%">
-        {children({ currentSelectedOption: variant })}
+      <VStack spacing="1rem" align="flex-start" w="100%" ref={ref}>
+        <Text textStyle="h5">{`Customise ${
+          showNewLayouts ? "Layout" : "Hero"
+        }`}</Text>
+        {showNewLayouts && (
+          <FormControl isRequired>
+            <Box id="isomer-hero-feature-tour-step-1">
+              <FormLabel textStyle="subhead-1">Layout</FormLabel>
+              <SingleSelect
+                isClearable={false}
+                name="hero layout options"
+                value={variant}
+                items={_.values(HERO_LAYOUTS)}
+                // NOTE: Safe cast - the possible values are given by `HERO_LAYOUTS`
+                onChange={(val) => {
+                  onChange({
+                    target: {
+                      // NOTE: Format is field type, index, section type, field
+                      id: "section-0-hero-variant",
+                      value: val as HeroBannerLayouts,
+                    },
+                  })
+                }}
+              />
+            </Box>
+          </FormControl>
+        )}
+        <VStack spacing="1rem" w="100%">
+          {children({ currentSelectedOption: variant })}
+        </VStack>
       </VStack>
-    </VStack>
+    </Box>
   )
 }
 

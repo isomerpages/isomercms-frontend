@@ -25,17 +25,19 @@ import { Announcement } from "types/announcements"
 
 import { NewFeatureTag } from "./components/NewFeatureTag"
 
-interface AnnouncementModalProps {
+export interface AnnouncementModalProps {
   isOpen: boolean
   onClose: () => void
   announcements: Announcement[]
-  link: string
+  onCloseButtonText: string
+  link?: string
 }
 
 export const AnnouncementModal = ({
   isOpen,
   announcements,
   onClose,
+  onCloseButtonText,
   link,
 }: AnnouncementModalProps): JSX.Element => {
   const [currActiveIdx, setCurrActiveIdx] = useState<number>(0)
@@ -57,6 +59,17 @@ export const AnnouncementModal = ({
   if (announcements.length < 1) return <></>
 
   const { title, description, image, tags } = announcements[currActiveIdx]
+
+  let descComponent: JSX.Element = <></>
+  if (typeof description === "string") {
+    descComponent = (
+      <Text textStyle="body-1" color="base.content.default">
+        {description}
+      </Text>
+    )
+  } else {
+    descComponent = description
+  }
 
   return (
     <Modal
@@ -92,11 +105,7 @@ export const AnnouncementModal = ({
           })}
           <Text mt="0.625rem">{title}</Text>
         </ModalHeader>
-        <ModalBody whiteSpace="pre-wrap">
-          <Text textStyle="body-1" color="base.content.default">
-            {description}
-          </Text>
-        </ModalBody>
+        <ModalBody whiteSpace="pre-wrap">{descComponent}</ModalBody>
         <ModalFooter>
           <Stack
             direction="row"
@@ -112,10 +121,13 @@ export const AnnouncementModal = ({
             />
             {isLastAnnouncement ? (
               <Flex gap="1.5rem" alignItems="center">
-                <Link isExternal href={link}>
-                  See release notes
-                </Link>
-                <Button onClick={handleNextClick}>Done</Button>
+                {link && (
+                  <Link isExternal href={link}>
+                    See release notes
+                  </Link>
+                )}
+
+                <Button onClick={handleNextClick}>{onCloseButtonText}</Button>
               </Flex>
             ) : (
               <Button

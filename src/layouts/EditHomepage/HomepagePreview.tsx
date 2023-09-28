@@ -10,6 +10,7 @@ import TemplateInfobarSection from "templates/homepage/InfobarSection"
 import TemplateInfopicLeftSection from "templates/homepage/InfopicLeftSection"
 import TemplateInfopicRightSection from "templates/homepage/InfopicRightSection"
 import TemplateResourcesSection from "templates/homepage/ResourcesSection"
+import TemplateTextCardsSection from "templates/homepage/TextCardsSection"
 import { getClassNames } from "templates/utils/stylingUtils"
 
 import {
@@ -33,10 +34,12 @@ const isLeftInfoPic = (
 interface HomepagePreviewProps {
   frontMatter: EditorHomepageState["frontMatter"]
   scrollRefs: Ref<unknown>[]
+  announcementScrollRefs: Ref<HTMLDivElement>[]
 }
 export const HomepagePreview = ({
   frontMatter,
   scrollRefs,
+  announcementScrollRefs,
 }: HomepagePreviewProps) => {
   const [dropdownIsActive, setDropdownIsActive] = useState(false)
 
@@ -174,6 +177,21 @@ export const HomepagePreview = ({
                 title={section.announcements.title}
                 subtitle={section.announcements.subtitle}
                 announcementItems={section.announcements.announcement_items}
+                sectionIndex={sectionIndex}
+                announcementScrollRefs={announcementScrollRefs}
+                ref={scrollRefs[sectionIndex] as Ref<HTMLDivElement>}
+              />
+            </>
+          )}
+          {/* Textcard section */}
+          {EditorHomepageFrontmatterSection.isTextcard(section) && (
+            <>
+              <TemplateTextCardsSection
+                key={`section-${sectionIndex}`}
+                title={section.textcards.title}
+                subtitle={section.textcards.subtitle}
+                description={section.textcards.description}
+                cards={section.textcards.cards}
                 sectionIndex={sectionIndex}
                 ref={scrollRefs[sectionIndex] as Ref<HTMLDivElement>}
               />

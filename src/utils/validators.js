@@ -124,6 +124,18 @@ const ANNOUNCEMENT_TITLE_MAX_LENGTH = 100
 const ANNOUNCEMENT_DESCRIPTION_MIN_LENGTH = 0
 const ANNOUNCEMENT_DESCRIPTION_MAX_LENGTH = 300
 const ANNOUNCEMENT_LINK_TEXT_URL_MAX_LENGTH = 50
+// Text cards
+const TEXTCARDS_BLOCK_TITLE_MIN_LENGTH = 0
+const TEXTCARDS_BLOCK_TITLE_MAX_LENGTH = 50
+const TEXTCARDS_BLOCK_SUBTITLE_MAX_LENGTH = 30
+const TEXTCARDS_BLOCK_DESCRIPTION_MAX_LENGTH = 200
+
+const TEXTCARDS_CARD_TITLE_MIN_LENGTH = 0
+const TEXTCARDS_CARD_TITLE_MAX_LENGTH = 50
+const TEXTCARDS_CARD_DESCRIPTION_MAX_LENGTH = 80
+const TEXTCARDS_CARD_LINKTEXT_MIN_LENGTH = 0
+const TEXTCARDS_CARD_LINKTEXT_MAX_LENGTH = 50
+const TEXTCARDS_CARD_URL_MIN_LENGTH = 0
 
 // Contact Us Editor
 // ===============
@@ -597,6 +609,89 @@ const validateAnnouncementsSection = (
   return newSectionError
 }
 
+const validateTextcardsSection = (sectionError, sectionType, field, value) => {
+  const newSectionError = sectionError
+  let errorMessage = ""
+  switch (field) {
+    case "title": {
+      // Title is too short
+      if (value.length <= TEXTCARDS_CARD_TITLE_MIN_LENGTH) {
+        errorMessage = `Title should be longer than ${TEXTCARDS_BLOCK_TITLE_MIN_LENGTH} characters.`
+      }
+      // Title is too long
+      if (value.length >= TEXTCARDS_CARD_TITLE_MAX_LENGTH) {
+        errorMessage = `Title should be shorter than ${TEXTCARDS_BLOCK_TITLE_MAX_LENGTH} characters.`
+      }
+      break
+    }
+    case "subtitle": {
+      // Subtitle is too long
+      if (value.length >= TEXTCARDS_BLOCK_SUBTITLE_MAX_LENGTH) {
+        errorMessage = `Subtitle should be shorter than ${TEXTCARDS_BLOCK_SUBTITLE_MAX_LENGTH} characters.`
+      }
+      break
+    }
+    case "description": {
+      // Button text is too long
+      if (value.length >= TEXTCARDS_BLOCK_DESCRIPTION_MAX_LENGTH) {
+        errorMessage = `Button text should be shorter than ${TEXTCARDS_BLOCK_DESCRIPTION_MAX_LENGTH} characters.`
+      }
+      break
+    }
+    default:
+      break
+  }
+  newSectionError[sectionType][field] = errorMessage
+  return newSectionError
+}
+
+const validateTextcard = (cardError, field, value) => {
+  const newHighlightError = cardError
+  let errorMessage = ""
+  switch (field) {
+    case "title": {
+      // Title is too short
+      if (value.length <= TEXTCARDS_CARD_TITLE_MIN_LENGTH) {
+        errorMessage = `The title should be longer than ${TEXTCARDS_CARD_TITLE_MIN_LENGTH} characters.`
+      }
+      // Title is too long
+      if (value.length >= TEXTCARDS_CARD_TITLE_MAX_LENGTH) {
+        errorMessage = `The title should be shorter than ${TEXTCARDS_CARD_TITLE_MAX_LENGTH} characters.`
+      }
+      break
+    }
+    case "description": {
+      // Description is too long
+      if (value.length >= TEXTCARDS_CARD_DESCRIPTION_MAX_LENGTH) {
+        errorMessage = `The description should be shorter than ${TEXTCARDS_CARD_DESCRIPTION_MAX_LENGTH} characters.`
+      }
+      break
+    }
+    case "linktext": {
+      // Link text is too short
+      if (value.length <= TEXTCARDS_CARD_LINKTEXT_MIN_LENGTH) {
+        errorMessage = `The description should be longer than ${TEXTCARDS_CARD_LINKTEXT_MIN_LENGTH} characters.`
+      }
+      // Link text is too long
+      if (value.length >= TEXTCARDS_CARD_LINKTEXT_MAX_LENGTH) {
+        errorMessage = `The description should be shorter than ${TEXTCARDS_CARD_LINKTEXT_MAX_LENGTH} characters.`
+      }
+      break
+    }
+    case "url": {
+      // Url is too short
+      if (value.length <= TEXTCARDS_CARD_URL_MIN_LENGTH) {
+        errorMessage = `The description should be longer than ${TEXTCARDS_CARD_URL_MIN_LENGTH} characters.`
+      }
+      break
+    }
+    default:
+      break
+  }
+  newHighlightError[field] = errorMessage
+  return newHighlightError
+}
+
 const validateSections = (sectionError, sectionType, field, value) => {
   let newSectionError = sectionError
   switch (sectionType) {
@@ -638,6 +733,15 @@ const validateSections = (sectionError, sectionType, field, value) => {
     }
     case "announcements": {
       newSectionError = validateAnnouncementsSection(
+        sectionError,
+        sectionType,
+        field,
+        value
+      )
+      break
+    }
+    case "textcards": {
+      newSectionError = validateTextcardsSection(
         sectionError,
         sectionType,
         field,
@@ -1071,6 +1175,7 @@ export {
   validateHighlights,
   validateAnnouncementItems,
   validateDropdownElems,
+  validateTextcard,
   validateSections,
   validatePageSettings,
   validateResourceSettings,

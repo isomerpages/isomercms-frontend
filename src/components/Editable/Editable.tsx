@@ -167,6 +167,7 @@ type HomepageDroppableZone =
   | "leftPane"
   | "highlight"
   | "announcement"
+  | `textCardItem-${number}`
 type ContactUsDroppableZone =
   | "locations"
   | "contacts"
