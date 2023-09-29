@@ -49,7 +49,7 @@ export const TextCardsSectionBody = ({
   return (
     // NOTE: Setting negative margin so that the gap is correct.
     // This is because there is inbuilt padding onto the `AccordionPanels`.
-    <Editable.Section mt="-0.5rem">
+    <Editable.Section>
       <FormControl isInvalid={!!errors.subtitle}>
         <FormLabel>Subtitle</FormLabel>
         <Input
@@ -80,8 +80,8 @@ export const TextCardsSectionBody = ({
         />
         <FormErrorMessage>{errors.description}</FormErrorMessage>
       </FormControl>
-      <Divider />
-      <FormControl isRequired pt="0.5rem">
+      <Divider py="0.5rem" />
+      <FormControl isRequired>
         <Text mb="0.5rem" textStyle="h5">
           Cards
         </Text>

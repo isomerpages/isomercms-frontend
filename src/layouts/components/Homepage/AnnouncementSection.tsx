@@ -51,7 +51,7 @@ export const AnnouncementSection = ({
         />
         <FormErrorMessage>{errors.title}</FormErrorMessage>
       </FormControl>
-      <Divider />
+      <Divider py="0.5rem" />
 
       {children}
       <Button
