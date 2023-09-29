@@ -119,7 +119,7 @@ export const HeroSideLayout = ({
   title,
   subtitle,
   button,
-  backgroundColor,
+  backgroundColor = "white",
   dropdownIsActive,
   toggleDropdown,
   dropdown,
