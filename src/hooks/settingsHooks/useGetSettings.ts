@@ -16,10 +16,6 @@ import {
 
 import { BE_TO_FE } from "./constants"
 
-const IS_SITE_PRIVATISATION_ACTIVE =
-  process.env.REACT_APP_IS_SITE_PRIVATISATION_ACTIVE &&
-  process.env.REACT_APP_IS_SITE_PRIVATISATION_ACTIVE.toLowerCase() === "true"
-
 const DEFAULT_BE_STATE = {
   title: "",
   description: "",
@@ -131,7 +127,8 @@ const extractPassword = (
 
 export const useGetSettings = (
   siteName: string,
-  isEmailLogin?: boolean
+  isEmailLogin?: boolean,
+  isPrivatisationAllowed?: boolean
 ): UseQueryResult<SiteSettings> => {
   const shouldGetPrivacyDetails =
     isEmailLogin === undefined ? false : isEmailLogin
@@ -139,9 +136,9 @@ export const useGetSettings = (
     [SETTINGS_CONTENT_KEY, siteName, shouldGetPrivacyDetails],
     async () => {
       const siteSettings = await SettingsService.get({ siteName })
+      const isSitePrivatisationActive = isPrivatisationAllowed ?? false
       let passwordSettings
-      if (shouldGetPrivacyDetails && IS_SITE_PRIVATISATION_ACTIVE) {
-        // TODO: LaunchDarkly to allow specific groups to access this feature first
+      if (shouldGetPrivacyDetails && isSitePrivatisationActive) {
         passwordSettings = await SettingsService.getPassword({ siteName })
       } else {
         passwordSettings = {
