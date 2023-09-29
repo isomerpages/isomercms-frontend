@@ -4,6 +4,10 @@ import { FEATURE_FLAGS } from "constants/featureFlags"
 export interface FeatureFlags {
   [FEATURE_FLAGS.STYLING_REVAMP]: boolean
   [FEATURE_FLAGS.REPO_PRIVATISATION]: boolean
+  [FEATURE_FLAGS.BANNER]: {
+    variant: "info" | "error" | "warn"
+    message: string
+  }
 }
 
 export type GBAttributes = {

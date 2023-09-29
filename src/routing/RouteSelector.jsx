@@ -1,3 +1,4 @@
+import { useFeatureIsOn, useFeatureValue } from "@growthbook/growthbook-react"
 import { Banner } from "@opengovsg/design-system-react"
 import { ReactQueryDevtools } from "react-query/devtools"
 import { Switch } from "react-router-dom"
@@ -5,6 +6,8 @@ import { Switch } from "react-router-dom"
 import VerifyUserDetailsModal from "components/VerifyUserDetailsModal"
 
 // Layouts
+
+import { FEATURE_FLAGS } from "constants/featureFlags"
 
 import { ReviewRequestRoleProvider } from "contexts/ReviewRequestRoleContext"
 import { SiteLaunchProvider } from "contexts/SiteLaunchContext"
@@ -36,131 +39,132 @@ import {
   injectApprovalRedirect,
 } from "./ApprovedReviewRedirect"
 
-const { REACT_APP_BANNER_VARIANT: BANNER_VARIANT } = process.env
-const { REACT_APP_BANNER_MESSAGE: BANNER_MESSAGE } = process.env
+export const RouteSelector = () => {
+  const isBannerOn = useFeatureIsOn(FEATURE_FLAGS.BANNER)
+  const bannerParams = useFeatureValue(FEATURE_FLAGS.BANNER)
+  return (
+    <>
+      {isBannerOn && (
+        <Banner useMarkdown variant={bannerParams.variant}>
+          {bannerParams.message}
+        </Banner>
+      )}
+      <Switch>
+        <RedirectIfLoggedInRoute
+          exact
+          path={["/", "/ogp-login"]}
+          unauthedComponent={LoginPage}
+        />
 
-export const RouteSelector = () => (
-  <>
-    {!!BANNER_MESSAGE && (
-      <Banner useMarkdown variant={BANNER_VARIANT}>
-        {BANNER_MESSAGE}
-      </Banner>
-    )}
-    <Switch>
-      <RedirectIfLoggedInRoute
-        exact
-        path={["/", "/ogp-login"]}
-        unauthedComponent={LoginPage}
-      />
+        <RedirectIfLoggedInRoute
+          exact
+          path="/sgid-callback"
+          unauthedComponent={SgidLoginCallbackPage}
+        />
 
-      <RedirectIfLoggedInRoute
-        exact
-        path="/sgid-callback"
-        unauthedComponent={SgidLoginCallbackPage}
-      />
+        <ProtectedRouteWithProps
+          exact
+          path={[
+            "/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName/editPage/:fileName",
+            "/sites/:siteName/folders/:collectionName/subfolders/:subCollectionName/editPage/:fileName",
+            "/sites/:siteName/folders/:collectionName/editPage/:fileName",
+            "/sites/:siteName/editPage/:fileName",
+          ]}
+          component={injectApprovalRedirect(EditPage)}
+        />
 
-      <ProtectedRouteWithProps
-        exact
-        path={[
-          "/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName/editPage/:fileName",
-          "/sites/:siteName/folders/:collectionName/subfolders/:subCollectionName/editPage/:fileName",
-          "/sites/:siteName/folders/:collectionName/editPage/:fileName",
-          "/sites/:siteName/editPage/:fileName",
-        ]}
-        component={injectApprovalRedirect(EditPage)}
-      />
+        <ProtectedRouteWithProps
+          path={[
+            "/sites/:siteName/folders/:collectionName/subfolders/:subCollectionName",
+            "/sites/:siteName/folders/:collectionName",
+          ]}
+        >
+          <ApprovedReviewRedirect>
+            <Folders />
+          </ApprovedReviewRedirect>
+        </ProtectedRouteWithProps>
 
-      <ProtectedRouteWithProps
-        path={[
-          "/sites/:siteName/folders/:collectionName/subfolders/:subCollectionName",
-          "/sites/:siteName/folders/:collectionName",
-        ]}
-      >
-        <ApprovedReviewRedirect>
-          <Folders />
-        </ApprovedReviewRedirect>
-      </ProtectedRouteWithProps>
+        <ProtectedRouteWithProps
+          exact
+          path="/sites/:siteName/navbar"
+          component={injectApprovalRedirect(FeatureFlaggedNavBar)}
+        />
 
-      <ProtectedRouteWithProps
-        exact
-        path="/sites/:siteName/navbar"
-        component={injectApprovalRedirect(FeatureFlaggedNavBar)}
-      />
+        <ProtectedRouteWithProps
+          path={[
+            "/sites/:siteName/media/:mediaRoom/mediaDirectory/:mediaDirectoryName",
+          ]}
+        >
+          <ApprovedReviewRedirect>
+            <Media />
+          </ApprovedReviewRedirect>
+        </ProtectedRouteWithProps>
 
-      <ProtectedRouteWithProps
-        path={[
-          "/sites/:siteName/media/:mediaRoom/mediaDirectory/:mediaDirectoryName",
-        ]}
-      >
-        <ApprovedReviewRedirect>
-          <Media />
-        </ApprovedReviewRedirect>
-      </ProtectedRouteWithProps>
+        <ProtectedRouteWithProps path="/sites/:siteName/dashboard">
+          <SiteLaunchProvider>
+            <SiteDashboard />
+          </SiteLaunchProvider>
+        </ProtectedRouteWithProps>
 
-      <ProtectedRouteWithProps path="/sites/:siteName/dashboard">
-        <SiteLaunchProvider>
-          <SiteDashboard />
-        </SiteLaunchProvider>
-      </ProtectedRouteWithProps>
+        <ProtectedRouteWithProps path="/sites/:siteName/siteLaunchPad">
+          <SiteLaunchProvider>
+            <SiteLaunchPadPage />
+          </SiteLaunchProvider>
+        </ProtectedRouteWithProps>
 
-      <ProtectedRouteWithProps path="/sites/:siteName/siteLaunchPad">
-        <SiteLaunchProvider>
-          <SiteLaunchPadPage />
-        </SiteLaunchProvider>
-      </ProtectedRouteWithProps>
+        <ProtectedRouteWithProps path="/sites/:siteName/review/:reviewId">
+          <ReviewRequestRoleProvider>
+            <ReviewRequestDashboard />
+          </ReviewRequestRoleProvider>
+        </ProtectedRouteWithProps>
 
-      <ProtectedRouteWithProps path="/sites/:siteName/review/:reviewId">
-        <ReviewRequestRoleProvider>
-          <ReviewRequestDashboard />
-        </ReviewRequestRoleProvider>
-      </ProtectedRouteWithProps>
+        <ProtectedRouteWithProps path="/sites/:siteName/workspace">
+          <ApprovedReviewRedirect>
+            <Workspace />
+          </ApprovedReviewRedirect>
+        </ProtectedRouteWithProps>
 
-      <ProtectedRouteWithProps path="/sites/:siteName/workspace">
-        <ApprovedReviewRedirect>
-          <Workspace />
-        </ApprovedReviewRedirect>
-      </ProtectedRouteWithProps>
+        <ProtectedRouteWithProps
+          path="/sites/:siteName/homepage"
+          component={injectApprovalRedirect(FeatureFlaggedHomepage)}
+        />
 
-      <ProtectedRouteWithProps
-        path="/sites/:siteName/homepage"
-        component={injectApprovalRedirect(FeatureFlaggedHomepage)}
-      />
+        <ProtectedRouteWithProps
+          path="/sites/:siteName/contact-us"
+          component={injectApprovalRedirect(FeatureFlaggedContactUs)}
+        />
 
-      <ProtectedRouteWithProps
-        path="/sites/:siteName/contact-us"
-        component={injectApprovalRedirect(FeatureFlaggedContactUs)}
-      />
+        <ProtectedRouteWithProps path="/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName">
+          <ApprovedReviewRedirect>
+            <ResourceCategory />
+          </ApprovedReviewRedirect>
+        </ProtectedRouteWithProps>
 
-      <ProtectedRouteWithProps path="/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName">
-        <ApprovedReviewRedirect>
-          <ResourceCategory />
-        </ApprovedReviewRedirect>
-      </ProtectedRouteWithProps>
+        <ProtectedRouteWithProps
+          path={[
+            "/sites/:siteName/resourceRoom/:resourceRoomName",
+            "/sites/:siteName/resourceRoom",
+          ]}
+        >
+          <ApprovedReviewRedirect>
+            <ResourceRoom />
+          </ApprovedReviewRedirect>
+        </ProtectedRouteWithProps>
 
-      <ProtectedRouteWithProps
-        path={[
-          "/sites/:siteName/resourceRoom/:resourceRoomName",
-          "/sites/:siteName/resourceRoom",
-        ]}
-      >
-        <ApprovedReviewRedirect>
-          <ResourceRoom />
-        </ApprovedReviewRedirect>
-      </ProtectedRouteWithProps>
+        <ProtectedRouteWithProps path="/sites/:siteName/settings">
+          <ApprovedReviewRedirect>
+            <Settings />
+          </ApprovedReviewRedirect>
+        </ProtectedRouteWithProps>
 
-      <ProtectedRouteWithProps path="/sites/:siteName/settings">
-        <ApprovedReviewRedirect>
-          <Settings />
-        </ApprovedReviewRedirect>
-      </ProtectedRouteWithProps>
+        <ProtectedRouteWithProps exact path="/sites" component={Sites} />
 
-      <ProtectedRouteWithProps exact path="/sites" component={Sites} />
-
-      <ProtectedRouteWithProps path="/" component={NotFoundPage} />
-    </Switch>
-    <VerifyUserDetailsModal />
-    {process.env.REACT_APP_ENV === "LOCAL_DEV" && (
-      <ReactQueryDevtools initialIsOpen={false} />
-    )}
-  </>
-)
+        <ProtectedRouteWithProps path="/" component={NotFoundPage} />
+      </Switch>
+      <VerifyUserDetailsModal />
+      {process.env.REACT_APP_ENV === "LOCAL_DEV" && (
+        <ReactQueryDevtools initialIsOpen={false} />
+      )}
+    </>
+  )
+}
