@@ -75,7 +75,7 @@ export const HeroCenteredLayout = ({
               </p>
             ) : null}
             {/* Hero dropdown */}
-            {hero.dropdown ? (
+            {hero.dropdown.title ? (
               <HeroDropdown
                 title={hero.dropdown.title}
                 options={hero.dropdown.options}
