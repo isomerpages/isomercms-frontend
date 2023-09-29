@@ -8,6 +8,7 @@ export interface FeatureFlags {
     variant: "info" | "error" | "warn"
     message: string
   }
+  [FEATURE_FLAGS.NPS_FORM]: boolean
 }
 
 export type GBAttributes = {

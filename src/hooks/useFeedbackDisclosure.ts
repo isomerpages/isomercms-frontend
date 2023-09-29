@@ -1,11 +1,15 @@
 import { useDisclosure } from "@chakra-ui/react"
+import { useFeatureIsOn } from "@growthbook/growthbook-react"
 import { useLocation } from "react-router-dom"
 
+import { FEATURE_FLAGS } from "constants/featureFlags"
 import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 
 import { useLoginContext } from "contexts/LoginContext"
 
 import { isEditPageUrl, isSpecialPagesUrl } from "utils/pages"
+
+import { FeatureFlags } from "types/featureFlags"
 
 import { useLocalStorage } from "./useLocalStorage"
 
@@ -16,8 +20,6 @@ type FeedbackStorageMappings = Record<UserId, LastSeenFeedbackTime>
 
 // 1 week in ms
 const NPS_SURVEY_DURATION = 7 * 24 * 60 * 60 * 1000
-
-const { REACT_APP_SHOW_NPS_FORM } = process.env
 
 type UseFeedbackStorageReturn = readonly [number, () => void]
 
@@ -51,7 +53,7 @@ export const useFeedbackDisclosure = (): UseFeedbackDisclosureReturn => {
   // NOTE: We show the feedback modal to the users iff
   // they are navigating away from the editor
   const isLeavingContentPage = isEditPageUrl(from) || isSpecialPagesUrl(from)
-  const shouldShowNpsForm = REACT_APP_SHOW_NPS_FORM?.trim() === "true"
+  const shouldShowNpsForm = useFeatureIsOn<FeatureFlags>(FEATURE_FLAGS.NPS_FORM)
 
   const [lastSeen, setLastSeen] = useFeedbackStorage()
   // NOTE: Either this is the first time the user has ever seen the survey
