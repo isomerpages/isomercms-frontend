@@ -8,6 +8,7 @@ const {
   CYPRESS_COOKIE_NAME,
   CYPRESS_COOKIE_VALUE,
   CYPRESS_BACKEND_URL,
+  CYPRESS_TEST_REPO_NAME,
 } = process.env
 if (!CYPRESS_COOKIE_NAME || !CYPRESS_COOKIE_VALUE) {
   throw new Error(
@@ -24,19 +25,35 @@ const githubHeaders = {
 }
 
 // Cypress test runner
-const cypressCommand = process.argv[2] // either `run` or `open`
-const baseCypressCommand = `npx cypress ${cypressCommand}`
-// if we are running tests, record them on the dashboard so that github will show the corresponding status
-const runCypressCommand =
-  cypressCommand === "run"
-    ? `${baseCypressCommand} --record`
-    : baseCypressCommand
-
+const emaile2eTests = [
+  "collaborators",
+  "comments",
+  "dashboard",
+  "notifications",
+  "reviewRequests",
+]
 // E2E test repositories
 const e2eTestRepositoriesWithHashes = {
   "e2e-test-repo": "bcfe46da1288b3302c5bb5f72c5c58b50574f26c",
   "e2e-email-test-repo": "93593ceb8ee8af690267e49ea787701fc73baed8",
   "e2e-notggs-test-repo": "1ccc5253dd06e06a088d1e6ec86a38c870c0a3d6",
+}
+
+const cypressCommand = process.argv[2] // either `run`, `run-email` or `open`
+const baseCypressCommand = `npx cypress`
+let runCypressCommand = baseCypressCommand
+
+// if we are running tests, record them on the dashboard so that github will show the corresponding status
+if (cypressCommand === "open") {
+  runCypressCommand = `${baseCypressCommand} open`
+} else if (cypressCommand === "run-email") {
+  runCypressCommand = `${baseCypressCommand} run --spec "${emaile2eTests
+    .map((x) => `cypress/e2e/${x}.spec.ts`)
+    .join(",")}" --record --tag "e2e-email-test-repo"`
+} else {
+  runCypressCommand = `${baseCypressCommand} run --spec "**/!(${emaile2eTests.join(
+    "|"
+  )}).spec.ts" --record --tag "${CYPRESS_TEST_REPO_NAME}"`
 }
 
 // Reset test repositories
@@ -64,8 +81,19 @@ const resetE2ETestRepositories = async () => {
   resetRepository("e2e-email-test-repo", "master", "email")
 }
 
+const resetRequiredE2ETestRepo = async () => {
+  if (cypressCommand === "run-email") {
+    resetRepository("e2e-email-test-repo", "staging", "email")
+    resetRepository("e2e-email-test-repo", "master", "email")
+  } else if (cypressCommand === "run") {
+    resetRepository(CYPRESS_TEST_REPO_NAME, "staging", "github")
+  } else {
+    resetE2ETestRepositories()
+  }
+}
+
 const runE2ETests = async () => {
-  resetE2ETestRepositories()
+  resetRequiredE2ETestRepo()
     .then(() => {
       const child = spawn(runCypressCommand, { shell: true })
       child.stderr.on("data", (data) => {
