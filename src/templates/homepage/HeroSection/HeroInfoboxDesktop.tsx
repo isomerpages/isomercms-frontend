@@ -12,6 +12,10 @@ import { EditorHeroDropdownSection } from "types/homepage"
 import { HeroButton } from "./HeroButton"
 import { HeroDropdown } from "./HeroDropdown"
 
+const getButtonStyling = (alignment: SectionAlignment = "left") => {
+  return `hero-alignment-${alignment}`
+}
+
 interface HeroInfoboxDesktopProps {
   alignment: SectionAlignment
 
@@ -119,7 +123,7 @@ export const HeroInfoboxDesktop = ({
           button && (
             <div
               className={getClassNames(editorStyles, [
-                `hero-alignment-${alignment}`,
+                `${variant === "side" ? getButtonStyling(alignment) : ""}`,
               ])}
             >
               <HeroButton button={button} />
