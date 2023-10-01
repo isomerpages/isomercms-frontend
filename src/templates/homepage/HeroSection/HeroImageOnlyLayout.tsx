@@ -21,7 +21,9 @@ export const HeroImageOnlyLayout = ({
 }: HeroImageOnlyLayoutProps) => {
   return (
     <div
-      className={getClassNames(editorStyles, ["bp-hero-body, with-padding"])}
+      className={getClassNames(editorStyles, [
+        "bp-hero-body, hero-body-padding",
+      ])}
     >
       <div
         className={getClassNames(editorStyles, [
@@ -34,18 +36,12 @@ export const HeroImageOnlyLayout = ({
             className={getClassNames(editorStyles, [
               "min-height-mobile",
               "is-flex",
-              "is-vcentered",
               "is-full-width",
+              "is-vh-centered",
             ])}
           >
             {dropdown?.title ? (
-              <div
-                className={getClassNames(editorStyles, [
-                  "col",
-                  "is-9",
-                  "is-centered",
-                ])}
-              >
+              <div className={getClassNames(editorStyles, ["col", "is-9"])}>
                 <HeroDropdown
                   title={dropdown.title}
                   options={dropdown.options}
