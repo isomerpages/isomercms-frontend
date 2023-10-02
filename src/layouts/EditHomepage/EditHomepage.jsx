@@ -578,6 +578,7 @@ const EditHomepage = ({ match }) => {
             .announcements.announcement_items[announcementItemsIndex].link_url
 
           const isLinkUrlError = isLinkTextFilled && !isLinkUrlFilled
+          const isLinkTextError = !isLinkTextFilled && isLinkUrlFilled
           const isLinkUrlOrTextChanged =
             field === "link_text" || field === "link_url"
           if (isLinkUrlOrTextChanged) {
@@ -585,6 +586,11 @@ const EditHomepage = ({ match }) => {
               announcementItemsIndex
             ].link_url = isLinkUrlError
               ? "Please specify a URL for your link"
+              : ""
+            newErrors.announcementItems[
+              announcementItemsIndex
+            ].link_text = isLinkTextError
+              ? "Please specify text for your link"
               : ""
           }
 
