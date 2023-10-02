@@ -40,8 +40,8 @@ export const HeroInfoboxMobile = ({
       style={{
         paddingTop: "106px",
         paddingBottom: "106px",
-        paddingLeft: "84px",
-        paddingRight: "84px",
+        paddingLeft: "48px",
+        paddingRight: "48px",
       }}
     >
       <div
