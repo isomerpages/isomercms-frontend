@@ -25,7 +25,7 @@ const githubHeaders = {
 }
 
 // Cypress test runner
-const emaile2eTests = [
+const emailE2ETests = [
   "collaborators",
   "comments",
   "dashboard",
@@ -47,11 +47,11 @@ let runCypressCommand = baseCypressCommand
 if (cypressCommand === "open") {
   runCypressCommand = `${baseCypressCommand} open`
 } else if (cypressCommand === "run-email") {
-  runCypressCommand = `${baseCypressCommand} run --spec "${emaile2eTests
+  runCypressCommand = `${baseCypressCommand} run --spec "${emailE2ETests
     .map((x) => `cypress/e2e/${x}.spec.ts`)
     .join(",")}" --record --tag "e2e-email-test-repo"`
 } else {
-  runCypressCommand = `${baseCypressCommand} run --spec "**/!(${emaile2eTests.join(
+  runCypressCommand = `${baseCypressCommand} run --spec "**/!(${emailE2ETests.join(
     "|"
   )}).spec.ts" --record --tag "${CYPRESS_TEST_REPO_NAME}"`
 }
