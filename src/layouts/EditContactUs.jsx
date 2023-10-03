@@ -172,6 +172,17 @@ const displayDeletedFrontMatter = (deletedFrontMatter) => {
   return displayText
 }
 
+// NOTE: `scrollIntoView` does not work when called synchronously
+// to avoid this problem, we do a `setTimeout` to wrap it.
+// This calls it after 1ms, which allows it to work.
+const scrollTo = (ref) => {
+  setTimeout(() =>
+    ref.current.scrollIntoView({
+      behavior: "smooth",
+    })
+  )
+}
+
 const EditContactUs = ({ match }) => {
   const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
 
@@ -415,7 +426,7 @@ const EditContactUs = ({ match }) => {
       })
 
       // scroll to new location of dragged element
-      scrollRefs[type][destination.index].current.scrollIntoView()
+      scrollTo(scrollRefs[type][destination.index])
     }
 
     setScrollRefs(newScrollRefs)
@@ -443,7 +454,7 @@ const EditContactUs = ({ match }) => {
               $set: validateFeedbackUrl(value),
             },
           })
-          scrollRefs.sectionsScrollRefs[elemType].current.scrollIntoView()
+          scrollTo(scrollRefs.sectionsScrollRefs[elemType])
           break
         }
         case "header": {
@@ -457,7 +468,7 @@ const EditContactUs = ({ match }) => {
               $set: validateHeaderTitle(value),
             },
           })
-          scrollRefs.sectionsScrollRefs[elemType].current.scrollIntoView()
+          scrollTo(scrollRefs.sectionsScrollRefs[elemType])
           break
         }
         case "contacts": {
@@ -508,7 +519,7 @@ const EditContactUs = ({ match }) => {
               })
               break
           }
-          scrollRefs[elemType][contactIndex].current.scrollIntoView()
+          scrollTo(scrollRefs[elemType][contactIndex])
           break
         }
         case "locations": {
@@ -617,7 +628,7 @@ const EditContactUs = ({ match }) => {
               })
               break
           }
-          scrollRefs[elemType][locationIndex].current.scrollIntoView()
+          scrollTo(scrollRefs[elemType][locationIndex])
           break
         }
         default:
@@ -679,9 +690,9 @@ const EditContactUs = ({ match }) => {
 
       if (scrollRefs[id].length) {
         // Scroll to an approximation of where the new field will be based on the current last field, calibrated from the bottom of page
-        _.last(scrollRefs[id]).current.scrollIntoView()
+        scrollTo(_.last(scrollRefs[id]))
       } else {
-        scrollRefs.sectionsScrollRefs[id].current.scrollIntoView()
+        scrollTo(scrollRefs.sectionsScrollRefs[id])
       }
 
       setScrollRefs(newScrollRefs)
@@ -751,7 +762,7 @@ const EditContactUs = ({ match }) => {
           newDisplaySections = update(displaySections, {
             $set: resetDisplaySections,
           })
-          scrollRefs.sectionsScrollRefs[sectionIndex].current.scrollIntoView()
+          scrollTo(scrollRefs.sectionsScrollRefs[sectionIndex])
           break
         }
         default: {
@@ -760,7 +771,7 @@ const EditContactUs = ({ match }) => {
           newDisplaySections = update(displaySections, {
             [elemType]: { $set: resetDisplaySections[elemType] },
           })
-          scrollRefs[elemType][sectionIndex].current.scrollIntoView()
+          scrollTo(scrollRefs[elemType][sectionIndex])
           break
         }
       }
