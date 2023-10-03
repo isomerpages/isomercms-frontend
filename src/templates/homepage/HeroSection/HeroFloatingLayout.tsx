@@ -38,7 +38,7 @@ export const HeroFloatingLayout = ({
   title,
   subtitle,
   button,
-  backgroundColor,
+  backgroundColor = "white",
   dropdownIsActive,
   toggleDropdown,
   dropdown,
