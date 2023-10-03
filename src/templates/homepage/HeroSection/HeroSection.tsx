@@ -153,6 +153,7 @@ export const TemplateHeroSection = forwardRef<
           )}
           {variant === "image" && (
             <HeroImageOnlyLayout
+              button={hero.button}
               dropdown={hero.dropdown}
               dropdownIsActive={dropdownIsActive}
               toggleDropdown={toggleDropdown}

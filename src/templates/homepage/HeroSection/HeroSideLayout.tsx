@@ -75,7 +75,7 @@ const HeroInfoboxDesktop = ({
           )}
         </div>
 
-        {dropdown ? (
+        {dropdown?.title ? (
           <div
             className={getClassNames(editorStyles, ["is-flex"])}
             style={{
@@ -119,7 +119,7 @@ export const HeroSideLayout = ({
   title,
   subtitle,
   button,
-  backgroundColor,
+  backgroundColor = "white",
   dropdownIsActive,
   toggleDropdown,
   dropdown,
@@ -173,10 +173,11 @@ export const HeroSideLayout = ({
         <div
           className={getClassNames(editorStyles, [
             "p-8",
-            "row",
             "is-vcentered",
             "is-centered",
             "is-flex",
+            "col",
+            "is-9",
           ])}
           style={{
             flexDirection: "column",
@@ -191,7 +192,7 @@ export const HeroSideLayout = ({
               </b>
             </h1>
           </div>
-          {dropdown ? (
+          {dropdown?.title ? (
             <HeroDropdown
               title={dropdown.title}
               options={dropdown.options}
