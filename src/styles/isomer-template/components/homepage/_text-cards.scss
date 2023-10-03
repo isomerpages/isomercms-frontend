@@ -47,14 +47,6 @@
       flex: 0 0 calc(50% - 24px);
     }
 
-    &:hover {
-      background-color: $interaction-hover;
-      cursor: pointer;
-      > .link {
-        color: var(--site-secondary-color-hover);
-      }
-    }
-
     .textcards-card-description {
       flex-grow: 1;
     }

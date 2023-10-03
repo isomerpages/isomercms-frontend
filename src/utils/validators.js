@@ -615,11 +615,11 @@ const validateTextcardsSection = (sectionError, sectionType, field, value) => {
   switch (field) {
     case "title": {
       // Title is too short
-      if (value.length <= TEXTCARDS_CARD_TITLE_MIN_LENGTH) {
-        errorMessage = `Title should be longer than ${TEXTCARDS_BLOCK_TITLE_MIN_LENGTH} characters.`
+      if (value.length <= TEXTCARDS_BLOCK_TITLE_MIN_LENGTH) {
+        errorMessage = `Title cannot be empty.`
       }
       // Title is too long
-      if (value.length >= TEXTCARDS_CARD_TITLE_MAX_LENGTH) {
+      if (value.length >= TEXTCARDS_BLOCK_TITLE_MAX_LENGTH) {
         errorMessage = `Title should be shorter than ${TEXTCARDS_BLOCK_TITLE_MAX_LENGTH} characters.`
       }
       break
@@ -632,9 +632,9 @@ const validateTextcardsSection = (sectionError, sectionType, field, value) => {
       break
     }
     case "description": {
-      // Button text is too long
+      // Description is too long
       if (value.length >= TEXTCARDS_BLOCK_DESCRIPTION_MAX_LENGTH) {
-        errorMessage = `Button text should be shorter than ${TEXTCARDS_BLOCK_DESCRIPTION_MAX_LENGTH} characters.`
+        errorMessage = `Description should be shorter than ${TEXTCARDS_BLOCK_DESCRIPTION_MAX_LENGTH} characters (${value.length}/${TEXTCARDS_BLOCK_DESCRIPTION_MAX_LENGTH} characters)`
       }
       break
     }
@@ -652,36 +652,36 @@ const validateTextcard = (cardError, field, value) => {
     case "title": {
       // Title is too short
       if (value.length <= TEXTCARDS_CARD_TITLE_MIN_LENGTH) {
-        errorMessage = `The title should be longer than ${TEXTCARDS_CARD_TITLE_MIN_LENGTH} characters.`
+        errorMessage = `Title cannot be empty`
       }
       // Title is too long
       if (value.length >= TEXTCARDS_CARD_TITLE_MAX_LENGTH) {
-        errorMessage = `The title should be shorter than ${TEXTCARDS_CARD_TITLE_MAX_LENGTH} characters.`
+        errorMessage = `Title should be shorter than ${TEXTCARDS_CARD_TITLE_MAX_LENGTH} characters`
       }
       break
     }
     case "description": {
       // Description is too long
       if (value.length >= TEXTCARDS_CARD_DESCRIPTION_MAX_LENGTH) {
-        errorMessage = `The description should be shorter than ${TEXTCARDS_CARD_DESCRIPTION_MAX_LENGTH} characters.`
+        errorMessage = `The description should be shorter than ${TEXTCARDS_CARD_DESCRIPTION_MAX_LENGTH} characters (${value.length}/${TEXTCARDS_CARD_DESCRIPTION_MAX_LENGTH})`
       }
       break
     }
     case "linktext": {
       // Link text is too short
       if (value.length <= TEXTCARDS_CARD_LINKTEXT_MIN_LENGTH) {
-        errorMessage = `The description should be longer than ${TEXTCARDS_CARD_LINKTEXT_MIN_LENGTH} characters.`
+        errorMessage = `Link text cannot be empty`
       }
       // Link text is too long
       if (value.length >= TEXTCARDS_CARD_LINKTEXT_MAX_LENGTH) {
-        errorMessage = `The description should be shorter than ${TEXTCARDS_CARD_LINKTEXT_MAX_LENGTH} characters.`
+        errorMessage = `Text should be shorter than ${TEXTCARDS_CARD_LINKTEXT_MAX_LENGTH} characters.`
       }
       break
     }
     case "url": {
       // Url is too short
       if (value.length <= TEXTCARDS_CARD_URL_MIN_LENGTH) {
-        errorMessage = `The description should be longer than ${TEXTCARDS_CARD_URL_MIN_LENGTH} characters.`
+        errorMessage = `Please specify a URL for your card.`
       }
       break
     }

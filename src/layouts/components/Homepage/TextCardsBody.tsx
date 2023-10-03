@@ -1,10 +1,11 @@
-import { FormControl, VStack, Text } from "@chakra-ui/react"
+import { FormControl, VStack, Text, Divider } from "@chakra-ui/react"
 import { DragDropContext } from "@hello-pangea/dnd"
 import {
   Button,
   FormErrorMessage,
   FormLabel,
   Input,
+  Textarea,
 } from "@opengovsg/design-system-react"
 import _ from "lodash"
 import { BiPlus } from "react-icons/bi"
@@ -48,7 +49,7 @@ export const TextCardsSectionBody = ({
   return (
     // NOTE: Setting negative margin so that the gap is correct.
     // This is because there is inbuilt padding onto the `AccordionPanels`.
-    <Editable.Section mt="-0.5rem">
+    <Editable.Section>
       <FormControl isInvalid={!!errors.subtitle}>
         <FormLabel>Subtitle</FormLabel>
         <Input
@@ -71,7 +72,7 @@ export const TextCardsSectionBody = ({
       </FormControl>
       <FormControl isInvalid={!!errors.description}>
         <FormLabel>Description</FormLabel>
-        <Input
+        <Textarea
           placeholder="This description appears below your title. We recommend keeping it as short and succinct as possible."
           id={`section-${index}-textcards-description`}
           value={description}
@@ -79,12 +80,14 @@ export const TextCardsSectionBody = ({
         />
         <FormErrorMessage>{errors.description}</FormErrorMessage>
       </FormControl>
-      <FormControl isRequired pt="0.5rem">
-        <FormLabel mb="0.5rem" textStyle="h6">
+      <Divider py="0.5rem" />
+      <FormControl isRequired>
+        <Text mb="0.5rem" textStyle="h5">
           Cards
-        </FormLabel>
+        </Text>
         <Text textStyle="body-2" mb="1.5rem">
-          Cards are displayed side by side on a desktop screens
+          Cards are displayed side by side on a desktop screen. You can add up
+          to 4 cards
         </Text>
         <DragDropContext onDragEnd={onDragEnd}>
           <Editable.Droppable width="100%" editableId={`textCardItem-${index}`}>
@@ -103,14 +106,14 @@ export const TextCardsSectionBody = ({
                       isInvalid={_.some(cardErrors[cardIndex])}
                       isNested
                     >
-                      <Editable.Section mt="-0.5rem">
+                      <Editable.Section>
                         <FormControl
                           isRequired
                           isInvalid={!!cardErrors[cardIndex].title}
                         >
                           <FormLabel>Title</FormLabel>
                           <Input
-                            placeholder="This is a title for the card"
+                            placeholder="New card"
                             id={`textCardItem-${index}-${cardIndex}-title`}
                             value={card.title}
                             onChange={onChange}
@@ -120,11 +123,10 @@ export const TextCardsSectionBody = ({
                           </FormErrorMessage>
                         </FormControl>
                         <FormControl
-                          isRequired
                           isInvalid={!!cardErrors[cardIndex].description}
                         >
                           <FormLabel>Description</FormLabel>
-                          <Input
+                          <Textarea
                             placeholder="This is a description for the card. We recommend keeping it short and succinct."
                             id={`textCardItem-${index}-${cardIndex}-description`}
                             value={card.description}
@@ -153,9 +155,16 @@ export const TextCardsSectionBody = ({
                           isRequired
                           isInvalid={!!cardErrors[cardIndex].url}
                         >
-                          <FormLabel>Link URL</FormLabel>
+                          <FormLabel mb="0">Link URL</FormLabel>
+                          <Text
+                            mb="0.75rem"
+                            textStyle="body-2"
+                            textColor="base.content.medium"
+                          >
+                            Clicking on the card will open this URL
+                          </Text>
                           <Input
-                            placeholder="Enter a /page-url or link for this menu item"
+                            placeholder="Insert /page-url or https://"
                             id={`textCardItem-${index}-${cardIndex}-url`}
                             value={card.url}
                             onChange={onChange}
