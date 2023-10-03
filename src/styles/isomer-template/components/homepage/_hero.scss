@@ -76,13 +76,14 @@
   }
 }
 
-@media screen and (min-width: map-get($breakpoints, "xxl")) {
+// NOTE: This is done to account for the drawer width which eats into the preview
+@media screen and (min-width: (map-get($breakpoints, "xxl") + $preview-drawer-width)) {
   .side-section-infobox-container {
     width: 576px;
   }
 }
 
-@media screen and (max-width: (map-get($breakpoints, "xxl") - 1)) {
+@media screen and (max-width: (map-get($breakpoints, "xxl") + $preview-drawer-width - 1)) {
   .side-section-infobox-container {
     width: 100%;
   }
