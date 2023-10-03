@@ -182,7 +182,7 @@ const HeroSideSectionLayout = ({
   errors,
   title,
   subtitle,
-  size = "50%",
+  size = "md",
   alignment = "left",
 }: HeroSideSectionProps) => {
   const { onChange } = useEditableContext()
@@ -206,7 +206,7 @@ const HeroSideSectionLayout = ({
       <Box w="100%">
         <Text textStyle="subhead-1">Section size</Text>
         <Radio.RadioGroup
-          onChange={(nextSectionSize) => {
+          onChange={(nextSectionSize: SectionSize) => {
             onChange({
               target: {
                 id: "section-0-hero-size",
@@ -217,11 +217,11 @@ const HeroSideSectionLayout = ({
           defaultValue={size}
         >
           <HStack spacing="0.5rem">
-            <Radio value="50%" size="xs" w="50%" allowDeselect={false}>
+            <Radio value="md" size="xs" w="50%" allowDeselect={false}>
               Wide
             </Radio>
             <Spacer />
-            <Radio value="33%" size="xs" w="50%" allowDeselect={false}>
+            <Radio value="sm" size="xs" w="50%" allowDeselect={false}>
               Narrow
             </Radio>
           </HStack>

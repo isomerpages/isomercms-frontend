@@ -19,6 +19,7 @@ import {
 import { EditorHeroDropdownSection, HeroBannerLayouts } from "types/homepage"
 
 import { HeroCenteredLayout } from "./HeroCenteredLayout"
+import { HeroFloatingLayout } from "./HeroFloatingLayout"
 import { HeroImageOnlyLayout } from "./HeroImageOnlyLayout"
 import { HeroSideLayout } from "./HeroSideLayout"
 
@@ -168,14 +169,12 @@ export const TemplateHeroSection = forwardRef<
             />
           )}
           {variant === "floating" && (
-            <div className={getClassNames(editorStyles, ["hero-floating"])}>
-              <HeroSideLayout
-                {...hero}
-                title={hero.title || ""}
-                dropdownIsActive={dropdownIsActive}
-                toggleDropdown={toggleDropdown}
-              />
-            </div>
+            <HeroFloatingLayout
+              {...hero}
+              title={hero.title || ""}
+              dropdownIsActive={dropdownIsActive}
+              toggleDropdown={toggleDropdown}
+            />
           )}
         </section>
         {/* Key highlights */}
