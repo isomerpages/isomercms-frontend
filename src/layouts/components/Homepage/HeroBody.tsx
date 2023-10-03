@@ -450,10 +450,14 @@ export const HeroBody = ({
       <Divider my="1.5rem" />
       <Editable.Section spacing="0.75rem">
         <Box w="100%">
-          <Text textStyle="h5" mb="0.75rem">
+          <Text textStyle="h5" mb="1rem">
             Hero Interactions
           </Text>
-          <Text textStyle="subhead-1" mb="0.25rem">
+          <Text
+            textStyle="subhead-1"
+            mb="0.25rem"
+            textColor="base.content.strong"
+          >
             Content type
           </Text>
           <Radio.RadioGroup
