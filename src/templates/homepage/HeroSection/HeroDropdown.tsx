@@ -34,8 +34,9 @@ export const HeroDropdown = ({
   <div
     className={getClassNames(editorStyles, [
       "bp-dropdown",
-      "margin--top--sm",
       `${isActive ? "is-active" : null}`,
+      "border-solid-gray",
+      "is-full-width",
     ])}
   >
     <div className={editorStyles["bp-dropdown-trigger"]}>

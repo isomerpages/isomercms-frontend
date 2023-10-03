@@ -182,7 +182,7 @@ const HeroSideSectionLayout = ({
   errors,
   title,
   subtitle,
-  size = "50%",
+  size = "md",
   alignment = "left",
 }: HeroSideSectionProps) => {
   const { onChange } = useEditableContext()
@@ -203,10 +203,10 @@ const HeroSideSectionLayout = ({
         title={title}
         subtitle={subtitle}
       />
-      <Box>
+      <Box w="100%">
         <Text textStyle="subhead-1">Section size</Text>
         <Radio.RadioGroup
-          onChange={(nextSectionSize) => {
+          onChange={(nextSectionSize: SectionSize) => {
             onChange({
               target: {
                 id: "section-0-hero-size",
@@ -217,12 +217,12 @@ const HeroSideSectionLayout = ({
           defaultValue={size}
         >
           <HStack spacing="0.5rem">
-            <Radio value="50%" size="xs" w="50%" allowDeselect={false}>
-              Half (1/2) of banner
+            <Radio value="md" size="xs" w="50%" allowDeselect={false}>
+              Wide
             </Radio>
             <Spacer />
-            <Radio value="33%" size="xs" w="50%" allowDeselect={false}>
-              Third (1/3) of banner
+            <Radio value="sm" size="xs" w="50%" allowDeselect={false}>
+              Narrow
             </Radio>
           </HStack>
         </Radio.RadioGroup>
@@ -253,16 +253,8 @@ const HeroSideSectionLayout = ({
       </Box>
       <Box w="100%">
         <Text textStyle="subhead-1">Section background colour</Text>
-        <HStack spacing="0.75rem" alignItems="flex-start">
-          <Tooltip label="black" hasArrow>
-            <IconButton
-              {...getIconButtonProps("black")}
-              onClick={() => onIconButtonClick("black")}
-            >
-              <Icon as={BiInfoCircle} fill="black" fontSize="1rem" />
-            </IconButton>
-          </Tooltip>
-          <Tooltip label="white" hasArrow>
+        <HStack mt="0.5rem" spacing="0.75rem" alignItems="flex-start">
+          <Tooltip label="White" hasArrow>
             <IconButton
               {...getIconButtonProps("white")}
               onClick={() => onIconButtonClick("white")}
@@ -270,7 +262,15 @@ const HeroSideSectionLayout = ({
               <Icon as={BiInfoCircle} fill="white" fontSize="1rem" />
             </IconButton>
           </Tooltip>
-          <Tooltip label="translucent gray" hasArrow>
+          <Tooltip label="Black" hasArrow>
+            <IconButton
+              {...getIconButtonProps("black")}
+              onClick={() => onIconButtonClick("black")}
+            >
+              <Icon as={BiInfoCircle} fill="black" fontSize="1rem" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip label="Translucent grey" hasArrow>
             <IconButton
               {...getIconButtonProps("gray")}
               onClick={() => onIconButtonClick("gray")}
@@ -313,7 +313,7 @@ const HeroLayoutForm = ({
   }, [inView, showNewLayouts])
 
   return (
-    <Box>
+    <Box w="100%">
       {showFeatureTour && (
         <Box>
           <FeatureTourHandler
@@ -332,6 +332,7 @@ const HeroLayoutForm = ({
               <FormLabel textStyle="subhead-1">Layout</FormLabel>
               <SingleSelect
                 isClearable={false}
+                isSearchable={false}
                 name="hero layout options"
                 value={variant}
                 items={_.values(HERO_LAYOUTS)}
@@ -452,7 +453,7 @@ export const HeroBody = ({
           <Text textStyle="h5" mb="0.75rem">
             Hero Interactions
           </Text>
-          <Text textStyle="subhead-2" mb="0.25rem">
+          <Text textStyle="subhead-1" mb="0.25rem">
             Content type
           </Text>
           <Radio.RadioGroup

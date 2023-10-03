@@ -7,101 +7,18 @@ import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 import { getClassNames } from "templates/utils/stylingUtils"
 
-import { SectionBackgroundColor, SectionSize } from "types/hero"
+import {
+  SectionAlignment,
+  SectionBackgroundColor,
+  SectionSize,
+} from "types/hero"
 import { EditorHeroDropdownSection } from "types/homepage"
 
-import { HeroButton } from "./HeroButton"
-import { HeroDropdown } from "./HeroDropdown"
-
-const TRANSLUCENT_GRAY = "#00000080"
-
-interface HeroInfoboxDesktopProps {
-  size: SectionSize
-  backgroundColor: SectionBackgroundColor
-  title: string
-  subtitle?: string
-  url?: string
-  button?: string
-  dropdown?: EditorHeroDropdownSection["dropdown"]
-  dropdownIsActive: boolean
-  toggleDropdown: () => void
-}
-const HeroInfoboxDesktop = ({
-  size,
-  backgroundColor,
-  title,
-  subtitle,
-  dropdown,
-  dropdownIsActive,
-  toggleDropdown,
-  url,
-  button,
-}: HeroInfoboxDesktopProps) => {
-  return (
-    <div
-      className={getClassNames(editorStyles, ["p-16", "is-hidden-mobile"])}
-      style={{
-        width: size,
-        background:
-          backgroundColor === "gray" ? TRANSLUCENT_GRAY : backgroundColor,
-      }}
-    >
-      <div className={getClassNames(editorStyles, ["py-16"])}>
-        <div className={getClassNames(editorStyles, ["mb-8"])}>
-          <h1 className={getClassNames(editorStyles, ["hero-title", "mb-4"])}>
-            {title && (
-              <>
-                <b className={getClassNames(editorStyles, ["is-hidden-touch"])}>
-                  {title}
-                </b>
-                <b
-                  className={getClassNames(editorStyles, ["is-hidden-desktop"])}
-                >
-                  {title}
-                </b>
-              </>
-            )}
-          </h1>
-
-          {subtitle && (
-            <p
-              className={getClassNames(editorStyles, [
-                "is-hidden-touch",
-                "hero-subtitle",
-              ])}
-            >
-              {subtitle}
-            </p>
-          )}
-        </div>
-
-        {dropdown ? (
-          <div
-            className={getClassNames(editorStyles, ["is-flex"])}
-            style={{
-              justifyContent: "center",
-              alignContent: "center",
-            }}
-          >
-            <HeroDropdown
-              title={dropdown.title}
-              options={dropdown.options}
-              isActive={dropdownIsActive}
-              toggleDropdown={toggleDropdown}
-            />
-          </div>
-        ) : (
-          // NOTE: This is to mirror the template structure
-          // as closely as possible.
-          url && button && <HeroButton button={button} />
-        )}
-      </div>
-    </div>
-  )
-}
+import { HeroInfoboxDesktop } from "./HeroInfoboxDesktop"
+import { HeroInfoboxMobile } from "./HeroInfoboxMobile"
 
 interface HeroSideLayoutProps {
-  alignment: "left" | "right"
+  alignment: SectionAlignment
   size: SectionSize
   url?: string
   button?: string
@@ -114,12 +31,12 @@ interface HeroSideLayoutProps {
 }
 export const HeroSideLayout = ({
   alignment = "left",
-  size = "50%",
+  size = "md",
   url,
   title,
   subtitle,
   button,
-  backgroundColor,
+  backgroundColor = "white",
   dropdownIsActive,
   toggleDropdown,
   dropdown,
@@ -127,8 +44,10 @@ export const HeroSideLayout = ({
   return (
     <div className={getClassNames(editorStyles, ["bp-hero-body"])}>
       {/* desktop view - done using css media queries */}
-      {alignment === "left" ? (
+      <div className={getClassNames(editorStyles, ["is-hidden-mobile"])}>
         <HeroInfoboxDesktop
+          variant="side"
+          alignment={alignment}
           size={size}
           url={url}
           button={button}
@@ -139,84 +58,19 @@ export const HeroSideLayout = ({
           toggleDropdown={toggleDropdown}
           dropdown={dropdown}
         />
-      ) : (
-        <div className={getClassNames(editorStyles, ["is-flex", "flex-end"])}>
-          <HeroInfoboxDesktop
-            size={size}
-            url={url}
-            button={button}
-            title={title}
-            subtitle={subtitle}
-            backgroundColor={backgroundColor}
-            dropdownIsActive={dropdownIsActive}
-            toggleDropdown={toggleDropdown}
-            dropdown={dropdown}
-          />
-        </div>
-      )}
+      </div>
 
       {/* mobile view - done using css media queries */}
-      <div
-        className={getClassNames(editorStyles, [
-          "row",
-          "is-vcentered",
-          "is-centered",
-          "is-hidden-tablet",
-        ])}
-        style={{
-          paddingTop: "106px",
-          paddingBottom: "106px",
-          paddingLeft: "84px",
-          paddingRight: "84px",
-        }}
-      >
-        <div
-          className={getClassNames(editorStyles, [
-            "p-8",
-            "row",
-            "is-vcentered",
-            "is-centered",
-            "is-flex",
-          ])}
-          style={{
-            flexDirection: "column",
-            background:
-              backgroundColor === "gray" ? TRANSLUCENT_GRAY : backgroundColor,
-          }}
-        >
-          <div className={getClassNames(editorStyles, ["mb-8"])}>
-            <h1 className={getClassNames(editorStyles, ["hero-title", "mb-4"])}>
-              <b className={getClassNames(editorStyles, ["is-hidden-desktop"])}>
-                {title}
-              </b>
-            </h1>
-          </div>
-          {dropdown ? (
-            <HeroDropdown
-              title={dropdown.title}
-              options={dropdown.options}
-              isActive={dropdownIsActive}
-              toggleDropdown={toggleDropdown}
-            />
-          ) : (
-            // NOTE: This is to mirror the template structure
-            // as closely as possible.
-            url &&
-            button && (
-              <a
-                href="/"
-                className={getClassNames(editorStyles, [
-                  "bp-button",
-                  "is-secondary",
-                  "is-uppercase",
-                  "search-button",
-                ])}
-              >
-                {button}
-              </a>
-            )
-          )}
-        </div>
+      <div className={getClassNames(editorStyles, ["is-hidden-tablet"])}>
+        <HeroInfoboxMobile
+          dropdownIsActive={dropdownIsActive}
+          toggleDropdown={toggleDropdown}
+          dropdown={dropdown}
+          url={url}
+          button={button}
+          title={title}
+          backgroundColor={backgroundColor}
+        />
       </div>
     </div>
   )

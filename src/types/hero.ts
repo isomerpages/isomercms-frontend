@@ -1,4 +1,4 @@
-export type SectionSize = "50%" | "33%"
+export type SectionSize = "sm" | "md"
 
 export type SectionAlignment = "left" | "right"
 

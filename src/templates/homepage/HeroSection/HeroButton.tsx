@@ -7,7 +7,7 @@ interface HeroButtonProps {
 }
 export const HeroButton = ({ button }: HeroButtonProps) => (
   <>
-    {button ? (
+    {button && (
       <div
         className={getClassNames(editorStyles, [
           "bp-button",
@@ -18,6 +18,6 @@ export const HeroButton = ({ button }: HeroButtonProps) => (
       >
         {button}
       </div>
-    ) : null}
+    )}
   </>
 )

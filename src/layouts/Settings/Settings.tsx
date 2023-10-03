@@ -6,6 +6,7 @@ import {
   StackDivider,
   useDisclosure,
 } from "@chakra-ui/react"
+import { useFeatureIsOn } from "@growthbook/growthbook-react"
 import { Button } from "@opengovsg/design-system-react"
 import _ from "lodash"
 import { useEffect, useRef } from "react"
@@ -14,6 +15,8 @@ import { useParams } from "react-router-dom"
 
 import { Footer } from "components/Footer"
 
+import { FEATURE_FLAGS } from "constants/featureFlags"
+
 import { useDirtyFieldContext } from "contexts/DirtyFieldContext"
 import { useLoginContext } from "contexts/LoginContext"
 
@@ -21,6 +24,7 @@ import { useGetSettings, useUpdateSettings } from "hooks/settingsHooks"
 
 import { useErrorToast, useSuccessToast } from "utils/toasts"
 
+import { FeatureFlags } from "types/featureFlags"
 import { SiteSettings } from "types/settings"
 import { DEFAULT_RETRY_MSG } from "utils"
 
@@ -37,6 +41,10 @@ import { PrivacySettings } from "./PrivacySettings"
 import { SocialMediaSettings } from "./SocialMediaSettings"
 
 export const Settings = (): JSX.Element => {
+  const isPrivatisationAllowed = useFeatureIsOn<FeatureFlags>(
+    FEATURE_FLAGS.REPO_PRIVATISATION
+  )
+
   const { siteName } = useParams<{ siteName: string }>()
   const { userId } = useLoginContext()
   // Only github users have userId, and not logged in users have userId as "Unknown user"
@@ -45,7 +53,7 @@ export const Settings = (): JSX.Element => {
     data: settingsData,
     isLoading: isGetSettingsLoading,
     isError: isGetSettingsError,
-  } = useGetSettings(siteName, !isGithubUser)
+  } = useGetSettings(siteName, !isGithubUser, isPrivatisationAllowed)
   const errorToast = useErrorToast()
 
   // Trigger an error toast informing the user if settings data could not be fetched

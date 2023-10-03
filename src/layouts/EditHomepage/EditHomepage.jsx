@@ -578,6 +578,7 @@ const EditHomepage = ({ match }) => {
             .announcements.announcement_items[announcementItemsIndex].link_url
 
           const isLinkUrlError = isLinkTextFilled && !isLinkUrlFilled
+          const isLinkTextError = !isLinkTextFilled && isLinkUrlFilled
           const isLinkUrlOrTextChanged =
             field === "link_text" || field === "link_url"
           if (isLinkUrlOrTextChanged) {
@@ -585,6 +586,11 @@ const EditHomepage = ({ match }) => {
               announcementItemsIndex
             ].link_url = isLinkUrlError
               ? "Please specify a URL for your link"
+              : ""
+            newErrors.announcementItems[
+              announcementItemsIndex
+            ].link_text = isLinkTextError
+              ? "Please specify text for your link"
               : ""
           }
 
@@ -767,6 +773,22 @@ const EditHomepage = ({ match }) => {
               })
             )
             setDisplayAnnouncementItems(_.fill(Array(1), false))
+          } else if (val.textcards) {
+            // Create 3 text cards by default
+            const parentId =
+              updatedHomepageState.frontMatter.sections.length - 1
+            let intermediateHomepageState = updatedHomepageState
+            for (let i = 0; i < 3; i += 1) {
+              const cardVal = TEXTCARDS_ITEM_SECTION
+              const cardErr = getErrorValues(TEXTCARDS_ITEM_SECTION)
+              intermediateHomepageState = onCreate(
+                intermediateHomepageState,
+                `textCardItem-${parentId}`,
+                cardVal,
+                cardErr
+              )
+            }
+            setHomepageState(intermediateHomepageState)
           }
           break
         }
