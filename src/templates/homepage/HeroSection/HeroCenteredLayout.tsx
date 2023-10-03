@@ -13,7 +13,7 @@ interface HeroCenteredLayoutProps {
     title?: string
     subtitle?: string
     button?: string
-    dropdown: EditorHeroDropdownSection["dropdown"]
+    dropdown?: EditorHeroDropdownSection["dropdown"]
   }
   dropdownIsActive: boolean
   toggleDropdown: () => void
@@ -75,7 +75,7 @@ export const HeroCenteredLayout = ({
               </p>
             ) : null}
             {/* Hero dropdown */}
-            {hero.dropdown.title ? (
+            {hero.dropdown?.title ? (
               <HeroDropdown
                 title={hero.dropdown.title}
                 options={hero.dropdown.options}
