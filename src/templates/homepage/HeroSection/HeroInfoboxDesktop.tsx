@@ -12,10 +12,6 @@ import { EditorHeroDropdownSection } from "types/homepage"
 import { HeroButton } from "./HeroButton"
 import { HeroDropdown } from "./HeroDropdown"
 
-const getButtonStyling = (alignment: SectionAlignment = "left") => {
-  return `hero-alignment-${alignment}`
-}
-
 interface HeroInfoboxDesktopProps {
   alignment: SectionAlignment
 
@@ -31,8 +27,6 @@ interface HeroInfoboxDesktopProps {
   variant: "side" | "floating"
 }
 
-const BASE_TITLE_CONTAINER_STYLES = ["mb-8", "is-flex"]
-
 export const HeroInfoboxDesktop = ({
   variant,
   alignment = "left",
@@ -46,11 +40,6 @@ export const HeroInfoboxDesktop = ({
   url,
   button,
 }: HeroInfoboxDesktopProps) => {
-  const SIDE_SECTION_TITLE_CONTAINER_STYLES = [
-    "side-section-infobox-container",
-    `side-section-container-${alignment}`,
-  ]
-
   return (
     <div
       className={getClassNames(editorStyles, [
@@ -70,66 +59,71 @@ export const HeroInfoboxDesktop = ({
         }}
       >
         <div
-          className={getClassNames(editorStyles, [
-            ...BASE_TITLE_CONTAINER_STYLES,
-            ...(variant === "side" ? SIDE_SECTION_TITLE_CONTAINER_STYLES : []),
-          ])}
+          className={getClassNames(
+            editorStyles,
+            variant === "side" ? ["side-section-infobox-container"] : []
+          )}
           style={{
+            display: "flex",
             flexDirection: "column",
+            alignSelf: alignment === "right" ? "flex-start" : "flex-end",
           }}
         >
-          <h1
-            className={getClassNames(editorStyles, [
-              "h1",
-              "mb-4",
-              "hero-text-color",
-            ])}
+          <div
+            className={getClassNames(editorStyles, ["mb-8", "is-flex"])}
+            style={{ flexDirection: "column" }}
           >
-            <b>{title}</b>
-          </h1>
-
-          {subtitle && (
-            <p
+            <h1
               className={getClassNames(editorStyles, [
-                "is-hidden-touch",
-                "body-2",
+                "h1",
+                "mb-4",
                 "hero-text-color",
               ])}
             >
-              {subtitle}
-            </p>
-          )}
-        </div>
+              <b>{title}</b>
+            </h1>
 
-        {dropdown?.title ? (
-          <div
-            className={getClassNames(editorStyles, ["is-flex"])}
-            style={{
-              justifyContent: "center",
-              alignContent: "center",
-            }}
-          >
-            <HeroDropdown
-              title={dropdown.title}
-              options={dropdown.options}
-              isActive={dropdownIsActive}
-              toggleDropdown={toggleDropdown}
-            />
+            {subtitle && (
+              <p
+                className={getClassNames(editorStyles, [
+                  "is-hidden-touch",
+                  "body-2",
+                  "hero-text-color",
+                ])}
+              >
+                {subtitle}
+              </p>
+            )}
           </div>
-        ) : (
-          // NOTE: This is to mirror the template structure
-          // as closely as possible.
-          url &&
-          button && (
+          {dropdown?.title ? (
             <div
               className={getClassNames(editorStyles, [
-                `${variant === "side" ? getButtonStyling(alignment) : ""}`,
+                "is-flex",
+                "is-full-width",
               ])}
+              style={{
+                justifyContent: "center",
+                alignContent: "center",
+              }}
             >
-              <HeroButton button={button} />
+              <HeroDropdown
+                title={dropdown.title}
+                options={dropdown.options}
+                isActive={dropdownIsActive}
+                toggleDropdown={toggleDropdown}
+              />
             </div>
-          )
-        )}
+          ) : (
+            // NOTE: This is to mirror the template structure
+            // as closely as possible.
+            url &&
+            button && (
+              <div>
+                <HeroButton button={button} />
+              </div>
+            )
+          )}
+        </div>
       </div>
     </div>
   )
