@@ -11,7 +11,7 @@ const {
 } = process.env
 if (!CYPRESS_COOKIE_NAME || !CYPRESS_COOKIE_VALUE) {
   throw new Error(
-    `E2E tests require env vars CYPRESS_COOKIE_NAME (${CYPRESS_COOKIE_NAME}) and CYPRESS_COOKIE_VALUE (${CYPRESS_COOKIE_VALUE}) to be set.`
+    `E2E tests require env vars CYPRESS_COOKIE_NAME and CYPRESS_COOKIE_VALUE to be set.`
   )
 }
 
