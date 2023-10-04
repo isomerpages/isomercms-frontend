@@ -65,10 +65,6 @@
     width: 50%;
   }
 
-  .side-section-infobox-container {
-    max-width: 576px;
-  }
-
   .side-section-container-left {
     text-align: right;
     align-self: flex-end;
@@ -77,6 +73,19 @@
   .side-section-container-right {
     text-align: left;
     align-self: flex-start;
+  }
+}
+
+// NOTE: This is done to account for the drawer width which eats into the preview
+@media screen and (min-width: (map-get($breakpoints, "xxl") + $preview-drawer-width)) {
+  .side-section-infobox-container {
+    width: 576px;
+  }
+}
+
+@media screen and (max-width: (map-get($breakpoints, "xxl") + $preview-drawer-width - 1)) {
+  .side-section-infobox-container {
+    width: 100%;
   }
 }
 

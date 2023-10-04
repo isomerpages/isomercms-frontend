@@ -1,6 +1,6 @@
 {
   "name": "isomercms-frontend",
-  "version": "0.47.1",
+  "version": "0.48.0",
   "private": true,
   "engines": {
     "node": ">=16.0.0"
@@ -159,7 +159,6 @@
     "@typescript-eslint/parser": "^5.55.0",
     "auto-changelog": "^2.4.0",
     "babel-jest": "^29.5.0",
-    "btoa": "^1.2.1",
     "chromatic": "^6.5.6",
     "cypress": "^12.8.0",
     "cypress-pipe": "^2.0.0",
