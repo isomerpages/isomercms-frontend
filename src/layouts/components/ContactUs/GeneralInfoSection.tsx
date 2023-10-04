@@ -36,7 +36,7 @@ export const GeneralInfoSection = ({
       title="General Information"
       isInvalid={!!errors.agency_name || !!errors.feedback}
     >
-      <Editable.Section spacing="1.25rem" pb="1.25rem">
+      <Editable.Section spacing="1.25rem">
         <FormControl isRequired isInvalid={!!errors.agency_name}>
           <FormLabel>Name of Organisation / Agency</FormLabel>
           <Input
@@ -58,7 +58,9 @@ export const GeneralInfoSection = ({
             onChange={onChange}
           />
           {errors.feedback ? (
-            <FormErrorMessage>{errors.feedback}</FormErrorMessage>
+            <FormErrorMessage mt="0.5rem" mb={0}>
+              {errors.feedback}
+            </FormErrorMessage>
           ) : (
             <Flex flexDir="row" mt="0.75rem">
               <Icon
