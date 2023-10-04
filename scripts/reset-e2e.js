@@ -1,3 +1,3 @@
-const { resetE2eTestRepo } = require("./build")
+const { resetE2ETestRepositories } = require("./build")
 
-resetE2eTestRepo()
+resetE2ETestRepositories()
