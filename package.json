@@ -89,6 +89,7 @@
     "release": "npm version $npm_config_isomer_update && git push --tags",
     "test": "craco test",
     "test:ci": "node scripts/run-e2e.js run",
+    "test:email-ci": "node scripts/run-e2e.js run-email",
     "test-e2e": "source .env && node scripts/run-e2e.js run",
     "reset-e2e": "source .env && node scripts/reset-e2e.js",
     "lint": "eslint --ext .js --ext .jsx --ext .ts --ext .tsx --ignore-path .gitignore .",
