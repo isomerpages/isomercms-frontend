@@ -70,7 +70,7 @@ const resetRepository = async (repository, branchName, userType) => {
     { withCredentials: true }
   )
   console.log(
-    `Successfully reset ${repository} (${branchName}) to ${e2eTestRepositoriesWithHashes[repository]}}`
+    `Successfully reset ${repository} (${branchName}) to ${e2eTestRepositoriesWithHashes[repository]}`
   )
 }
 
