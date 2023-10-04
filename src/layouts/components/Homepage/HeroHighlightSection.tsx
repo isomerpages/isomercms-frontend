@@ -48,7 +48,7 @@ export const HeroHighlightSection = ({
         <Editable.Droppable editableId="highlight">
           <VStack spacing="1.25rem" align="flex-start" p={0}>
             <FormControl isRequired isInvalid={!!errors.button}>
-              <FormLabel>Button Text</FormLabel>
+              <FormLabel>Button text</FormLabel>
               <Input
                 id="section-0-hero-button"
                 placeholder="This is a button"

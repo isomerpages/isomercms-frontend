@@ -74,8 +74,7 @@ export const AnnouncementBody = ({
         <Editable.Droppable editableId="announcement">
           <Text textStyle="h5">Announcements</Text>
           <Text mt="0.5rem" textStyle="body-2" textColor="base.content.medium">
-            {`You can display up to ${MAX_ANNOUNCEMENTS} announcements at a time. Newly added
-            announcements are shown on the top of the list`}
+            {`You can display up to ${MAX_ANNOUNCEMENTS} announcements at a time.`}
           </Text>
 
           <Editable.Accordion
