@@ -146,8 +146,6 @@ describe("editPage.spec", () => {
         .click()
         .wait(Interceptors.POST)
 
-      cy.contains(":button", "Select").click()
-
       cy.get("#altText").clear().type("Hello World")
       cy.contains(":button", "Save").click()
 
@@ -164,8 +162,6 @@ describe("editPage.spec", () => {
         .contains(/^Upload$/)
         .click()
         .wait(Interceptors.POST)
-
-      cy.contains(":button", "Select").click()
 
       cy.get("#altText").clear().type("Hello World")
       cy.contains(":button", "Save").click()

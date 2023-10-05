@@ -124,7 +124,6 @@ export const MediaSettingsModal = ({
     }
 
     if (mediaRoom === "images") {
-      console.log(`Displaying`, watch("mediaUrl"))
       return (
         <div className={mediaStyles.editImagePreview}>
           <img
