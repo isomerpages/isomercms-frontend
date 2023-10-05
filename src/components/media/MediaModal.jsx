@@ -42,7 +42,7 @@ const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
 
   const onMediaSelect = (media) => {
     if (methods.watch("selectedMedia")?.name === media.name) {
-      methods.setValue("selectedMedia", "")
+      methods.setValue("selectedMedia", undefined)
       methods.setValue("selectedMediaPath", "")
     } else {
       methods.setValue(
