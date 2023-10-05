@@ -803,9 +803,16 @@ const EditContactUs = ({ match }) => {
       filteredFrontMatter.locations = newLocations
       filteredFrontMatter.feedback = frontMatter.feedback || ""
 
+      // Contact information is required
+      if (!filteredFrontMatter.contacts.length) {
+        errorToast({
+          id: "contact-information-required-error",
+          description: "Contact information is required.",
+        })
+        return
+      }
+
       // If array is empty, delete the object
-      if (!filteredFrontMatter.contacts.length)
-        delete filteredFrontMatter.contacts
       if (!filteredFrontMatter.locations.length)
         delete filteredFrontMatter.locations
 
