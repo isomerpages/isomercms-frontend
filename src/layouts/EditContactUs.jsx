@@ -807,7 +807,8 @@ const EditContactUs = ({ match }) => {
       if (!filteredFrontMatter.contacts.length) {
         errorToast({
           id: "contact-information-required-error",
-          description: "Contact information is required.",
+          description:
+            "You must add at least one contact information to your Contact Us page.",
         })
         return
       }
