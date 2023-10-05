@@ -40,16 +40,19 @@ const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
   const { data: mediasData } = useGetMediaFolders(queryParams)
   const { mutateAsync: createHandler } = useCreateMediaHook(queryParams)
 
+  const retrieveMediaDirectoryParams = () =>
+    `/${getMediaDirectoryName(queryParams.mediaDirectoryName, {
+      joinOn: "/",
+    })}`
+
   const onMediaSelect = (media) => {
     if (methods.watch("selectedMedia")?.name === media.name) {
-      methods.setValue("selectedMedia", {})
+      methods.setValue("selectedMedia", undefined)
       methods.setValue("selectedMediaPath", "")
     } else {
       methods.setValue(
         "selectedMediaPath",
-        `/${getMediaDirectoryName(queryParams.mediaDirectoryName, {
-          joinOn: "/",
-        })}/${media.name}`
+        `${retrieveMediaDirectoryParams()}/${media.name}`
       )
       methods.setValue("selectedMedia", media)
     }
@@ -66,7 +69,13 @@ const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
           onProceed={async ({ data }) => {
             await createHandler({ data })
             onMediaSelect({ ...data, mediaUrl: data.content })
-            setMediaMode("select")
+            showAltTextModal
+              ? setMediaMode("details")
+              : onProceed({
+                  selectedMediaPath: `${retrieveMediaDirectoryParams()}/${
+                    data.name
+                  }`,
+                })
           }}
           onClose={onClose}
         />

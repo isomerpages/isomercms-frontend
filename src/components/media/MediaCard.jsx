@@ -19,7 +19,13 @@ import useRedirectHook from "hooks/useRedirectHook"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 import mediaStyles from "styles/isomer-cms/pages/Media.module.scss"
 
-const MediaCard = ({ type, media, onClick, showSettings = true }) => {
+const MediaCard = ({
+  type,
+  media,
+  onClick,
+  isSelected,
+  showSettings = true,
+}) => {
   const { name, mediaUrl } = media
   const encodedName = encodeURIComponent(name)
   const borderColour = useToken("colors", "primary.500")
@@ -46,9 +52,7 @@ const MediaCard = ({ type, media, onClick, showSettings = true }) => {
               `${url}/editMediaSettings/${encodeURIComponent(name)}`
             )
         }}
-        _focus={{
-          outline: `2px solid ${borderColour}`,
-        }}
+        outline={isSelected ? `2px solid ${borderColour}` : ""}
         textStyle="body-1"
         textAlign="left"
         w="100%"

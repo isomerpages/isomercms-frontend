@@ -90,6 +90,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     environment: staging
+    strategy:
+      fail-fast: false
+      matrix:
+        type: ["run-email", "run", "run-notggs"]
     env:
       CYPRESS_RECORD_KEY: ${{secrets.CYPRESS_RECORD_KEY}}
       CYPRESS_BASEURL: ${{secrets.CYPRESS_BASEURL}}
@@ -137,5 +141,14 @@ jobs:
           echo "COMMIT_INFO_SHA=${{ github.event.pull_request.head.sha }}" >> $GITHUB_ENV
       - name: Install dependencies
         run: npm ci
-      - name: Run test ci
+      - name: Run E2E tests (e2e test repo)
+        if: ${{ matrix.type == 'run' }}
+        run: npm run test:ci
+      - name: Run E2E tests (email test repo)
+        if: ${{ matrix.type == 'run-email' }}
+        run: npm run test:email-ci
+      - name: Run E2E tests (not GGS test repo)
+        if: ${{ matrix.type == 'run-notggs' }}
+        env:
+          CYPRESS_TEST_REPO_NAME: ${{secrets.CYPRESS_NOTGGS_TEST_REPO_NAME}}
         run: npm run test:ci
