@@ -20,7 +20,7 @@ import MarkdownEditor from "components/pages/MarkdownEditor"
 import PagePreview from "components/pages/PagePreview"
 import { WarningModal } from "components/WarningModal"
 
-import { useCollectionHook } from "hooks/collectionHooks"
+import { useGetAllDirectoryPages } from "hooks/directoryHooks"
 import { useGetPageHook, useUpdatePageHook } from "hooks/pageHooks"
 import { useCspHook, useGetSiteColorsHook } from "hooks/settingsHooks"
 import useRedirectHook from "hooks/useRedirectHook"
@@ -114,7 +114,7 @@ const EditPage = ({ match }) => {
   })
 
   const { data: csp } = useCspHook()
-  const { data: dirData } = useCollectionHook(params)
+  const { data: dirData } = useGetAllDirectoryPages(params)
   const { data: siteColorsData } = useGetSiteColorsHook(params)
 
   /** ******************************** */

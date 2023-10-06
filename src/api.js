@@ -12,21 +12,6 @@ axios.defaults.withCredentials = true
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 const BACKEND_URL_V2 = process.env.REACT_APP_BACKEND_URL_V2
 
-const getDirectoryFile = async (siteName, folderName) => {
-  if (!folderName) return undefined
-  const resp = await axios.get(
-    `${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`
-  )
-  return resp.data
-}
-
-const setDirectoryFile = async (siteName, folderName, payload) => {
-  return axios.post(
-    `${BACKEND_URL}/sites/${siteName}/collections/${folderName}/pages/collection.yml`,
-    payload
-  )
-}
-
 const getLastUpdated = async (siteName) => {
   if (!siteName) return undefined
   const resp = await axios.get(`${BACKEND_URL}/sites/${siteName}/lastUpdated`)
@@ -120,8 +105,6 @@ const verifyMobileNumberOtp = async (mobile, otp) => {
 }
 
 export {
-  getDirectoryFile,
-  setDirectoryFile,
   getLastUpdated,
   getEditNavBarData,
   getAllCategories,
