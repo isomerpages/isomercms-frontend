@@ -803,9 +803,17 @@ const EditContactUs = ({ match }) => {
       filteredFrontMatter.locations = newLocations
       filteredFrontMatter.feedback = frontMatter.feedback || ""
 
+      // Contact information is required
+      if (!filteredFrontMatter.contacts.length) {
+        errorToast({
+          id: "contact-information-required-error",
+          description:
+            "You must add at least one contact information to your Contact Us page.",
+        })
+        return
+      }
+
       // If array is empty, delete the object
-      if (!filteredFrontMatter.contacts.length)
-        delete filteredFrontMatter.contacts
       if (!filteredFrontMatter.locations.length)
         delete filteredFrontMatter.locations
 
