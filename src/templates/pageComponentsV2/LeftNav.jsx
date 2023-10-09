@@ -2,12 +2,19 @@
 import PropTypes from "prop-types"
 import { useEffect, useState } from "react"
 
+import { useGetAllDirectoryPages } from "hooks/directoryHooks"
+
 import { generateLeftNav } from "templates/utils/leftnavGeneration"
 
-export const LeftNav = ({ dirData, fileName }) => {
+export const LeftNav = ({ siteName, fileName, collectionName }) => {
+  const params = {
+    siteName,
+    collectionName,
+  }
+  const { data: dirData } = useGetAllDirectoryPages(params)
   const [leftNavData, setLeftNavData] = useState()
   useEffect(() => {
-    setLeftNavData(generateLeftNav(dirData, fileName))
+    setLeftNavData(generateLeftNav(dirData || [], fileName))
   }, [dirData])
   return (
     <div className="col is-2 is-position-relative has-side-nav is-hidden-touch">
