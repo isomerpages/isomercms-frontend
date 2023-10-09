@@ -34,13 +34,6 @@ const getLastUpdated = async (siteName) => {
   return { lastUpdated }
 }
 
-const getResourceRoomName = async (siteName) => {
-  const apiUrl = `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/resource-room`
-  const resp = await axios.get(apiUrl)
-  const { resourceRoom } = resp.data
-  return resourceRoom
-}
-
 const getAllCategoriesApiEndpoint = ({ siteName, isResource }) => {
   if (isResource) {
     return `${BACKEND_URL}/sites/${siteName}/resources`
@@ -130,7 +123,6 @@ export {
   getDirectoryFile,
   setDirectoryFile,
   getLastUpdated,
-  getResourceRoomName,
   getEditNavBarData,
   getAllCategories,
   getMediaDetails,
