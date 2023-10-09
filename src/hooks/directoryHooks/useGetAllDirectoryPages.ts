@@ -1,6 +1,6 @@
 import { useQuery, UseQueryOptions, UseQueryResult } from "react-query"
 
-import { DIR_CONTENT_KEY } from "constants/queryKeys"
+import { THIRD_NAV_CONTENT_KEY } from "constants/queryKeys"
 
 import useRedirectHook from "hooks/useRedirectHook"
 
@@ -38,7 +38,7 @@ export const useGetAllDirectoryPages = (
   const errorToast = useErrorToast()
 
   return useQuery<string[]>(
-    [DIR_CONTENT_KEY, params],
+    [THIRD_NAV_CONTENT_KEY, params],
     () => getDirectoryPages(params),
     {
       ...queryOptions,
