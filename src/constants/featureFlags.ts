@@ -3,4 +3,5 @@ export const FEATURE_FLAGS = {
   REPO_PRIVATISATION: "repo_privatisation",
   BANNER: "banner",
   NPS_FORM: "nps_form",
+  ENABLED_BLOCKS: "homepage_enabled_blocks",
 } as const

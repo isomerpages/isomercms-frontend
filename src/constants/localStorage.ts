@@ -1,4 +1,5 @@
 export enum LOCAL_STORAGE_KEYS {
+  FrontmatterSections = "frontmatter-sections",
   SitesIsPrivate = "sites-is-private",
   Email = "email",
   Announcements = "announcements",
