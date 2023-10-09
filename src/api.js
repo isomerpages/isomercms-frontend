@@ -12,13 +12,6 @@ axios.defaults.withCredentials = true
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 const BACKEND_URL_V2 = process.env.REACT_APP_BACKEND_URL_V2
 
-const getLastUpdated = async (siteName) => {
-  if (!siteName) return undefined
-  const resp = await axios.get(`${BACKEND_URL}/sites/${siteName}/lastUpdated`)
-  const { lastUpdated } = resp.data
-  return { lastUpdated }
-}
-
 const getAllCategoriesApiEndpoint = ({ siteName, isResource }) => {
   if (isResource) {
     return `${BACKEND_URL}/sites/${siteName}/resources`
@@ -105,7 +98,6 @@ const verifyMobileNumberOtp = async (mobile, otp) => {
 }
 
 export {
-  getLastUpdated,
   getEditNavBarData,
   getAllCategories,
   getMediaDetails,

@@ -1,10 +1,18 @@
 import {
   CollaboratorsStats,
+  LastUpdatedInfo,
   SiteDashboardInfo,
   SiteDashboardReviewRequest,
 } from "types/siteDashboard"
 
 import { apiService } from "./ApiService"
+
+export const getLastUpdated = async (
+  siteName: string
+): Promise<LastUpdatedInfo> => {
+  const endpoint = `/sites/${siteName}/lastUpdated`
+  return apiService.get<LastUpdatedInfo>(endpoint).then((res) => res.data)
+}
 
 export const getSiteInfo = async (
   siteName: string
