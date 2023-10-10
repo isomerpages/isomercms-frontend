@@ -4,6 +4,7 @@ import {
   ResourcePageData,
   PageData,
   ResourceRoomNameUpdateProps,
+  GetMediaFoldersDto,
 } from "types/directory"
 import { MediaDirectoryParams, PageDirectoryParams } from "types/folders"
 import {
@@ -65,9 +66,9 @@ export const getWorkspacePages = (siteName: string): Promise<PageData[]> => {
 export const getMediaData = ({
   siteName,
   mediaDirectoryName,
-}: MediaDirectoryParams): Promise<DirectoryData[]> => {
+}: MediaDirectoryParams): Promise<GetMediaFoldersDto> => {
   const endpoint = `/sites/${siteName}/media/${mediaDirectoryName}`
-  return apiService.get<DirectoryData[]>(endpoint).then(({ data }) => data)
+  return apiService.get<GetMediaFoldersDto>(endpoint).then(({ data }) => data)
 }
 
 export const getResourceRoomName = async (

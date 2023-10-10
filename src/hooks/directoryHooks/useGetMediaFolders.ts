@@ -9,21 +9,21 @@ import * as DirectoryService from "services/DirectoryService/index"
 import { isAxiosError } from "utils/axios"
 import { useErrorToast } from "utils/toasts"
 
-import { DirectoryData, MediaData } from "types/directory"
+import { GetMediaFoldersDto } from "types/directory"
 import { MediaDirectoryParams } from "types/folders"
 import { DEFAULT_RETRY_MSG } from "utils"
 
 export const useGetMediaFolders = (
   params: MediaDirectoryParams,
   queryOptions?: Omit<
-    UseQueryOptions<(DirectoryData | MediaData)[]>,
+    UseQueryOptions<GetMediaFoldersDto>,
     "queryFn" | "queryKey"
   >
-): UseQueryResult<(DirectoryData | MediaData)[]> => {
+): UseQueryResult<GetMediaFoldersDto> => {
   const { setRedirectToNotFound } = useRedirectHook()
   const errorToast = useErrorToast()
 
-  return useQuery<(DirectoryData | MediaData)[]>(
+  return useQuery<GetMediaFoldersDto>(
     [DIR_CONTENT_KEY, params],
     () => DirectoryService.getMediaData(params),
     {
