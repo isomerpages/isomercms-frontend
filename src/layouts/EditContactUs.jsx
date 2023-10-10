@@ -172,6 +172,17 @@ const displayDeletedFrontMatter = (deletedFrontMatter) => {
   return displayText
 }
 
+// NOTE: `scrollIntoView` does not work when called synchronously
+// to avoid this problem, we do a `setTimeout` to wrap it.
+// This calls it after 1ms, which allows it to work.
+const scrollTo = (ref) => {
+  setTimeout(() =>
+    ref.current.scrollIntoView({
+      behavior: "smooth",
+    })
+  )
+}
+
 const EditContactUs = ({ match }) => {
   const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
 
@@ -197,14 +208,6 @@ const EditContactUs = ({ match }) => {
   const [frontMatterSha, setFrontMatterSha] = useState(null)
   const [footerContent, setFooterContent] = useState({})
   const [originalFooterContent, setOriginalFooterContent] = useState({})
-  const [displaySections, setDisplaySections] = useState({
-    sectionsDisplay: {
-      locations: false,
-      contacts: false,
-    },
-    contacts: [],
-    locations: [],
-  })
   const [errors, setErrors] = useState({
     contacts: [],
     locations: [],
@@ -260,15 +263,8 @@ const EditContactUs = ({ match }) => {
         sanitisedFrontMatter
       )
 
-      const contactsDisplay = []
-      const locationsDisplay = []
       const contactsScrollRefs = []
       const locationsScrollRefs = []
-
-      const sectionsDisplay = {
-        contacts: false,
-        locations: false,
-      }
 
       const sectionsScrollRefs = {
         header: createRef(),
@@ -278,12 +274,10 @@ const EditContactUs = ({ match }) => {
       }
 
       contacts.forEach(() => {
-        contactsDisplay.push(false)
         contactsScrollRefs.push(createRef())
       })
 
       locations.forEach(() => {
-        locationsDisplay.push(false)
         locationsScrollRefs.push(createRef())
       })
 
@@ -299,11 +293,6 @@ const EditContactUs = ({ match }) => {
       setDeletedFrontMatter(newDeletedFrontMatter)
       setSanitisedOriginalFrontMatter(_.cloneDeep(sanitisedFrontMatter))
       setFrontMatterSha(sha)
-      setDisplaySections({
-        sectionsDisplay,
-        contacts: contactsDisplay,
-        locations: locationsDisplay,
-      })
       setErrors({
         contacts: contactsErrors,
         locations: locationsErrors,
@@ -329,11 +318,9 @@ const EditContactUs = ({ match }) => {
 
     let elem = ""
     let elemError = ""
-    let elemDisplay = ""
     let elemScrollRef = ""
     let newFrontMatter = ""
     let newErrors = ""
-    let newDisplaySections = ""
     let newScrollRefs = ""
 
     if (type.startsWith("locations-")) {
@@ -343,7 +330,6 @@ const EditContactUs = ({ match }) => {
 
       elem = frontMatter.locations[parentId][subtype][source.index]
       elemError = errors.locations[parentId][subtype][source.index]
-      elemDisplay = displaySections.locations[parentId]
       elemScrollRef = scrollRefs.locations[parentId]
 
       newFrontMatter = update(frontMatter, {
@@ -372,12 +358,10 @@ const EditContactUs = ({ match }) => {
         },
       })
 
-      newDisplaySections = update(displaySections, {})
       newScrollRefs = update(scrollRefs, {})
     } else {
       elem = frontMatter[type][source.index]
       elemError = errors[type][source.index]
-      elemDisplay = displaySections[type][source.index]
       elemScrollRef = scrollRefs[type][source.index]
 
       newFrontMatter = update(frontMatter, {
@@ -396,15 +380,6 @@ const EditContactUs = ({ match }) => {
           ],
         },
       })
-
-      newDisplaySections = update(displaySections, {
-        [type]: {
-          $splice: [
-            [source.index, 1],
-            [destination.index, 0, elemDisplay],
-          ],
-        },
-      })
       newScrollRefs = update(scrollRefs, {
         [type]: {
           $splice: [
@@ -415,13 +390,12 @@ const EditContactUs = ({ match }) => {
       })
 
       // scroll to new location of dragged element
-      scrollRefs[type][destination.index].current.scrollIntoView()
+      scrollTo(scrollRefs[type][destination.index])
     }
 
     setScrollRefs(newScrollRefs)
     setFrontMatter(newFrontMatter)
     setErrors(newErrors)
-    setDisplaySections(newDisplaySections)
   }
 
   const onFieldChange = async (event) => {
@@ -443,7 +417,7 @@ const EditContactUs = ({ match }) => {
               $set: validateFeedbackUrl(value),
             },
           })
-          scrollRefs.sectionsScrollRefs[elemType].current.scrollIntoView()
+          scrollTo(scrollRefs.sectionsScrollRefs[elemType])
           break
         }
         case "header": {
@@ -457,7 +431,7 @@ const EditContactUs = ({ match }) => {
               $set: validateHeaderTitle(value),
             },
           })
-          scrollRefs.sectionsScrollRefs[elemType].current.scrollIntoView()
+          scrollTo(scrollRefs.sectionsScrollRefs[elemType])
           break
         }
         case "contacts": {
@@ -508,7 +482,7 @@ const EditContactUs = ({ match }) => {
               })
               break
           }
-          scrollRefs[elemType][contactIndex].current.scrollIntoView()
+          scrollTo(scrollRefs[elemType][contactIndex])
           break
         }
         case "locations": {
@@ -617,7 +591,7 @@ const EditContactUs = ({ match }) => {
               })
               break
           }
-          scrollRefs[elemType][locationIndex].current.scrollIntoView()
+          scrollTo(scrollRefs[elemType][locationIndex])
           break
         }
         default:
@@ -650,28 +624,11 @@ const EditContactUs = ({ match }) => {
   const createHandler = async (event) => {
     const { id } = event.target
     try {
-      const {
-        contacts: contactsDisplay,
-        locations: locationsDisplay,
-      } = displaySections
-
-      const resetDisplaySections = {
-        sectionsDisplay: displaySections.sectionsDisplay,
-        contacts: _.fill(Array(contactsDisplay.length), false),
-        locations: _.fill(Array(locationsDisplay.length), false),
-      }
-      const modifiedDisplaySections = update(resetDisplaySections, {
-        [id]: { $push: [true] },
-      })
-
       const newFrontMatter = update(frontMatter, {
         [id]: { $push: [enumSection(id)] },
       })
       const newErrors = update(errors, {
         [id]: { $push: [enumSection(id)] },
-      })
-      const newDisplaySections = update(displaySections, {
-        $set: modifiedDisplaySections,
       })
       const newScrollRefs = update(scrollRefs, {
         [id]: { $push: [createRef()] },
@@ -679,15 +636,14 @@ const EditContactUs = ({ match }) => {
 
       if (scrollRefs[id].length) {
         // Scroll to an approximation of where the new field will be based on the current last field, calibrated from the bottom of page
-        _.last(scrollRefs[id]).current.scrollIntoView()
+        scrollTo(_.last(scrollRefs[id]))
       } else {
-        scrollRefs.sectionsScrollRefs[id].current.scrollIntoView()
+        scrollTo(scrollRefs.sectionsScrollRefs[id])
       }
 
       setScrollRefs(newScrollRefs)
       setFrontMatter(newFrontMatter)
       setErrors(newErrors)
-      setDisplaySections(newDisplaySections)
     } catch (err) {
       console.log(err)
     }
@@ -705,9 +661,6 @@ const EditContactUs = ({ match }) => {
       const newErrors = update(errors, {
         [elemType]: { $splice: [[sectionIndex, 1]] },
       })
-      const newDisplaySections = update(displaySections, {
-        [elemType]: { $splice: [[sectionIndex, 1]] },
-      })
       const newScrollRefs = update(scrollRefs, {
         [elemType]: { $splice: [[sectionIndex, 1]] },
       })
@@ -716,59 +669,23 @@ const EditContactUs = ({ match }) => {
 
       setFrontMatter(newFrontMatter)
       setErrors(newErrors)
-      setDisplaySections(newDisplaySections)
     } catch (err) {
       console.log(err)
     }
   }
 
-  const displayHandler = async (event) => {
-    try {
-      const {
-        contacts: contactsDisplay,
-        locations: locationsDisplay,
-      } = displaySections
-
-      const { id } = event.target
-      const idArray = id.split("-")
-      const elemType = idArray[0]
-      const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT) || idArray[1]
-
-      const resetDisplaySections = {
-        sectionsDisplay: {
-          contacts: false,
-          locations: false,
-        },
-        contacts: _.fill(Array(contactsDisplay.length), false),
-        locations: _.fill(Array(locationsDisplay.length), false),
-      }
-
-      let newDisplaySections
-      switch (elemType) {
-        case "section": {
-          const currDisplayValue = displaySections.sectionsDisplay[sectionIndex]
-          resetDisplaySections.sectionsDisplay[sectionIndex] = !currDisplayValue
-          newDisplaySections = update(displaySections, {
-            $set: resetDisplaySections,
-          })
-          scrollRefs.sectionsScrollRefs[sectionIndex].current.scrollIntoView()
-          break
-        }
-        default: {
-          const currDisplayValue = displaySections[elemType][sectionIndex]
-          resetDisplaySections[elemType][sectionIndex] = !currDisplayValue
-          newDisplaySections = update(displaySections, {
-            [elemType]: { $set: resetDisplaySections[elemType] },
-          })
-          scrollRefs[elemType][sectionIndex].current.scrollIntoView()
-          break
-        }
-      }
-
-      setDisplaySections(newDisplaySections)
-    } catch (err) {
-      console.log(err)
+  const displayHandler = async (id) => {
+    // ID is -1 when the accordion item is collapsed
+    if (id === -1) {
+      return
     }
+
+    const allScrollRefs = _.concat(
+      scrollRefs.sectionsScrollRefs.header,
+      scrollRefs.locations,
+      scrollRefs.contacts
+    )
+    scrollTo(allScrollRefs[id])
   }
 
   const savePage = async () => {
