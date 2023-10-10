@@ -30,13 +30,12 @@ export const useGetLastUpdated = (
       ...queryOptions,
       retry: false,
       onError: (err) => {
-        console.log(err)
         if (isAxiosError(err) && err.response && err.response.status === 404) {
           setRedirectToNotFound()
         } else {
           errorToast({
             id: "get-last-updated-error",
-            description: `There was a problem retrieving the site last updated time.`,
+            description: `There was a problem retrieving the site’s last updated time.`,
           })
           queryOptions?.onError?.(err)
         }
