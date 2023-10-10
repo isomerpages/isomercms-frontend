@@ -15,7 +15,7 @@ import {
 } from "./utils"
 
 export const handlers = [
-  buildLastUpdated({ lastUpdated: "Last updated today" }),
+  buildLastUpdated({ lastUpdated: new Date().toISOString() }),
   buildLoginData(MOCK_USER),
   buildRecentNotificationData(MOCK_NOTIFICATION_DATA),
   buildAllNotificationData(MOCK_ALL_NOTIFICATION_DATA),

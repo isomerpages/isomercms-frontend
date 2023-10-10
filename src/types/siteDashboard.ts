@@ -1,5 +1,9 @@
 import { ReviewRequestStatus } from "./reviewRequest"
 
+export type LastUpdatedInfo = {
+  lastUpdated: string
+}
+
 export type CollaboratorsStats = {
   total: number
   inactive: number

@@ -31,7 +31,7 @@ import { useParams, Link as RouterLink, useLocation } from "react-router-dom"
 
 import { useLoginContext } from "contexts/LoginContext"
 
-import { useLastUpdated } from "hooks/useLastUpdated"
+import { useGetLastUpdated } from "hooks/siteDashboardHooks/useGetLastUpdated"
 import useRedirectHook from "hooks/useRedirectHook"
 
 import { TabSection } from "types/sidebar"
@@ -73,7 +73,7 @@ const getTabIndex = (section: TabSection) => {
 export const Sidebar = (): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
   const { pathname } = useLocation<{ pathname: string }>()
-  const { lastUpdated, isError, isLoading } = useLastUpdated(siteName)
+  const { data: lastUpdated, isError, isLoading } = useGetLastUpdated(siteName)
   const { displayedName } = useLoginContext()
   // NOTE: As this is a sub-path, there's a leading / which is converted into an empty string
   const selectedTab = getSelectedTab(pathname.split("/").filter(Boolean))
@@ -100,7 +100,9 @@ export const Sidebar = (): JSX.Element => {
           </Text>
           <Skeleton isLoaded={!isLoading} w="100%" h="16px">
             <Text textStyle="caption-2" color="text.description" w="full">
-              {isError ? "Unable to retrieve data" : lastUpdated}
+              {isError || !lastUpdated
+                ? "Unable to retrieve data"
+                : lastUpdated}
             </Text>
           </Skeleton>
         </VStack>
