@@ -11,4 +11,6 @@ export interface MediaDirectoryParams {
   mediaDirectoryName: string
 }
 
+export type DirectoryParams = Omit<FolderUrlParams, "subCollectionName">
+
 export type PageDirectoryParams = SetOptional<FolderUrlParams, "collectionName">
