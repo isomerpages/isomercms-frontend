@@ -1,12 +1,14 @@
 /* eslint-disable arrow-body-style */
 import PropTypes from "prop-types"
 import { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
 
 import { useGetAllDirectoryPages } from "hooks/directoryHooks"
 
 import { generateLeftNav } from "templates/utils/leftnavGeneration"
 
-export const LeftNav = ({ siteName, fileName, collectionName }) => {
+export const LeftNav = ({ fileName, collectionName }) => {
+  const { siteName } = useParams()
   const params = {
     siteName,
     collectionName,

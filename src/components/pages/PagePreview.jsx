@@ -6,7 +6,7 @@ import CollectionPageTemplate from "templates/pages/CollectionPageTemplate"
 import PageTemplate from "templates/pages/PageTemplate"
 import ResourcePageTemplate from "templates/pages/ResourcePageTemplate"
 
-const PagePreview = ({ pageParams, siteName, chunk, title }) => {
+const PagePreview = ({ pageParams, chunk, title }) => {
   const { collectionName, resourceRoomName, resourceCategoryName } = pageParams
   const RenderedPreview = () => {
     if (collectionName) {
@@ -15,7 +15,6 @@ const PagePreview = ({ pageParams, siteName, chunk, title }) => {
           chunk={chunk}
           pageParams={pageParams}
           title={title}
-          siteName={siteName}
         />
       )
     }
@@ -50,7 +49,6 @@ PagePreview.propTypes = {
   }).isRequired,
   title: PropTypes.string.isRequired,
   chunk: PropTypes.string.isRequired,
-  siteName: PropTypes.string.isRequired,
 }
 
 export default PagePreview

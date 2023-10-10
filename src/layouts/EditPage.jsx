@@ -281,7 +281,6 @@ const EditPage = ({ match }) => {
         {/* Preview */}
         <PagePreview
           pageParams={decodedParams}
-          siteName={siteName}
           title={pageData?.content?.frontMatter?.title || ""}
           chunk={htmlChunk}
         />
