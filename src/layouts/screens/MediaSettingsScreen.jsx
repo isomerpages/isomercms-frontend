@@ -2,7 +2,7 @@ import PropTypes from "prop-types"
 
 import { MediaSettingsModal } from "components/MediaSettingsModal"
 
-import { useGetMediaFolders } from "hooks/directoryHooks"
+import { useGetMediaFolders, getMediasData } from "hooks/directoryHooks"
 import { useGetMediaHook, useUpdateMediaHook } from "hooks/mediaHooks"
 
 import { getFileName } from "utils"
@@ -13,9 +13,10 @@ export const MediaSettingsScreen = ({ match, onClose }) => {
   const { mutateAsync: updateHandler } = useUpdateMediaHook(params, {
     onSuccess: onClose,
   })
-  const { data: mediasData } = useGetMediaFolders(params, {
-    initialData: [],
+  const { data: mediaDataDto } = useGetMediaFolders(params, {
+    initialData: { directories: [], files: [], total: 0 },
   })
+  const mediasData = getMediasData(mediaDataDto)
 
   return (
     <MediaSettingsModal
