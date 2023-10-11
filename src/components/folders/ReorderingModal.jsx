@@ -14,11 +14,14 @@ import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import adminStyles from "styles/isomer-cms/pages/Admin.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 
+import { isWriteActionsDisabled } from "utils/reviewRequests"
+
 import { deslugifyDirectory } from "utils"
 
 const ReorderingModal = ({ params, dirData, onProceed, onClose }) => {
-  const { collectionName, subCollectionName } = params
+  const { siteName, collectionName, subCollectionName } = params
   const [dirOrder, setDirOrder] = useState([])
+  const isWriteDisabled = isWriteActionsDisabled(siteName)
 
   useEffect(() => {
     if (dirData) setDirOrder(dirData)
@@ -131,6 +134,7 @@ const ReorderingModal = ({ params, dirData, onProceed, onClose }) => {
                   items: dirOrder,
                 })
               }
+              isDisabled={isWriteDisabled}
             >
               Save
             </LoadingButton>

@@ -17,6 +17,7 @@ import adminStyles from "styles/isomer-cms/pages/Admin.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 
 import { getDirectoryCreationType } from "utils/directoryUtils"
+import { isWriteActionsDisabled } from "utils/reviewRequests"
 
 import { pageFileNameToTitle } from "utils"
 
@@ -40,6 +41,7 @@ export const DirectoryCreationModal = ({
   } = params
 
   const [isSelectingPages, setIsSelectingPages] = useState(false)
+  const isWriteDisabled = isWriteActionsDisabled(siteName)
 
   const existingTitlesArray = dirsData.map((item) => item.name)
 
@@ -157,7 +159,10 @@ export const DirectoryCreationModal = ({
               <LoadingButton onClick={onClose} variant="outline">
                 Cancel
               </LoadingButton>
-              <LoadingButton onClick={methods.handleSubmit(onSubmit)}>
+              <LoadingButton
+                onClick={methods.handleSubmit(onSubmit)}
+                isDisabled={isWriteDisabled}
+              >
                 {fields.length === 0 ? "Skip" : "Done"}
               </LoadingButton>
             </Footer>

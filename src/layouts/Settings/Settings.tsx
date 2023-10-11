@@ -14,6 +14,7 @@ import { useForm, FormProvider } from "react-hook-form"
 import { useParams } from "react-router-dom"
 
 import { Footer } from "components/Footer"
+import { Greyscale } from "components/Greyscale"
 
 import { FEATURE_FLAGS } from "constants/featureFlags"
 
@@ -22,6 +23,7 @@ import { useLoginContext } from "contexts/LoginContext"
 
 import { useGetSettings, useUpdateSettings } from "hooks/settingsHooks"
 
+import { isWriteActionsDisabled } from "utils/reviewRequests"
 import { useErrorToast, useSuccessToast } from "utils/toasts"
 
 import { FeatureFlags } from "types/featureFlags"
@@ -104,6 +106,7 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
   // NOTE: Use a ref to persist the initial value between renders
   const initialSettings = useRef(settings)
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const isWriteDisabled = isWriteActionsDisabled(siteName)
 
   const methods = useForm({
     mode: "onTouched",
@@ -181,55 +184,57 @@ const SettingsForm = ({ settings, isError }: SettingsFormProps) => {
   }, [isSuccess, getValues, reset, settings])
 
   return (
-    <Box w="100%">
-      <FormProvider {...methods}>
-        <form onSubmit={onSubmit}>
-          <VStack
-            align="flex-start"
-            spacing="2rem"
-            divider={<StackDivider borderColor="border.divider.alt" />}
-            mb="7.125rem"
-          >
-            <GeneralSettings isError={isError} />
-            {getValues("isAmplifySite") && (
-              <PrivacySettings isError={isError} />
-            )}
-            <LogoSettings isError={isError} />
-            <ColourSettings isError={isError} />
-            <SocialMediaSettings isError={isError} />
-            <FooterSettings isError={isError} />
-            <AnalyticsSettings isError={isError} />
-          </VStack>
-          <Footer
-            w="calc(100% + 4rem)"
-            ml="-2rem"
-            mb="-2rem"
-            // NOTE: Borders at left/bottom are already provided by sidebar and layout.
-            // Hence, omit the border at those areas to ensure correct border sizing.
-            borderLeft={0}
-            borderBottom={0}
-          >
-            <Button
-              isLoading={isLoading}
-              onClick={() => {
-                if (hasDiff) {
-                  onOpen()
-                } else {
-                  onSubmit()
-                }
-              }}
+    <Greyscale isActive={isWriteDisabled}>
+      <Box w="100%">
+        <FormProvider {...methods}>
+          <form onSubmit={onSubmit}>
+            <VStack
+              align="flex-start"
+              spacing="2rem"
+              divider={<StackDivider borderColor="border.divider.alt" />}
+              mb="7.125rem"
             >
-              Save
-            </Button>
-          </Footer>
-          <OverrideWarningModal
-            isOpen={isOpen || (hasDiff && isLoading)}
-            onClose={onClose}
-            isLoading={isLoading}
-            onSubmit={onSubmit}
-          />
-        </form>
-      </FormProvider>
-    </Box>
+              <GeneralSettings isError={isError} />
+              {getValues("isAmplifySite") && (
+                <PrivacySettings isError={isError} />
+              )}
+              <LogoSettings isError={isError} />
+              <ColourSettings isError={isError} />
+              <SocialMediaSettings isError={isError} />
+              <FooterSettings isError={isError} />
+              <AnalyticsSettings isError={isError} />
+            </VStack>
+            <Footer
+              w="calc(100% + 4rem)"
+              ml="-2rem"
+              mb="-2rem"
+              // NOTE: Borders at left/bottom are already provided by sidebar and layout.
+              // Hence, omit the border at those areas to ensure correct border sizing.
+              borderLeft={0}
+              borderBottom={0}
+            >
+              <Button
+                isLoading={isLoading}
+                onClick={() => {
+                  if (hasDiff) {
+                    onOpen()
+                  } else {
+                    onSubmit()
+                  }
+                }}
+              >
+                Save
+              </Button>
+            </Footer>
+            <OverrideWarningModal
+              isOpen={isOpen || (hasDiff && isLoading)}
+              onClose={onClose}
+              isLoading={isLoading}
+              onSubmit={onSubmit}
+            />
+          </form>
+        </FormProvider>
+      </Box>
+    </Greyscale>
   )
 }

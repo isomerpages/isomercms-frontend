@@ -11,12 +11,16 @@ import { useGetMediaFolders } from "hooks/directoryHooks"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
+import { isWriteActionsDisabled } from "utils/reviewRequests"
+
 import { pageFileNameToTitle, getMediaDirectoryName } from "utils"
 
 export const MediaMoveModal = ({ queryParams, params, onProceed, onClose }) => {
+  const { siteName } = params
   const [moveQuery, setMoveQuery] = useState(_.omit(queryParams, "fileName"))
   const [moveTo, setMoveTo] = useState(params)
   const { data: dirData } = useGetMediaFolders(moveQuery)
+  const isWriteDisabled = isWriteActionsDisabled(siteName)
 
   const MenuItems = () => {
     if (dirData && dirData.length)
@@ -136,6 +140,7 @@ export const MediaMoveModal = ({ queryParams, params, onProceed, onClose }) => {
                   items: [{ name: params.fileName, type: "file" }],
                 })
               }
+              isDisabled={isWriteDisabled}
             >
               Move Here
             </LoadingButton>

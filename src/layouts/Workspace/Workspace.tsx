@@ -4,6 +4,7 @@ import { BiFolder, BiFileBlank } from "react-icons/bi"
 import { Switch, useRouteMatch, useHistory, Link } from "react-router-dom"
 
 import { EmptyArea } from "components/EmptyArea"
+import { Greyscale } from "components/Greyscale"
 import {
   MenuDropdownButton,
   MenuDropdownItem,
@@ -28,6 +29,8 @@ import {
 } from "layouts/screens"
 
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
+
+import { isWriteActionsDisabled } from "utils/reviewRequests"
 
 import { FeatureTourHandler } from "features/FeatureTour/FeatureTour"
 import { WORKSPACE_FEATURE_STEPS } from "features/FeatureTour/FeatureTourSequence"
@@ -54,6 +57,7 @@ const WorkspacePage = (): JSX.Element => {
     siteName,
   })
   const { data: _pagesData } = useGetWorkspacePages(siteName)
+  const isWriteDisabled = isWriteActionsDisabled(siteName)
 
   const pagesData = _pagesData || []
   const dirsData = (_dirsAndPagesData || []).filter(isDirData)
@@ -91,44 +95,52 @@ const WorkspacePage = (): JSX.Element => {
           <EmptyArea
             isItemEmpty={isFoldersEmpty && isPagesEmpty}
             actionButton={
-              <MenuDropdownButton
-                variant="outline"
-                mainButtonText="Create page"
-                as={Link}
-                to={`${url}/createPage`}
-              >
-                <MenuDropdownItem
+              <Greyscale isActive={isWriteDisabled}>
+                <MenuDropdownButton
+                  variant="outline"
+                  mainButtonText="Create page"
                   as={Link}
                   to={`${url}/createPage`}
-                  icon={
-                    <Icon as={BiFileBlank} fontSize="1.25rem" fill="icon.alt" />
-                  }
                 >
-                  <Text textStyle="body-1" fill="text.body">
-                    Create page
-                  </Text>
-                </MenuDropdownItem>
-                <MenuDropdownItem
-                  as={Link}
-                  to={`${url}/createDirectory`}
-                  icon={
-                    <Icon as={BiFolder} fontSize="1.25rem" fill="icon.alt" />
-                  }
-                >
-                  <Text textStyle="body-1" fill="text.body">
-                    Create folder
-                  </Text>
-                </MenuDropdownItem>
-              </MenuDropdownButton>
+                  <MenuDropdownItem
+                    as={Link}
+                    to={`${url}/createPage`}
+                    icon={
+                      <Icon
+                        as={BiFileBlank}
+                        fontSize="1.25rem"
+                        fill="icon.alt"
+                      />
+                    }
+                  >
+                    <Text textStyle="body-1" fill="text.body">
+                      Create page
+                    </Text>
+                  </MenuDropdownItem>
+                  <MenuDropdownItem
+                    as={Link}
+                    to={`${url}/createDirectory`}
+                    icon={
+                      <Icon as={BiFolder} fontSize="1.25rem" fill="icon.alt" />
+                    }
+                  >
+                    <Text textStyle="body-1" fill="text.body">
+                      Create folder
+                    </Text>
+                  </MenuDropdownItem>
+                </MenuDropdownButton>
+              </Greyscale>
             }
           >
             <SiteViewContent>
               <EmptyArea
                 isItemEmpty={isFoldersEmpty}
                 actionButton={
-                  <CreateButton as={Link} to={`${url}/createDirectory`}>
-                    Create folder
-                  </CreateButton>
+                  <Greyscale isActive={isWriteDisabled}>
+                    <CreateButton as={Link} to={`${url}/createDirectory`}>
+                      Create folder
+                    </CreateButton>
+                  </Greyscale>
                 }
               >
                 <WorkspaceFolders
@@ -141,12 +153,18 @@ const WorkspacePage = (): JSX.Element => {
               <EmptyArea
                 isItemEmpty={isPagesEmpty}
                 actionButton={
-                  <CreateButton as={Link} to={`${url}/createPage`}>
-                    Create page
-                  </CreateButton>
+                  <Greyscale isActive={isWriteDisabled}>
+                    <CreateButton as={Link} to={`${url}/createPage`}>
+                      Create page
+                    </CreateButton>
+                  </Greyscale>
                 }
               >
-                <UngroupedPages pagesData={pagesData} url={url} />
+                <UngroupedPages
+                  siteName={siteName}
+                  pagesData={pagesData}
+                  url={url}
+                />
               </EmptyArea>
             </SiteViewContent>
           </EmptyArea>

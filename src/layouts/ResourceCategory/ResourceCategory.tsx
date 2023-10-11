@@ -8,6 +8,7 @@ import {
 } from "react-router-dom"
 
 import { EmptyArea } from "components/EmptyArea"
+import { Greyscale } from "components/Greyscale"
 
 import { useGetResourceCategory } from "hooks/directoryHooks"
 
@@ -28,6 +29,8 @@ import {
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
 // Import utils
+import { isWriteActionsDisabled } from "utils/reviewRequests"
+
 import { ResourceCategoryRouteParams } from "types/resources"
 import { deslugifyDirectory } from "utils"
 
@@ -35,11 +38,12 @@ import { ResourceCard, ResourceCategoryBreadcrumb } from "./components"
 
 export const ResourceCategory = (): JSX.Element => {
   const { params } = useRouteMatch<ResourceCategoryRouteParams>()
-  const { resourceCategoryName } = params
+  const { siteName, resourceCategoryName } = params
   const { path, url } = useRouteMatch()
   const history = useHistory()
 
   const { data: pagesData, isLoading } = useGetResourceCategory(params)
+  const isWriteDisabled = isWriteActionsDisabled(siteName)
   const arePagesEmpty = !pagesData?.length
   return (
     <>
@@ -53,16 +57,18 @@ export const ResourceCategory = (): JSX.Element => {
           </Box>
         </Section>
         <Section>
-          {/* 
-              There is no loading state for this as '!arePagesEmpty' will only evaluate to 
+          {/*
+              There is no loading state for this as '!arePagesEmpty' will only evaluate to
               true after we have received data from the API call.
            */}
           {!arePagesEmpty && (
             <Box w="full">
               <SectionHeader label="Resource Pages">
-                <CreateButton as={RouterLink} to={`${url}/createPage`}>
-                  Create resource
-                </CreateButton>
+                <Greyscale isActive={isWriteDisabled}>
+                  <CreateButton as={RouterLink} to={`${url}/createPage`}>
+                    Create resource
+                  </CreateButton>
+                </Greyscale>
               </SectionHeader>
               <SectionCaption icon={BiBulb} label="NOTE: ">
                 Resources are automatically ordered by latest date.
@@ -77,28 +83,34 @@ export const ResourceCategory = (): JSX.Element => {
             <EmptyArea
               isItemEmpty={arePagesEmpty}
               actionButton={
-                <Button
-                  as={RouterLink}
-                  to={`${url}/createPage`}
-                  leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="white" />}
-                >
-                  Create resource
-                </Button>
+                <Greyscale isActive={isWriteDisabled}>
+                  <Button
+                    as={RouterLink}
+                    to={`${url}/createPage`}
+                    leftIcon={
+                      <Icon as={BiPlus} fontSize="1.5rem" fill="white" />
+                    }
+                  >
+                    Create resource
+                  </Button>
+                </Greyscale>
               }
               subText="Create a resource page to get started."
-            />
-
-            <SimpleGrid columns={3} spacing="1.5rem">
-              {/* NOTE: need to use multiline cards */}
-              {(pagesData || []).map(({ name, title, date, resourceType }) => (
-                <ResourceCard
-                  name={name}
-                  title={title}
-                  date={date}
-                  resourceType={resourceType}
-                />
-              ))}
-            </SimpleGrid>
+            >
+              <SimpleGrid columns={3} spacing="1.5rem">
+                {/* NOTE: need to use multiline cards */}
+                {(pagesData || []).map(
+                  ({ name, title, date, resourceType }) => (
+                    <ResourceCard
+                      name={name}
+                      title={title}
+                      date={date}
+                      resourceType={resourceType}
+                    />
+                  )
+                )}
+              </SimpleGrid>
+            </EmptyArea>
           </Skeleton>
         </Section>
       </SiteEditLayout>

@@ -15,6 +15,7 @@ import {
   Link as RouterLink,
 } from "react-router-dom"
 
+import { Greyscale } from "components/Greyscale"
 import {
   MenuDropdownButton,
   MenuDropdownItem,
@@ -34,6 +35,7 @@ import {
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
 import { getDecodedParams } from "utils/decoding"
+import { isWriteActionsDisabled } from "utils/reviewRequests"
 
 import { FolderUrlParams } from "types/folders"
 import { isDirData } from "types/utils"
@@ -47,7 +49,7 @@ import { FolderBreadcrumbs, FolderCard, PageCard } from "./components"
 export const Folders = (): JSX.Element => {
   const { params } = useRouteMatch<FolderUrlParams>()
   const decodedParams = getDecodedParams({ ...params })
-  const { collectionName, subCollectionName } = decodedParams
+  const { siteName, collectionName, subCollectionName } = decodedParams
   // NOTE: As isomer does not support recursively nested folders,
   // the depth of folder creation is 1 (parent -> child).
   // Hence, at the subfolder, folder creation is disabled.
@@ -60,6 +62,7 @@ export const Folders = (): JSX.Element => {
     isLoading: isLoadingDirectory,
   } = useGetFoldersAndPages(params)
   const hasDirContent = dirData && dirData.length
+  const isWriteDisabled = isWriteActionsDisabled(siteName)
 
   return (
     <>
@@ -79,59 +82,63 @@ export const Folders = (): JSX.Element => {
           <Box w="100%">
             <SectionHeader label="Order of items">
               <ButtonGroup variant="outline" spacing="1rem">
-                <Button
-                  as={RouterLink}
-                  to={`${url}/rearrange`}
-                  iconSpacing="0.5rem"
-                  leftIcon={
-                    <Icon as={BiSort} fontSize="1.5rem" fill="icon.default" />
-                  }
-                >
-                  Reorder items
-                </Button>
-                {canCreateFolder ? (
-                  <MenuDropdownButton
-                    variant="outline"
-                    mainButtonText="Create page"
+                <Greyscale isActive={isWriteDisabled}>
+                  <Button
                     as={RouterLink}
-                    to={`${url}/createPage`}
+                    to={`${url}/rearrange`}
+                    iconSpacing="0.5rem"
+                    leftIcon={
+                      <Icon as={BiSort} fontSize="1.5rem" fill="icon.default" />
+                    }
                   >
-                    <MenuDropdownItem
+                    Reorder items
+                  </Button>
+                </Greyscale>
+                <Greyscale isActive={isWriteDisabled}>
+                  {canCreateFolder ? (
+                    <MenuDropdownButton
+                      variant="outline"
+                      mainButtonText="Create page"
                       as={RouterLink}
                       to={`${url}/createPage`}
-                      icon={
-                        <Icon
-                          as={BiFileBlank}
-                          fontSize="1.25rem"
-                          fill="icon.alt"
-                        />
-                      }
                     >
-                      <Text textStyle="body-1" fill="text.body">
-                        Create page
-                      </Text>
-                    </MenuDropdownItem>
-                    <MenuDropdownItem
-                      as={RouterLink}
-                      to={`${url}/createDirectory`}
-                      icon={
-                        <Icon
-                          as={BiFolder}
-                          fontSize="1.25rem"
-                          fill="icon.alt"
-                        />
-                      }
-                    >
-                      <Text textStyle="body-1" fill="text.body">
-                        Create subfolder
-                      </Text>
-                    </MenuDropdownItem>
-                  </MenuDropdownButton>
-                ) : (
-                  <CreateButton as={RouterLink} to={`${url}/createPage`}>
-                    Create page
-                  </CreateButton>
-                )}
+                      <MenuDropdownItem
+                        as={RouterLink}
+                        to={`${url}/createPage`}
+                        icon={
+                          <Icon
+                            as={BiFileBlank}
+                            fontSize="1.25rem"
+                            fill="icon.alt"
+                          />
+                        }
+                      >
+                        <Text textStyle="body-1" fill="text.body">
+                          Create page
+                        </Text>
+                      </MenuDropdownItem>
+                      <MenuDropdownItem
+                        as={RouterLink}
+                        to={`${url}/createDirectory`}
+                        icon={
+                          <Icon
+                            as={BiFolder}
+                            fontSize="1.25rem"
+                            fill="icon.alt"
+                          />
+                        }
+                      >
+                        <Text textStyle="body-1" fill="text.body">
+                          Create subfolder
+                        </Text>
+                      </MenuDropdownItem>
+                    </MenuDropdownButton>
+                  ) : (
+                    <CreateButton as={RouterLink} to={`${url}/createPage`}>
+                      Create page
+                    </CreateButton>
+                  )}
+                </Greyscale>
               </ButtonGroup>
             </SectionHeader>
           </Box>
