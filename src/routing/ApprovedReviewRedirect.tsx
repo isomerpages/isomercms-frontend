@@ -17,7 +17,6 @@ export const ApprovedReviewRedirect = ({
   ...rest
 }: PropsWithChildren<Omit<RedirectProps, "to">>): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
-  const { data: role } = useGetCollaboratorRoleHook(siteName)
   const {
     data: reviewRequests,
     error,
@@ -34,8 +33,6 @@ export const ApprovedReviewRedirect = ({
   const hasApprovedReviewRequest =
     reviewRequests &&
     reviewRequests.filter((req) => req.status === "APPROVED").length > 0
-
-  const isIsomerAdmin = role === "ISOMERADMIN"
 
   useEffect(() => {
     if (!isGithubUser && isError) {
@@ -59,8 +56,8 @@ export const ApprovedReviewRedirect = ({
   return isGithubUser ? (
     <>{children}</>
   ) : (
-    <Greyscale isActive={!isIsomerAdmin && !reviewRequests}>
-      {hasApprovedReviewRequest && !isIsomerAdmin && (
+    <Greyscale isActive={!reviewRequests}>
+      {hasApprovedReviewRequest && (
         <Redirect {...rest} to={`/sites/${siteName}/dashboard`} />
       )}
       {/*
