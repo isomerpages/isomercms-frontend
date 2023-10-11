@@ -10,6 +10,7 @@ import { useQuery } from "react-query"
 import { Editable } from "components/Editable"
 import { AddSectionButton } from "components/Editable/AddSectionButton"
 import { Footer } from "components/Footer"
+import { Greyscale } from "components/Greyscale"
 import Header from "components/Header"
 import { LoadingButton } from "components/LoadingButton"
 import { WarningModal } from "components/WarningModal"
@@ -26,6 +27,7 @@ import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 import TemplateNavBar from "templates/NavBar"
 
+import { isWriteActionsDisabled } from "utils/reviewRequests"
 import { useErrorToast } from "utils/toasts"
 import { validateLink } from "utils/validators"
 
@@ -44,6 +46,7 @@ const EditNavBar = ({ match }) => {
   const { siteName } = match.params
 
   const { setRedirectToNotFound } = useRedirectHook()
+  const isWriteDisabled = isWriteActionsDisabled(siteName)
 
   const [sha, setSha] = useState()
   const [links, setLinks] = useState([])
@@ -639,107 +642,43 @@ const EditNavBar = ({ match }) => {
               onCreate={createHandler}
               onDelete={onDeleteClick}
             >
-              <HStack className={elementStyles.wrapper}>
-                <Editable.Sidebar title="Navigation Bar">
-                  <Editable.Accordion>
-                    <VStack
-                      bg="base.canvas.alt"
-                      p="1.5rem"
-                      spacing="1.5rem"
-                      alignItems="flex-start"
-                    >
-                      <VStack spacing="0.5rem" alignItems="flex-start">
-                        <Text textStyle="h5">Menu Items</Text>
-                        <Text textStyle="body-2">
-                          You can specify a folder or resource room to
-                          automatically populate its links.
-                        </Text>
-                      </VStack>
-                      <DragDropContext onDragEnd={onDragEnd}>
-                        <Editable.Droppable
-                          width="100%"
-                          editableId="link"
-                          onDragEnd={onDragEnd}
-                        >
-                          <Editable.EmptySection
-                            title="Menu items you add will appear here"
-                            subtitle="Start adding items to your navigation bar"
-                            isEmpty={links.length === 0}
+              <Greyscale isActive={isWriteDisabled}>
+                <HStack className={elementStyles.wrapper}>
+                  <Editable.Sidebar title="Navigation Bar">
+                    <Editable.Accordion>
+                      <VStack
+                        bg="base.canvas.alt"
+                        p="1.5rem"
+                        spacing="1.5rem"
+                        alignItems="flex-start"
+                      >
+                        <VStack spacing="0.5rem" alignItems="flex-start">
+                          <Text textStyle="h5">Menu Items</Text>
+                          <Text textStyle="body-2">
+                            You can specify a folder or resource room to
+                            automatically populate its links.
+                          </Text>
+                        </VStack>
+                        <DragDropContext onDragEnd={onDragEnd}>
+                          <Editable.Droppable
+                            width="100%"
+                            editableId="link"
+                            onDragEnd={onDragEnd}
                           >
-                            <VStack p={0} spacing="1.5rem">
-                              {links.map((link, linkIndex) => (
-                                <>
-                                  {link.resource_room && (
-                                    <Editable.DraggableAccordionItem
-                                      index={linkIndex}
-                                      tag={
-                                        <Tag variant="subtle">
-                                          Resource Room
-                                        </Tag>
-                                      }
-                                      title={link.title}
-                                      isInvalid={_.some(
-                                        errors.links[linkIndex]
-                                      )}
-                                    >
-                                      <ResourceMenuBody
-                                        {...link}
-                                        index={linkIndex}
-                                        errors={errors.links[linkIndex]}
-                                      />
-                                    </Editable.DraggableAccordionItem>
-                                  )}
-                                  {link.collection && (
-                                    <Editable.DraggableAccordionItem
-                                      index={linkIndex}
-                                      tag={<Tag variant="subtle">Folder</Tag>}
-                                      title={link.title}
-                                      isInvalid={_.some(
-                                        errors.links[linkIndex]
-                                      )}
-                                    >
-                                      <FolderMenuBody
-                                        {...link}
-                                        index={linkIndex}
-                                        errors={errors.links[linkIndex]}
-                                        options={options}
-                                      />
-                                    </Editable.DraggableAccordionItem>
-                                  )}
-                                  {link.sublinks && (
-                                    <Editable.DraggableAccordionItem
-                                      index={linkIndex}
-                                      tag={
-                                        <Tag variant="subtle">Menu group</Tag>
-                                      }
-                                      title={link.title}
-                                      isInvalid={
-                                        _.some(errors.links[linkIndex]) ||
-                                        _.some(
-                                          errors.sublinks[
-                                            linkIndex
-                                          ].map((sublink) => _.some(sublink))
-                                        )
-                                      }
-                                    >
-                                      <GroupMenuBody
-                                        {...link}
-                                        index={linkIndex}
-                                        errors={{
-                                          ...errors.links[linkIndex],
-                                          sublinks: errors.sublinks[linkIndex],
-                                        }}
-                                      />
-                                    </Editable.DraggableAccordionItem>
-                                  )}
-                                  {!link.resource_room &&
-                                    !link.collection &&
-                                    !link.sublinks && (
+                            <Editable.EmptySection
+                              title="Menu items you add will appear here"
+                              subtitle="Start adding items to your navigation bar"
+                              isEmpty={links.length === 0}
+                            >
+                              <VStack p={0} spacing="1.5rem">
+                                {links.map((link, linkIndex) => (
+                                  <>
+                                    {link.resource_room && (
                                       <Editable.DraggableAccordionItem
                                         index={linkIndex}
                                         tag={
                                           <Tag variant="subtle">
-                                            Single page
+                                            Resource Room
                                           </Tag>
                                         }
                                         title={link.title}
@@ -747,100 +686,167 @@ const EditNavBar = ({ match }) => {
                                           errors.links[linkIndex]
                                         )}
                                       >
-                                        <PageMenuBody
+                                        <ResourceMenuBody
                                           {...link}
                                           index={linkIndex}
                                           errors={errors.links[linkIndex]}
                                         />
                                       </Editable.DraggableAccordionItem>
                                     )}
-                                </>
-                              ))}
-                            </VStack>
-                          </Editable.EmptySection>
-                        </Editable.Droppable>
-                      </DragDropContext>
-                    </VStack>
-                  </Editable.Accordion>
+                                    {link.collection && (
+                                      <Editable.DraggableAccordionItem
+                                        index={linkIndex}
+                                        tag={<Tag variant="subtle">Folder</Tag>}
+                                        title={link.title}
+                                        isInvalid={_.some(
+                                          errors.links[linkIndex]
+                                        )}
+                                      >
+                                        <FolderMenuBody
+                                          {...link}
+                                          index={linkIndex}
+                                          errors={errors.links[linkIndex]}
+                                          options={options}
+                                        />
+                                      </Editable.DraggableAccordionItem>
+                                    )}
+                                    {link.sublinks && (
+                                      <Editable.DraggableAccordionItem
+                                        index={linkIndex}
+                                        tag={
+                                          <Tag variant="subtle">Menu group</Tag>
+                                        }
+                                        title={link.title}
+                                        isInvalid={
+                                          _.some(errors.links[linkIndex]) ||
+                                          _.some(
+                                            errors.sublinks[
+                                              linkIndex
+                                            ].map((sublink) => _.some(sublink))
+                                          )
+                                        }
+                                      >
+                                        <GroupMenuBody
+                                          {...link}
+                                          index={linkIndex}
+                                          errors={{
+                                            ...errors.links[linkIndex],
+                                            sublinks:
+                                              errors.sublinks[linkIndex],
+                                          }}
+                                        />
+                                      </Editable.DraggableAccordionItem>
+                                    )}
+                                    {!link.resource_room &&
+                                      !link.collection &&
+                                      !link.sublinks && (
+                                        <Editable.DraggableAccordionItem
+                                          index={linkIndex}
+                                          tag={
+                                            <Tag variant="subtle">
+                                              Single page
+                                            </Tag>
+                                          }
+                                          title={link.title}
+                                          isInvalid={_.some(
+                                            errors.links[linkIndex]
+                                          )}
+                                        >
+                                          <PageMenuBody
+                                            {...link}
+                                            index={linkIndex}
+                                            errors={errors.links[linkIndex]}
+                                          />
+                                        </Editable.DraggableAccordionItem>
+                                      )}
+                                  </>
+                                ))}
+                              </VStack>
+                            </Editable.EmptySection>
+                          </Editable.Droppable>
+                        </DragDropContext>
+                      </VStack>
+                    </Editable.Accordion>
 
-                  <Box px="1.5rem">
-                    <AddSectionButton buttonText="Add menu item">
-                      <AddSectionButton.List>
-                        {/* NOTE: Check if the site contains any collections in `options`
+                    <Box px="1.5rem">
+                      <AddSectionButton buttonText="Add menu item">
+                        <AddSectionButton.List>
+                          {/* NOTE: Check if the site contains any collections in `options`
                             if it does not, prevent creation of a `folder` section
                           */}
-                        {options && options.length > 0 && (
-                          <AddSectionButton.Option
-                            title="Folder"
-                            subtitle="Add a link to an existing Folder"
-                            onClick={() => {
-                              createHandler({
-                                target: {
-                                  id: `link-create`,
-                                  value: "collectionLink",
-                                },
-                              })
-                            }}
-                          />
-                        )}
-                        <AddSectionButton.Option
-                          title="Menu group"
-                          subtitle="Add a custom group of links to your navigation bar"
-                          onClick={() => {
-                            createHandler({
-                              target: {
-                                id: `link-create`,
-                                value: "sublinkLink",
-                              },
-                            })
-                          }}
-                        />
-                        <AddSectionButton.Option
-                          title="Single Page"
-                          subtitle="Add a link to a single page on your navigation bar"
-                          onClick={() => {
-                            createHandler({
-                              target: {
-                                id: `link-create`,
-                                value: "pageLink",
-                              },
-                            })
-                          }}
-                        />
-                        {/* NOTE: Check if the site does not contain a resource room or any sections contain `resource_room`
-                            If either condition is fulfilled, prevent creation of a `resource_room` section */}
-                        {hasResourceRoom &&
-                          !links.some(
-                            ({ resource_room }) => !!resource_room
-                          ) && (
+                          {options && options.length > 0 && (
                             <AddSectionButton.Option
-                              title="Resource room"
-                              subtitle="Add a link to your Resources"
+                              title="Folder"
+                              subtitle="Add a link to an existing Folder"
                               onClick={() => {
                                 createHandler({
                                   target: {
                                     id: `link-create`,
-                                    value: "resourceLink",
+                                    value: "collectionLink",
                                   },
                                 })
                               }}
                             />
                           )}
-                      </AddSectionButton.List>
-                    </AddSectionButton>
-                  </Box>
-                </Editable.Sidebar>
-                {/* need to change the css here */}
-                <div className={`${editorStyles.contactUsEditorMain} `}>
-                  {/* navbar content */}
-                  {/* TODO: update collectionInfo */}
-                  <TemplateNavBar
-                    links={links}
-                    collectionInfo={folderDropdowns}
-                    resources={resources}
-                  />
-                </div>
-              </HStack>
+                          <AddSectionButton.Option
+                            title="Menu group"
+                            subtitle="Add a custom group of links to your navigation bar"
+                            onClick={() => {
+                              createHandler({
+                                target: {
+                                  id: `link-create`,
+                                  value: "sublinkLink",
+                                },
+                              })
+                            }}
+                          />
+                          <AddSectionButton.Option
+                            title="Single Page"
+                            subtitle="Add a link to a single page on your navigation bar"
+                            onClick={() => {
+                              createHandler({
+                                target: {
+                                  id: `link-create`,
+                                  value: "pageLink",
+                                },
+                              })
+                            }}
+                          />
+                          {/* NOTE: Check if the site does not contain a resource room or any sections contain `resource_room`
+                            If either condition is fulfilled, prevent creation of a `resource_room` section */}
+                          {hasResourceRoom &&
+                            !links.some(
+                              ({ resource_room }) => !!resource_room
+                            ) && (
+                              <AddSectionButton.Option
+                                title="Resource room"
+                                subtitle="Add a link to your Resources"
+                                onClick={() => {
+                                  createHandler({
+                                    target: {
+                                      id: `link-create`,
+                                      value: "resourceLink",
+                                    },
+                                  })
+                                }}
+                              />
+                            )}
+                        </AddSectionButton.List>
+                      </AddSectionButton>
+                    </Box>
+                  </Editable.Sidebar>
+                  {/* need to change the css here */}
+                  <div className={`${editorStyles.contactUsEditorMain} `}>
+                    {/* navbar content */}
+                    {/* TODO: update collectionInfo */}
+                    <TemplateNavBar
+                      links={links}
+                      collectionInfo={folderDropdowns}
+                      resources={resources}
+                    />
+                  </div>
+                </HStack>
+              </Greyscale>
             </EditableContextProvider>
             <Footer>
               {!isEmpty(deletedLinks) && (
@@ -853,7 +859,7 @@ const EditNavBar = ({ match }) => {
                 </Button>
               )}
               <LoadingButton
-                isDisabled={hasErrors()}
+                isDisabled={isWriteDisabled || hasErrors()}
                 onClick={async () => saveNavData({ originalNav, links, sha })}
               >
                 Save

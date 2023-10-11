@@ -56,7 +56,7 @@ export const ApprovedReviewRedirect = ({
   return isGithubUser ? (
     <>{children}</>
   ) : (
-    <Greyscale isActive={!reviewRequests}>
+    <>
       {hasApprovedReviewRequest && (
         <Redirect {...rest} to={`/sites/${siteName}/dashboard`} />
       )}
@@ -68,7 +68,7 @@ export const ApprovedReviewRedirect = ({
         <Redirect {...rest} to="/sites" />
       )}
       {children}
-    </Greyscale>
+    </>
   )
 }
 

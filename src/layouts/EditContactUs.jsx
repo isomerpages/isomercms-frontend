@@ -16,6 +16,7 @@ import { createRef, useEffect, useState } from "react"
 
 import { Editable } from "components/Editable"
 import { Footer } from "components/Footer"
+import { Greyscale } from "components/Greyscale"
 import Header from "components/Header"
 import { LoadingButton } from "components/LoadingButton"
 import { WarningModal } from "components/WarningModal"
@@ -40,6 +41,7 @@ import TemplateLocationsSection from "templates/contact-us/LocationsSection"
 
 import sanitiseFrontMatter from "utils/contact-us/dataSanitisers"
 import validateFrontMatter from "utils/contact-us/validators"
+import { isWriteActionsDisabled } from "utils/reviewRequests"
 import { useErrorToast } from "utils/toasts"
 import { validateContactType, validateLocationType } from "utils/validators"
 
@@ -187,6 +189,7 @@ const EditContactUs = ({ match }) => {
   const { retrieveSiteColors, generatePageStyleSheet } = useSiteColorsHook()
 
   const { siteName } = match.params
+  const isWriteDisabled = isWriteActionsDisabled(siteName)
   const [hasLoaded, setHasLoaded] = useState(false)
   const [scrollRefs, setScrollRefs] = useState({
     sectionsScrollRefs: {
@@ -851,75 +854,77 @@ const EditContactUs = ({ match }) => {
               onDelete={onDeleteClick}
               onDisplay={displayHandler}
             >
-              <HStack className={elementStyles.wrapper}>
-                <Editable.Sidebar title="Contact Us">
-                  <Editable.Accordion onChange={displayHandler}>
-                    <VStack
-                      bg="base.canvas.alt"
-                      p="1.5rem"
-                      spacing="1.5rem"
-                      alignItems="flex-start"
-                    >
-                      {/* General Information section */}
-                      <GeneralInfoSection
-                        frontMatter={frontMatter}
-                        footerContent={footerContent}
-                        errors={errors}
-                      />
+              <Greyscale isActive={isWriteDisabled}>
+                <HStack className={elementStyles.wrapper}>
+                  <Editable.Sidebar title="Contact Us">
+                    <Editable.Accordion onChange={displayHandler}>
+                      <VStack
+                        bg="base.canvas.alt"
+                        p="1.5rem"
+                        spacing="1.5rem"
+                        alignItems="flex-start"
+                      >
+                        {/* General Information section */}
+                        <GeneralInfoSection
+                          frontMatter={frontMatter}
+                          footerContent={footerContent}
+                          errors={errors}
+                        />
 
-                      <Divider />
+                        <Divider />
 
-                      {/* Locations section */}
-                      <CardsSection
-                        contactUsType="locations"
-                        cardFrontMatter={frontMatter.locations}
-                        errors={errors.locations}
-                      />
+                        {/* Locations section */}
+                        <CardsSection
+                          contactUsType="locations"
+                          cardFrontMatter={frontMatter.locations}
+                          errors={errors.locations}
+                        />
 
-                      <Divider />
+                        <Divider />
 
-                      {/* Contact Information section */}
-                      <CardsSection
-                        contactUsType="contacts"
-                        cardFrontMatter={frontMatter.contacts}
-                        errors={errors.contacts}
-                      />
-                    </VStack>
-                  </Editable.Accordion>
-                </Editable.Sidebar>
+                        {/* Contact Information section */}
+                        <CardsSection
+                          contactUsType="contacts"
+                          cardFrontMatter={frontMatter.contacts}
+                          errors={errors.contacts}
+                        />
+                      </VStack>
+                    </Editable.Accordion>
+                  </Editable.Sidebar>
 
-                {/* Right column: Preview pane */}
-                <div className={`${editorStyles.contactUsEditorMain} `}>
-                  {/* contact-us header */}
-                  <TemplateContactUsHeader
-                    agencyName={frontMatter.agency_name}
-                    ref={scrollRefs.sectionsScrollRefs.header}
-                  />
-                  {/* contact-us content */}
-                  <section className="bp-section is-small padding--bottom--lg">
-                    <div className="bp-container">
-                      <div className="row">
-                        <div className="col is-8 is-offset-2">
-                          <TemplateLocationsSection
-                            locations={frontMatter.locations}
-                            scrollRefs={scrollRefs.locations}
-                            ref={scrollRefs.sectionsScrollRefs.locations}
-                          />
-                          <TemplateContactsSection
-                            contacts={frontMatter.contacts}
-                            scrollRefs={scrollRefs.contacts}
-                            ref={scrollRefs.sectionsScrollRefs.contacts}
-                          />
-                          <TemplateFeedbackSection
-                            feedback={footerContent.feedback}
-                            ref={scrollRefs.sectionsScrollRefs.feedback}
-                          />
+                  {/* Right column: Preview pane */}
+                  <div className={`${editorStyles.contactUsEditorMain} `}>
+                    {/* contact-us header */}
+                    <TemplateContactUsHeader
+                      agencyName={frontMatter.agency_name}
+                      ref={scrollRefs.sectionsScrollRefs.header}
+                    />
+                    {/* contact-us content */}
+                    <section className="bp-section is-small padding--bottom--lg">
+                      <div className="bp-container">
+                        <div className="row">
+                          <div className="col is-8 is-offset-2">
+                            <TemplateLocationsSection
+                              locations={frontMatter.locations}
+                              scrollRefs={scrollRefs.locations}
+                              ref={scrollRefs.sectionsScrollRefs.locations}
+                            />
+                            <TemplateContactsSection
+                              contacts={frontMatter.contacts}
+                              scrollRefs={scrollRefs.contacts}
+                              ref={scrollRefs.sectionsScrollRefs.contacts}
+                            />
+                            <TemplateFeedbackSection
+                              feedback={footerContent.feedback}
+                              ref={scrollRefs.sectionsScrollRefs.feedback}
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </section>
-                </div>
-              </HStack>
+                    </section>
+                  </div>
+                </HStack>
+              </Greyscale>
             </EditableContextProvider>
 
             {/* Save page footer */}
@@ -933,7 +938,10 @@ const EditContactUs = ({ match }) => {
                   See removed content
                 </LoadingButton>
               )}
-              <LoadingButton isDisabled={hasErrors()} onClick={savePage}>
+              <LoadingButton
+                isDisabled={isWriteDisabled || hasErrors()}
+                onClick={savePage}
+              >
                 Save
               </LoadingButton>
             </Footer>
