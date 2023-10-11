@@ -5,6 +5,7 @@ import { Greyscale } from "components/Greyscale"
 
 import { useLoginContext } from "contexts/LoginContext"
 
+import { useGetCollaboratorRoleHook } from "hooks/collaboratorHooks"
 import { useGetReviewRequests } from "hooks/siteDashboardHooks"
 
 import { getAxiosErrorMessage } from "utils/axios"
@@ -16,6 +17,7 @@ export const ApprovedReviewRedirect = ({
   ...rest
 }: PropsWithChildren<Omit<RedirectProps, "to">>): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
+  const { data: role } = useGetCollaboratorRoleHook(siteName)
   const {
     data: reviewRequests,
     error,
@@ -33,6 +35,8 @@ export const ApprovedReviewRedirect = ({
     reviewRequests &&
     reviewRequests.filter((req) => req.status === "APPROVED").length > 0
 
+  const isIsomerAdmin = role === "ISOMERADMIN"
+
   useEffect(() => {
     if (!isGithubUser && isError) {
       errorToast({
@@ -43,7 +47,7 @@ export const ApprovedReviewRedirect = ({
   }, [isError, error, errorToast, isGithubUser])
 
   useEffect(() => {
-    if (hasApprovedReviewRequest) {
+    if (!isGithubUser && hasApprovedReviewRequest) {
       warningToast({
         id: "approved-review-redirect-warning",
         description:
@@ -55,8 +59,8 @@ export const ApprovedReviewRedirect = ({
   return isGithubUser ? (
     <>{children}</>
   ) : (
-    <Greyscale isActive={isLoading || !reviewRequests}>
-      {hasApprovedReviewRequest && (
+    <Greyscale isActive={!isIsomerAdmin && !reviewRequests}>
+      {hasApprovedReviewRequest && !isIsomerAdmin && (
         <Redirect {...rest} to={`/sites/${siteName}/dashboard`} />
       )}
       {/*
