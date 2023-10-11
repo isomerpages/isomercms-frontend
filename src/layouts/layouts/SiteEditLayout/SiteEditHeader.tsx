@@ -32,6 +32,8 @@ import { useGetReviewRequests } from "hooks/siteDashboardHooks"
 
 import { ReviewRequestModal } from "layouts/ReviewRequest"
 
+import { isWriteActionsDisabled } from "utils/reviewRequests"
+
 import { NavImage } from "assets"
 
 export const SiteEditHeader = (): JSX.Element => {
@@ -53,22 +55,9 @@ export const SiteEditHeader = (): JSX.Element => {
   // NOTE: Even if we have an unknown user, we assume that it is github
   // and avoid showing new features.
   const isGithubUser = !!userId
-  const {
-    data: reviewRequests,
-    isLoading: isReviewRequestsLoading,
-  } = useGetReviewRequests(siteName)
   const history = useHistory()
 
-  // Note: if PR is in APPROVED status, it will auto-redirect to dashboard as no edits should happen
-  // But have added here to be explicit of the status checks
-  const openReviewRequests = reviewRequests
-    ? reviewRequests.filter(
-        (request) => request.status === "OPEN" || request.status === "APPROVED"
-      )
-    : []
-
-  const shouldDisableReviewRequestButton =
-    isReviewRequestsLoading || openReviewRequests.length > 0
+  const isWriteDisabled = isWriteActionsDisabled(siteName)
 
   const onBackButtonClick = () => {
     const redirPath = isGithubUser ? "/sites" : `/sites/${siteName}/dashboard`
@@ -128,7 +117,7 @@ export const SiteEditHeader = (): JSX.Element => {
               id="isomer-workspace-feature-tour-step-1"
               leftIcon={<Icon as={BiCheckCircle} fontSize="1.25rem" />}
               onClick={onReviewRequestModalOpen}
-              isDisabled={shouldDisableReviewRequestButton}
+              isDisabled={isWriteDisabled}
             >
               Request a Review
             </Button>

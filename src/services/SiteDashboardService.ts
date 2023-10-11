@@ -23,11 +23,19 @@ export const getSiteInfo = async (
 
 export const getReviewRequests = async (
   siteName: string
-): Promise<SiteDashboardReviewRequest[]> => {
+): Promise<SiteDashboardReviewRequest[] | null> => {
   const endpoint = `/sites/${siteName}/review/summary`
   return apiService
-    .get<{ reviews: SiteDashboardReviewRequest[] }>(endpoint)
-    .then(({ data }) => data.reviews)
+    .get<{ reviews: SiteDashboardReviewRequest[] } | { message: string }>(
+      endpoint
+    )
+    .then(({ data }) => {
+      if ("reviews" in data) {
+        return data.reviews
+      }
+      // Site is not migrated
+      return null
+    })
 }
 
 export const getCollaboratorsStatistics = async (

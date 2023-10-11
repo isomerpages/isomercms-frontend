@@ -34,6 +34,7 @@ import {
 
 import { ContextMenu } from "components/ContextMenu"
 import { EmptyArea } from "components/EmptyArea"
+import { Greyscale } from "components/Greyscale"
 
 import {
   useCreateDirectory,
@@ -56,6 +57,7 @@ import {
 
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
+import { isWriteActionsDisabled } from "utils/reviewRequests"
 import { useErrorToast, useSuccessToast } from "utils/toasts"
 
 import { DirectoryData, DirectoryInfoProps } from "types/directory"
@@ -255,6 +257,7 @@ const ResourceRoomContent = ({
     isError: isUpdateResourceRoomNameError,
     isSuccess: isUpdateResourceRoomNameSuccess,
   } = useUpdateResourceRoomName(siteName, resourceRoomName)
+  const isWriteDisabled = isWriteActionsDisabled(siteName)
   const errorToast = useErrorToast()
   const successToast = useSuccessToast()
 
@@ -310,9 +313,11 @@ const ResourceRoomContent = ({
           {directoryData.length !== 0 && (
             <Box w="full">
               <SectionHeader label="Resource Categories">
-                <CreateButton as={RouterLink} to={`${url}/createDirectory`}>
-                  Create category
-                </CreateButton>
+                <Greyscale isActive={isWriteDisabled}>
+                  <CreateButton as={RouterLink} to={`${url}/createDirectory`}>
+                    Create category
+                  </CreateButton>
+                </Greyscale>
               </SectionHeader>
               <SectionCaption icon={BiBulb} label="PRO TIP: ">
                 Categories impact navigation on your site. Organise your
@@ -324,13 +329,17 @@ const ResourceRoomContent = ({
             <EmptyArea
               isItemEmpty={!directoryData?.length}
               actionButton={
-                <Button
-                  as={RouterLink}
-                  to={`${url}/createDirectory`}
-                  leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="white" />}
-                >
-                  Create category
-                </Button>
+                <Greyscale isActive={isWriteDisabled}>
+                  <Button
+                    as={RouterLink}
+                    to={`${url}/createDirectory`}
+                    leftIcon={
+                      <Icon as={BiPlus} fontSize="1.5rem" fill="white" />
+                    }
+                  >
+                    Create category
+                  </Button>
+                </Greyscale>
               }
               subText="Create a resource category to get started."
             >
@@ -383,6 +392,7 @@ const ResourceRoomContent = ({
                 <Button
                   type="submit"
                   isLoading={isUpdateResourceRoomNameLoading}
+                  isDisabled={isWriteDisabled}
                 >
                   Save
                 </Button>

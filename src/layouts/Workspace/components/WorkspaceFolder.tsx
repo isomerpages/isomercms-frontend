@@ -2,6 +2,10 @@ import { SimpleGrid, Box, Skeleton } from "@chakra-ui/react"
 import { BiBulb } from "react-icons/bi"
 import { Link } from "react-router-dom"
 
+import { Greyscale } from "components/Greyscale"
+
+import { isWriteActionsDisabled } from "utils/reviewRequests"
+
 import { DirectoryData, PageData } from "types/directory"
 
 import {
@@ -28,13 +32,17 @@ export const WorkspaceFolders = ({
   url,
   dirsData,
 }: WorkspaceFoldersProps): JSX.Element => {
+  const isWriteDisabled = isWriteActionsDisabled(siteName)
+
   return (
     <Section>
       <Box w="100%">
         <SectionHeader label="Folders">
-          <CreateButton as={Link} to={`${url}/createDirectory`}>
-            Create folder
-          </CreateButton>
+          <Greyscale isActive={isWriteDisabled}>
+            <CreateButton as={Link} to={`${url}/createDirectory`}>
+              Create folder
+            </CreateButton>
+          </Greyscale>
         </SectionHeader>
         <SectionCaption label="PRO TIP: " icon={BiBulb}>
           You can link folders to your navigation bar.

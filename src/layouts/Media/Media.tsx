@@ -4,6 +4,8 @@ import _ from "lodash"
 import { BiBulb, BiUpload } from "react-icons/bi"
 import { Link, Switch, useRouteMatch, useHistory } from "react-router-dom"
 
+import { Greyscale } from "components/Greyscale"
+
 import { useGetMediaFolders } from "hooks/directoryHooks"
 
 import { DeleteWarningScreen } from "layouts/screens/DeleteWarningScreen"
@@ -14,6 +16,8 @@ import { MediaSettingsScreen } from "layouts/screens/MediaSettingsScreen"
 import { MoveScreen } from "layouts/screens/MoveScreen"
 
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
+
+import { isWriteActionsDisabled } from "utils/reviewRequests"
 
 import { isDirData, isMediaData } from "types/utils"
 
@@ -66,7 +70,7 @@ export const Media = (): JSX.Element => {
     mediaRoom: "files" | "images"
     mediaDirectoryName: string
   }>()
-  const { mediaRoom: mediaType } = params
+  const { siteName, mediaRoom: mediaType } = params
   const { data: mediasData, isLoading } = useGetMediaFolders(params)
   const {
     singularMediaLabel,
@@ -74,6 +78,7 @@ export const Media = (): JSX.Element => {
     singularDirectoryLabel,
     pluralDirectoryLabel,
   } = getMediaLabels(mediaType)
+  const isWriteDisabled = isWriteActionsDisabled(siteName)
 
   return (
     <>
@@ -88,9 +93,11 @@ export const Media = (): JSX.Element => {
         </Section>
         <Section>
           <SectionHeader label={_.upperFirst(pluralDirectoryLabel)}>
-            <CreateButton as={Link} to={`${url}/createDirectory`}>
-              {`Create ${singularDirectoryLabel}`}
-            </CreateButton>
+            <Greyscale isActive={isWriteDisabled}>
+              <CreateButton as={Link} to={`${url}/createDirectory`}>
+                {`Create ${singularDirectoryLabel}`}
+              </CreateButton>
+            </Greyscale>
           </SectionHeader>
           <Skeleton
             w="100%"
@@ -107,14 +114,16 @@ export const Media = (): JSX.Element => {
         <Section>
           <Box w="100%">
             <SectionHeader label={`Ungrouped ${pluralMediaLabel}`}>
-              <Button
-                as={Link}
-                to={`${url}/createMedia`}
-                leftIcon={<BiUpload fontSize="1.5rem" />}
-                variant="outline"
-              >
-                {`Upload ${singularMediaLabel}`}
-              </Button>
+              <Greyscale isActive={isWriteDisabled}>
+                <Button
+                  as={Link}
+                  to={`${url}/createMedia`}
+                  leftIcon={<BiUpload fontSize="1.5rem" />}
+                  variant="outline"
+                >
+                  {`Upload ${singularMediaLabel}`}
+                </Button>
+              </Greyscale>
             </SectionHeader>
             <SectionCaption label="PRO TIP: " icon={BiBulb}>
               Upload {pluralMediaLabel} here to link to them in pages and

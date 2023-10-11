@@ -9,6 +9,8 @@ import { useDeleteDirectoryHook } from "hooks/directoryHooks"
 import { useGetMediaHook, useDeleteMediaHook } from "hooks/mediaHooks"
 import { useGetPageHook, useDeletePageHook } from "hooks/pageHooks"
 
+import { isWriteActionsDisabled } from "utils/reviewRequests"
+
 import {
   getLastItemType,
   getMediaDirectoryName,
@@ -17,13 +19,14 @@ import {
 
 export const DeleteWarningScreen = ({ match, onClose }) => {
   const { params, decodedParams } = match
-  const { fileName, mediaRoom } = params
+  const { siteName, fileName, mediaRoom } = params
   const deleteItemName = params.mediaDirectoryName
     ? getMediaDirectoryName(params.mediaDirectoryName, { start: -1 })
     : pageFileNameToTitle(
         decodedParams[getLastItemType(decodedParams)],
         !!(params.resourceRoomName && params.fileName)
       )
+  const isWriteDisabled = isWriteActionsDisabled(siteName)
 
   if (fileName) {
     const { data: fileData } = mediaRoom
@@ -50,6 +53,7 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
         <LoadingButton
           colorScheme="critical"
           onClick={() => deleteHandler({ sha: fileData.sha })}
+          isDisabled={isWriteDisabled}
         >
           Yes, delete
         </LoadingButton>
@@ -73,7 +77,11 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
       <Button variant="clear" colorScheme="secondary" onClick={onClose}>
         Cancel
       </Button>
-      <LoadingButton colorScheme="critical" onClick={deleteHandler}>
+      <LoadingButton
+        colorScheme="critical"
+        onClick={deleteHandler}
+        isDisabled={isWriteDisabled}
+      >
         Yes, delete
       </LoadingButton>
     </WarningModal>
