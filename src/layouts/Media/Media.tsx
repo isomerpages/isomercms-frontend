@@ -1,13 +1,14 @@
 import { SimpleGrid, Box, Text, Skeleton, Center } from "@chakra-ui/react"
 import { Button, Pagination } from "@opengovsg/design-system-react"
 import _ from "lodash"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { BiBulb, BiUpload } from "react-icons/bi"
 import { Link, Switch, useRouteMatch, useHistory } from "react-router-dom"
 
 import { Greyscale } from "components/Greyscale"
 
-import { useGetMediaFolders } from "hooks/directoryHooks"
+import { useListMediaFolderFiles } from "hooks/directoryHooks/useListMediaFolderFiles"
+import { useListMediaFolderSubdirectories } from "hooks/directoryHooks/useListMediaFolderSubdirectories"
 
 import { DeleteWarningScreen } from "layouts/screens/DeleteWarningScreen"
 import { DirectoryCreationScreen } from "layouts/screens/DirectoryCreationScreen"
@@ -76,10 +77,37 @@ export const Media = (): JSX.Element => {
     mediaDirectoryName: string
   }>()
   const { siteName, mediaRoom: mediaType } = params
-  const { data: mediasData, isLoading } = useGetMediaFolders({
+  const [originalMediaType, setOriginalMediaType] = useState(mediaType)
+
+  useEffect(() => {
+    // NOTE: Because this component is shared between different media types,
+    // we need to reset the page number to 1 when the media type changes.
+    // If this is not done, we might end up with erroneous pagination
+    // such as being on page 4 of a 1 page list.
+    // This results in the back button being clickable,
+    // but the number always being 1.
+    if (originalMediaType !== mediaType) {
+      setCurPage(1)
+      // NOTE: Keep state in sync here
+      setOriginalMediaType(mediaType)
+    }
+  }, [curPage, originalMediaType, setOriginalMediaType, mediaType])
+
+  const {
+    data: mediaFolderSubdirectories,
+    isLoading: isListMediaFolderSubdirectoriesLoading,
+  } = useListMediaFolderSubdirectories({
+    ...params,
+  })
+
+  const {
+    data: mediaFolderFiles,
+    isLoading: isListMediaFilesLoading,
+  } = useListMediaFolderFiles({
     ...params,
     curPage,
   })
+
   const {
     singularMediaLabel,
     pluralMediaLabel,
@@ -109,11 +137,13 @@ export const Media = (): JSX.Element => {
           </SectionHeader>
           <Skeleton
             w="100%"
-            h={isLoading ? "4.5rem" : "fit-content"}
-            isLoaded={!isLoading}
+            h={
+              isListMediaFolderSubdirectoriesLoading ? "4.5rem" : "fit-content"
+            }
+            isLoaded={!isListMediaFolderSubdirectoriesLoading}
           >
             <SimpleGrid w="100%" columns={3} spacing="1.5rem">
-              {mediasData?.directories.map(({ name }) => {
+              {mediaFolderSubdirectories?.directories.map(({ name }) => {
                 return <MediaDirectoryCard title={name} />
               })}
             </SimpleGrid>
@@ -151,11 +181,11 @@ export const Media = (): JSX.Element => {
           </Box>
           <Skeleton
             w="100%"
-            h={isLoading ? "4.5rem" : "fit-content"}
-            isLoaded={!isLoading}
+            h={isListMediaFilesLoading ? "4.5rem" : "fit-content"}
+            isLoaded={!isListMediaFilesLoading}
           >
             <SimpleGrid columns={3} spacing="1.5rem" w="100%">
-              {mediasData?.files.map(({ name, mediaUrl }) => {
+              {mediaFolderFiles?.files.map(({ name, mediaUrl }) => {
                 if (mediaType === "images") {
                   return <ImagePreviewCard name={name} mediaUrl={mediaUrl} />
                 }
@@ -164,7 +194,7 @@ export const Media = (): JSX.Element => {
             </SimpleGrid>
             <Center mt="1rem">
               <Pagination
-                totalCount={mediasData?.total || 0}
+                totalCount={mediaFolderFiles?.total || 0}
                 pageSize={MEDIA_PAGINATION_SIZE}
                 currentPage={curPage}
                 onPageChange={(page) => setCurPage(page)}
