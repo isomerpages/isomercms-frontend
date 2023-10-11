@@ -9,7 +9,8 @@ export interface FolderUrlParams {
 export interface MediaDirectoryParams {
   siteName: string
   mediaDirectoryName: string
-  curPage: number
+  curPage?: number
+  limit?: number
 }
 
 export type DirectoryParams = Omit<FolderUrlParams, "subCollectionName">

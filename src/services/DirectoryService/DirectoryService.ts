@@ -68,12 +68,17 @@ export const getWorkspacePages = (siteName: string): Promise<PageData[]> => {
 export const getMediaData = ({
   siteName,
   mediaDirectoryName,
-  curPage,
+  // NOTE: These defaults are set to adhere to our current behaviour.
+  // Github has a fixed upper limit of 1000 items and we return
+  // every item up to the upper limit.
+  // Hence, this behaviour is essentially a single page of up to 1000 items.
+  curPage = 1,
+  limit = 1000,
 }: MediaDirectoryParams): Promise<GetMediaFoldersDto> => {
   const endpoint = `/sites/${siteName}/media/${mediaDirectoryName}`
   return apiService
     .get<GetMediaFoldersDto>(endpoint, {
-      params: { page: curPage },
+      params: { page: curPage, limit },
     })
     .then(({ data }) => data)
 }
