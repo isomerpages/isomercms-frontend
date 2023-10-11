@@ -5,6 +5,8 @@ import {
   PageData,
   ResourceRoomNameUpdateProps,
   GetMediaFoldersDto,
+  GetMediaSubdirectoriesDto,
+  GetMediaFilesDto,
 } from "types/directory"
 import { MediaDirectoryParams, PageDirectoryParams } from "types/folders"
 import {
@@ -71,6 +73,32 @@ export const getMediaData = ({
   const endpoint = `/sites/${siteName}/media/${mediaDirectoryName}`
   return apiService
     .get<GetMediaFoldersDto>(endpoint, {
+      params: { page: curPage },
+    })
+    .then(({ data }) => data)
+}
+
+export const getMediaFolderSubdirectories = ({
+  siteName,
+  mediaDirectoryName,
+}: Omit<
+  MediaDirectoryParams,
+  "curPage"
+>): Promise<GetMediaSubdirectoriesDto> => {
+  const endpoint = `/sites/${siteName}/media/${mediaDirectoryName}/subdirectories`
+  return apiService
+    .get<GetMediaSubdirectoriesDto>(endpoint)
+    .then(({ data }) => data)
+}
+
+export const getMediaFolderFiles = ({
+  siteName,
+  mediaDirectoryName,
+  curPage,
+}: MediaDirectoryParams): Promise<GetMediaFilesDto> => {
+  const endpoint = `/sites/${siteName}/media/${mediaDirectoryName}/files`
+  return apiService
+    .get<GetMediaFilesDto>(endpoint, {
       params: { page: curPage },
     })
     .then(({ data }) => data)

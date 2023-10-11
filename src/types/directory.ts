@@ -51,3 +51,7 @@ export interface GetMediaFoldersDto {
   files: MediaData[]
   total: number
 }
+
+export type GetMediaSubdirectoriesDto = Pick<GetMediaFoldersDto, "directories">
+
+export type GetMediaFilesDto = Pick<GetMediaFoldersDto, "files" | "total">
