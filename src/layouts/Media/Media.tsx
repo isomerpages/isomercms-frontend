@@ -1,6 +1,7 @@
-import { SimpleGrid, Box, Text, Skeleton } from "@chakra-ui/react"
-import { Button } from "@opengovsg/design-system-react"
+import { SimpleGrid, Box, Text, Skeleton, Center } from "@chakra-ui/react"
+import { Button, Pagination } from "@opengovsg/design-system-react"
 import _ from "lodash"
+import { useState } from "react"
 import { BiBulb, BiUpload } from "react-icons/bi"
 import { Link, Switch, useRouteMatch, useHistory } from "react-router-dom"
 
@@ -18,8 +19,6 @@ import { MoveScreen } from "layouts/screens/MoveScreen"
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
 import { isWriteActionsDisabled } from "utils/reviewRequests"
-
-import { isDirData, isMediaData } from "types/utils"
 
 import {
   CreateButton,
@@ -63,15 +62,24 @@ const getMediaLabels = (mediaType: "files" | "images"): MediaLabels => {
   }
 }
 
+// NOTE: This is synced with backend
+const MEDIA_PAGINATION_SIZE = 15
+
 export const Media = (): JSX.Element => {
   const history = useHistory()
+  // NOTE: We have to use 1 based indexing as the pagination component
+  // starts from 1
+  const [curPage, setCurPage] = useState(1)
   const { params, path, url } = useRouteMatch<{
     siteName: string
     mediaRoom: "files" | "images"
     mediaDirectoryName: string
   }>()
   const { siteName, mediaRoom: mediaType } = params
-  const { data: mediasData, isLoading } = useGetMediaFolders(params)
+  const { data: mediasData, isLoading } = useGetMediaFolders({
+    ...params,
+    curPage,
+  })
   const {
     singularMediaLabel,
     pluralMediaLabel,
@@ -105,7 +113,7 @@ export const Media = (): JSX.Element => {
             isLoaded={!isLoading}
           >
             <SimpleGrid w="100%" columns={3} spacing="1.5rem">
-              {mediasData?.filter(isDirData).map(({ name }) => {
+              {mediasData?.directories.map(({ name }) => {
                 return <MediaDirectoryCard title={name} />
               })}
             </SimpleGrid>
@@ -147,13 +155,21 @@ export const Media = (): JSX.Element => {
             isLoaded={!isLoading}
           >
             <SimpleGrid columns={3} spacing="1.5rem" w="100%">
-              {mediasData?.filter(isMediaData).map(({ name, mediaUrl }) => {
+              {mediasData?.files.map(({ name, mediaUrl }) => {
                 if (mediaType === "images") {
                   return <ImagePreviewCard name={name} mediaUrl={mediaUrl} />
                 }
                 return <FilePreviewCard name={name} />
               })}
             </SimpleGrid>
+            <Center mt="1rem">
+              <Pagination
+                totalCount={mediasData?.total || 0}
+                pageSize={MEDIA_PAGINATION_SIZE}
+                currentPage={curPage}
+                onPageChange={(page) => setCurPage(page)}
+              />
+            </Center>
           </Skeleton>
         </Section>
       </SiteEditLayout>
