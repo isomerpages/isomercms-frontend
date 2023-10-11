@@ -394,7 +394,8 @@ const EditHomepage = ({ match }) => {
     loadPageDetails()
   }, [homepageData])
 
-  const delayedScrollTo = useAfterFirstLoad(scrollTo)
+  const { afterFirstLoad, resetFirstLoad } = useAfterFirstLoad()
+  const delayedScrollTo = afterFirstLoad(scrollTo)
 
   useEffect(() => {
     if (scrollRefs.length === 0) return // Page data has not been populated
@@ -1156,6 +1157,7 @@ const EditHomepage = ({ match }) => {
         sha,
       }
 
+      resetFirstLoad()
       await updateHomepageHandler(params)
     } catch (err) {
       errorToast({
