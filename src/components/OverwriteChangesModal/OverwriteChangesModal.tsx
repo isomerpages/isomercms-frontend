@@ -18,33 +18,27 @@ export const OverwriteChangesModal = ({
     <WarningModal
       isOpen={isOpen}
       onClose={onClose}
-      displayTitle="Override Changes"
+      displayTitle="Do you want to override recent changes?"
       displayText={
         <Box>
           <VStack gap="1.5rem">
             <Text>
-              A different version of this page has recently been saved by
-              another user. You can choose to either override their changes, or
-              go back to editing.
+              Another user edited and saved this page recently. If you save your
+              edits now, their changes will be lost.
             </Text>
             <Text>
-              We recommend you to make a copy of your changes elsewhere, and
-              come back later to reconcile your changes.
+              We recommend you to make a copy of your changes elsewhere and come
+              back later.
             </Text>
           </VStack>
         </Box>
       }
     >
-      <Button
-        variant="clear"
-        colorScheme="secondary"
-        textColor="text.title.alt"
-        onClick={onClose}
-      >
-        Back to Editing
+      <Button variant="clear" colorScheme="critical" onClick={onProceed}>
+        Save my edits anyway
       </Button>
-      <Button colorScheme="critical" onClick={onProceed}>
-        Override
+      <Button colorScheme="main" onClick={onClose}>
+        Back to editing
       </Button>
     </WarningModal>
   )
