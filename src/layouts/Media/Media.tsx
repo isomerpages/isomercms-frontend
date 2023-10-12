@@ -9,6 +9,7 @@ import { Greyscale } from "components/Greyscale"
 
 import { useListMediaFolderFiles } from "hooks/directoryHooks/useListMediaFolderFiles"
 import { useListMediaFolderSubdirectories } from "hooks/directoryHooks/useListMediaFolderSubdirectories"
+import { usePaginate } from "hooks/usePaginate"
 
 import { DeleteWarningScreen } from "layouts/screens/DeleteWarningScreen"
 import { DirectoryCreationScreen } from "layouts/screens/DirectoryCreationScreen"
@@ -63,14 +64,11 @@ const getMediaLabels = (mediaType: "files" | "images"): MediaLabels => {
   }
 }
 
-// NOTE: This is synced with backend
 const MEDIA_PAGINATION_SIZE = 15
 
 export const Media = (): JSX.Element => {
   const history = useHistory()
-  // NOTE: We have to use 1 based indexing as the pagination component
-  // starts from 1
-  const [curPage, setCurPage] = useState(1)
+  const [curPage, setCurPage] = usePaginate()
   const { params, path, url } = useRouteMatch<{
     siteName: string
     mediaRoom: "files" | "images"
@@ -91,7 +89,7 @@ export const Media = (): JSX.Element => {
       // NOTE: Keep state in sync here
       setOriginalMediaType(mediaType)
     }
-  }, [curPage, originalMediaType, setOriginalMediaType, mediaType])
+  }, [curPage, originalMediaType, setOriginalMediaType, mediaType, setCurPage])
 
   const {
     data: mediaFolderSubdirectories,
@@ -105,7 +103,9 @@ export const Media = (): JSX.Element => {
     isLoading: isListMediaFilesLoading,
   } = useListMediaFolderFiles({
     ...params,
-    curPage,
+    // NOTE: Subtracting 1 here because `usePaginate`
+    // returns an index with 1 offset
+    curPage: curPage - 1,
   })
 
   const {
