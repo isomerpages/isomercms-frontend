@@ -14,7 +14,7 @@ export const MediaSettingsScreen = ({ match, onClose }) => {
     onSuccess: onClose,
   })
   const { data: mediasData } = useGetMediaFolders(params, {
-    initialData: { directories: [], files: [], total: 0 },
+    initialData: [],
   })
 
   return (
