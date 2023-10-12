@@ -9,7 +9,7 @@ import { MediaAltText } from "components/media/MediaAltText"
 import MediasSelectModal from "components/media/MediasSelectModal"
 import { MediaCreationModal } from "components/MediaCreationModal/MediaCreationModal"
 
-import { getMediasData, useGetMediaFolders } from "hooks/directoryHooks"
+import { useGetMediaFolders } from "hooks/directoryHooks"
 import { useCreateMediaHook } from "hooks/mediaHooks/useCreateMediaHook"
 
 import { getMediaDirectoryName } from "utils"
@@ -37,9 +37,8 @@ const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
     mediaDirectoryName: type,
   })
 
-  const { data: mediaDataDto } = useGetMediaFolders(queryParams)
+  const { data: mediasData } = useGetMediaFolders(queryParams)
   const { mutateAsync: createHandler } = useCreateMediaHook(queryParams)
-  const mediasData = getMediasData(mediaDataDto)
 
   const retrieveMediaDirectoryParams = () =>
     `/${getMediaDirectoryName(queryParams.mediaDirectoryName, {
