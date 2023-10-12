@@ -17,6 +17,7 @@ import { useEffect, useState } from "react"
 import { Footer } from "components/Footer"
 import { Greyscale } from "components/Greyscale"
 import Header from "components/Header"
+import { OverwriteChangesModal } from "components/OverwriteChangesModal"
 import MarkdownEditor from "components/pages/MarkdownEditor"
 import PagePreview from "components/pages/PagePreview"
 import { WarningModal } from "components/WarningModal"
@@ -179,6 +180,7 @@ const EditPage = ({ match }) => {
       />
       <Greyscale isActive={isWriteDisabled}>
         <HStack className={elementStyles.wrapper}>
+          {/* XSS violation warning modal */}
           <WarningModal
             isOpen={isXSSViolation && isXSSWarningModalOpen}
             onClose={onXSSWarningModalClose}
@@ -233,48 +235,23 @@ const EditPage = ({ match }) => {
               Acknowledge
             </Button>
           </WarningModal>
-          <WarningModal
+
+          {/* Override changes warning modal */}
+          <OverwriteChangesModal
             isOpen={isOverwriteOpen}
             onClose={onOverwriteClose}
-            displayTitle="Override Changes"
-            displayText={
-              <Box>
-                <Text>
-                  A different version of this page has recently been saved by
-                  another user. You can choose to either override their changes,
-                  or go back to editing.
-                </Text>
-                <br />
-                <Text>
-                  We recommend you to make a copy of your changes elsewhere, and
-                  come back later to reconcile your changes.
-                </Text>
-              </Box>
-            }
-          >
-            <Button
-              variant="clear"
-              colorScheme="secondary"
-              onClick={onOverwriteClose}
-            >
-              Back to Editing
-            </Button>
-            <Button
-              colorScheme="critical"
-              onClick={() => {
-                onOverwriteClose()
-                updatePageHandler({
-                  pageData: {
-                    frontMatter: pageData.content.frontMatter,
-                    sha: pageData.sha,
-                    pageBody: editorValue,
-                  },
-                })
-              }}
-            >
-              Override
-            </Button>
-          </WarningModal>
+            onProceed={() => {
+              onOverwriteClose()
+              updatePageHandler({
+                pageData: {
+                  frontMatter: pageData.content.frontMatter,
+                  sha: pageData.sha,
+                  pageBody: editorValue,
+                },
+              })
+            }}
+          />
+
           {/* Editor */}
           <MarkdownEditor
             siteName={siteName}
@@ -282,6 +259,7 @@ const EditPage = ({ match }) => {
             value={editorValue}
             isLoading={isLoadingPage}
           />
+
           {/* Preview */}
           <PagePreview
             pageParams={decodedParams}
