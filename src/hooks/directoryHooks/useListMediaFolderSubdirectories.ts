@@ -1,6 +1,6 @@
 import { useQuery, UseQueryOptions, UseQueryResult } from "react-query"
 
-import { DIR_CONTENT_KEY } from "constants/queryKeys"
+import { DIR_CONTENT_KEY, LIST_MEDIA_FOLDERS_KEY } from "constants/queryKeys"
 
 import useRedirectHook from "hooks/useRedirectHook"
 
@@ -24,7 +24,7 @@ export const useListMediaFolderSubdirectories = (
   const errorToast = useErrorToast()
 
   return useQuery<GetMediaSubdirectoriesDto>(
-    [DIR_CONTENT_KEY, params],
+    [LIST_MEDIA_FOLDERS_KEY, params],
     () => DirectoryService.getMediaFolderSubdirectories(params),
     {
       ...queryOptions,

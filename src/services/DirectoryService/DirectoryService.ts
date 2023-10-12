@@ -4,9 +4,9 @@ import {
   ResourcePageData,
   PageData,
   ResourceRoomNameUpdateProps,
-  GetMediaFoldersDto,
   GetMediaSubdirectoriesDto,
   GetMediaFilesDto,
+  MediaData,
 } from "types/directory"
 import { MediaDirectoryParams, PageDirectoryParams } from "types/folders"
 import {
@@ -74,10 +74,10 @@ export const getMediaData = ({
   // Hence, this behaviour is essentially a single page of up to 1000 items.
   curPage = 1,
   limit = 1000,
-}: MediaDirectoryParams): Promise<GetMediaFoldersDto> => {
+}: MediaDirectoryParams): Promise<(DirectoryData | MediaData)[]> => {
   const endpoint = `/sites/${siteName}/media/${mediaDirectoryName}`
   return apiService
-    .get<GetMediaFoldersDto>(endpoint, {
+    .get<(DirectoryData | MediaData)[]>(endpoint, {
       params: { page: curPage, limit },
     })
     .then(({ data }) => data)
