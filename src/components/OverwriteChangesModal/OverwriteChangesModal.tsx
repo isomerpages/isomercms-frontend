@@ -9,11 +9,11 @@ interface OverwriteChangesModalProps {
   onProceed: () => void
 }
 
-export const OverwriteChangesModal = (
-  props: OverwriteChangesModalProps
-): JSX.Element => {
-  const { isOpen, onClose, onProceed } = props
-
+export const OverwriteChangesModal = ({
+  isOpen,
+  onClose,
+  onProceed,
+}: OverwriteChangesModalProps): JSX.Element => {
   return (
     <WarningModal
       isOpen={isOpen}
