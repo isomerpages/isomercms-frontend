@@ -33,6 +33,7 @@ import { useUpdateHomepageHook } from "hooks/homepageHooks/useUpdateHomepageHook
 import { useAfterFirstLoad } from "hooks/useAfterFirstLoad"
 import useSiteColorsHook from "hooks/useSiteColorsHook"
 
+import { InfoColsSectionBody } from "layouts/components/Homepage/InfoColsBody"
 import { TextCardsSectionBody } from "layouts/components/Homepage/TextCardsBody"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -1525,6 +1526,28 @@ const EditHomepage = ({ match }) => {
                                             errors.textcards[sectionIndex]
                                           }
                                           {...section.textcards}
+                                        />
+                                      </Editable.DraggableAccordionItem>
+                                    )}
+                                    {section.infocols && (
+                                      <Editable.DraggableAccordionItem
+                                        index={sectionIndex}
+                                        tag={
+                                          <Tag variant="subtle">
+                                            Info-columns
+                                          </Tag>
+                                        }
+                                      >
+                                        <InfoColsSectionBody
+                                          index={sectionIndex}
+                                          errors={
+                                            errors.sections[sectionIndex]
+                                              .infocols
+                                          }
+                                          infoColsErrors={
+                                            errors.textcards[sectionIndex]
+                                          }
+                                          {...section.infocols}
                                         />
                                       </Editable.DraggableAccordionItem>
                                     )}
