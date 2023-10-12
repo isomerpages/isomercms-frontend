@@ -56,15 +56,17 @@ jest.mock("layouts/Settings", () => {
   }
 })
 
-jest.mock("layouts/FeatureFlaggedNavBar", () => {
+jest.mock("layouts/EditNavBar", () => {
   return {
-    FeatureFlaggedNavBar: () => {
+    __esModule: true,
+    default: () => {
       return <div>{EDIT_NAVBAR_LAYOUT_TEXT}</div>
     },
   }
 })
 
 jest.mock("layouts/ResourceRoom", () => {
+  ;``
   return {
     ResourceRoom: () => {
       return <div>{RESOURCES_LAYOUT_TEXT}</div>
@@ -80,17 +82,19 @@ jest.mock("layouts/ResourceCategory", () => {
   }
 })
 
-jest.mock("layouts/FeatureFlaggedContactUs", () => {
+jest.mock("layouts/EditContactUs", () => {
   return {
-    FeatureFlaggedContactUs: () => {
+    __esModule: true,
+    default: () => {
       return <div>{EDIT_CONTACT_US_LAYOUT_TEXT}</div>
     },
   }
 })
 
-jest.mock("layouts/FeatureFlaggedHomepage", () => {
+jest.mock("layouts/EditHomepage", () => {
   return {
-    FeatureFlaggedHomepage: () => {
+    __esModule: true,
+    default: () => {
       return <div>{EDIT_HOMEPAGE_LAYOUT_TEXT}</div>
     },
   }
