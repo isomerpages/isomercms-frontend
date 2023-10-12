@@ -14,6 +14,7 @@ import { LoadingButton } from "components/LoadingButton"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 import { getDirectorySettingsType } from "utils/directoryUtils"
+import { isWriteActionsDisabled } from "utils/reviewRequests"
 
 import {
   deslugifyDirectory,
@@ -56,7 +57,13 @@ export const DirectorySettingsModal = ({
   onProceed,
   onClose,
 }) => {
-  const { subCollectionName, resourceRoomName, mediaDirectoryName } = params
+  const {
+    siteName,
+    subCollectionName,
+    resourceRoomName,
+    mediaDirectoryName,
+  } = params
+  const isWriteDisabled = isWriteActionsDisabled(siteName)
   const existingDirectoryName = mediaDirectoryName
     ? getMediaDirectoryName(mediaDirectoryName, { start: -1, splitOn: "/" })
     : params[getLastItemType(params)]
@@ -123,7 +130,7 @@ export const DirectorySettingsModal = ({
           >
             <LoadingButton
               onClick={handleSubmit(onSubmit)}
-              isDisabled={!_.isEmpty(errors)}
+              isDisabled={isWriteDisabled || !_.isEmpty(errors)}
             >
               {isCreate ? "Next" : "Save"}
             </LoadingButton>

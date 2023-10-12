@@ -10,12 +10,17 @@ import { useGetDirectoryHook } from "hooks/directoryHooks"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
+import { isWriteActionsDisabled } from "utils/reviewRequests"
+
 import { pageFileNameToTitle, getLastItemType, getNextItemType } from "utils"
+
 // eslint-disable-next-line import/prefer-default-export
 export const PageMoveModal = ({ queryParams, params, onProceed, onClose }) => {
+  const { siteName } = params
   const [moveQuery, setMoveQuery] = useState(_.omit(queryParams, "fileName"))
   const [moveTo, setMoveTo] = useState(params)
   const { data: dirData } = useGetDirectoryHook(moveQuery)
+  const isWriteDisabled = isWriteActionsDisabled(siteName)
 
   const nextItemType = getNextItemType(moveQuery)
   const lastItemType = getLastItemType(moveQuery)
@@ -128,7 +133,8 @@ export const PageMoveModal = ({ queryParams, params, onProceed, onClose }) => {
                 })
               }
               isDisabled={
-                moveTo.resourceRoomName && !moveTo.resourceCategoryName
+                isWriteDisabled ||
+                (moveTo.resourceRoomName && !moveTo.resourceCategoryName)
               }
             >
               Move Here

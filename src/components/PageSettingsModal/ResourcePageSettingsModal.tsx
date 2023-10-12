@@ -39,6 +39,8 @@ import {
 import FormFieldMedia from "components/FormFieldMedia"
 import { LoadingButton } from "components/LoadingButton"
 
+import { isWriteActionsDisabled } from "utils/reviewRequests"
+
 import { pageFileNameToTitle } from "utils"
 
 import { PageSettingsSchema } from "./PageSettingsSchema"
@@ -129,7 +131,7 @@ export const ResourcePageSettingsModal = ({
   siteUrl,
   onClose,
 }: ResourcePageSettingsModalParams): JSX.Element => {
-  const { fileName, resourceRoomName, resourceCategoryName } = params
+  const { siteName, fileName, resourceRoomName, resourceCategoryName } = params
 
   const existingTitlesArray = pagesData
     .filter((page: ResourcePageParams) => page.name !== fileName)
@@ -142,6 +144,7 @@ export const ResourcePageSettingsModal = ({
     resourceCategoryName,
     existingTitlesArray
   )
+  const isWriteDisabled = isWriteActionsDisabled(siteName)
 
   const {
     register,
@@ -430,9 +433,10 @@ export const ResourcePageSettingsModal = ({
           <LoadingButton
             onClick={handleSubmit(onSubmit)}
             isDisabled={
-              !fileName
+              isWriteDisabled ||
+              (!fileName
                 ? !_.isEmpty(errors)
-                : !_.isEmpty(errors) || !pageData?.sha
+                : !_.isEmpty(errors) || !pageData?.sha)
             }
           >
             Save

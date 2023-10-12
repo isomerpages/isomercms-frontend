@@ -2,7 +2,7 @@ import PropTypes from "prop-types"
 
 import { PageHeader, PageBody, LeftNav } from "templates/pageComponentsV2"
 
-const CollectionPageTemplate = ({ chunk, dirData, pageParams, title }) => {
+const CollectionPageTemplate = ({ chunk, pageParams, title }) => {
   return (
     <div>
       <section
@@ -14,7 +14,10 @@ const CollectionPageTemplate = ({ chunk, dirData, pageParams, title }) => {
       <section className="bp-section page-content-body">
         <div className="bp-container padding--top--lg padding--bottom--xl">
           <div className="row">
-            <LeftNav dirData={dirData} fileName={pageParams.fileName} />
+            <LeftNav
+              collectionName={pageParams.collectionName}
+              fileName={pageParams.fileName}
+            />
             <PageBody chunk={chunk} />
           </div>
         </div>
@@ -25,7 +28,6 @@ const CollectionPageTemplate = ({ chunk, dirData, pageParams, title }) => {
 
 CollectionPageTemplate.propTypes = {
   chunk: PropTypes.string.isRequired,
-  dirData: PropTypes.arrayOf(PropTypes.string).isRequired,
   pageParams: {
     fileName: PropTypes.string.isRequired,
     collectionName: PropTypes.string.isRequired,

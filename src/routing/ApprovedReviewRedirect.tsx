@@ -5,6 +5,7 @@ import { Greyscale } from "components/Greyscale"
 
 import { useLoginContext } from "contexts/LoginContext"
 
+import { useGetCollaboratorRoleHook } from "hooks/collaboratorHooks"
 import { useGetReviewRequests } from "hooks/siteDashboardHooks"
 
 import { getAxiosErrorMessage } from "utils/axios"
@@ -43,7 +44,7 @@ export const ApprovedReviewRedirect = ({
   }, [isError, error, errorToast, isGithubUser])
 
   useEffect(() => {
-    if (hasApprovedReviewRequest) {
+    if (!isGithubUser && hasApprovedReviewRequest) {
       warningToast({
         id: "approved-review-redirect-warning",
         description:
@@ -55,7 +56,7 @@ export const ApprovedReviewRedirect = ({
   return isGithubUser ? (
     <>{children}</>
   ) : (
-    <Greyscale isActive={isLoading || !reviewRequests}>
+    <>
       {hasApprovedReviewRequest && (
         <Redirect {...rest} to={`/sites/${siteName}/dashboard`} />
       )}
@@ -67,7 +68,7 @@ export const ApprovedReviewRedirect = ({
         <Redirect {...rest} to="/sites" />
       )}
       {children}
-    </Greyscale>
+    </>
   )
 }
 

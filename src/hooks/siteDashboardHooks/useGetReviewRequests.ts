@@ -11,8 +11,11 @@ import type { SiteDashboardReviewRequest } from "types/siteDashboard"
 
 export const useGetReviewRequests = (
   siteName: string
-): UseQueryResult<SiteDashboardReviewRequest[], AxiosError<ErrorDto>> => {
-  return useQuery<SiteDashboardReviewRequest[], AxiosError<ErrorDto>>(
+): UseQueryResult<
+  SiteDashboardReviewRequest[] | null,
+  AxiosError<ErrorDto>
+> => {
+  return useQuery<SiteDashboardReviewRequest[] | null, AxiosError<ErrorDto>>(
     [SITE_DASHBOARD_REVIEW_REQUEST_KEY, siteName],
     () => SiteDashboardService.getReviewRequests(siteName),
     {

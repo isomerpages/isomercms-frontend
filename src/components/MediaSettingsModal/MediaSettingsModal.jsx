@@ -17,6 +17,8 @@ import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 import mediaStyles from "styles/isomer-cms/pages/Media.module.scss"
 
+import { isWriteActionsDisabled } from "utils/reviewRequests"
+
 import { getLastItemType, getFileExt, getFileName } from "utils"
 
 import { MediaSettingsSchema } from "./MediaSettingsSchema"
@@ -44,12 +46,13 @@ export const MediaSettingsModal = ({
   onClose,
   toggleUploadInput,
 }) => {
-  const { mediaRoom, fileName } = params
+  const { siteName, mediaRoom, fileName } = params
   const existingTitlesArray =
     mediasData &&
     mediasData
       .filter((item) => item.name !== params[getLastItemType(params)])
       .map((item) => item.name)
+  const isWriteDisabled = isWriteActionsDisabled(siteName)
 
   const {
     register,
@@ -168,9 +171,10 @@ export const MediaSettingsModal = ({
             <Flex w="100%" dir="row" justifyContent="flex-end" p={1}>
               <LoadingButton
                 isDisabled={
-                  !fileName
+                  isWriteDisabled ||
+                  (!fileName
                     ? !_.isEmpty(errors) || !watch("content")
-                    : !_.isEmpty(errors) || !mediaData?.sha
+                    : !_.isEmpty(errors) || !mediaData?.sha)
                 }
                 onClick={handleSubmit((data) => onSubmit(data))}
               >

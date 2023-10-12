@@ -33,6 +33,8 @@ import {
 import FormFieldMedia from "components/FormFieldMedia"
 import { LoadingButton } from "components/LoadingButton"
 
+import { isWriteActionsDisabled } from "utils/reviewRequests"
+
 import { getDefaultFrontMatter, pageFileNameToTitle } from "utils"
 
 import { PageSettingsSchema } from "./PageSettingsSchema"
@@ -86,13 +88,14 @@ export const PageSettingsModal = ({
   siteUrl,
   onClose,
 }: PageSettingsModalParams) => {
-  const { fileName } = params
+  const { siteName, fileName } = params
 
   const existingTitlesArray = pagesData
     .filter((page) => page.name !== fileName)
     .map((page) => pageFileNameToTitle(page.name))
 
   const defaultFrontMatter = getDefaultFrontMatter(params, existingTitlesArray)
+  const isWriteDisabled = isWriteActionsDisabled(siteName)
 
   const {
     register,
@@ -242,9 +245,10 @@ export const PageSettingsModal = ({
           <LoadingButton
             onClick={handleSubmit(onSubmit)}
             isDisabled={
-              !fileName
+              isWriteDisabled ||
+              (!fileName
                 ? !_.isEmpty(errors)
-                : !_.isEmpty(errors) || !pageData?.sha
+                : !_.isEmpty(errors) || !pageData?.sha)
             }
           >
             Save

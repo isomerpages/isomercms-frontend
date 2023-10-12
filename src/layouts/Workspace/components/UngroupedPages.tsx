@@ -2,6 +2,10 @@ import { SimpleGrid, Box, Skeleton } from "@chakra-ui/react"
 import { BiInfoCircle } from "react-icons/bi"
 import { Link } from "react-router-dom"
 
+import { Greyscale } from "components/Greyscale"
+
+import { isWriteActionsDisabled } from "utils/reviewRequests"
+
 import { PageData } from "types/directory"
 
 import {
@@ -14,21 +18,27 @@ import {
 import { PageCard } from "."
 
 export interface UngroupedPagesProps {
+  siteName: string
   pagesData: PageData[]
   url: string
 }
 
 export const UngroupedPages = ({
+  siteName,
   pagesData,
   url,
 }: UngroupedPagesProps): JSX.Element => {
+  const isWriteDisabled = isWriteActionsDisabled(siteName)
+
   return (
     <Section>
       <Box w="100%">
         <SectionHeader label="Ungrouped Pages">
-          <CreateButton as={Link} to={`${url}/createPage`}>
-            Create page
-          </CreateButton>
+          <Greyscale isActive={isWriteDisabled}>
+            <CreateButton as={Link} to={`${url}/createPage`}>
+              Create page
+            </CreateButton>
+          </Greyscale>
         </SectionHeader>
         <SectionCaption label="NOTE: " icon={BiInfoCircle}>
           These pages aren&apos;t in folders, but can be added as items to your

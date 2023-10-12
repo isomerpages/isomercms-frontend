@@ -5,18 +5,27 @@ import { useState } from "react"
  * e.g. if data is not fully populated at the time of mounting.
  * It wraps a method in a conditional to check that it has been executed once before.
  */
-export const useAfterFirstLoad = (
-  wrappedMethod: (...args: unknown[]) => void
-) => {
+
+export const useAfterFirstLoad = () => {
   const [isFirstLoadComplete, setIsFirstLoadComplete] = useState(false)
 
-  const executeAfterFirstLoad = (...args: unknown[]) => {
-    if (isFirstLoadComplete) {
-      wrappedMethod(...args)
-    } else {
-      setIsFirstLoadComplete(true)
+  const afterFirstLoad = (wrappedMethod: (...args: unknown[]) => void) => {
+    const executeAfterFirstLoad = (...args: unknown[]) => {
+      if (isFirstLoadComplete) {
+        wrappedMethod(...args)
+      } else {
+        setIsFirstLoadComplete(true)
+      }
     }
+
+    return executeAfterFirstLoad
   }
 
-  return executeAfterFirstLoad
+  const resetFirstLoad = () => {
+    setIsFirstLoadComplete(false)
+  }
+  return {
+    afterFirstLoad,
+    resetFirstLoad,
+  }
 }
