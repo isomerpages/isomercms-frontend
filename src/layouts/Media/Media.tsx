@@ -192,14 +192,16 @@ export const Media = (): JSX.Element => {
                 return <FilePreviewCard name={name} />
               })}
             </SimpleGrid>
-            <Center mt="1rem">
-              <Pagination
-                totalCount={mediaFolderFiles?.total || 0}
-                pageSize={MEDIA_PAGINATION_SIZE}
-                currentPage={curPage}
-                onPageChange={(page) => setCurPage(page)}
-              />
-            </Center>
+            {mediaFolderFiles && mediaFolderFiles?.total > 0 && (
+              <Center mt="1rem">
+                <Pagination
+                  totalCount={mediaFolderFiles?.total || 0}
+                  pageSize={MEDIA_PAGINATION_SIZE}
+                  currentPage={curPage}
+                  onPageChange={(page) => setCurPage(page)}
+                />
+              </Center>
+            )}
           </Skeleton>
         </Section>
       </SiteEditLayout>
