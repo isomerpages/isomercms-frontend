@@ -1,7 +1,7 @@
 import { useContext } from "react"
 import { useMutation, useQueryClient } from "react-query"
 
-import { DIR_CONTENT_KEY } from "constants/queryKeys"
+import { DIR_CONTENT_KEY, LIST_MEDIA_FOLDERS_KEY } from "constants/queryKeys"
 
 import { ServicesContext } from "contexts/ServicesContext"
 
@@ -39,6 +39,11 @@ export function useCreateDirectoryHook(params, queryParams) {
       },
       onSuccess: (resp) => {
         queryClient.invalidateQueries([DIR_CONTENT_KEY, { ...params }])
+        queryClient.invalidateQueries([
+          // invalidates media directory
+          LIST_MEDIA_FOLDERS_KEY,
+          params,
+        ])
         setRedirectToPage(
           getRedirectUrl({
             mediaDirectoryPath: params.mediaDirectoryName
