@@ -692,6 +692,85 @@ const validateTextcard = (cardError, field, value) => {
   return newHighlightError
 }
 
+// TODO: recheck
+const validateInfoColsSection = (sectionError, sectionType, field, value) => {
+  const newSectionError = sectionError
+  let errorMessage = ""
+  switch (field) {
+    case "title": {
+      // Title is too short
+      if (value.length <= TEXTCARDS_BLOCK_TITLE_MIN_LENGTH) {
+        errorMessage = `Title cannot be empty.`
+      }
+      // Title is too long
+      if (value.length >= TEXTCARDS_BLOCK_TITLE_MAX_LENGTH) {
+        errorMessage = `Title should be shorter than ${TEXTCARDS_BLOCK_TITLE_MAX_LENGTH} characters.`
+      }
+      break
+    }
+    case "subtitle": {
+      // Subtitle is too long
+      if (value.length >= TEXTCARDS_BLOCK_SUBTITLE_MAX_LENGTH) {
+        errorMessage = `Subtitle should be shorter than ${TEXTCARDS_BLOCK_SUBTITLE_MAX_LENGTH} characters.`
+      }
+      break
+    }
+    case "linktext": {
+      // Link text is too short
+      if (value.length <= TEXTCARDS_CARD_LINKTEXT_MIN_LENGTH) {
+        errorMessage = `Link text cannot be empty`
+      }
+      // Link text is too long
+      if (value.length >= TEXTCARDS_CARD_LINKTEXT_MAX_LENGTH) {
+        errorMessage = `Text should be shorter than ${TEXTCARDS_CARD_LINKTEXT_MAX_LENGTH} characters.`
+      }
+      break
+    }
+    case "url": {
+      // Url is too short
+      if (value.length <= TEXTCARDS_CARD_URL_MIN_LENGTH) {
+        errorMessage = `Please specify a URL for your card.`
+      }
+      break
+    }
+    default:
+      break
+  }
+  newSectionError[sectionType][field] = errorMessage
+  return newSectionError
+}
+
+// TODO: Recheck
+const validateInfoColInfoBox = (infoBoxError, field, value) => {
+  const newHighlightError = infoBoxError
+  let errorMessage = ""
+  switch (field) {
+    case "title": {
+      // Title is too short
+      if (value.length <= TEXTCARDS_CARD_TITLE_MIN_LENGTH) {
+        errorMessage = `Title cannot be empty`
+      }
+      // Title is too long
+      if (value.length >= TEXTCARDS_CARD_TITLE_MAX_LENGTH) {
+        errorMessage = `Title should be shorter than ${TEXTCARDS_CARD_TITLE_MAX_LENGTH} characters`
+      }
+      break
+    }
+    case "description": {
+      // Description is too long
+      if (value.length >= TEXTCARDS_CARD_DESCRIPTION_MAX_LENGTH) {
+        errorMessage = `The description should be shorter than ${TEXTCARDS_CARD_DESCRIPTION_MAX_LENGTH} characters (${value.length}/${TEXTCARDS_CARD_DESCRIPTION_MAX_LENGTH})`
+      }
+      break
+    }
+
+    default:
+      break
+  }
+  newHighlightError[field] = errorMessage
+  return newHighlightError
+}
+
 const validateSections = (sectionError, sectionType, field, value) => {
   let newSectionError = sectionError
   switch (sectionType) {
@@ -742,6 +821,15 @@ const validateSections = (sectionError, sectionType, field, value) => {
     }
     case "textcards": {
       newSectionError = validateTextcardsSection(
+        sectionError,
+        sectionType,
+        field,
+        value
+      )
+      break
+    }
+    case "infocols": {
+      newSectionError = validateInfoColsSection(
         sectionError,
         sectionType,
         field,
@@ -1176,6 +1264,7 @@ export {
   validateAnnouncementItems,
   validateDropdownElems,
   validateTextcard,
+  validateInfoColInfoBox,
   validateSections,
   validatePageSettings,
   validateResourceSettings,

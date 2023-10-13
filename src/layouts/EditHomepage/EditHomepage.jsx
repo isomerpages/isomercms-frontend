@@ -46,6 +46,7 @@ import {
   validateDropdownElems,
   validateAnnouncementItems,
   validateTextcard,
+  validateInfoColInfoBox,
 } from "utils/validators"
 
 import {
@@ -53,6 +54,7 @@ import {
   HomepageAnnouncementsSampleImage,
   HomepageTextCardsSampleImage,
 } from "assets"
+import { HomepageInfoColsSampleImage } from "assets/images/HomepageInfoColsSampleImage"
 import { EditorHomepageFrontmatterSection } from "types/homepage"
 import { DEFAULT_RETRY_MSG } from "utils"
 
@@ -77,6 +79,8 @@ import {
   getDefaultAnnouncementSection,
   TEXTCARDS_BLOCK_SECTION,
   TEXTCARDS_ITEM_SECTION,
+  INFOCOLS_BLOCK_SECTION,
+  INFOCOLS_INFOBOX_SECTION,
 } from "./constants"
 import { HomepagePreview } from "./HomepagePreview"
 import { getErrorValues } from "./utils"
@@ -161,6 +165,10 @@ const enumSection = (type, isError) => {
       return isError
         ? { textcards: getErrorValues(TEXTCARDS_BLOCK_SECTION) }
         : { textcards: TEXTCARDS_BLOCK_SECTION }
+    case "infocols":
+      return isError
+        ? { infocols: getErrorValues(INFOCOLS_BLOCK_SECTION) }
+        : { infocols: INFOCOLS_BLOCK_SECTION }
     default:
       return isError
         ? { infobar: getErrorValues(INFOBAR_SECTION) }
@@ -204,6 +212,7 @@ const EditHomepage = ({ match }) => {
     dropdownElems: [],
     announcementItems: [],
     textcards: [],
+    infocols: [],
   })
   const [itemPendingForDelete, setItemPendingForDelete] = useState({
     id: "",
@@ -295,9 +304,11 @@ const EditHomepage = ({ match }) => {
         let highlightsErrors = []
         let announcementItemErrors = []
         const textCardItemErrors = []
+        const infoColInfoBoxErrors = []
         const scrollRefs = []
         const announcementScrollRefs = []
         frontMatter.sections.forEach((section) => {
+          console.log(`SECTION: ${section}`)
           scrollRefs.push(createRef())
           // If this is the hero section, hide all highlights/dropdownelems by default
           if (section.hero) {
@@ -384,8 +395,21 @@ const EditHomepage = ({ match }) => {
             textCardItemErrors.push(
               _.map(cards, () => getErrorValues(TEXTCARDS_ITEM_SECTION))
             )
-          } else {
-            textCardItemErrors.push([])
+          }
+          // else {
+          //   // TODO: Infocols - seems like this is applying to all
+          //   textCardItemErrors.push([])
+          // }
+
+          if (section.infocols) {
+            sectionsErrors.push({
+              infocols: getErrorValues(INFOCOLS_BLOCK_SECTION),
+            })
+            const { infoBoxes } = section.infocols
+            // Fill in dropdown elem errors array
+            infoColInfoBoxErrors.push(
+              _.map(infoBoxes, () => getErrorValues(INFOCOLS_INFOBOX_SECTION))
+            )
           }
 
           // Minimize all sections by default
@@ -399,6 +423,7 @@ const EditHomepage = ({ match }) => {
           dropdownElems: dropdownElemsErrors,
           announcementItems: announcementItemErrors,
           textcards: textCardItemErrors,
+          infocols: infoColInfoBoxErrors,
         }
 
         setFrontMatter(frontMatter)
@@ -725,6 +750,53 @@ const EditHomepage = ({ match }) => {
           scrollTo(scrollRefs[sectionIndex])
           break
         }
+        case "infoColInfoBox": {
+          // The field that changed is a info box element
+          const { sections } = frontMatter
+
+          // cardIndex is the index of the cards array
+          const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT)
+          const infoBoxIndex = parseInt(idArray[2], RADIX_PARSE_INT)
+          const field = idArray[3] // e.g. "title" or "url"
+
+          const newSections = update(sections, {
+            [sectionIndex]: {
+              infocols: {
+                infoBoxes: {
+                  [infoBoxIndex]: {
+                    [field]: {
+                      $set: value,
+                    },
+                  },
+                },
+              },
+            },
+          })
+
+          const newErrors = update(errors, {
+            infocols: {
+              [sectionIndex]: {
+                [infoBoxIndex]: {
+                  $set: validateInfoColInfoBox(
+                    errors.infocols[sectionIndex][infoBoxIndex],
+                    field,
+                    value
+                  ),
+                },
+              },
+            },
+          })
+
+          setFrontMatter({
+            ...frontMatter,
+            sections: newSections,
+          })
+          setErrors(newErrors)
+          // TODO: Infocols - Remove log later
+          console.log(`SCROLLING TO: ${scrollRefs[sectionIndex]}`)
+          scrollTo(scrollRefs[sectionIndex])
+          break
+        }
         default: {
           // The field that changed is the dropdown placeholder title
 
@@ -821,6 +893,21 @@ const EditHomepage = ({ match }) => {
               )
             }
             setHomepageState(intermediateHomepageState)
+          } else if (val.infocols) {
+            // Create 3 infoboxes by default
+            const parentId =
+              updatedHomepageState.frontMatter.sections.length - 1
+            let intermediateHomepageState = updatedHomepageState
+            for (let i = 0; i < 3; i += 1) {
+              const infoBox = INFOCOLS_INFOBOX_SECTION
+              const infoBoxErr = getErrorValues(INFOCOLS_INFOBOX_SECTION)
+              intermediateHomepageState = onCreate(
+                intermediateHomepageState,
+                `infoColInfoBox-${parentId}`,
+                infoBox,
+                infoBoxErr
+              )
+            }
           }
           break
         }
@@ -878,6 +965,21 @@ const EditHomepage = ({ match }) => {
           const parentId = parseInt(idArray[1], RADIX_PARSE_INT)
           const val = TEXTCARDS_ITEM_SECTION
           const err = getErrorValues(TEXTCARDS_ITEM_SECTION)
+          const updatedHomepageState = onCreate(
+            homepageState,
+            `${elemType}-${parentId}`,
+            val,
+            err
+          )
+
+          setHomepageState(updatedHomepageState)
+          break
+        }
+        case "infoColInfoBox": {
+          const parentId = parseInt(idArray[1], RADIX_PARSE_INT)
+          const val = INFOCOLS_INFOBOX_SECTION
+          const err = getErrorValues(INFOCOLS_INFOBOX_SECTION)
+          console.log(`CREATING INFOBOX: ${elemType}-${parentId}`)
           const updatedHomepageState = onCreate(
             homepageState,
             `${elemType}-${parentId}`,
@@ -1201,7 +1303,7 @@ const EditHomepage = ({ match }) => {
     }
   }
 
-  // NOTE: sectionType is one of `announcements, `resources`, `infopic` or `infobar`
+  // NOTE: sectionType is one of `announcements, `resources`, `infopic`, `infobar`, `textcards` or `infocols`
   const onClick = (sectionType) => {
     createHandler({
       target: {
@@ -1493,6 +1595,7 @@ const EditHomepage = ({ match }) => {
                                           </AnnouncementSection>
                                         </Editable.DraggableAccordionItem>
                                       )}
+
                                     {section.textcards && (
                                       <Editable.DraggableAccordionItem
                                         index={sectionIndex}
@@ -1529,6 +1632,7 @@ const EditHomepage = ({ match }) => {
                                         />
                                       </Editable.DraggableAccordionItem>
                                     )}
+
                                     {section.infocols && (
                                       <Editable.DraggableAccordionItem
                                         index={sectionIndex}
@@ -1545,7 +1649,7 @@ const EditHomepage = ({ match }) => {
                                               .infocols
                                           }
                                           infoColsErrors={
-                                            errors.textcards[sectionIndex]
+                                            errors.infocols[sectionIndex]
                                           }
                                           {...section.infocols}
                                         />
@@ -1621,6 +1725,19 @@ const EditHomepage = ({ match }) => {
                               onClick={() =>
                                 onClick(TEXTCARDS_BLOCK_SECTION.id)
                               }
+                            />
+                          </AddSectionButton.HelpOverlay>
+                        )}
+                        {showNewLayouts && (
+                          <AddSectionButton.HelpOverlay
+                            title="Info-Columns"
+                            description="Add bite-sized snippets of text in a multi-column layout. These texts aren’t clickable. Perfect for showing informative text that describes your organisation."
+                            image={<HomepageInfoColsSampleImage />}
+                          >
+                            <AddSectionButton.Option
+                              title={INFOCOLS_BLOCK_SECTION.title}
+                              subtitle={INFOCOLS_BLOCK_SECTION.subtitle}
+                              onClick={() => onClick(INFOCOLS_BLOCK_SECTION.id)}
                             />
                           </AddSectionButton.HelpOverlay>
                         )}

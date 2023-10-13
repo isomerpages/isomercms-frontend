@@ -17,6 +17,8 @@ import {
   AnnouncementsFrontmatterSection,
   AnnouncementOption,
   TextcardFrontmatterSection,
+  InfoColsFrontmatterSection,
+  EditorInfoColsSection,
 } from "types/homepage"
 
 const RADIX_PARSE_INT = 10
@@ -167,6 +169,38 @@ const updateTextCardsCardSection = (
   }
 }
 
+const updateInfoColsInfoBoxesSection = (
+  homepageState: EditorHomepageState,
+  sectionIndex: number,
+  newInfoBoxes: unknown[],
+  newInfoBoxErrors: unknown[]
+): EditorHomepageState => {
+  // Needs to be done separately - lodash's set seems to be buggy when handling arrays of objects
+  const modifiedSection = _.set(
+    _.cloneDeep(homepageState.frontMatter.sections[sectionIndex]),
+    ["infocols", "infoboxes"],
+    newInfoBoxes
+  )
+  const newSections = _.cloneDeep(homepageState.frontMatter.sections)
+  newSections[sectionIndex] = modifiedSection
+  return {
+    ...homepageState,
+    frontMatter: {
+      ...homepageState.frontMatter,
+      sections: newSections,
+    },
+    errors: {
+      ...homepageState.errors,
+      infocols: _.set(
+        // NOTE: Deep clone here to avoid mutation
+        _.cloneDeep(homepageState.errors.infocols),
+        [sectionIndex],
+        newInfoBoxErrors
+      ),
+    },
+  }
+}
+
 type OnDragEndResponseWrapper = (
   state: EditorHomepageState
 ) => (result: DropResult) => EditorHomepageState
@@ -184,6 +218,7 @@ type UpdateHomepageType =
   | "highlight"
   | "announcement"
   | `textCardItem-${number}`
+  | `infoColInfoBox-${number}`
 
 const isUpdateHomepageType = (
   value: unknown
@@ -439,6 +474,35 @@ const updateHomepageState = (
       newTextcardErrors
     )
   }
+  if (type.startsWith("infoColInfoBox")) {
+    // We've validated that type can only be such that the second item is a number
+    const parentId = parseInt(type.split("-")[1], RADIX_PARSE_INT)
+    const infocols = (frontMatter.sections[
+      parentId
+    ] as InfoColsFrontmatterSection).infocols as EditorInfoColsSection
+    const draggedElem = infocols.infoboxes[source.index]
+    const newInfoBoxes = updatePositions(
+      infocols.infoboxes,
+      source.index,
+      destination.index,
+      draggedElem
+    )
+
+    const draggedError = errors.infocols[parentId][source.index]
+    const newTextcardErrors = updatePositions(
+      errors.infocols[parentId],
+      source.index,
+      destination.index,
+      draggedError
+    )
+
+    return updateInfoColsInfoBoxesSection(
+      homepageState,
+      parentId,
+      newInfoBoxes,
+      newTextcardErrors
+    )
+  }
   return homepageState
 }
 
@@ -598,6 +662,31 @@ export const onCreate = <E,>(
     )
     return newState
   }
+
+  if (elemType.startsWith("infoColInfoBox")) {
+    // We've validated that type can only be such that the second item is a number
+    const parentId = parseInt(elemType.split("-")[1], RADIX_PARSE_INT)
+    const sectionInfo = (frontMatter.sections[
+      parentId
+    ] as InfoColsFrontmatterSection).infocols as EditorInfoColsSection
+    if (!_.isEmpty(sectionInfo.infoboxes)) {
+      const newInfoBoxes = createElement(sectionInfo.infoboxes, val)
+      const newInfoColErrors = createElement(errors.infocols[parentId], err)
+      return updateInfoColsInfoBoxesSection(
+        homepageState,
+        parentId,
+        newInfoBoxes,
+        newInfoColErrors
+      )
+    }
+    const newState = updateInfoColsInfoBoxesSection(
+      homepageState,
+      parentId,
+      [val],
+      [err]
+    )
+    return newState
+  }
   return homepageState
 }
 
@@ -723,6 +812,26 @@ export const onDelete = (
       parentId,
       newTextCards,
       newTextcardErrors
+    )
+  }
+
+  if (elemType.startsWith("infoColInfoBox")) {
+    // We've validated that type can only be such that the second item is a number
+    const parentId = parseInt(elemType.split("-")[1], RADIX_PARSE_INT)
+    const newInfoColBoxes = deleteElement(
+      ((frontMatter.sections[parentId] as InfoColsFrontmatterSection)
+        .infocols as EditorInfoColsSection).infoboxes,
+      indexToDelete
+    )
+    const newInfoColErrors = deleteElement(
+      errors.infocols[parentId],
+      indexToDelete
+    )
+    return updateTextCardsCardSection(
+      homepageState,
+      parentId,
+      newInfoColBoxes,
+      newInfoColErrors
     )
   }
   return homepageState

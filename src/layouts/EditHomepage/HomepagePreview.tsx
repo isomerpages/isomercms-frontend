@@ -197,6 +197,17 @@ export const HomepagePreview = ({
               />
             </>
           )}
+          {/* TODO: Infocols section */}
+          {EditorHomepageFrontmatterSection.isInfocols(section) && (
+            <>
+              <div
+                key={`section-${sectionIndex}`}
+                ref={scrollRefs[sectionIndex] as Ref<HTMLDivElement>}
+              >
+                <h1> INFOCOLS</h1>
+              </div>
+            </>
+          )}
         </>
       ))}
     </div>
