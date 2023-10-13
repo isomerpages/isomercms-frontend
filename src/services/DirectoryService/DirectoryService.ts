@@ -72,7 +72,7 @@ export const getMediaData = ({
   // Github has a fixed upper limit of 1000 items and we return
   // every item up to the upper limit.
   // Hence, this behaviour is essentially a single page of up to 1000 items.
-  curPage = 1,
+  curPage = 0,
   limit = 1000,
 }: MediaDirectoryParams): Promise<(DirectoryData | MediaFilePathData)[]> => {
   const endpoint = `/sites/${siteName}/media/${mediaDirectoryName}`
