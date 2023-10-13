@@ -75,21 +75,21 @@ export const Media = (): JSX.Element => {
     mediaDirectoryName: string
   }>()
   const { siteName, mediaRoom: mediaType } = params
-  const [originalMediaType, setOriginalMediaType] = useState(mediaType)
 
   useEffect(() => {
-    // NOTE: Because this component is shared between different media types,
-    // we need to reset the page number to 1 when the media type changes.
+    // NOTE: Because this component is shared between different media types + subfolders,
+    // we need to reset the page number to 1 when the url changes.
     // If this is not done, we might end up with erroneous pagination
     // such as being on page 4 of a 1 page list.
     // This results in the back button being clickable,
     // but the number always being 1.
-    if (originalMediaType !== mediaType) {
-      setCurPage(1)
-      // NOTE: Keep state in sync here
-      setOriginalMediaType(mediaType)
-    }
-  }, [curPage, originalMediaType, setOriginalMediaType, mediaType, setCurPage])
+    setCurPage(1)
+    // NOTE: **NOT** adding `setCurPage` as a dependency here
+    // as it will return a different function reference on every render
+    // and cause the effect to run again
+    // resulting in it going from page 1 -> page n -> page 1
+    // when we click on the pagination.
+  }, [url])
 
   const {
     data: mediaFolderSubdirectories,
