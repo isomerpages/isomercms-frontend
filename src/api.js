@@ -1,9 +1,6 @@
 import axios from "axios"
 
-import {
-  getNavFolderDropdownFromFolderOrder,
-  generateImageorFilePath,
-} from "./utils/generate"
+import { getNavFolderDropdownFromFolderOrder } from "./utils/generate"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -65,15 +62,6 @@ const getEditNavBarData = async (siteName) => {
   }
 }
 
-const getMediaDetails = async ({ siteName, type, customPath, fileName }) => {
-  const resp = await axios.get(
-    `${process.env.REACT_APP_BACKEND_URL}/sites/${siteName}/${
-      type === "images" ? "images" : "documents"
-    }/${generateImageorFilePath(customPath, fileName)}`
-  )
-  return resp.data
-}
-
 // Login
 const getEmailOtp = (email) => {
   const endpoint = `${BACKEND_URL_V2}/user/email/otp`
@@ -100,7 +88,6 @@ const verifyMobileNumberOtp = async (mobile, otp) => {
 export {
   getEditNavBarData,
   getAllCategories,
-  getMediaDetails,
   getEmailOtp,
   verifyEmailOtp,
   getMobileNumberOtp,

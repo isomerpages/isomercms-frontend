@@ -22,6 +22,7 @@ import MarkdownEditor from "components/pages/MarkdownEditor"
 import PagePreview from "components/pages/PagePreview"
 import { WarningModal } from "components/WarningModal"
 
+import { useGetMultipleMediaHook } from "hooks/mediaHooks"
 import { useGetPageHook, useUpdatePageHook } from "hooks/pageHooks"
 import { useCspHook, useGetSiteColorsHook } from "hooks/settingsHooks"
 import useRedirectHook from "hooks/useRedirectHook"
@@ -33,7 +34,7 @@ import checkCSP from "utils/cspUtils"
 import { isWriteActionsDisabled } from "utils/reviewRequests"
 import { createPageStyleSheet } from "utils/siteColorUtils"
 
-import { prependImageSrc } from "utils"
+import { getMediaSrcsFromHtml, adjustImageSrcs } from "utils"
 
 import "easymde/dist/easymde.min.css"
 
@@ -82,6 +83,7 @@ const EditPage = ({ match }) => {
   const { siteName } = decodedParams
 
   const [editorValue, setEditorValue] = useState("")
+  const [mediaSrcs, setMediaSrcs] = useState([])
   const [currSha, setCurrSha] = useState("")
   const [htmlChunk, setHtmlChunk] = useState("")
 
@@ -118,6 +120,38 @@ const EditPage = ({ match }) => {
   const { data: csp } = useCspHook()
   const { data: siteColorsData } = useGetSiteColorsHook(params)
   const isWriteDisabled = isWriteActionsDisabled(siteName)
+  const { data: mediaData } = useGetMultipleMediaHook({
+    siteName,
+    mediaSrcs,
+  })
+
+  const updateMediaSrcs = () => {
+    if (!csp || _.isEmpty(csp) || !editorValue) return
+    const html = marked.parse(editorValue)
+    const { sanitisedHtml: CSPSanitisedHtml } = checkCSP(csp, html)
+    const DOMCSPSanitisedHtml = DOMPurify.sanitize(CSPSanitisedHtml)
+    setMediaSrcs(getMediaSrcsFromHtml(DOMCSPSanitisedHtml))
+  }
+
+  const updateHtmlWithMediaData = () => {
+    if (!csp || _.isEmpty(csp) || !editorValue) return
+    const html = marked.parse(editorValue)
+    const {
+      isCspViolation: checkedIsCspViolation,
+      sanitisedHtml: CSPSanitisedHtml,
+    } = checkCSP(csp, html)
+    const DOMCSPSanitisedHtml = DOMPurify.sanitize(CSPSanitisedHtml)
+    const processedChunk = adjustImageSrcs(DOMCSPSanitisedHtml, mediaData || [])
+
+    // Using FORCE_BODY adds a fake <remove></remove>
+    DOMPurify.removed = DOMPurify.removed.filter(
+      (el) => el.element?.tagName !== "REMOVE"
+    )
+
+    setIsXSSViolation(DOMPurify.removed.length > 0)
+    setIsContentViolation(checkedIsCspViolation)
+    setHtmlChunk(processedChunk)
+  }
 
   /** ******************************** */
   /*     useEffects to load data     */
@@ -130,14 +164,14 @@ const EditPage = ({ match }) => {
         siteColorsData.primaryColor,
         siteColorsData.secondaryColor
       )
-  }, [siteColorsData])
+  }, [siteColorsData, siteName])
 
   useEffect(() => {
     if (pageData && !hasChanges) {
       setEditorValue(pageData.content.pageBody.trim())
       setCurrSha(pageData.sha)
     }
-  }, [pageData])
+  }, [pageData, hasChanges])
 
   useEffect(() => {
     if (pageData)
@@ -145,30 +179,12 @@ const EditPage = ({ match }) => {
   }, [pageData, editorValue])
 
   useEffect(() => {
-    async function editorValueToHtml() {
-      if (!csp || _.isEmpty(csp) || !editorValue) return
-      const html = marked.parse(editorValue)
-      const {
-        isCspViolation: checkedIsCspViolation,
-        sanitisedHtml: CSPSanitisedHtml,
-      } = checkCSP(csp, html)
-      const DOMCSPSanitisedHtml = DOMPurify.sanitize(CSPSanitisedHtml)
-      const processedChunk = await prependImageSrc(
-        siteName,
-        DOMCSPSanitisedHtml
-      )
+    updateMediaSrcs()
+  }, [csp, editorValue])
 
-      // Using FORCE_BODY adds a fake <remove></remove>
-      DOMPurify.removed = DOMPurify.removed.filter(
-        (el) => el.element?.tagName !== "REMOVE"
-      )
-
-      setIsXSSViolation(DOMPurify.removed.length > 0)
-      setIsContentViolation(checkedIsCspViolation)
-      setHtmlChunk(processedChunk)
-    }
-    editorValueToHtml()
-  }, [csp, siteName, editorValue])
+  useEffect(() => {
+    updateHtmlWithMediaData()
+  }, [mediaData, editorValue])
 
   return (
     <VStack>

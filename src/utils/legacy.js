@@ -1,14 +1,9 @@
 // import dependencies
 import axios from "axios"
-import cheerio from "cheerio"
 import { format } from "date-fns-tz"
 import _ from "lodash"
-import { QueryClient } from "react-query"
 import slugify from "slugify"
 import yaml from "yaml"
-
-import { getMediaDetails } from "../api"
-import { LOCAL_STORAGE_KEYS } from "../constants/localStorage"
 
 import { deslugifyDirectory } from "./deslugify"
 
@@ -36,119 +31,6 @@ export function frontMatterParser(content) {
 // of the markdown file
 export function concatFrontMatterMdBody(frontMatter, mdBody) {
   return ["---\n", yaml.stringify(frontMatter), "---\n", mdBody].join("")
-}
-
-// takes a string URL and returns true if the link is an internal link
-// only works on browser side
-export function isLinkInternal(url) {
-  const tempLink = document.createElement("a")
-  tempLink.href = url
-  return tempLink.hostname === window.location.hostname
-}
-
-const b64toBlob = (b64Data, contentType = "", sliceSize = 512) => {
-  const byteCharacters = atob(b64Data)
-  const byteArrays = []
-
-  for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-    const slice = byteCharacters.slice(offset, offset + sliceSize)
-
-    const byteNumbers = new Array(slice.length)
-    for (let i = 0; i < slice.length; i += 1) {
-      byteNumbers[i] = slice.charCodeAt(i)
-    }
-
-    const byteArray = new Uint8Array(byteNumbers)
-    byteArrays.push(byteArray)
-  }
-
-  const blob = new Blob(byteArrays, { type: contentType })
-  return blob
-}
-
-/**
- * Checks if the current repo with siteName is private
- * If repo is public, returns the raw GitHub image URL
- * If repo is private, calls the backend image API endpoint to retrieve the b64 encoded image blob text and returns the blob URL
- *
- * @param {string} siteName - Name of Isomer page repo
- * @param {string} filePath - File path of image in repo. Should be of the format '/images/folder/subfolder1/subfolder2.../imagename.ext'.
- *    The leading '/' is optional. The filePath parameter should be URI decoded. Examples:
- *    images/test-folder/image sample.png
- *    /images/test.svg
- *    /images/folder 1/folder2/folder3/names.jpg
- * @param {boolean} shouldLoad - Specifies whether url should be generated or not. Images/documents in the Files tab should
- *    should not have image URLs.
- * @returns {Promise<string>}
- */
-export async function fetchImageURL(siteName, filePath, shouldLoad = true) {
-  if (shouldLoad) {
-    const cleanPath = filePath.replace(/^\//, "") // Remove leading / if it exists e.g. /images/example.png -> images/example.png
-    // If the image is public, return the link to the raw file, otherwise make a call to the backend API to retrieve the image blob
-    const isPrivate = JSON.parse(
-      localStorage.getItem(LOCAL_STORAGE_KEYS.SitesIsPrivate)
-    )[siteName]
-    if (!isPrivate) {
-      return `https://raw.githubusercontent.com/isomerpages/${siteName}/staging/${cleanPath}${
-        cleanPath.endsWith(".svg") ? "?sanitize=true" : ""
-      }`
-    }
-    const filePathArr = cleanPath.split("/")
-    const fileName = filePathArr[filePathArr.length - 1]
-    const customPath = filePathArr.slice(1, filePathArr.length - 1).join("%2F")
-    const { imageName, content } = await getMediaDetails({
-      siteName,
-      type: "images",
-      fileName,
-      customPath,
-    })
-
-    const imageExt = imageName.slice(imageName.lastIndexOf(".") + 1)
-    const contentType = `image/${imageExt === "svg" ? "svg+xml" : imageExt}`
-
-    const blob = b64toBlob(content, contentType)
-    return URL.createObjectURL(blob)
-  }
-  return undefined
-}
-
-// takes in a permalink and returns a URL that links to the image on the staging branch of the repo
-export async function prependImageSrc(repoName, chunk) {
-  const $ = cheerio.load(chunk)
-  const imagePromises = []
-  const elementsToUpdate = []
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        staleTime: Infinity, // Never automatically refetch image unless query is invalidated
-      },
-    },
-  })
-
-  $("img").each((i, elem) => {
-    // check for whether the original image source is from within Github or outside of Github
-    // only modify URL if it's a permalink on the website
-    if (isLinkInternal($(elem).attr("src"))) {
-      const filePath = $(elem).attr("src")
-      const imagePromise = queryClient.fetchQuery(
-        `${repoName}/${filePath}`,
-        () => fetchImageURL(repoName, filePath)
-      )
-      imagePromises.push(imagePromise)
-      elementsToUpdate.push(elem)
-    }
-    // change src to placeholder image if images not found
-    $(elem).attr(
-      "onerror",
-      "this.onerror=null; this.src='/placeholder_no_image.png';"
-    )
-  })
-
-  const imageURLs = await Promise.allSettled(imagePromises)
-  elementsToUpdate.forEach((elem, index) => {
-    $(elem).attr("src", imageURLs[index].value)
-  })
-  return $.html()
 }
 
 // function recursively checks if all child object values are empty
