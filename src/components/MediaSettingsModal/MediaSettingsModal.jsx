@@ -13,6 +13,8 @@ import FormTitle from "components/Form/FormTitle"
 import FormField from "components/FormField"
 import { LoadingButton } from "components/LoadingButton"
 
+import { useListMediaFolderFiles } from "hooks/directoryHooks/useListMediaFolderFiles"
+
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 import mediaStyles from "styles/isomer-cms/pages/Media.module.scss"
@@ -41,17 +43,22 @@ export const MediaSettingsModal = ({
   params,
   isCreate,
   mediaData,
-  mediasData,
   onProceed,
   onClose,
   toggleUploadInput,
 }) => {
   const { siteName, mediaRoom, fileName } = params
+  const {
+    data: { files },
+  } = useListMediaFolderFiles(params, {
+    initialData: { files: [], total: 0 },
+  })
+
   const existingTitlesArray =
-    mediasData &&
-    mediasData
-      .filter((item) => item.name !== params[getLastItemType(params)])
-      .map((item) => item.name)
+    files &&
+    files
+      .map(({ name }) => getFileName(name))
+      .filter((name) => name !== params[getLastItemType(params)])
   const isWriteDisabled = isWriteActionsDisabled(siteName)
 
   const {
