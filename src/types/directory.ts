@@ -46,12 +46,13 @@ export interface ResourceRoomNameUpdateProps {
   newDirectoryName: string
 }
 
-export interface GetMediaFoldersDto {
+export type MediaFilePathData = Pick<MediaData, "name" | "type">
+
+export interface GetMediaSubdirectoriesDto {
   directories: DirectoryData[]
-  files: MediaData[]
-  total: number
 }
 
-export type GetMediaSubdirectoriesDto = Pick<GetMediaFoldersDto, "directories">
-
-export type GetMediaFilesDto = Pick<GetMediaFoldersDto, "files" | "total">
+export interface GetMediaFilesDto {
+  files: MediaFilePathData[]
+  total: number
+}
