@@ -17,8 +17,8 @@ import {
   AnnouncementsFrontmatterSection,
   AnnouncementOption,
   TextcardFrontmatterSection,
-  InfoColsFrontmatterSection,
-  EditorInfoColsSection,
+  InfocolsFrontmatterSection,
+  EditorInfocolsSection,
 } from "types/homepage"
 
 const RADIX_PARSE_INT = 10
@@ -169,20 +169,22 @@ const updateTextCardsCardSection = (
   }
 }
 
-const updateInfoColsInfoBoxesSection = (
+const updateInfocolsInfoboxesSection = (
   homepageState: EditorHomepageState,
   sectionIndex: number,
-  newInfoBoxes: unknown[],
-  newInfoBoxErrors: unknown[]
+  newInfoboxes: unknown[],
+  newInfoboxErrors: unknown[]
 ): EditorHomepageState => {
   // Needs to be done separately - lodash's set seems to be buggy when handling arrays of objects
   const modifiedSection = _.set(
     _.cloneDeep(homepageState.frontMatter.sections[sectionIndex]),
     ["infocols", "infoboxes"],
-    newInfoBoxes
+    newInfoboxes
   )
   const newSections = _.cloneDeep(homepageState.frontMatter.sections)
   newSections[sectionIndex] = modifiedSection
+  console.log("NEW SECTIONS")
+  console.log(newSections)
   return {
     ...homepageState,
     frontMatter: {
@@ -195,7 +197,7 @@ const updateInfoColsInfoBoxesSection = (
         // NOTE: Deep clone here to avoid mutation
         _.cloneDeep(homepageState.errors.infocols),
         [sectionIndex],
-        newInfoBoxErrors
+        newInfoboxErrors
       ),
     },
   }
@@ -218,7 +220,7 @@ type UpdateHomepageType =
   | "highlight"
   | "announcement"
   | `textCardItem-${number}`
-  | `infoColInfoBox-${number}`
+  | `infocolInfobox-${number}`
 
 const isUpdateHomepageType = (
   value: unknown
@@ -474,12 +476,12 @@ const updateHomepageState = (
       newTextcardErrors
     )
   }
-  if (type.startsWith("infoColInfoBox")) {
+  if (type.startsWith("infocolInfobox")) {
     // We've validated that type can only be such that the second item is a number
     const parentId = parseInt(type.split("-")[1], RADIX_PARSE_INT)
     const infocols = (frontMatter.sections[
       parentId
-    ] as InfoColsFrontmatterSection).infocols as EditorInfoColsSection
+    ] as InfocolsFrontmatterSection).infocols as EditorInfocolsSection
     const draggedElem = infocols.infoboxes[source.index]
     const newInfoBoxes = updatePositions(
       infocols.infoboxes,
@@ -496,7 +498,7 @@ const updateHomepageState = (
       draggedError
     )
 
-    return updateInfoColsInfoBoxesSection(
+    return updateInfocolsInfoboxesSection(
       homepageState,
       parentId,
       newInfoBoxes,
@@ -663,23 +665,24 @@ export const onCreate = <E,>(
     return newState
   }
 
-  if (elemType.startsWith("infoColInfoBox")) {
+  if (elemType.startsWith("infocolInfobox")) {
+    console.log(`REACHED onCreate for infocolInfobox`)
     // We've validated that type can only be such that the second item is a number
     const parentId = parseInt(elemType.split("-")[1], RADIX_PARSE_INT)
     const sectionInfo = (frontMatter.sections[
       parentId
-    ] as InfoColsFrontmatterSection).infocols as EditorInfoColsSection
+    ] as InfocolsFrontmatterSection).infocols as EditorInfocolsSection
     if (!_.isEmpty(sectionInfo.infoboxes)) {
-      const newInfoBoxes = createElement(sectionInfo.infoboxes, val)
-      const newInfoColErrors = createElement(errors.infocols[parentId], err)
-      return updateInfoColsInfoBoxesSection(
+      const newInfoboxes = createElement(sectionInfo.infoboxes, val)
+      const newInfocolsErrors = createElement(errors.infocols[parentId], err)
+      return updateInfocolsInfoboxesSection(
         homepageState,
         parentId,
-        newInfoBoxes,
-        newInfoColErrors
+        newInfoboxes,
+        newInfocolsErrors
       )
     }
-    const newState = updateInfoColsInfoBoxesSection(
+    const newState = updateInfocolsInfoboxesSection(
       homepageState,
       parentId,
       [val],
@@ -815,23 +818,23 @@ export const onDelete = (
     )
   }
 
-  if (elemType.startsWith("infoColInfoBox")) {
+  if (elemType.startsWith("infocolInfobox")) {
     // We've validated that type can only be such that the second item is a number
     const parentId = parseInt(elemType.split("-")[1], RADIX_PARSE_INT)
-    const newInfoColBoxes = deleteElement(
-      ((frontMatter.sections[parentId] as InfoColsFrontmatterSection)
-        .infocols as EditorInfoColsSection).infoboxes,
+    const newInfoboxes = deleteElement(
+      ((frontMatter.sections[parentId] as InfocolsFrontmatterSection)
+        .infocols as EditorInfocolsSection).infoboxes,
       indexToDelete
     )
-    const newInfoColErrors = deleteElement(
+    const newInfocolErrors = deleteElement(
       errors.infocols[parentId],
       indexToDelete
     )
     return updateTextCardsCardSection(
       homepageState,
       parentId,
-      newInfoColBoxes,
-      newInfoColErrors
+      newInfoboxes,
+      newInfocolErrors
     )
   }
   return homepageState

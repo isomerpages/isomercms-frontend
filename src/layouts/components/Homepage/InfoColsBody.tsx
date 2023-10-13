@@ -14,37 +14,37 @@ import { Editable } from "components/Editable"
 
 import { useEditableContext } from "contexts/EditableContext"
 
-interface InfoBoxFormFields {
+interface infoboxFormFields {
   title: string
   description?: string
 }
 
-interface InfoColsSectionFormFields {
+interface InfocolsSectionFormFields {
   title: string
   subtitle?: string
   url?: string
   linktext?: string
-  infoBoxes: InfoBoxFormFields[]
+  infoboxes: infoboxFormFields[]
 }
 
-interface InfoColsSectionProps extends InfoColsSectionFormFields {
+interface InfocolsSectionProps extends InfocolsSectionFormFields {
   index: number
-  errors: Omit<InfoColsSectionFormFields, "infoboxes">
-  infoBoxErrors: InfoBoxFormFields[]
+  errors: Omit<InfocolsSectionFormFields, "infoboxes">
+  infoboxErrors: infoboxFormFields[]
 }
 
 const MAX_INFO_BOXES = 4
 
-export const InfoColsSectionBody = ({
+export const InfocolsSectionBody = ({
   title,
   subtitle,
   url,
   linktext,
-  infoBoxes = [],
+  infoboxes = [],
   index,
   errors,
-  infoBoxErrors = [],
-}: InfoColsSectionProps) => {
+  infoboxErrors = [],
+}: InfocolsSectionProps) => {
   const { onChange, onDelete, onDragEnd, onCreate } = useEditableContext()
 
   return (
@@ -105,62 +105,62 @@ export const InfoColsSectionBody = ({
         You can add up to 4 infoboxes
       </Text>
       <DragDropContext onDragEnd={onDragEnd}>
-        <Editable.Droppable width="100%" editableId={`infoColInfoBox-${index}`}>
+        <Editable.Droppable width="100%" editableId={`infocolInfobox-${index}`}>
           <Editable.EmptySection
             title="Add an infobox to get started"
             subtitle="You must add at least 1 infobox to this block"
-            isEmpty={infoBoxes.length === 0}
+            isEmpty={infoboxes.length === 0}
           >
             <Editable.Accordion>
               <VStack p={0} spacing="0.75rem">
-                {infoBoxes.map((infoBox, infoBoxIndex) => (
+                {infoboxes.map((infobox, infoboxIndex) => (
                   <Editable.DraggableAccordionItem
-                    draggableId={`infoColInfoBox-${index}-${infoBoxIndex}-draggable`}
-                    index={infoBoxIndex}
-                    title={infoBox.title}
-                    isInvalid={_.some(infoBoxErrors[infoBoxIndex])}
+                    draggableId={`infocolInfobox-${index}-${infoboxIndex}-draggable`}
+                    index={infoboxIndex}
+                    title={infobox.title}
+                    isInvalid={_.some(infoboxErrors[infoboxIndex])}
                     isNested
                   >
                     <Editable.Section>
-                      {/* InfoBox Title */}
+                      {/* infobox Title */}
                       <FormControl
                         isRequired
-                        isInvalid={!!infoBoxErrors[infoBoxIndex].title}
+                        isInvalid={!!infoboxErrors[infoboxIndex].title}
                       >
                         <FormLabel>Title</FormLabel>
                         <Input
                           placeholder="This is a title for the infobox"
-                          id={`infoColInfoBox-${index}-${infoBoxIndex}-title`}
-                          value={infoBox.title}
+                          id={`infocolInfobox-${index}-${infoboxIndex}-title`}
+                          value={infobox.title}
                           onChange={onChange}
                         />
                         <FormErrorMessage>
-                          {infoBoxErrors[infoBoxIndex].title}
+                          {infoboxErrors[infoboxIndex].title}
                         </FormErrorMessage>
                       </FormControl>
 
-                      {/* InfoBox Description */}
+                      {/* infobox Description */}
                       <FormControl
-                        isInvalid={!!infoBoxErrors[infoBoxIndex].description}
+                        isInvalid={!!infoboxErrors[infoboxIndex].description}
                       >
                         <FormLabel>Description</FormLabel>
                         <Textarea
                           placeholder="This is a description for the infobox. We recommend keeping it short and succinct."
-                          id={`infoColInfoBox-${index}-${infoBoxIndex}-description`}
-                          value={infoBox.description}
+                          id={`infocolInfobox-${index}-${infoboxIndex}-description`}
+                          value={infobox.description}
                           onChange={onChange}
                         />
                         <FormErrorMessage>
-                          {infoBoxErrors[infoBoxIndex].description}
+                          {infoboxErrors[infoboxIndex].description}
                         </FormErrorMessage>
                       </FormControl>
 
                       <Button
-                        id={`infoColInfoBox-${index}-${infoBoxIndex}`}
+                        id={`infocolInfobox-${index}-${infoboxIndex}`}
                         onClick={() =>
                           onDelete(
-                            `infoColInfoBox-${index}-${infoBoxIndex}`,
-                            "Infobox"
+                            `infocolInfobox-${index}-${infoboxIndex}`,
+                            "infobox"
                           )
                         }
                         alignSelf="center"
@@ -178,16 +178,16 @@ export const InfoColsSectionBody = ({
         </Editable.Droppable>
       </DragDropContext>
       <Button
-        id={`infoColInfoBox-${index}-create`}
+        id={`infocolInfobox-${index}-create`}
         variant="outline"
         w="full"
         pt="0.5rem"
         leftIcon={<BiPlus fontSize="1.5rem" />}
-        isDisabled={infoBoxes.length >= MAX_INFO_BOXES}
+        isDisabled={infoboxes.length >= MAX_INFO_BOXES}
         onClick={() => {
           onCreate({
             target: {
-              id: `infoColInfoBox-${index}`,
+              id: `infocolInfobox-${index}`,
             },
           })
         }}
@@ -202,7 +202,7 @@ export const InfoColsSectionBody = ({
         colorScheme="critical"
         mt="1rem"
       >
-        Delete info column
+        Delete info-column
       </Button>
     </Editable.Section>
   )

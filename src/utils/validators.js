@@ -693,7 +693,7 @@ const validateTextcard = (cardError, field, value) => {
 }
 
 // TODO: recheck
-const validateInfoColsSection = (sectionError, sectionType, field, value) => {
+const validateInfocolsSection = (sectionError, sectionType, field, value) => {
   const newSectionError = sectionError
   let errorMessage = ""
   switch (field) {
@@ -741,8 +741,8 @@ const validateInfoColsSection = (sectionError, sectionType, field, value) => {
 }
 
 // TODO: Recheck
-const validateInfoColInfoBox = (infoBoxError, field, value) => {
-  const newHighlightError = infoBoxError
+const validateInfocolInfobox = (infoboxError, field, value) => {
+  const newHighlightError = infoboxError
   let errorMessage = ""
   switch (field) {
     case "title": {
@@ -829,7 +829,7 @@ const validateSections = (sectionError, sectionType, field, value) => {
       break
     }
     case "infocols": {
-      newSectionError = validateInfoColsSection(
+      newSectionError = validateInfocolsSection(
         sectionError,
         sectionType,
         field,
@@ -1264,7 +1264,7 @@ export {
   validateAnnouncementItems,
   validateDropdownElems,
   validateTextcard,
-  validateInfoColInfoBox,
+  validateInfocolInfobox,
   validateSections,
   validatePageSettings,
   validateResourceSettings,

@@ -168,7 +168,7 @@ type HomepageDroppableZone =
   | "highlight"
   | "announcement"
   | `textCardItem-${number}`
-  | `infoColInfoBox-${number}`
+  | `infocolInfobox-${number}`
 
 type ContactUsDroppableZone =
   | "locations"

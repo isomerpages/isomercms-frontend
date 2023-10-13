@@ -1,4 +1,4 @@
-export const HomepageInfoColsSampleImage = (
+export const HomepageInfocolsSampleImage = (
   props: React.SVGProps<SVGSVGElement>
 ): JSX.Element => {
   return (

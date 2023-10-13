@@ -90,7 +90,7 @@ Default.args = {
     {
       title: "Info-columns",
       subtitle: "Add snippets of text in 2- or 3-column layouts",
-      overlayTitle: "Info-Columns",
+      overlayTitle: "Info-columns",
       overlayDescription:
         "Add bite-sized snippets of text in a multi-column layout. These texts aren’t clickable. Perfect for showing informative text that describes your organisation.",
     },

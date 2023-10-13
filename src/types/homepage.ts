@@ -92,16 +92,16 @@ export interface TextcardsSection {
   cards: TextCardItem[]
 }
 
-export interface InfoBox {
+export interface Infobox {
   title: string
   description?: string
 }
-export interface InfoColsSection {
+export interface InfocolsSection {
   title: string
   subtitle?: string
   linktext?: string
   url?: string
-  infoBoxes: InfoBox[]
+  infoboxes: Infobox[]
 }
 
 export interface HomepageDto {
@@ -120,7 +120,7 @@ export interface HomepageDto {
         | ResourcesSection
         | AnnouncementsBlockSection
         | TextcardsSection
-        | InfoColsSection
+        | InfocolsSection
       )[]
     }
     pageBody?: string
@@ -134,7 +134,7 @@ export type EditorHomepageElement =
   | "highlight"
   | "announcement"
   | `textCardItem-${number}`
-  | `infoColInfoBox-${number}`
+  | `infocolInfobox-${number}`
 
 export type PossibleEditorSections = IterableElement<
   | EditorHomepageState["frontMatter"]["sections"]
@@ -180,19 +180,19 @@ export type TextcardFrontmatterSection = {
   textcards: EditorTextcardSection
 }
 
-export interface EditorInfoColInfoBoxSection {
+export interface EditorinfocolInfoboxSection {
   infoboxes: []
 }
 
-export interface EditorInfoColsSection extends EditorInfoColInfoBoxSection {
+export interface EditorInfocolsSection extends EditorinfocolInfoboxSection {
   title: string
   subtitle: string
   linktext: string
   url: string
 }
 
-export type InfoColsFrontmatterSection = {
-  infocols: EditorInfoColsSection
+export type InfocolsFrontmatterSection = {
+  infocols: EditorInfocolsSection
 }
 
 export type EditorHomepageFrontmatterSection =
@@ -202,7 +202,7 @@ export type EditorHomepageFrontmatterSection =
   | InfobarFrontmatterSection
   | AnnouncementsFrontmatterSection
   | TextcardFrontmatterSection
-  | InfoColsFrontmatterSection
+  | InfocolsFrontmatterSection
 
 export const EditorHomepageFrontmatterSection = {
   isHero: (
@@ -231,8 +231,8 @@ export const EditorHomepageFrontmatterSection = {
     !!(section as TextcardFrontmatterSection).textcards,
   isInfocols: (
     section: EditorHomepageFrontmatterSection
-  ): section is InfoColsFrontmatterSection =>
-    !!(section as InfoColsFrontmatterSection).infocols,
+  ): section is InfocolsFrontmatterSection =>
+    !!(section as InfocolsFrontmatterSection).infocols,
 }
 
 export interface EditorHomepageState {

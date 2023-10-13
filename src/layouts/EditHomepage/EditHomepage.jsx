@@ -33,7 +33,7 @@ import { useUpdateHomepageHook } from "hooks/homepageHooks/useUpdateHomepageHook
 import { useAfterFirstLoad } from "hooks/useAfterFirstLoad"
 import useSiteColorsHook from "hooks/useSiteColorsHook"
 
-import { InfoColsSectionBody } from "layouts/components/Homepage/InfoColsBody"
+import { InfocolsSectionBody } from "layouts/components/Homepage/InfocolsBody"
 import { TextCardsSectionBody } from "layouts/components/Homepage/TextCardsBody"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
@@ -46,7 +46,7 @@ import {
   validateDropdownElems,
   validateAnnouncementItems,
   validateTextcard,
-  validateInfoColInfoBox,
+  validateInfocolInfobox,
 } from "utils/validators"
 
 import {
@@ -54,7 +54,7 @@ import {
   HomepageAnnouncementsSampleImage,
   HomepageTextCardsSampleImage,
 } from "assets"
-import { HomepageInfoColsSampleImage } from "assets/images/HomepageInfoColsSampleImage"
+import { HomepageInfocolsSampleImage } from "assets/images/HomepageInfocolsSampleImage"
 import { EditorHomepageFrontmatterSection } from "types/homepage"
 import { DEFAULT_RETRY_MSG } from "utils"
 
@@ -304,7 +304,7 @@ const EditHomepage = ({ match }) => {
         let highlightsErrors = []
         let announcementItemErrors = []
         const textCardItemErrors = []
-        const infoColInfoBoxErrors = []
+        const infocolInfoboxErrors = []
         const scrollRefs = []
         const announcementScrollRefs = []
         frontMatter.sections.forEach((section) => {
@@ -405,10 +405,10 @@ const EditHomepage = ({ match }) => {
             sectionsErrors.push({
               infocols: getErrorValues(INFOCOLS_BLOCK_SECTION),
             })
-            const { infoBoxes } = section.infocols
+            const { infoboxes } = section.infocols
             // Fill in dropdown elem errors array
-            infoColInfoBoxErrors.push(
-              _.map(infoBoxes, () => getErrorValues(INFOCOLS_INFOBOX_SECTION))
+            infocolInfoboxErrors.push(
+              _.map(infoboxes, () => getErrorValues(INFOCOLS_INFOBOX_SECTION))
             )
           }
 
@@ -423,7 +423,7 @@ const EditHomepage = ({ match }) => {
           dropdownElems: dropdownElemsErrors,
           announcementItems: announcementItemErrors,
           textcards: textCardItemErrors,
-          infocols: infoColInfoBoxErrors,
+          infocols: infocolInfoboxErrors,
         }
 
         setFrontMatter(frontMatter)
@@ -750,20 +750,20 @@ const EditHomepage = ({ match }) => {
           scrollTo(scrollRefs[sectionIndex])
           break
         }
-        case "infoColInfoBox": {
+        case "infocolInfobox": {
           // The field that changed is a info box element
           const { sections } = frontMatter
 
           // cardIndex is the index of the cards array
           const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT)
-          const infoBoxIndex = parseInt(idArray[2], RADIX_PARSE_INT)
+          const infoboxIndex = parseInt(idArray[2], RADIX_PARSE_INT)
           const field = idArray[3] // e.g. "title" or "url"
 
           const newSections = update(sections, {
             [sectionIndex]: {
               infocols: {
-                infoBoxes: {
-                  [infoBoxIndex]: {
+                infoboxes: {
+                  [infoboxIndex]: {
                     [field]: {
                       $set: value,
                     },
@@ -776,9 +776,9 @@ const EditHomepage = ({ match }) => {
           const newErrors = update(errors, {
             infocols: {
               [sectionIndex]: {
-                [infoBoxIndex]: {
-                  $set: validateInfoColInfoBox(
-                    errors.infocols[sectionIndex][infoBoxIndex],
+                [infoboxIndex]: {
+                  $set: validateInfocolInfobox(
+                    errors.infocols[sectionIndex][infoboxIndex],
                     field,
                     value
                   ),
@@ -899,13 +899,13 @@ const EditHomepage = ({ match }) => {
               updatedHomepageState.frontMatter.sections.length - 1
             let intermediateHomepageState = updatedHomepageState
             for (let i = 0; i < 3; i += 1) {
-              const infoBox = INFOCOLS_INFOBOX_SECTION
-              const infoBoxErr = getErrorValues(INFOCOLS_INFOBOX_SECTION)
+              const infobox = INFOCOLS_INFOBOX_SECTION
+              const infoboxErr = getErrorValues(INFOCOLS_INFOBOX_SECTION)
               intermediateHomepageState = onCreate(
                 intermediateHomepageState,
-                `infoColInfoBox-${parentId}`,
-                infoBox,
-                infoBoxErr
+                `infocolInfobox-${parentId}`,
+                infobox,
+                infoboxErr
               )
             }
           }
@@ -975,18 +975,19 @@ const EditHomepage = ({ match }) => {
           setHomepageState(updatedHomepageState)
           break
         }
-        case "infoColInfoBox": {
+        case "infocolInfobox": {
           const parentId = parseInt(idArray[1], RADIX_PARSE_INT)
           const val = INFOCOLS_INFOBOX_SECTION
           const err = getErrorValues(INFOCOLS_INFOBOX_SECTION)
-          console.log(`CREATING INFOBOX: ${elemType}-${parentId}`)
+          console.log(`CREATING infobox: ${elemType}-${parentId}`)
           const updatedHomepageState = onCreate(
             homepageState,
             `${elemType}-${parentId}`,
             val,
             err
           )
-
+          console.log("UPDATED HOMEPAGE STATE")
+          console.log(updatedHomepageState)
           setHomepageState(updatedHomepageState)
           break
         }
@@ -1641,14 +1642,32 @@ const EditHomepage = ({ match }) => {
                                             Info-columns
                                           </Tag>
                                         }
+                                        title={
+                                          section.infocols.title ||
+                                          "New info-columns block"
+                                        }
+                                        isInvalid={
+                                          _.some(
+                                            errors.sections[sectionIndex]
+                                              .infocols
+                                          ) ||
+                                          (errors.infocols[sectionIndex] &&
+                                            _.some(
+                                              errors.infocols[
+                                                sectionIndex
+                                              ].map((infobox) =>
+                                                _.some(infobox)
+                                              )
+                                            ))
+                                        }
                                       >
-                                        <InfoColsSectionBody
+                                        <InfocolsSectionBody
                                           index={sectionIndex}
                                           errors={
                                             errors.sections[sectionIndex]
                                               .infocols
                                           }
-                                          infoColsErrors={
+                                          infocolsErrors={
                                             errors.infocols[sectionIndex]
                                           }
                                           {...section.infocols}
@@ -1730,9 +1749,9 @@ const EditHomepage = ({ match }) => {
                         )}
                         {showNewLayouts && (
                           <AddSectionButton.HelpOverlay
-                            title="Info-Columns"
+                            title="Info-columns"
                             description="Add bite-sized snippets of text in a multi-column layout. These texts aren’t clickable. Perfect for showing informative text that describes your organisation."
-                            image={<HomepageInfoColsSampleImage />}
+                            image={<HomepageInfocolsSampleImage />}
                           >
                             <AddSectionButton.Option
                               title={INFOCOLS_BLOCK_SECTION.title}
