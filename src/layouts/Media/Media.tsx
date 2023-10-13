@@ -7,6 +7,8 @@ import { Link, Switch, useRouteMatch, useHistory } from "react-router-dom"
 
 import { Greyscale } from "components/Greyscale"
 
+import { MEDIA_PAGINATION_SIZE } from "constants/pagination"
+
 import { useGetAllMediaFiles } from "hooks/directoryHooks/useGetAllMediaFiles"
 import { useListMediaFolderFiles } from "hooks/directoryHooks/useListMediaFolderFiles"
 import { useListMediaFolderSubdirectories } from "hooks/directoryHooks/useListMediaFolderSubdirectories"
@@ -64,8 +66,6 @@ const getMediaLabels = (mediaType: "files" | "images"): MediaLabels => {
     pluralDirectoryLabel: "albums",
   }
 }
-
-const MEDIA_PAGINATION_SIZE = 15
 
 export const Media = (): JSX.Element => {
   const history = useHistory()

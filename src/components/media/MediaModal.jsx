@@ -70,13 +70,13 @@ const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
           onProceed={async ({ data }) => {
             await createHandler({ data })
             onMediaSelect({ ...data, mediaUrl: data.content })
-            showAltTextModal
-              ? setMediaMode("details")
-              : onProceed({
-                  selectedMediaPath: `${retrieveMediaDirectoryParams()}/${
-                    data.name
-                  }`,
-                })
+            if (showAltTextModal) setMediaMode("details")
+            else
+              onProceed({
+                selectedMediaPath: `${retrieveMediaDirectoryParams()}/${
+                  data.name
+                }`,
+              })
           }}
           onClose={onClose}
         />
@@ -88,7 +88,6 @@ const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
         <MediasSelectModal
           queryParams={queryParams}
           setQueryParams={setQueryParams}
-          mediasData={mediasData}
           onUpload={() => setMediaMode("upload")}
           onProceed={
             showAltTextModal ? () => setMediaMode("details") : onProceed
@@ -103,8 +102,6 @@ const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
       <MediaAltText onProceed={onProceed} type={type} onClose={onClose} />
     ) : null
   }
-
-  // eslint-disable-next-line react/jsx-props-no-spreading
   return <FormProvider {...methods}>{getModal()}</FormProvider>
 }
 
