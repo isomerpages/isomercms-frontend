@@ -185,8 +185,6 @@ const updateInfocolsInfoboxesSection = (
   )
   const newSections = _.cloneDeep(homepageState.frontMatter.sections)
   newSections[sectionIndex] = modifiedSection
-  console.log("NEW SECTIONS")
-  console.log(newSections)
   return {
     ...homepageState,
     frontMatter: {
@@ -237,7 +235,6 @@ const isUpdateHomepageType = (
     )
   }
 
-  // TODO: Infocols
   if (typeof value === "string" && value.startsWith("infocolInfobox-")) {
     const valArr = value.split("-")
     const possibleInfoboxIndex = valArr[1]
@@ -550,10 +547,6 @@ export const onCreate = <E,>(
 
   if (!isUpdateHomepageType(elemType)) return homepageState
 
-  console.log(`Inside onCreate, with elemType:${elemType}`)
-  console.log(`Errors`, errors)
-  console.log(`VAL: ${JSON.stringify(val, null, 2)}`)
-
   if (elemType === "section") {
     const sections = createElement(frontMatter.sections, val)
     const newErrorSections = createElement(errors.sections, err)
@@ -696,7 +689,6 @@ export const onCreate = <E,>(
   }
 
   if (elemType.startsWith("infocolInfobox")) {
-    console.log(`REACHED onCreate for infocolInfobox`)
     // We've validated that type can only be such that the second item is a number
     const parentId = parseInt(elemType.split("-")[1], RADIX_PARSE_INT)
     const sectionInfo = (frontMatter.sections[
@@ -718,7 +710,6 @@ export const onCreate = <E,>(
       [val],
       [err]
     )
-    console.log(`Creating new state: ${JSON.stringify(newState, null, 2)}`)
     return newState
   }
   return homepageState

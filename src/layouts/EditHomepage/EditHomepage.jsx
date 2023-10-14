@@ -314,7 +314,6 @@ const EditHomepage = ({ match }) => {
         const scrollRefs = []
         const announcementScrollRefs = []
         frontMatter.sections.forEach((section) => {
-          console.log(`SECTION: ${section}`)
           scrollRefs.push(createRef())
           // If this is the hero section, hide all highlights/dropdownelems by default
           if (section.hero) {
@@ -800,8 +799,6 @@ const EditHomepage = ({ match }) => {
             sections: newSections,
           })
           setErrors(newErrors)
-          // TODO: Infocols - Remove log later
-          console.log(`SCROLLING TO: ${scrollRefs[sectionIndex]}`)
           scrollTo(scrollRefs[sectionIndex])
           break
         }
@@ -900,22 +897,13 @@ const EditHomepage = ({ match }) => {
                 cardErr
               )
             }
-            console.log(
-              `Textcards Intermediate state: ${JSON.stringify(
-                intermediateHomepageState,
-                null,
-                2
-              )}`
-            )
             setHomepageState(intermediateHomepageState)
           } else if (val.infocols) {
-            console.log(`Creating 3 infoboxes`)
             // Create 3 infoboxes by default
             const parentId =
               updatedHomepageState.frontMatter.sections.length - 1
             let intermediateHomepageState = updatedHomepageState
             for (let i = 0; i < 3; i += 1) {
-              console.log("Executing loop: ", i)
               const infobox = INFOCOLS_INFOBOX_SECTION
               const infoboxErr = getErrorValues(INFOCOLS_INFOBOX_SECTION)
               intermediateHomepageState = onCreate(
@@ -925,13 +913,6 @@ const EditHomepage = ({ match }) => {
                 infoboxErr
               )
             }
-            console.log(
-              `Infocols Intermediate state: ${JSON.stringify(
-                intermediateHomepageState,
-                null,
-                2
-              )}`
-            )
             setHomepageState(intermediateHomepageState)
           }
           break
@@ -1004,15 +985,12 @@ const EditHomepage = ({ match }) => {
           const parentId = parseInt(idArray[1], RADIX_PARSE_INT)
           const val = INFOCOLS_INFOBOX_SECTION
           const err = getErrorValues(INFOCOLS_INFOBOX_SECTION)
-          console.log(`CREATING infobox: ${elemType}-${parentId}`)
           const updatedHomepageState = onCreate(
             homepageState,
             `${elemType}-${parentId}`,
             val,
             err
           )
-          console.log("UPDATED HOMEPAGE STATE")
-          console.log(updatedHomepageState)
           setHomepageState(updatedHomepageState)
           break
         }
@@ -1340,7 +1318,6 @@ const EditHomepage = ({ match }) => {
   }
 
   const showNewLayouts = useFeatureIsOn(FEATURE_FLAGS.HOMEPAGE_TEMPLATES)
-  console.log(`INFOCOLS SECTION: ${JSON.stringify(frontMatter, null, 2)}`)
   return (
     <>
       {/* Section deletion warning modal */}
