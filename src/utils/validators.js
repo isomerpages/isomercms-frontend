@@ -136,6 +136,15 @@ const TEXTCARDS_CARD_DESCRIPTION_MAX_LENGTH = 80
 const TEXTCARDS_CARD_LINKTEXT_MIN_LENGTH = 0
 const TEXTCARDS_CARD_LINKTEXT_MAX_LENGTH = 50
 const TEXTCARDS_CARD_URL_MIN_LENGTH = 0
+// Infocols
+const INFOCOLS_BLOCK_TITLE_MIN_LENGTH = 0
+const INFOCOLS_BLOCK_TITLE_MAX_LENGTH = 50
+const INFOCOLS_BLOCK_SUBTITLE_MAX_LENGTH = 30
+const INFOCOLS_BLOCK_LINKTEXT_MAX_LENGTH = 50
+
+const INFOCOLS_INFOBOX_TITLE_MIN_LENGTH = 0
+const INFOCOLS_INFOBOX_TITLE_MAX_LENGTH = 50
+const INFOCOLS_INFOBOX_DESCRIPTION_MAX_LENGTH = 120
 
 // Contact Us Editor
 // ===============
@@ -699,30 +708,26 @@ const validateInfocolsSection = (sectionError, sectionType, field, value) => {
   switch (field) {
     case "title": {
       // Title is too short
-      if (value.length <= TEXTCARDS_BLOCK_TITLE_MIN_LENGTH) {
+      if (value.length <= INFOCOLS_BLOCK_TITLE_MIN_LENGTH) {
         errorMessage = `Title cannot be empty.`
       }
       // Title is too long
-      if (value.length >= TEXTCARDS_BLOCK_TITLE_MAX_LENGTH) {
-        errorMessage = `Title should be shorter than ${TEXTCARDS_BLOCK_TITLE_MAX_LENGTH} characters.`
+      if (value.length >= INFOCOLS_BLOCK_TITLE_MAX_LENGTH) {
+        errorMessage = `Title should be shorter than ${INFOCOLS_BLOCK_TITLE_MAX_LENGTH} characters.`
       }
       break
     }
     case "subtitle": {
       // Subtitle is too long
-      if (value.length >= TEXTCARDS_BLOCK_SUBTITLE_MAX_LENGTH) {
+      if (value.length >= INFOCOLS_BLOCK_SUBTITLE_MAX_LENGTH) {
         errorMessage = `Subtitle should be shorter than ${TEXTCARDS_BLOCK_SUBTITLE_MAX_LENGTH} characters.`
       }
       break
     }
     case "linktext": {
-      // Link text is too short
-      if (value.length <= TEXTCARDS_CARD_LINKTEXT_MIN_LENGTH) {
-        errorMessage = `Link text cannot be empty`
-      }
       // Link text is too long
-      if (value.length >= TEXTCARDS_CARD_LINKTEXT_MAX_LENGTH) {
-        errorMessage = `Text should be shorter than ${TEXTCARDS_CARD_LINKTEXT_MAX_LENGTH} characters.`
+      if (value.length >= INFOCOLS_BLOCK_LINKTEXT_MAX_LENGTH) {
+        errorMessage = `Text should be shorter than ${INFOCOLS_BLOCK_LINKTEXT_MAX_LENGTH} characters.`
       }
       break
     }
@@ -740,26 +745,25 @@ const validateInfocolsSection = (sectionError, sectionType, field, value) => {
   return newSectionError
 }
 
-// TODO: Recheck
 const validateInfocolInfobox = (infoboxError, field, value) => {
   const newHighlightError = infoboxError
   let errorMessage = ""
   switch (field) {
     case "title": {
       // Title is too short
-      if (value.length <= TEXTCARDS_CARD_TITLE_MIN_LENGTH) {
+      if (value.length <= INFOCOLS_INFOBOX_TITLE_MIN_LENGTH) {
         errorMessage = `Title cannot be empty`
       }
       // Title is too long
-      if (value.length >= TEXTCARDS_CARD_TITLE_MAX_LENGTH) {
-        errorMessage = `Title should be shorter than ${TEXTCARDS_CARD_TITLE_MAX_LENGTH} characters`
+      if (value.length >= INFOCOLS_INFOBOX_TITLE_MAX_LENGTH) {
+        errorMessage = `Title should be shorter than ${INFOCOLS_INFOBOX_TITLE_MAX_LENGTH} characters`
       }
       break
     }
     case "description": {
       // Description is too long
-      if (value.length >= TEXTCARDS_CARD_DESCRIPTION_MAX_LENGTH) {
-        errorMessage = `The description should be shorter than ${TEXTCARDS_CARD_DESCRIPTION_MAX_LENGTH} characters (${value.length}/${TEXTCARDS_CARD_DESCRIPTION_MAX_LENGTH})`
+      if (value.length >= INFOCOLS_INFOBOX_DESCRIPTION_MAX_LENGTH) {
+        errorMessage = `The description should be shorter than ${INFOCOLS_INFOBOX_DESCRIPTION_MAX_LENGTH} characters (${value.length}/${TEXTCARDS_CARD_DESCRIPTION_MAX_LENGTH})`
       }
       break
     }
