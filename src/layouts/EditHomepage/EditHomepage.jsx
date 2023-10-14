@@ -472,6 +472,9 @@ const EditHomepage = ({ match }) => {
       const idArray = id.split("-")
       const elemType = idArray[0]
 
+      console.log("idArray", idArray)
+      console.log("elemType", elemType)
+
       switch (elemType) {
         case "site": {
           // The field that changed belongs to a site-wide config
@@ -734,6 +737,7 @@ const EditHomepage = ({ match }) => {
             },
           })
 
+          // TODO: Is this correct logic? Shouldnt it be [sectionIndex] theen textcards?
           const newErrors = update(errors, {
             textcards: {
               [sectionIndex]: {
@@ -758,10 +762,12 @@ const EditHomepage = ({ match }) => {
           break
         }
         case "infocolInfobox": {
+          console.log("Case infocolInfobox", frontMatter)
+
           // The field that changed is a info box element
           const { sections } = frontMatter
 
-          // cardIndex is the index of the cards array
+          // infoboxIndex is the index of the infoboxes array
           const sectionIndex = parseInt(idArray[1], RADIX_PARSE_INT)
           const infoboxIndex = parseInt(idArray[2], RADIX_PARSE_INT)
           const field = idArray[3] // e.g. "title" or "url"
@@ -779,7 +785,7 @@ const EditHomepage = ({ match }) => {
               },
             },
           })
-
+          console.log("old errors", errors)
           const newErrors = update(errors, {
             infocols: {
               [sectionIndex]: {
@@ -793,6 +799,12 @@ const EditHomepage = ({ match }) => {
               },
             },
           })
+
+          console.log("setting new frontmatter", {
+            ...frontMatter,
+            sections: newSections,
+          })
+          console.log("setting new errors", newErrors)
 
           setFrontMatter({
             ...frontMatter,
@@ -906,6 +918,10 @@ const EditHomepage = ({ match }) => {
             for (let i = 0; i < 3; i += 1) {
               const infobox = INFOCOLS_INFOBOX_SECTION
               const infoboxErr = getErrorValues(INFOCOLS_INFOBOX_SECTION)
+              console.log(
+                "Passing in infoboxErr for intermediate state:",
+                infoboxErr
+              )
               intermediateHomepageState = onCreate(
                 intermediateHomepageState,
                 `infocolInfobox-${parentId}`,
@@ -913,6 +929,7 @@ const EditHomepage = ({ match }) => {
                 infoboxErr
               )
             }
+            console.log(`Intermediate state`, intermediateHomepageState)
             setHomepageState(intermediateHomepageState)
           }
           break
@@ -991,6 +1008,7 @@ const EditHomepage = ({ match }) => {
             val,
             err
           )
+          console.log(`UpdatedHP:`, updatedHomepageState)
           setHomepageState(updatedHomepageState)
           break
         }
@@ -1022,7 +1040,7 @@ const EditHomepage = ({ match }) => {
         })
         setAnnouncementScrollRefs(newAnnouncementScrollRefs)
       }
-      if (elemType === "textCardItem") {
+      if (elemType === "textCardItem" || elemType === "infocolInfobox") {
         const childIndex = parseInt(idArray[2], RADIX_PARSE_INT)
 
         const newHomepageState = onDelete(
@@ -1033,6 +1051,7 @@ const EditHomepage = ({ match }) => {
         setHomepageState(newHomepageState)
         return
       }
+
       const newHomepageState = onDelete(homepageState, elemType, index)
       setHomepageState(newHomepageState)
     } catch (err) {
@@ -1670,7 +1689,7 @@ const EditHomepage = ({ match }) => {
                                             errors.sections[sectionIndex]
                                               .infocols
                                           }
-                                          infocolsErrors={
+                                          infoboxErrors={
                                             errors.infocols[sectionIndex]
                                           }
                                           {...section.infocols}

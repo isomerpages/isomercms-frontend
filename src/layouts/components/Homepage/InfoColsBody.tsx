@@ -86,7 +86,7 @@ export const InfocolsSectionBody = ({
       </FormControl>
 
       {/* URL */}
-      <FormControl isInvalid={!!errors.linktext}>
+      <FormControl isInvalid={!!errors.url}>
         <FormLabel>Link URL</FormLabel>
         <Input
           placeholder="Insert /page-url or https://"
@@ -160,7 +160,7 @@ export const InfocolsSectionBody = ({
                         onClick={() =>
                           onDelete(
                             `infocolInfobox-${index}-${infoboxIndex}`,
-                            "infobox"
+                            "Infobox"
                           )
                         }
                         alignSelf="center"

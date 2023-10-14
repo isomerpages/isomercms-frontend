@@ -46,6 +46,7 @@ const createElement = <T,>(section: T[], elem: T): T[] => {
 }
 
 const deleteElement = <T,>(section: T[], indexToDelete: number): T[] => {
+  console.log(`Received following in deleteElement:`, section, indexToDelete)
   return update(section, {
     $splice: [[indexToDelete, 1]],
   })
@@ -183,9 +184,12 @@ const updateInfocolsInfoboxesSection = (
     ["infocols", "infoboxes"],
     newInfoboxes
   )
+  console.log("modified section:", modifiedSection)
   const newSections = _.cloneDeep(homepageState.frontMatter.sections)
   newSections[sectionIndex] = modifiedSection
-  return {
+  console.log("new section", newSections)
+  console.log("existing errors", homepageState.errors)
+  const newState = {
     ...homepageState,
     frontMatter: {
       ...homepageState.frontMatter,
@@ -201,6 +205,8 @@ const updateInfocolsInfoboxesSection = (
       ),
     },
   }
+  console.log("Returning from updateInfocolsInfoboxesSection: ", newState)
+  return newState
 }
 
 type OnDragEndResponseWrapper = (
@@ -697,12 +703,16 @@ export const onCreate = <E,>(
     if (!_.isEmpty(sectionInfo.infoboxes)) {
       const newInfoboxes = createElement(sectionInfo.infoboxes, val)
       const newInfocolsErrors = createElement(errors.infocols[parentId], err)
-      return updateInfocolsInfoboxesSection(
+      console.log("new infoboxes to update", newInfoboxes)
+      console.log("newInfocolsErrors", newInfocolsErrors)
+      const newState = updateInfocolsInfoboxesSection(
         homepageState,
         parentId,
         newInfoboxes,
         newInfocolsErrors
       )
+      console.log("Inside infocolInfobox. generated new state: ", newState)
+      return newState
     }
     const newState = updateInfocolsInfoboxesSection(
       homepageState,
@@ -710,6 +720,9 @@ export const onCreate = <E,>(
       [val],
       [err]
     )
+    console.log("Inside infocolInfobox. generated new state: ", newState)
+    console.log("Val passed in:", [val])
+    console.log("err passed in:", [err])
     return newState
   }
   return homepageState

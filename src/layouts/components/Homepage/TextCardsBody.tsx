@@ -50,7 +50,7 @@ export const TextCardsSectionBody = ({
     // NOTE: Setting negative margin so that the gap is correct.
     // This is because there is inbuilt padding onto the `AccordionPanels`.
     <Editable.Section>
-      <FormControl isInvalid={!!errors.subtitle}>
+      <FormControl isInvalid={!!errors?.subtitle}>
         <FormLabel>Subtitle</FormLabel>
         <Input
           placeholder="This subtitle appears above the title"
@@ -58,7 +58,7 @@ export const TextCardsSectionBody = ({
           value={subtitle}
           onChange={onChange}
         />
-        <FormErrorMessage>{errors.subtitle}</FormErrorMessage>
+        <FormErrorMessage>{errors?.subtitle}</FormErrorMessage>
       </FormControl>
       <FormControl isRequired isInvalid={!!errors.title}>
         <FormLabel>Title</FormLabel>
@@ -108,7 +108,7 @@ export const TextCardsSectionBody = ({
                     <Editable.Section>
                       <FormControl
                         isRequired
-                        isInvalid={!!cardErrors[cardIndex].title}
+                        isInvalid={!!cardErrors[cardIndex]?.title}
                       >
                         <FormLabel>Title</FormLabel>
                         <Input
@@ -118,11 +118,11 @@ export const TextCardsSectionBody = ({
                           onChange={onChange}
                         />
                         <FormErrorMessage>
-                          {cardErrors[cardIndex].title}
+                          {cardErrors[cardIndex]?.title}
                         </FormErrorMessage>
                       </FormControl>
                       <FormControl
-                        isInvalid={!!cardErrors[cardIndex].description}
+                        isInvalid={!!cardErrors[cardIndex]?.description}
                       >
                         <FormLabel>Description</FormLabel>
                         <Textarea
@@ -132,12 +132,12 @@ export const TextCardsSectionBody = ({
                           onChange={onChange}
                         />
                         <FormErrorMessage>
-                          {cardErrors[cardIndex].description}
+                          {cardErrors[cardIndex]?.description}
                         </FormErrorMessage>
                       </FormControl>
                       <FormControl
                         isRequired
-                        isInvalid={!!cardErrors[cardIndex].linktext}
+                        isInvalid={!!cardErrors[cardIndex]?.linktext}
                       >
                         <FormLabel>Link text</FormLabel>
                         <Input
@@ -147,12 +147,12 @@ export const TextCardsSectionBody = ({
                           onChange={onChange}
                         />
                         <FormErrorMessage>
-                          {cardErrors[cardIndex].linktext}
+                          {cardErrors[cardIndex]?.linktext}
                         </FormErrorMessage>
                       </FormControl>
                       <FormControl
                         isRequired
-                        isInvalid={!!cardErrors[cardIndex].url}
+                        isInvalid={!!cardErrors[cardIndex]?.url}
                       >
                         <FormLabel mb="0">Link URL</FormLabel>
                         <Text
@@ -169,7 +169,7 @@ export const TextCardsSectionBody = ({
                           onChange={onChange}
                         />
                         <FormErrorMessage>
-                          {cardErrors[cardIndex].url}
+                          {cardErrors[cardIndex]?.url}
                         </FormErrorMessage>
                       </FormControl>
                       <Button

@@ -701,7 +701,6 @@ const validateTextcard = (cardError, field, value) => {
   return newHighlightError
 }
 
-// TODO: recheck
 const validateInfocolsSection = (sectionError, sectionType, field, value) => {
   const newSectionError = sectionError
   let errorMessage = ""
@@ -732,10 +731,12 @@ const validateInfocolsSection = (sectionError, sectionType, field, value) => {
       break
     }
     case "url": {
-      // Url is too short
-      if (value.length <= TEXTCARDS_CARD_URL_MIN_LENGTH) {
-        errorMessage = `Please specify a URL for your card.`
-      }
+      // if (!permalinkRegexTest.test(value)) {
+      //   errorMessage = `The url should start and end with slashes and contain
+      //     lowercase words separated by hyphens only.
+      //     `;
+      // }
+      // TO-DO: Allow external URLs
       break
     }
     default:
@@ -763,7 +764,7 @@ const validateInfocolInfobox = (infoboxError, field, value) => {
     case "description": {
       // Description is too long
       if (value.length >= INFOCOLS_INFOBOX_DESCRIPTION_MAX_LENGTH) {
-        errorMessage = `The description should be shorter than ${INFOCOLS_INFOBOX_DESCRIPTION_MAX_LENGTH} characters (${value.length}/${TEXTCARDS_CARD_DESCRIPTION_MAX_LENGTH})`
+        errorMessage = `The description should be shorter than ${INFOCOLS_INFOBOX_DESCRIPTION_MAX_LENGTH} characters (${value.length}/${INFOCOLS_INFOBOX_DESCRIPTION_MAX_LENGTH})`
       }
       break
     }
