@@ -3,6 +3,7 @@ import type { Meta, StoryFn } from "@storybook/react"
 
 import {
   HomepageAnnouncementsSampleImage,
+  HomepageInfocolsSampleImage,
   HomepageTextCardsSampleImage,
 } from "assets/images"
 
@@ -93,6 +94,7 @@ Default.args = {
       overlayTitle: "Info-columns",
       overlayDescription:
         "Add bite-sized snippets of text in a multi-column layout. These texts aren’t clickable. Perfect for showing informative text that describes your organisation.",
+      overlayImage: <HomepageInfocolsSampleImage />,
     },
     {
       title: "Announcements",

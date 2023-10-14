@@ -125,13 +125,17 @@ const getHasErrors = (errors) => {
   const hastextCardItemErrors = _.some(errors.textcards, (section) =>
     getHasError(section)
   )
+  const hasInfocolsInfoboxesErrors = _.some(errors.infocols, (section) =>
+    getHasError(section)
+  )
 
   return (
     hasSectionErrors ||
     hasHighlightErrors ||
     hasDropdownElemErrors ||
     hasAnnouncementErrors ||
-    hastextCardItemErrors
+    hastextCardItemErrors ||
+    hasInfocolsInfoboxesErrors
   )
 }
 
@@ -165,10 +169,12 @@ const enumSection = (type, isError) => {
       return isError
         ? { textcards: getErrorValues(TEXTCARDS_BLOCK_SECTION) }
         : { textcards: TEXTCARDS_BLOCK_SECTION }
+
     case "infocols":
       return isError
         ? { infocols: getErrorValues(INFOCOLS_BLOCK_SECTION) }
         : { infocols: INFOCOLS_BLOCK_SECTION }
+
     default:
       return isError
         ? { infobar: getErrorValues(INFOBAR_SECTION) }
@@ -395,11 +401,10 @@ const EditHomepage = ({ match }) => {
             textCardItemErrors.push(
               _.map(cards, () => getErrorValues(TEXTCARDS_ITEM_SECTION))
             )
+            if (textCardItemErrors.length === 0) {
+              textCardItemErrors.push([])
+            }
           }
-          // else {
-          //   // TODO: Infocols - seems like this is applying to all
-          //   textCardItemErrors.push([])
-          // }
 
           if (section.infocols) {
             sectionsErrors.push({
@@ -410,6 +415,9 @@ const EditHomepage = ({ match }) => {
             infocolInfoboxErrors.push(
               _.map(infoboxes, () => getErrorValues(INFOCOLS_INFOBOX_SECTION))
             )
+            if (infocolInfoboxErrors.length === 0) {
+              infocolInfoboxErrors.push([])
+            }
           }
 
           // Minimize all sections by default
@@ -892,13 +900,22 @@ const EditHomepage = ({ match }) => {
                 cardErr
               )
             }
+            console.log(
+              `Textcards Intermediate state: ${JSON.stringify(
+                intermediateHomepageState,
+                null,
+                2
+              )}`
+            )
             setHomepageState(intermediateHomepageState)
           } else if (val.infocols) {
+            console.log(`Creating 3 infoboxes`)
             // Create 3 infoboxes by default
             const parentId =
               updatedHomepageState.frontMatter.sections.length - 1
             let intermediateHomepageState = updatedHomepageState
             for (let i = 0; i < 3; i += 1) {
+              console.log("Executing loop: ", i)
               const infobox = INFOCOLS_INFOBOX_SECTION
               const infoboxErr = getErrorValues(INFOCOLS_INFOBOX_SECTION)
               intermediateHomepageState = onCreate(
@@ -908,6 +925,14 @@ const EditHomepage = ({ match }) => {
                 infoboxErr
               )
             }
+            console.log(
+              `Infocols Intermediate state: ${JSON.stringify(
+                intermediateHomepageState,
+                null,
+                2
+              )}`
+            )
+            setHomepageState(intermediateHomepageState)
           }
           break
         }
@@ -1315,6 +1340,7 @@ const EditHomepage = ({ match }) => {
   }
 
   const showNewLayouts = useFeatureIsOn(FEATURE_FLAGS.HOMEPAGE_TEMPLATES)
+  console.log(`INFOCOLS SECTION: ${JSON.stringify(frontMatter, null, 2)}`)
   return (
     <>
       {/* Section deletion warning modal */}

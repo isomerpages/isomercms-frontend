@@ -93,6 +93,7 @@ export const INFOCOLS_BLOCK_SECTION = {
   id: "infocols",
   linktext: "Learn more",
   url: "", // No default value so that no broken link is created
+  infoboxes: [],
 } as const
 
 export const INFOCOLS_INFOBOX_SECTION = {

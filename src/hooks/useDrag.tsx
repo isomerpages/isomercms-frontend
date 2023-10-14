@@ -56,7 +56,8 @@ const updateEditorSection = (
   newDisplaySections: unknown[],
   newFrontMatterSection: EditorHomepageState["frontMatter"]["sections"],
   newSectionErrors: unknown[],
-  newTextcardErrors: unknown[][]
+  newTextcardErrors: unknown[][],
+  newInfocolsErrors: unknown[][]
 ): EditorHomepageState => ({
   ...homepageState,
   displaySections: newDisplaySections,
@@ -68,6 +69,7 @@ const updateEditorSection = (
     ...homepageState.errors,
     sections: newSectionErrors,
     textcards: newTextcardErrors,
+    infocols: newInfocolsErrors,
   },
 })
 
@@ -234,6 +236,18 @@ const isUpdateHomepageType = (
       !Number.isNaN(Number(possibleCardIndex))
     )
   }
+
+  // TODO: Infocols
+  if (typeof value === "string" && value.startsWith("infocolInfobox-")) {
+    const valArr = value.split("-")
+    const possibleInfoboxIndex = valArr[1]
+    return (
+      valArr.length === 2 &&
+      !!possibleInfoboxIndex &&
+      !Number.isNaN(Number(possibleInfoboxIndex))
+    )
+  }
+
   if (typeof value === "string") {
     return (
       value === "editor" ||
@@ -300,6 +314,14 @@ const updateHomepageState = (
       draggedTextcardError
     )
 
+    const draggedInfocolsError = errors.infocols[source.index]
+    const newInfocolsErrors = updatePositions(
+      errors.infocols,
+      source.index,
+      destination.index,
+      draggedInfocolsError
+    )
+
     const displayBool = displaySections[source.index]
     const newDisplaySections = updatePositions(
       displaySections,
@@ -313,7 +335,8 @@ const updateHomepageState = (
       newDisplaySections,
       newSections,
       newSectionErrors,
-      newCardErrors
+      newCardErrors,
+      newInfocolsErrors
     )
   }
   // inner dnd for hero
@@ -483,7 +506,7 @@ const updateHomepageState = (
       parentId
     ] as InfocolsFrontmatterSection).infocols as EditorInfocolsSection
     const draggedElem = infocols.infoboxes[source.index]
-    const newInfoBoxes = updatePositions(
+    const newInfoboxes = updatePositions(
       infocols.infoboxes,
       source.index,
       destination.index,
@@ -491,7 +514,7 @@ const updateHomepageState = (
     )
 
     const draggedError = errors.infocols[parentId][source.index]
-    const newTextcardErrors = updatePositions(
+    const newInfocolsErrors = updatePositions(
       errors.infocols[parentId],
       source.index,
       destination.index,
@@ -501,8 +524,8 @@ const updateHomepageState = (
     return updateInfocolsInfoboxesSection(
       homepageState,
       parentId,
-      newInfoBoxes,
-      newTextcardErrors
+      newInfoboxes,
+      newInfocolsErrors
     )
   }
   return homepageState
@@ -527,6 +550,10 @@ export const onCreate = <E,>(
 
   if (!isUpdateHomepageType(elemType)) return homepageState
 
+  console.log(`Inside onCreate, with elemType:${elemType}`)
+  console.log(`Errors`, errors)
+  console.log(`VAL: ${JSON.stringify(val, null, 2)}`)
+
   if (elemType === "section") {
     const sections = createElement(frontMatter.sections, val)
     const newErrorSections = createElement(errors.sections, err)
@@ -536,12 +563,15 @@ export const onCreate = <E,>(
 
     const newTextcardErrors = createElement(errors.textcards, [])
 
+    const newInfocolsErrors = createElement(errors.infocols, [])
+
     return updateEditorSection(
       homepageState,
       newDisplaySections,
       sections as EditorHomepageState["frontMatter"]["sections"],
       newErrorSections,
-      newTextcardErrors
+      newTextcardErrors,
+      newInfocolsErrors
     )
   }
   if (elemType === "dropdownelem") {
@@ -688,6 +718,7 @@ export const onCreate = <E,>(
       [val],
       [err]
     )
+    console.log(`Creating new state: ${JSON.stringify(newState, null, 2)}`)
     return newState
   }
   return homepageState
@@ -713,13 +744,15 @@ export const onDelete = (
     const newErrorSections = deleteElement(errors.sections, indexToDelete)
     const newDisplaySections = deleteElement(displaySections, indexToDelete)
     const newTextcardErrors = deleteElement(errors.textcards, indexToDelete)
+    const newInfocolsErrors = deleteElement(errors.infocols, indexToDelete)
 
     return updateEditorSection(
       homepageState,
       newDisplaySections,
       sections,
       newErrorSections,
-      newTextcardErrors
+      newTextcardErrors,
+      newInfocolsErrors
     )
   }
 

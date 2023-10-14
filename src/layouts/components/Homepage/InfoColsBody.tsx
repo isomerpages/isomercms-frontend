@@ -125,7 +125,7 @@ export const InfocolsSectionBody = ({
                       {/* infobox Title */}
                       <FormControl
                         isRequired
-                        isInvalid={!!infoboxErrors[infoboxIndex].title}
+                        isInvalid={!!infoboxErrors[infoboxIndex]?.title}
                       >
                         <FormLabel>Title</FormLabel>
                         <Input
@@ -135,13 +135,13 @@ export const InfocolsSectionBody = ({
                           onChange={onChange}
                         />
                         <FormErrorMessage>
-                          {infoboxErrors[infoboxIndex].title}
+                          {infoboxErrors[infoboxIndex]?.title}
                         </FormErrorMessage>
                       </FormControl>
 
                       {/* infobox Description */}
                       <FormControl
-                        isInvalid={!!infoboxErrors[infoboxIndex].description}
+                        isInvalid={!!infoboxErrors[infoboxIndex]?.description}
                       >
                         <FormLabel>Description</FormLabel>
                         <Textarea
@@ -151,7 +151,7 @@ export const InfocolsSectionBody = ({
                           onChange={onChange}
                         />
                         <FormErrorMessage>
-                          {infoboxErrors[infoboxIndex].description}
+                          {infoboxErrors[infoboxIndex]?.description}
                         </FormErrorMessage>
                       </FormControl>
 
