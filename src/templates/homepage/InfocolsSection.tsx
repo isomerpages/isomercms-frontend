@@ -125,35 +125,34 @@ const TemplateInfocolsSection = forwardRef<
                       </div>
                     )
                   })}
-
-              {linktext && url && (
+            </div>
+            {linktext && url && (
+              <span
+                className={getClassNames(editorStyles, [
+                  "bp-sec-button",
+                  "infocols-footer",
+                  "is-flex",
+                ])}
+              >
                 <span
                   className={getClassNames(editorStyles, [
-                    "bp-sec-button",
-                    "infocols-footer",
-                    "is-flex",
+                    "infocols-linktext",
+                    "mr-3",
                   ])}
                 >
-                  <span
-                    className={getClassNames(editorStyles, [
-                      "infocols-linktext",
-                      "mr-3",
-                    ])}
-                  >
-                    {linktext}
-                  </span>
-                  <i
-                    className={getClassNames(editorStyles, [
-                      "sgds-icon",
-                      "sgds-icon-arrow-right",
-                      "is-size-4",
-                      "infocols-link-icon",
-                    ])}
-                    aria-hidden="true"
-                  />
+                  {linktext}
                 </span>
-              )}
-            </div>
+                <i
+                  className={getClassNames(editorStyles, [
+                    "sgds-icon",
+                    "sgds-icon-arrow-right",
+                    "is-size-4",
+                    "infocols-link-icon",
+                  ])}
+                  aria-hidden="true"
+                />
+              </span>
+            )}
           </div>
         </div>
       </section>
