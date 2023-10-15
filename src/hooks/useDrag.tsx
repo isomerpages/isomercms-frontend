@@ -867,7 +867,7 @@ export const onDelete = (
       errors.infocols[parentId],
       indexToDelete
     )
-    return updateTextCardsCardSection(
+    return updateInfocolsInfoboxesSection(
       homepageState,
       parentId,
       newInfoboxes,

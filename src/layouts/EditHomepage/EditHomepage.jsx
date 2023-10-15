@@ -737,7 +737,6 @@ const EditHomepage = ({ match }) => {
             },
           })
 
-          // TODO: Is this correct logic? Shouldnt it be [sectionIndex] theen textcards?
           const newErrors = update(errors, {
             textcards: {
               [sectionIndex]: {
