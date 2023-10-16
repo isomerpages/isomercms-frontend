@@ -108,6 +108,7 @@ export const Media = (): JSX.Element => {
     // NOTE: Subtracting 1 here because `usePaginate`
     // returns an index with 1 offset
     curPage: curPage - 1,
+    limit: MEDIA_PAGINATION_SIZE,
   })
 
   const files = useGetAllMediaFiles(
