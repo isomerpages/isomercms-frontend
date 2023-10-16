@@ -11,9 +11,11 @@ export const MediaSettingsScreen = ({ match, onClose }) => {
   const { params, decodedParams } = match
   const { data: mediaData } = useGetMediaHook(params)
   const { mutateAsync: updateHandler } = useUpdateMediaHook(params, {
-    onSuccess: () => onClose(),
+    onSuccess: onClose,
   })
-  const { data: mediasData } = useGetMediaFolders(params, { initialData: [] })
+  const { data: mediasData } = useGetMediaFolders(params, {
+    initialData: [],
+  })
 
   return (
     <MediaSettingsModal

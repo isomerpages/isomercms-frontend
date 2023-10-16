@@ -1,6 +1,6 @@
 import { useQuery, UseQueryOptions, UseQueryResult } from "react-query"
 
-import { LIST_ALL_MEDIA_KEY } from "constants/queryKeys"
+import { LIST_MEDIA_DIRECTORY_FILES_KEY } from "constants/queryKeys"
 
 import useRedirectHook from "hooks/useRedirectHook"
 
@@ -9,23 +9,20 @@ import * as DirectoryService from "services/DirectoryService/index"
 import { isAxiosError } from "utils/axios"
 import { useErrorToast } from "utils/toasts"
 
-import { DirectoryData, MediaData } from "types/directory"
+import { GetMediaFilesDto } from "types/directory"
 import { MediaDirectoryParams } from "types/folders"
 import { DEFAULT_RETRY_MSG } from "utils"
 
-export const useGetMediaFolders = (
+export const useListMediaFolderFiles = (
   params: MediaDirectoryParams,
-  queryOptions?: Omit<
-    UseQueryOptions<(DirectoryData | MediaData)[]>,
-    "queryFn" | "queryKey"
-  >
-): UseQueryResult<(DirectoryData | MediaData)[]> => {
+  queryOptions?: Omit<UseQueryOptions<GetMediaFilesDto>, "queryFn" | "queryKey">
+): UseQueryResult<GetMediaFilesDto> => {
   const { setRedirectToNotFound } = useRedirectHook()
   const errorToast = useErrorToast()
 
-  return useQuery<(DirectoryData | MediaData)[]>(
-    [LIST_ALL_MEDIA_KEY, params],
-    () => DirectoryService.getMediaData(params),
+  return useQuery<GetMediaFilesDto>(
+    [LIST_MEDIA_DIRECTORY_FILES_KEY, params],
+    () => DirectoryService.getMediaFolderFiles(params),
     {
       ...queryOptions,
       retry: false,

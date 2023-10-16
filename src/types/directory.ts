@@ -45,3 +45,13 @@ export type ResourcePageData = Required<Omit<PageData, "type">> & {
 export interface ResourceRoomNameUpdateProps {
   newDirectoryName: string
 }
+
+export interface GetMediaFoldersDto {
+  directories: DirectoryData[]
+  files: MediaData[]
+  total: number
+}
+
+export type GetMediaSubdirectoriesDto = Pick<GetMediaFoldersDto, "directories">
+
+export type GetMediaFilesDto = Pick<GetMediaFoldersDto, "files" | "total">

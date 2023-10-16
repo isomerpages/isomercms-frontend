@@ -19,43 +19,39 @@ export const MediaMoveModal = ({ queryParams, params, onProceed, onClose }) => {
   const { siteName } = params
   const [moveQuery, setMoveQuery] = useState(_.omit(queryParams, "fileName"))
   const [moveTo, setMoveTo] = useState(params)
-  const { data: dirData } = useGetMediaFolders(moveQuery)
+  const { data: mediaDataDto } = useGetMediaFolders(moveQuery)
   const isWriteDisabled = isWriteActionsDisabled(siteName)
 
   const MenuItems = () => {
-    if (dirData && dirData.length)
+    if (mediaDataDto && mediaDataDto?.directories)
       return (
         <>
           {/* directories */}
-          {dirData
-            .filter(({ type }) => type === "dir")
-            .map(({ name }, itemIndex) => (
-              <DirMenuItem
-                name={name}
-                id={itemIndex}
-                onClick={() => {
-                  setMoveTo({
-                    ...moveQuery,
-                    mediaDirectoryName: `${getMediaDirectoryName(
-                      moveQuery.mediaDirectoryName,
-                      { joinOn: "/", decode: true }
-                    )}/${name}`,
-                  })
-                  setMoveQuery((prevState) => ({
-                    ...prevState,
-                    mediaDirectoryName: `${
-                      moveQuery.mediaDirectoryName
-                    }%2F${encodeURIComponent(name)}`,
-                  }))
-                }}
-              />
-            ))}
+          {mediaDataDto?.directories.map(({ name }, itemIndex) => (
+            <DirMenuItem
+              name={name}
+              id={itemIndex}
+              onClick={() => {
+                setMoveTo({
+                  ...moveQuery,
+                  mediaDirectoryName: `${getMediaDirectoryName(
+                    moveQuery.mediaDirectoryName,
+                    { joinOn: "/", decode: true }
+                  )}/${name}`,
+                })
+                setMoveQuery((prevState) => ({
+                  ...prevState,
+                  mediaDirectoryName: `${
+                    moveQuery.mediaDirectoryName
+                  }%2F${encodeURIComponent(name)}`,
+                }))
+              }}
+            />
+          ))}
           {/* files */}
-          {dirData
-            .filter(({ type }) => type === "file")
-            .map(({ name }, itemIndex) => (
-              <FileMenuItem name={name} id={itemIndex} />
-            ))}
+          {mediaDataDto?.files.map(({ name }, itemIndex) => (
+            <FileMenuItem name={name} id={itemIndex} />
+          ))}
         </>
       )
 
@@ -63,7 +59,7 @@ export const MediaMoveModal = ({ queryParams, params, onProceed, onClose }) => {
       <div
         className={`${elementStyles.dropdownItemDisabled} d-flex justify-content-center`}
       >
-        {dirData ? (
+        {mediaDataDto ? (
           `No ${moveQuery.mediaRoom} here yet.`
         ) : (
           <div className="spinner-border text-primary" role="status" />
