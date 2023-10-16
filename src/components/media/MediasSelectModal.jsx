@@ -210,13 +210,13 @@ const MediasSelectModal = ({
                       w="100%"
                       h={isLoading ? "4.5rem" : "fit-content"}
                       isLoaded={!isLoading}
+                      key={data.name}
                     >
                       <MediaCard
                         type={mediaRoom}
                         media={data}
                         mediaItemIndex={mediaItemIndex}
                         onClick={() => onMediaSelect(data)}
-                        key={data.name}
                         isSelected={data.name === watch("selectedMedia")?.name}
                         showSettings={false}
                       />
@@ -232,7 +232,7 @@ const MediasSelectModal = ({
             {files && mediaFolderFiles && total > 0 && (
               <Center w="100%">
                 <Pagination
-                  totalCount={total || 0}
+                  totalCount={total}
                   pageSize={MEDIA_PAGINATION_SIZE}
                   currentPage={curPage}
                   onPageChange={(page) => setCurPage(page)}
