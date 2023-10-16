@@ -195,7 +195,7 @@ export const Media = (): JSX.Element => {
             {mediaFolderFiles && mediaFolderFiles?.total > 0 && (
               <Center mt="1rem">
                 <Pagination
-                  totalCount={mediaFolderFiles?.total || 0}
+                  totalCount={mediaFolderFiles.total}
                   pageSize={MEDIA_PAGINATION_SIZE}
                   currentPage={curPage}
                   onPageChange={(page) => setCurPage(page)}
