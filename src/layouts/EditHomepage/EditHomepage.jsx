@@ -20,6 +20,7 @@ import { Footer } from "components/Footer"
 import { Greyscale } from "components/Greyscale"
 import Header from "components/Header"
 import { LoadingButton } from "components/LoadingButton"
+import { OverwriteChangesModal } from "components/OverwriteChangesModal"
 import { WarningModal } from "components/WarningModal"
 
 import { FEATURE_FLAGS } from "constants/featureFlags"
@@ -207,11 +208,27 @@ const EditHomepage = ({ match }) => {
     id: "",
     type: "",
   })
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const {
+    isOpen: isSectionDeleteOpen,
+    onOpen: onSectionDeleteOpen,
+    onClose: onSectionDeleteClose,
+  } = useDisclosure()
+  const {
+    isOpen: isOverwriteOpen,
+    onOpen: onOverwriteOpen,
+    onClose: onOverwriteClose,
+  } = useDisclosure()
   const [savedHeroElems, setSavedHeroElems] = useState("")
   const [savedHeroErrors, setSavedHeroErrors] = useState("")
   const { data: homepageData } = useGetHomepageHook(siteName)
-  const { mutateAsync: updateHomepageHandler } = useUpdateHomepageHook(siteName)
+  const { mutateAsync: updateHomepageHandler } = useUpdateHomepageHook(
+    siteName,
+    {
+      onError: (err) => {
+        if (err.response.status === 409) onOverwriteOpen()
+      },
+    }
+  )
   const homepageState = {
     frontMatter,
     errors,
@@ -237,6 +254,8 @@ const EditHomepage = ({ match }) => {
     setDisplayAnnouncementItems(displayAnnouncementItems)
   }
   const heroSection = frontMatter.sections.filter((section) => !!section.hero)
+  const hasChanges =
+    JSON.stringify(originalFrontMatter) !== JSON.stringify(frontMatter)
 
   const errorToast = useErrorToast()
 
@@ -244,6 +263,14 @@ const EditHomepage = ({ match }) => {
   // TODO: Shift this into react query + custom hook
   useEffect(() => {
     if (!homepageData) return
+    if (!!homepageData && hasChanges) {
+      // We do not want to override changes made by the user but we want the
+      // user to be able to save using the latest sha if they choose to override
+      const { sha } = homepageData
+      setSha(sha)
+      return
+    }
+
     const loadPageDetails = async () => {
       // Set page colors
       try {
@@ -907,7 +934,7 @@ const EditHomepage = ({ match }) => {
   }
 
   const onDeleteClick = (id, name) => {
-    onOpen()
+    onSectionDeleteOpen()
     setItemPendingForDelete({ id, type: name })
   }
 
@@ -1163,11 +1190,13 @@ const EditHomepage = ({ match }) => {
       resetFirstLoad()
       await updateHomepageHandler(params)
     } catch (err) {
-      errorToast({
-        id: "update-homepage-error",
-        description: `There was a problem trying to save your homepage. ${DEFAULT_RETRY_MSG}`,
-      })
-      console.log(err)
+      if (err.response.status !== 409) {
+        errorToast({
+          id: "update-homepage-error",
+          description: `There was a problem trying to save your homepage. ${DEFAULT_RETRY_MSG}`,
+        })
+        console.log(err)
+      }
     }
   }
 
@@ -1184,11 +1213,12 @@ const EditHomepage = ({ match }) => {
   const showNewLayouts = useFeatureIsOn(FEATURE_FLAGS.HOMEPAGE_TEMPLATES)
   return (
     <>
+      {/* Section deletion warning modal */}
       <WarningModal
-        isOpen={itemPendingForDelete.id && isOpen}
+        isOpen={itemPendingForDelete.id && isSectionDeleteOpen}
         onClose={() => {
           setItemPendingForDelete({ id: null, type: "" })
-          onClose()
+          onSectionDeleteClose()
         }}
         displayTitle={`Delete ${itemPendingForDelete.type}`}
         displayText={
@@ -1202,7 +1232,7 @@ const EditHomepage = ({ match }) => {
           colorScheme="secondary"
           onClick={() => {
             setItemPendingForDelete({ id: null, type: "" })
-            onClose()
+            onSectionDeleteClose()
           }}
         >
           Cancel
@@ -1212,18 +1242,27 @@ const EditHomepage = ({ match }) => {
           onClick={() => {
             deleteHandler(itemPendingForDelete.id)
             setItemPendingForDelete({ id: null, type: "" })
-            onClose()
+            onSectionDeleteClose()
           }}
         >
           Yes, delete
         </Button>
       </WarningModal>
+
+      {/* Override changes warning modal */}
+      <OverwriteChangesModal
+        isOpen={isOverwriteOpen}
+        onClose={onOverwriteClose}
+        onProceed={() => {
+          onOverwriteClose()
+          savePage()
+        }}
+      />
+
       <VStack>
         <Header
           title="Homepage"
-          shouldAllowEditPageBackNav={
-            JSON.stringify(originalFrontMatter) === JSON.stringify(frontMatter)
-          }
+          shouldAllowEditPageBackNav={hasChanges}
           isEditPage
           backButtonText="Back to My Workspace"
           backButtonUrl={`/sites/${siteName}/workspace`}

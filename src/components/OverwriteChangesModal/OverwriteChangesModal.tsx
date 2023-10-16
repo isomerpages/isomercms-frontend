@@ -27,8 +27,8 @@ export const OverwriteChangesModal = ({
               edits now, their changes will be lost.
             </Text>
             <Text>
-              We recommend you to make a copy of your changes elsewhere and come
-              back later.
+              We recommend you to make a copy of your changes elsewhere, and
+              come back later to reconcile your changes.
             </Text>
           </VStack>
         </Box>
