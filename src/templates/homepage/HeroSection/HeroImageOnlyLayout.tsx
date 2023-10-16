@@ -38,6 +38,7 @@ export const HeroImageOnlyLayout = ({
               "is-flex",
               "is-full-width",
               "is-vh-centered",
+              "flex-center",
             ])}
           >
             {dropdown?.title ? (
