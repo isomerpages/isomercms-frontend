@@ -34,8 +34,8 @@ export const OverrideWarningModal = ({
               choose to either override their changes, or go back to editing.
             </Text>
             <Text>
-              We recommend you to make a copy of your changes elsewhere and come
-              back later.
+              We recommend you to make a copy of your changes elsewhere, and
+              come back later to reconcile your changes.
             </Text>
           </VStack>
         </Box>
