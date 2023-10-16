@@ -313,6 +313,9 @@ const EditHomepage = ({ match }) => {
         const infocolInfoboxErrors = []
         const scrollRefs = []
         const announcementScrollRefs = []
+
+        console.log(`Homepage Loaded`, homepageData)
+
         frontMatter.sections.forEach((section) => {
           scrollRefs.push(createRef())
           // If this is the hero section, hide all highlights/dropdownelems by default
@@ -400,23 +403,23 @@ const EditHomepage = ({ match }) => {
             textCardItemErrors.push(
               _.map(cards, () => getErrorValues(TEXTCARDS_ITEM_SECTION))
             )
-            if (textCardItemErrors.length === 0) {
-              textCardItemErrors.push([])
-            }
           }
 
+          // TODO: seems to load an existing state incorrectly into the errors object
           if (section.infocols) {
             sectionsErrors.push({
               infocols: getErrorValues(INFOCOLS_BLOCK_SECTION),
             })
             const { infoboxes } = section.infocols
             // Fill in dropdown elem errors array
+
             infocolInfoboxErrors.push(
               _.map(infoboxes, () => getErrorValues(INFOCOLS_INFOBOX_SECTION))
             )
-            if (infocolInfoboxErrors.length === 0) {
-              infocolInfoboxErrors.push([])
-            }
+          } else {
+            // populate for nested components
+            textCardItemErrors.push([])
+            infocolInfoboxErrors.push([])
           }
 
           // Minimize all sections by default
@@ -432,6 +435,8 @@ const EditHomepage = ({ match }) => {
           textcards: textCardItemErrors,
           infocols: infocolInfoboxErrors,
         }
+
+        console.log(`Setting errors after homepage load`, errors)
 
         setFrontMatter(frontMatter)
         setOriginalFrontMatter(_.cloneDeep(frontMatter))
@@ -1313,6 +1318,7 @@ const EditHomepage = ({ match }) => {
       }
 
       resetFirstLoad()
+      console.log(`Save page:`, params)
       await updateHomepageHandler(params)
     } catch (err) {
       if (err.response.status !== 409) {
