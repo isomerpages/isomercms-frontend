@@ -33,7 +33,7 @@ export const useListMediaFolderFiles = (
         } else {
           errorToast({
             id: "get-media-directory-error",
-            description: `There was a problem retrieving directory contents. ${DEFAULT_RETRY_MSG}`,
+            description: `There was a problem retrieving the media files in ${params.mediaDirectoryName}. ${DEFAULT_RETRY_MSG}`,
           })
         }
         queryOptions?.onError?.(err)
