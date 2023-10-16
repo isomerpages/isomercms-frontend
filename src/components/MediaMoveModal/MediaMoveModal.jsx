@@ -7,7 +7,8 @@ import { Breadcrumb } from "components/folders/Breadcrumb"
 import { LoadingButton } from "components/LoadingButton"
 import { MoveMenuHeader, DirMenuItem, FileMenuItem } from "components/move"
 
-import { useGetMediaFolders } from "hooks/directoryHooks"
+import { useListMediaFolderFiles } from "hooks/directoryHooks/useListMediaFolderFiles"
+import { useListMediaFolderSubdirectories } from "hooks/directoryHooks/useListMediaFolderSubdirectories"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
@@ -19,43 +20,41 @@ export const MediaMoveModal = ({ queryParams, params, onProceed, onClose }) => {
   const { siteName } = params
   const [moveQuery, setMoveQuery] = useState(_.omit(queryParams, "fileName"))
   const [moveTo, setMoveTo] = useState(params)
-  const { data: dirData } = useGetMediaFolders(moveQuery)
+
+  const { data: subDirsData } = useListMediaFolderSubdirectories(moveQuery)
+  const { data: filesData } = useListMediaFolderFiles(moveQuery)
   const isWriteDisabled = isWriteActionsDisabled(siteName)
 
   const MenuItems = () => {
-    if (dirData && dirData.length)
+    if (subDirsData && subDirsData?.directories)
       return (
         <>
           {/* directories */}
-          {dirData
-            .filter(({ type }) => type === "dir")
-            .map(({ name }, itemIndex) => (
-              <DirMenuItem
-                name={name}
-                id={itemIndex}
-                onClick={() => {
-                  setMoveTo({
-                    ...moveQuery,
-                    mediaDirectoryName: `${getMediaDirectoryName(
-                      moveQuery.mediaDirectoryName,
-                      { joinOn: "/", decode: true }
-                    )}/${name}`,
-                  })
-                  setMoveQuery((prevState) => ({
-                    ...prevState,
-                    mediaDirectoryName: `${
-                      moveQuery.mediaDirectoryName
-                    }%2F${encodeURIComponent(name)}`,
-                  }))
-                }}
-              />
-            ))}
+          {subDirsData?.directories.map(({ name }, itemIndex) => (
+            <DirMenuItem
+              name={name}
+              id={itemIndex}
+              onClick={() => {
+                setMoveTo({
+                  ...moveQuery,
+                  mediaDirectoryName: `${getMediaDirectoryName(
+                    moveQuery.mediaDirectoryName,
+                    { joinOn: "/", decode: true }
+                  )}/${name}`,
+                })
+                setMoveQuery((prevState) => ({
+                  ...prevState,
+                  mediaDirectoryName: `${
+                    moveQuery.mediaDirectoryName
+                  }%2F${encodeURIComponent(name)}`,
+                }))
+              }}
+            />
+          ))}
           {/* files */}
-          {dirData
-            .filter(({ type }) => type === "file")
-            .map(({ name }, itemIndex) => (
-              <FileMenuItem name={name} id={itemIndex} />
-            ))}
+          {filesData?.files.map(({ name }, itemIndex) => (
+            <FileMenuItem name={name} id={itemIndex} />
+          ))}
         </>
       )
 
@@ -63,7 +62,7 @@ export const MediaMoveModal = ({ queryParams, params, onProceed, onClose }) => {
       <div
         className={`${elementStyles.dropdownItemDisabled} d-flex justify-content-center`}
       >
-        {dirData ? (
+        {subDirsData ? (
           `No ${moveQuery.mediaRoom} here yet.`
         ) : (
           <div className="spinner-border text-primary" role="status" />

@@ -1,0 +1,1 @@
+export const MEDIA_PAGINATION_SIZE = 15

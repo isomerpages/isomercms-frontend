@@ -4,6 +4,9 @@ import {
   ResourcePageData,
   PageData,
   ResourceRoomNameUpdateProps,
+  GetMediaSubdirectoriesDto,
+  GetMediaFilesDto,
+  MediaFilePathData,
 } from "types/directory"
 import { MediaDirectoryParams, PageDirectoryParams } from "types/folders"
 import {
@@ -65,9 +68,46 @@ export const getWorkspacePages = (siteName: string): Promise<PageData[]> => {
 export const getMediaData = ({
   siteName,
   mediaDirectoryName,
-}: MediaDirectoryParams): Promise<DirectoryData[]> => {
+  // NOTE: These defaults are set to adhere to our current behaviour.
+  // Github has a fixed upper limit of 1000 items and we return
+  // every item up to the upper limit.
+  // Hence, this behaviour is essentially a single page of up to 1000 items.
+  curPage = 0,
+  limit = 1000,
+}: MediaDirectoryParams): Promise<(DirectoryData | MediaFilePathData)[]> => {
   const endpoint = `/sites/${siteName}/media/${mediaDirectoryName}`
-  return apiService.get<DirectoryData[]>(endpoint).then(({ data }) => data)
+  return apiService
+    .get<(DirectoryData | MediaFilePathData)[]>(endpoint, {
+      params: { page: curPage, limit },
+    })
+    .then(({ data }) => data)
+}
+
+export const getMediaFolderSubdirectories = ({
+  siteName,
+  mediaDirectoryName,
+}: Omit<
+  MediaDirectoryParams,
+  "curPage"
+>): Promise<GetMediaSubdirectoriesDto> => {
+  const endpoint = `/sites/${siteName}/media/${mediaDirectoryName}/subdirectories`
+  return apiService
+    .get<GetMediaSubdirectoriesDto>(endpoint)
+    .then(({ data }) => data)
+}
+
+export const getMediaFolderFiles = ({
+  siteName,
+  mediaDirectoryName,
+  curPage = 0,
+  limit = 1000,
+}: MediaDirectoryParams): Promise<GetMediaFilesDto> => {
+  const endpoint = `/sites/${siteName}/media/${mediaDirectoryName}/files`
+  return apiService
+    .get<GetMediaFilesDto>(endpoint, {
+      params: { page: curPage, limit },
+    })
+    .then(({ data }) => data)
 }
 
 export const getResourceRoomName = async (

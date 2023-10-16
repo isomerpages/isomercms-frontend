@@ -12,10 +12,10 @@ import { FEATURE_FLAGS } from "constants/featureFlags"
 import { ReviewRequestRoleProvider } from "contexts/ReviewRequestRoleContext"
 import { SiteLaunchProvider } from "contexts/SiteLaunchContext"
 
+import EditContactUs from "layouts/EditContactUs"
+import EditHomepage from "layouts/EditHomepage"
+import EditNavBar from "layouts/EditNavBar"
 import EditPage from "layouts/EditPage"
-import { FeatureFlaggedContactUs } from "layouts/FeatureFlaggedContactUs"
-import { FeatureFlaggedHomepage } from "layouts/FeatureFlaggedHomepage"
-import { FeatureFlaggedNavBar } from "layouts/FeatureFlaggedNavBar"
 import { Folders } from "layouts/Folders"
 import { LoginPage } from "layouts/Login"
 import { SgidLoginCallbackPage } from "layouts/Login/SgidLoginCallbackPage"
@@ -87,7 +87,7 @@ export const RouteSelector = () => {
         <ProtectedRouteWithProps
           exact
           path="/sites/:siteName/navbar"
-          component={injectApprovalRedirect(FeatureFlaggedNavBar)}
+          component={injectApprovalRedirect(EditNavBar)}
         />
 
         <ProtectedRouteWithProps
@@ -126,12 +126,12 @@ export const RouteSelector = () => {
 
         <ProtectedRouteWithProps
           path="/sites/:siteName/homepage"
-          component={injectApprovalRedirect(FeatureFlaggedHomepage)}
+          component={injectApprovalRedirect(EditHomepage)}
         />
 
         <ProtectedRouteWithProps
           path="/sites/:siteName/contact-us"
-          component={injectApprovalRedirect(FeatureFlaggedContactUs)}
+          component={injectApprovalRedirect(EditContactUs)}
         />
 
         <ProtectedRouteWithProps path="/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName">

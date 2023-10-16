@@ -43,7 +43,6 @@
   justify-content: flex-start;
   align-items: flex-start;
   flex-wrap: wrap;
-  overflow-y: scroll;
   padding-bottom: 50px;
   width: 100%;
   // NOTE: This is a workaround so that on focus,
@@ -63,9 +62,7 @@
     box-sizing: border-box;
     transition: transform 0.2s ease-in;
     min-width: 250px;
-    width: $component-card-width;
     height: $component-card-height;
-    margin-right: $component-card-margin;
     margin-bottom: $component-card-margin;
 
     .mediaCardPreviewContainer {

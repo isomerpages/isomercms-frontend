@@ -2,7 +2,11 @@ import _ from "lodash"
 import { useContext } from "react"
 import { useMutation, useQueryClient } from "react-query"
 
-import { DIR_CONTENT_KEY, RESOURCE_ROOM_CONTENT_KEY } from "constants/queryKeys"
+import {
+  LIST_MEDIA_FOLDERS_KEY,
+  DIR_CONTENT_KEY,
+  RESOURCE_ROOM_CONTENT_KEY,
+} from "constants/queryKeys"
 
 import { ServicesContext } from "contexts/ServicesContext"
 
@@ -49,7 +53,7 @@ export function useUpdateDirectoryHook(params, queryParams) {
           ])
         else if (params.mediaDirectoryName)
           queryClient.invalidateQueries([
-            DIR_CONTENT_KEY,
+            LIST_MEDIA_FOLDERS_KEY,
             {
               ...params,
               mediaDirectoryName: getMediaDirectoryName(

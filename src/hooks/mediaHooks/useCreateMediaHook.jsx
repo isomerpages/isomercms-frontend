@@ -2,7 +2,7 @@ import _ from "lodash"
 import { useContext } from "react"
 import { useMutation, useQueryClient } from "react-query"
 
-import { DIR_CONTENT_KEY } from "constants/queryKeys"
+import { LIST_MEDIA_DIRECTORY_FILES_KEY } from "constants/queryKeys"
 
 import { ServicesContext } from "contexts/ServicesContext"
 
@@ -24,24 +24,15 @@ export function useCreateMediaHook(params, queryParams) {
     },
     {
       ...queryParams,
-      onSuccess: ({ data }) => {
+      onSuccess: () => {
         successToast({
           id: "upload-media-file-success",
           description: `Media file successfully uploaded!`,
         })
-        const newMedia = {
-          ...data,
-          mediaUrl: data.content,
-          type: "file",
-        }
-        queryClient.setQueryData(
-          [DIR_CONTENT_KEY, _.omit(params, "fileName")],
-          (oldMediasData) =>
-            oldMediasData ? [newMedia, ...oldMediasData] : [newMedia]
-        )
+
         queryClient.invalidateQueries([
           // invalidates media directory
-          DIR_CONTENT_KEY,
+          LIST_MEDIA_DIRECTORY_FILES_KEY,
           _.omit(params, "fileName"),
         ])
         if (queryParams && queryParams.onSuccess) queryParams.onSuccess()

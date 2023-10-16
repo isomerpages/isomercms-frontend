@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "react-query"
 import {
   DIR_CONTENT_KEY,
   RESOURCE_ROOM_CONTENT_KEY,
+  LIST_MEDIA_FOLDERS_KEY,
   RESOURCE_CATEGORY_CONTENT_KEY,
 } from "constants/queryKeys"
 
@@ -34,17 +35,19 @@ export function useDeleteDirectoryHook(params, queryParams) {
         id: "delete-directory-success",
         description: `Successfully deleted item!`,
       })
-      if (params.mediaDirectoryName)
+      if (params.mediaDirectoryName) {
+        const invalidationParams = {
+          ...params,
+          mediaDirectoryName: getMediaDirectoryName(params.mediaDirectoryName, {
+            end: -1,
+          }),
+        }
+        queryClient.invalidateQueries([DIR_CONTENT_KEY, invalidationParams])
         queryClient.invalidateQueries([
-          DIR_CONTENT_KEY,
-          {
-            ...params,
-            mediaDirectoryName: getMediaDirectoryName(
-              params.mediaDirectoryName,
-              { end: -1 }
-            ),
-          },
+          LIST_MEDIA_FOLDERS_KEY,
+          invalidationParams,
         ])
+      }
       if (params.subCollectionName)
         queryClient.invalidateQueries([
           DIR_CONTENT_KEY,

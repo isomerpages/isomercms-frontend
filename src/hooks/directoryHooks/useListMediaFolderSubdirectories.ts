@@ -1,6 +1,6 @@
 import { useQuery, UseQueryOptions, UseQueryResult } from "react-query"
 
-import { DIR_CONTENT_KEY } from "constants/queryKeys"
+import { LIST_MEDIA_FOLDERS_KEY } from "constants/queryKeys"
 
 import useRedirectHook from "hooks/useRedirectHook"
 
@@ -9,23 +9,23 @@ import * as DirectoryService from "services/DirectoryService/index"
 import { isAxiosError } from "utils/axios"
 import { useErrorToast } from "utils/toasts"
 
-import { DirectoryData, MediaData } from "types/directory"
+import { GetMediaSubdirectoriesDto } from "types/directory"
 import { MediaDirectoryParams } from "types/folders"
 import { DEFAULT_RETRY_MSG } from "utils"
 
-export const useGetMediaFolders = (
-  params: MediaDirectoryParams,
+export const useListMediaFolderSubdirectories = (
+  params: Omit<MediaDirectoryParams, "curPage">,
   queryOptions?: Omit<
-    UseQueryOptions<(DirectoryData | MediaData)[]>,
+    UseQueryOptions<GetMediaSubdirectoriesDto>,
     "queryFn" | "queryKey"
   >
-): UseQueryResult<(DirectoryData | MediaData)[]> => {
+): UseQueryResult<GetMediaSubdirectoriesDto> => {
   const { setRedirectToNotFound } = useRedirectHook()
   const errorToast = useErrorToast()
 
-  return useQuery<(DirectoryData | MediaData)[]>(
-    [DIR_CONTENT_KEY, params],
-    () => DirectoryService.getMediaData(params),
+  return useQuery<GetMediaSubdirectoriesDto>(
+    [LIST_MEDIA_FOLDERS_KEY, params],
+    () => DirectoryService.getMediaFolderSubdirectories(params),
     {
       ...queryOptions,
       retry: false,
@@ -36,7 +36,7 @@ export const useGetMediaFolders = (
         } else {
           errorToast({
             id: "get-media-directory-error",
-            description: `There was a problem retrieving directory contents. ${DEFAULT_RETRY_MSG}`,
+            description: `There was a problem retrieving the sub-directories for ${params.mediaDirectoryName}. ${DEFAULT_RETRY_MSG}`,
           })
         }
         queryOptions?.onError?.(err)

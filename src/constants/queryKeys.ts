@@ -34,3 +34,8 @@ export const GET_NAV_KEY = "get-nav"
 export const GET_ALL_COLLECTIONS_KEY = "get-all-collections"
 export const GET_CONTACT_US_KEY = "get-contact-us"
 export const GITHUB_BLOB_QUERY_KEY = "github-blob"
+export const LIST_MEDIA_DIRECTORY_FILES_KEY = "list-media-directory-files"
+
+export const LIST_MEDIA_FOLDERS_KEY = "list-media-folders"
+export const LIST_ALL_MEDIA_KEY = "list-all-media"
+export const GET_ALL_MEDIA_FILES_KEY = "get-all-media-files"

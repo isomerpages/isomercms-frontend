@@ -8,23 +8,25 @@ import {
   MediaSettingsModal,
 } from "components/MediaSettingsModal"
 
+import { useListMediaFolderFiles } from "hooks/directoryHooks/useListMediaFolderFiles"
+
 import { useErrorToast } from "utils/toasts"
 import { MEDIA_FILE_MAX_SIZE } from "utils/validators"
 
 import { getFileExt, getFileName } from "utils"
 
 // eslint-disable-next-line import/prefer-default-export
-export const MediaCreationModal = ({
-  params,
-  mediasData = [],
-  onProceed,
-  onClose,
-}) => {
+export const MediaCreationModal = ({ params, onProceed, onClose }) => {
   const { mediaRoom } = params
   const inputFile = useRef(null)
   const errorToast = useErrorToast()
+  const {
+    data: { files },
+  } = useListMediaFolderFiles(params, {
+    initialData: { files: [], total: 0 },
+  })
 
-  const existingTitlesArray = mediasData.map((item) => getFileName(item.name))
+  const existingTitlesArray = files.map((item) => getFileName(item.name))
   const [fileExt, setFileExt] = useState("")
 
   const methods = useForm({
@@ -74,7 +76,6 @@ export const MediaCreationModal = ({
         />
         <MediaSettingsModal
           params={params}
-          mediasData={mediasData}
           onProceed={(submissionData) => {
             return onProceed({
               data: {

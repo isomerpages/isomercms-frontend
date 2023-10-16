@@ -1,4 +1,4 @@
-import { Text } from "@chakra-ui/react"
+import { Box, Text, VStack } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 
 import { WarningModal } from "components/WarningModal"
@@ -25,26 +25,24 @@ export const OverrideWarningModal = ({
       // and the user still chose to proceed (this only occurs when there is a diff)
       isOpen={isOpen}
       onClose={onClose}
-      displayTitle="Override Changes"
+      displayTitle="Do you want to override recent changes?"
       displayText={
-        <Text>
-          Your site settings have recently been changed by another user. You can
-          choose to either override their changes, or go back to editing.
-          {/*
-           * NOTE: We have 2 line breaks here because we want a line spacing between the 2 <paragraphs.
-           * Only have 1 br would cause the second paragraph to begin on a new line but without the line spacing.
-           */}
-          <br />
-          <br />
-          We recommend you to make a copy of your changes elsewhere, and come
-          back later to reconcile your changes.
-        </Text>
+        <Box>
+          <VStack gap="1.5rem">
+            <Text>
+              Another user edited and saved your site settings recently. You can
+              choose to either override their changes, or go back to editing.
+            </Text>
+            <Text>
+              We recommend you to make a copy of your changes elsewhere, and
+              come back later to reconcile your changes.
+            </Text>
+          </VStack>
+        </Box>
       }
     >
-      <Button variant="outline" onClick={onClose}>
-        Back to editing
-      </Button>
       <Button
+        variant="clear"
         colorScheme="critical"
         type="submit"
         isLoading={isLoading}
@@ -53,7 +51,10 @@ export const OverrideWarningModal = ({
           onClose()
         }}
       >
-        Override
+        Save my edits anyway
+      </Button>
+      <Button colorScheme="main" onClick={onClose}>
+        Back to editing
       </Button>
     </WarningModal>
   )

@@ -13,7 +13,7 @@ import { extractCreateDirectoryInfo } from "./utils"
 // This is because the return type isn't used by empty resource room
 // and will trigger a refetch due to query key invalidation
 // NOTE: This is also used in directory creation screen with different params
-export const useCreateDirectory = (
+export const useCreateResourceDirectory = (
   siteName: string
 ): UseMutationResult<void, AxiosError, DirectoryInfoProps> => {
   const queryClient = useQueryClient()
