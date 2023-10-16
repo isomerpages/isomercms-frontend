@@ -1,5 +1,5 @@
 // CRUD + Reorder
-export * from "./useCreateDirectory"
+export * from "./useCreateResourceDirectory"
 export * from "./useGetDirectoryHook"
 export * from "./useCreateDirectoryHook"
 export * from "./useReorderDirectoryHook"

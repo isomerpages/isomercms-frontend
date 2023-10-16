@@ -4,6 +4,8 @@ import { useMutation, useQueryClient } from "react-query"
 import {
   DIR_CONTENT_KEY,
   RESOURCE_CATEGORY_CONTENT_KEY,
+  LIST_MEDIA_DIRECTORY_FILES_KEY,
+  LIST_MEDIA_FOLDERS_KEY,
 } from "constants/queryKeys"
 
 import { ServicesContext } from "contexts/ServicesContext"
@@ -44,13 +46,15 @@ export function useMoveHook(params, queryParams) {
           id: "move-file-success",
           description: `Successfully moved file`,
         })
-      if (params.mediaRoom || params.collectionName)
+      if (params.mediaRoom || params.collectionName) {
         queryClient.invalidateQueries([
           // invalidates collection pages or resource pages
           DIR_CONTENT_KEY,
           { ...params },
         ])
-      else if (params.resourceCategoryName) {
+        queryClient.invalidateQueries([LIST_MEDIA_DIRECTORY_FILES_KEY, params])
+        queryClient.invalidateQueries([LIST_MEDIA_FOLDERS_KEY, params])
+      } else if (params.resourceCategoryName) {
         queryClient.invalidateQueries([RESOURCE_CATEGORY_CONTENT_KEY, params])
       } else
         queryClient.invalidateQueries([

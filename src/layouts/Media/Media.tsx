@@ -1,12 +1,15 @@
 import { SimpleGrid, Box, Text, Skeleton, Center } from "@chakra-ui/react"
 import { Button, Pagination } from "@opengovsg/design-system-react"
 import _ from "lodash"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { BiBulb, BiUpload } from "react-icons/bi"
 import { Link, Switch, useRouteMatch, useHistory } from "react-router-dom"
 
 import { Greyscale } from "components/Greyscale"
 
+import { MEDIA_PAGINATION_SIZE } from "constants/pagination"
+
+import { useGetAllMediaFiles } from "hooks/directoryHooks/useGetAllMediaFiles"
 import { useListMediaFolderFiles } from "hooks/directoryHooks/useListMediaFolderFiles"
 import { useListMediaFolderSubdirectories } from "hooks/directoryHooks/useListMediaFolderSubdirectories"
 import { usePaginate } from "hooks/usePaginate"
@@ -64,8 +67,6 @@ const getMediaLabels = (mediaType: "files" | "images"): MediaLabels => {
   }
 }
 
-const MEDIA_PAGINATION_SIZE = 15
-
 export const Media = (): JSX.Element => {
   const history = useHistory()
   const [curPage, setCurPage] = usePaginate()
@@ -107,6 +108,12 @@ export const Media = (): JSX.Element => {
     // returns an index with 1 offset
     curPage: curPage - 1,
   })
+
+  const files = useGetAllMediaFiles(
+    mediaFolderFiles?.files || [],
+    params.siteName,
+    params.mediaDirectoryName
+  )
 
   const {
     singularMediaLabel,
@@ -185,14 +192,29 @@ export const Media = (): JSX.Element => {
             isLoaded={!isListMediaFilesLoading}
           >
             <SimpleGrid columns={3} spacing="1.5rem" w="100%">
-              {mediaFolderFiles?.files.map(({ name, mediaUrl }) => {
-                if (mediaType === "images") {
-                  return <ImagePreviewCard name={name} mediaUrl={mediaUrl} />
-                }
-                return <FilePreviewCard name={name} />
+              {files.map(({ data, isLoading }) => {
+                return (
+                  // NOTE: Inner skeleton here is to allow for progressive load.
+                  // We show each individual card in a loading state and
+                  // allow them to fill in when possible.
+                  <Skeleton
+                    w="100%"
+                    h={isLoading ? "4.5rem" : "fit-content"}
+                    isLoaded={!isLoading}
+                  >
+                    {data && mediaType === "images" ? (
+                      <ImagePreviewCard
+                        name={data.name}
+                        mediaUrl={data.mediaUrl}
+                      />
+                    ) : (
+                      data && <FilePreviewCard name={data.name} />
+                    )}
+                  </Skeleton>
+                )
               })}
             </SimpleGrid>
-            {mediaFolderFiles && mediaFolderFiles?.total > 0 && (
+            {files && mediaFolderFiles && mediaFolderFiles?.total > 0 && (
               <Center mt="1rem">
                 <Pagination
                   totalCount={mediaFolderFiles.total}

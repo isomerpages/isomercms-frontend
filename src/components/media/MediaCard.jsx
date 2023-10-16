@@ -38,7 +38,7 @@ const MediaCard = ({
   const { setRedirectToPage } = useRedirectHook()
 
   return (
-    <Box pos="relative" className={mediaStyles.mediaCard}>
+    <Box pos="relative" className={mediaStyles.mediaCard} w="100%" mr="0">
       <chakra.button
         type="button"
         key={name}

@@ -37,7 +37,7 @@ import { EmptyArea } from "components/EmptyArea"
 import { Greyscale } from "components/Greyscale"
 
 import {
-  useCreateDirectory,
+  useCreateResourceDirectory,
   useGetResourceRoom,
   useGetResourceRoomName,
   useUpdateResourceRoomName,
@@ -72,9 +72,11 @@ import { CategoryCard, ResourceBreadcrumb } from "./components"
 const EmptyResourceRoom = () => {
   const params = useParams<ResourceRoomRouteParams>()
   const { siteName } = params
-  const { mutateAsync: saveHandler, isError, isLoading } = useCreateDirectory(
-    siteName
-  )
+  const {
+    mutateAsync: saveHandler,
+    isError,
+    isLoading,
+  } = useCreateResourceDirectory(siteName)
   const {
     register,
     handleSubmit,

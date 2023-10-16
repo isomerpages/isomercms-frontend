@@ -7,7 +7,8 @@ import { Breadcrumb } from "components/folders/Breadcrumb"
 import { LoadingButton } from "components/LoadingButton"
 import { MoveMenuHeader, DirMenuItem, FileMenuItem } from "components/move"
 
-import { useGetMediaFolders } from "hooks/directoryHooks"
+import { useListMediaFolderFiles } from "hooks/directoryHooks/useListMediaFolderFiles"
+import { useListMediaFolderSubdirectories } from "hooks/directoryHooks/useListMediaFolderSubdirectories"
 
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
@@ -19,15 +20,17 @@ export const MediaMoveModal = ({ queryParams, params, onProceed, onClose }) => {
   const { siteName } = params
   const [moveQuery, setMoveQuery] = useState(_.omit(queryParams, "fileName"))
   const [moveTo, setMoveTo] = useState(params)
-  const { data: mediaDataDto } = useGetMediaFolders(moveQuery)
+
+  const { data: subDirsData } = useListMediaFolderSubdirectories(moveQuery)
+  const { data: filesData } = useListMediaFolderFiles(moveQuery)
   const isWriteDisabled = isWriteActionsDisabled(siteName)
 
   const MenuItems = () => {
-    if (mediaDataDto && mediaDataDto?.directories)
+    if (subDirsData && subDirsData?.directories)
       return (
         <>
           {/* directories */}
-          {mediaDataDto?.directories.map(({ name }, itemIndex) => (
+          {subDirsData?.directories.map(({ name }, itemIndex) => (
             <DirMenuItem
               name={name}
               id={itemIndex}
@@ -49,7 +52,7 @@ export const MediaMoveModal = ({ queryParams, params, onProceed, onClose }) => {
             />
           ))}
           {/* files */}
-          {mediaDataDto?.files.map(({ name }, itemIndex) => (
+          {filesData?.files.map(({ name }, itemIndex) => (
             <FileMenuItem name={name} id={itemIndex} />
           ))}
         </>
@@ -59,7 +62,7 @@ export const MediaMoveModal = ({ queryParams, params, onProceed, onClose }) => {
       <div
         className={`${elementStyles.dropdownItemDisabled} d-flex justify-content-center`}
       >
-        {mediaDataDto ? (
+        {subDirsData ? (
           `No ${moveQuery.mediaRoom} here yet.`
         ) : (
           <div className="spinner-border text-primary" role="status" />
