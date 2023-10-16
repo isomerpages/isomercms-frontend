@@ -90,6 +90,7 @@ export const Media = (): JSX.Element => {
     // and cause the effect to run again
     // resulting in it going from page 1 -> page n -> page 1
     // when we click on the pagination.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url])
 
   const {
