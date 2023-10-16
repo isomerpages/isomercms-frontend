@@ -28,11 +28,10 @@ import { useDirtyFieldContext } from "contexts/DirtyFieldContext"
 import { useLoginContext } from "contexts/LoginContext"
 
 import { useStagingUrl } from "hooks/settingsHooks"
-import { useGetReviewRequests } from "hooks/siteDashboardHooks"
 
 import { ReviewRequestModal } from "layouts/ReviewRequest"
 
-import { isWriteActionsDisabled } from "utils/reviewRequests"
+import { doesOpenReviewRequestExist } from "utils/reviewRequests"
 
 import { NavImage } from "assets"
 
@@ -57,7 +56,7 @@ export const SiteEditHeader = (): JSX.Element => {
   const isGithubUser = !!userId
   const history = useHistory()
 
-  const isWriteDisabled = isWriteActionsDisabled(siteName)
+  const hasOpenReviewRequest = doesOpenReviewRequestExist(siteName)
 
   const onBackButtonClick = () => {
     const redirPath = isGithubUser ? "/sites" : `/sites/${siteName}/dashboard`
@@ -117,7 +116,7 @@ export const SiteEditHeader = (): JSX.Element => {
               id="isomer-workspace-feature-tour-step-1"
               leftIcon={<Icon as={BiCheckCircle} fontSize="1.25rem" />}
               onClick={onReviewRequestModalOpen}
-              isDisabled={isWriteDisabled}
+              isDisabled={hasOpenReviewRequest}
             >
               Request a Review
             </Button>
