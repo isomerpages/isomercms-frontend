@@ -94,37 +94,37 @@ const TemplateInfocolsSection = forwardRef<
                 "is-flex",
               ])}
             >
-              {infoboxes.length === 4
-                ? _.chunk(infoboxes, 2).map((infoboxGroup) => {
-                    return (
-                      <div
-                        className={getClassNames(editorStyles, [
-                          "infocols-infobox-section",
-                          "has-text-left",
-                          "is-flex",
-                          infoboxes.length > 2 ? "space-between" : "", // This specifically helps to make 3 infocols wrap nicely to 2 rows for md-xl screens
-                        ])}
-                      >
-                        {infoboxGroup.map((infobox) => {
-                          return getInfoBox(infobox.title, infobox.description)
-                        })}
-                      </div>
-                    )
-                  })
-                : infoboxes.map((infobox) => {
-                    return (
-                      <div
-                        className={getClassNames(editorStyles, [
-                          "infocols-infobox-section",
-                          "has-text-left",
-                          "is-flex",
-                          infoboxes.length > 2 ? "space-between" : "", // This specifically helps to make 3 infocols wrap nicely to 2 rows for md-xl screens
-                        ])}
-                      >
-                        {getInfoBox(infobox.title, infobox.description)}
-                      </div>
-                    )
-                  })}
+              {infoboxes.length === 4 ? (
+                _.chunk(infoboxes, 2).map((infoboxGroup) => {
+                  return (
+                    <div
+                      className={getClassNames(editorStyles, [
+                        "infocols-infobox-section",
+                        "has-text-left",
+                        "is-flex",
+                        infoboxes.length > 2 ? "space-between" : "", // This specifically helps to make 3 infocols wrap nicely to 2 rows for md-xl screens
+                      ])}
+                    >
+                      {infoboxGroup.map((infobox) => {
+                        return getInfoBox(infobox.title, infobox.description)
+                      })}
+                    </div>
+                  )
+                })
+              ) : (
+                <div
+                  className={getClassNames(editorStyles, [
+                    "infocols-infobox-section",
+                    "has-text-left",
+                    "is-flex",
+                    infoboxes.length > 2 ? "space-between" : "", // This specifically helps to make 3 infocols wrap nicely to 2 rows for md-xl screens
+                  ])}
+                >
+                  {infoboxes.map((infobox) =>
+                    getInfoBox(infobox.title, infobox.description)
+                  )}
+                </div>
+              )}
             </div>
             {linktext && url && (
               <span
