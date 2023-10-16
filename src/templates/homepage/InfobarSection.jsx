@@ -86,7 +86,7 @@ const TemplateInfobarSection = (
                 "remove-after",
                 "is-flex",
                 "is-vh-centered",
-                "flex-center-button",
+                "flex-center",
               ])}
             >
               <span
