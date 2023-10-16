@@ -1,6 +1,6 @@
 import { useQuery, UseQueryOptions, UseQueryResult } from "react-query"
 
-import { DIR_CONTENT_KEY, LIST_MEDIA_FOLDERS_KEY } from "constants/queryKeys"
+import { LIST_MEDIA_FOLDERS_KEY } from "constants/queryKeys"
 
 import useRedirectHook from "hooks/useRedirectHook"
 
@@ -36,7 +36,7 @@ export const useListMediaFolderSubdirectories = (
         } else {
           errorToast({
             id: "get-media-directory-error",
-            description: `There was a problem retrieving directory contents. ${DEFAULT_RETRY_MSG}`,
+            description: `There was a problem retrieving the sub-directories for ${params.mediaDirectoryName}. ${DEFAULT_RETRY_MSG}`,
           })
         }
         queryOptions?.onError?.(err)
