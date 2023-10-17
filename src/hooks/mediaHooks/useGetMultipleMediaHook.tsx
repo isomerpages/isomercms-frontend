@@ -12,7 +12,7 @@ const getMultipleMedia = (params: MultipleMediaParams) => {
   const mediaService = new MediaService({ apiClient: apiService })
 
   return Promise.all(
-    params.mediaSrcs.map((mediaSrc) => {
+    [...params.mediaSrcs].map((mediaSrc) => {
       const mediaUrlTokens = mediaSrc.split("/")
       // Note: The mediaUrl will always start with a "/"
       const mediaDirectoryName = mediaUrlTokens.slice(1, -1).join("%2F")

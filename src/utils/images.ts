@@ -59,15 +59,15 @@ export const adjustImageSrcs = (
 /**
  * Util method to extract all image srcs that are internal from the provided HTML.
  */
-export const getMediaSrcsFromHtml = (html: string): string[] => {
+export const getMediaSrcsFromHtml = (html: string): Set<string> => {
   const $ = cheerio.load(html)
-  const mediaSrcs: string[] = []
+  const mediaSrcs = new Set<string>()
 
   $("img").each((_, element) => {
     const src = $(element).attr("src")
 
     if (src && isLinkInternal(src)) {
-      mediaSrcs.push(src)
+      mediaSrcs.add(src)
     }
   })
 

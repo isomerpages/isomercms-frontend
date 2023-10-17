@@ -1,4 +1,4 @@
 export interface MultipleMediaParams {
   siteName: string
-  mediaSrcs: string[]
+  mediaSrcs: Set<string>
 }
