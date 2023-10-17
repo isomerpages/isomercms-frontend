@@ -1,4 +1,4 @@
-import { FormControl, VStack, Text, Divider } from "@chakra-ui/react"
+import { FormControl, VStack, Text, Divider, Stack } from "@chakra-ui/react"
 import { DragDropContext } from "@hello-pangea/dnd"
 import {
   Button,
@@ -97,86 +97,89 @@ export const InfocolsSectionBody = ({
         <FormErrorMessage>{errors.url}</FormErrorMessage>
       </FormControl>
 
-      <Divider py="0.5rem" />
-      <Text mb="0.5rem" textStyle="h5">
-        Infoboxes
-      </Text>
-      <Text textStyle="body-2" mb="1.5rem">
-        You can add up to 4 infoboxes
-      </Text>
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Editable.Droppable width="100%" editableId={`infocolInfobox-${index}`}>
-          <Editable.EmptySection
-            title="Add an infobox to get started"
-            subtitle="You must add at least 1 infobox to this block"
-            isEmpty={infoboxes.length === 0}
+      <Divider my="0.5rem" />
+      <Stack mb="0.5rem">
+        <Text textStyle="h5">Infoboxes</Text>
+        <Text textStyle="body-2">You can add up to 4 infoboxes</Text>
+      </Stack>
+      <Stack mb="0.5rem" w="100%">
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Editable.Droppable
+            width="100%"
+            editableId={`infocolInfobox-${index}`}
           >
-            <Editable.Accordion>
-              <VStack p={0} spacing="0.75rem">
-                {infoboxes.map((infobox, infoboxIndex) => (
-                  <Editable.DraggableAccordionItem
-                    draggableId={`infocolInfobox-${index}-${infoboxIndex}-draggable`}
-                    index={infoboxIndex}
-                    title={infobox.title}
-                    isInvalid={_.some(infoboxErrors[infoboxIndex])}
-                    isNested
-                  >
-                    <Editable.Section>
-                      {/* infobox Title */}
-                      <FormControl
-                        isRequired
-                        isInvalid={!!infoboxErrors[infoboxIndex]?.title}
-                      >
-                        <FormLabel>Title</FormLabel>
-                        <Input
-                          placeholder="This is a title for the infobox"
-                          id={`infocolInfobox-${index}-${infoboxIndex}-title`}
-                          value={infobox.title}
-                          onChange={onChange}
-                        />
-                        <FormErrorMessage>
-                          {infoboxErrors[infoboxIndex]?.title}
-                        </FormErrorMessage>
-                      </FormControl>
+            <Editable.EmptySection
+              title="Add an infobox to get started"
+              subtitle="You must add at least 1 infobox to this block"
+              isEmpty={infoboxes.length === 0}
+            >
+              <Editable.Accordion>
+                <VStack p={0} spacing="0.75rem">
+                  {infoboxes.map((infobox, infoboxIndex) => (
+                    <Editable.DraggableAccordionItem
+                      draggableId={`infocolInfobox-${index}-${infoboxIndex}-draggable`}
+                      index={infoboxIndex}
+                      title={infobox.title}
+                      isInvalid={_.some(infoboxErrors[infoboxIndex])}
+                      isNested
+                    >
+                      <Editable.Section>
+                        {/* Infobox Title */}
+                        <FormControl
+                          isRequired
+                          isInvalid={!!infoboxErrors[infoboxIndex]?.title}
+                        >
+                          <FormLabel>Title</FormLabel>
+                          <Input
+                            placeholder="This is a title for the infobox"
+                            id={`infocolInfobox-${index}-${infoboxIndex}-title`}
+                            value={infobox.title}
+                            onChange={onChange}
+                          />
+                          <FormErrorMessage>
+                            {infoboxErrors[infoboxIndex]?.title}
+                          </FormErrorMessage>
+                        </FormControl>
 
-                      {/* infobox Description */}
-                      <FormControl
-                        isInvalid={!!infoboxErrors[infoboxIndex]?.description}
-                      >
-                        <FormLabel>Description</FormLabel>
-                        <Textarea
-                          placeholder="This is a description for the infobox. We recommend keeping it short and succinct."
-                          id={`infocolInfobox-${index}-${infoboxIndex}-description`}
-                          value={infobox.description}
-                          onChange={onChange}
-                        />
-                        <FormErrorMessage>
-                          {infoboxErrors[infoboxIndex]?.description}
-                        </FormErrorMessage>
-                      </FormControl>
+                        {/* Infobox Description */}
+                        <FormControl
+                          isInvalid={!!infoboxErrors[infoboxIndex]?.description}
+                        >
+                          <FormLabel>Description</FormLabel>
+                          <Textarea
+                            placeholder="This is a description for the infobox. We recommend keeping it short and succinct."
+                            id={`infocolInfobox-${index}-${infoboxIndex}-description`}
+                            value={infobox.description}
+                            onChange={onChange}
+                          />
+                          <FormErrorMessage>
+                            {infoboxErrors[infoboxIndex]?.description}
+                          </FormErrorMessage>
+                        </FormControl>
 
-                      <Button
-                        id={`infocolInfobox-${index}-${infoboxIndex}`}
-                        onClick={() =>
-                          onDelete(
-                            `infocolInfobox-${index}-${infoboxIndex}`,
-                            "Infobox"
-                          )
-                        }
-                        alignSelf="center"
-                        variant="clear"
-                        colorScheme="critical"
-                      >
-                        Delete infobox
-                      </Button>
-                    </Editable.Section>
-                  </Editable.DraggableAccordionItem>
-                ))}
-              </VStack>
-            </Editable.Accordion>
-          </Editable.EmptySection>
-        </Editable.Droppable>
-      </DragDropContext>
+                        <Button
+                          id={`infocolInfobox-${index}-${infoboxIndex}`}
+                          onClick={() =>
+                            onDelete(
+                              `infocolInfobox-${index}-${infoboxIndex}`,
+                              "Infobox"
+                            )
+                          }
+                          alignSelf="center"
+                          variant="clear"
+                          colorScheme="critical"
+                        >
+                          Delete infobox
+                        </Button>
+                      </Editable.Section>
+                    </Editable.DraggableAccordionItem>
+                  ))}
+                </VStack>
+              </Editable.Accordion>
+            </Editable.EmptySection>
+          </Editable.Droppable>
+        </DragDropContext>
+      </Stack>
       <Button
         id={`infocolInfobox-${index}-create`}
         variant="outline"
@@ -200,7 +203,7 @@ export const InfocolsSectionBody = ({
         alignSelf="center"
         variant="clear"
         colorScheme="critical"
-        mt="1rem"
+        p="0"
       >
         Delete info-column
       </Button>
