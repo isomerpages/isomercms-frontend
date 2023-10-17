@@ -203,11 +203,7 @@ export const HomepagePreview = ({
             <>
               <TemplateInfocolsSection
                 key={`section-${sectionIndex}`}
-                title={section.infocols.title}
-                subtitle={section.infocols.subtitle}
-                linktext={section.infocols.linktext}
-                url={section.infocols.url}
-                infoboxes={section.infocols.infoboxes}
+                {...section.infocols}
                 sectionIndex={sectionIndex}
                 ref={scrollRefs[sectionIndex] as Ref<HTMLDivElement>}
               />
