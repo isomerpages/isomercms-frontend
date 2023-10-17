@@ -736,7 +736,8 @@ const validateInfocolsSection = (sectionError, sectionType, field, value) => {
       //     lowercase words separated by hyphens only.
       //     `;
       // }
-      // TO-DO: Allow external URLs
+      // TODO: Allow external URLs
+      // TODO: Add validation such that if linktext is present, url is mandatory
       break
     }
     default:
