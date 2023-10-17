@@ -180,6 +180,7 @@ export const InfocolsSectionBody = ({
           </Editable.Droppable>
         </DragDropContext>
       </Stack>
+
       <Button
         id={`infocolInfobox-${index}-create`}
         variant="outline"
