@@ -898,6 +898,9 @@ const EditHomepage = ({ match }) => {
             setHomepageState(intermediateHomepageState)
           } else if (val.infocols) {
             // Create 3 infoboxes by default
+
+            // his happens within the create handler. so at the point of creation
+            // of a new block, this is being added to the last index of the sections array
             const parentId =
               updatedHomepageState.frontMatter.sections.length - 1
             let intermediateHomepageState = updatedHomepageState
