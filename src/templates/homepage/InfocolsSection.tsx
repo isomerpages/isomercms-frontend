@@ -11,6 +11,35 @@ interface TemplateTextCardsSectionProps extends InfocolsSection {
   sectionIndex: number
 }
 
+interface TemplateInfoboxProps {
+  title: string
+  description?: string
+}
+
+const TemplateInfobox = ({ title, description }: TemplateInfoboxProps) => {
+  return (
+    <div
+      className={getClassNames(editorStyles, [
+        "infocols-infobox-body",
+        "is-flex",
+        "p-6",
+      ])}
+    >
+      <h3 className={editorStyles.h3}>{title}</h3>
+      {description && (
+        <p
+          className={getClassNames(editorStyles, [
+            "body-1",
+            "infocols-infobox-description",
+          ])}
+        >
+          {description}
+        </p>
+      )}
+    </div>
+  )
+}
+
 const TemplateInfocolsSection = forwardRef<
   HTMLDivElement,
   TemplateTextCardsSectionProps
@@ -26,29 +55,6 @@ const TemplateInfocolsSection = forwardRef<
     }: TemplateTextCardsSectionProps,
     ref: ForwardedRef<HTMLDivElement>
   ) => {
-    const getInfoBox = (infoboxTitle: string, infoboxDescription?: string) => {
-      return (
-        <div
-          className={getClassNames(editorStyles, [
-            "infocols-infobox-body",
-            "is-flex",
-            "p-6",
-          ])}
-        >
-          <h3 className={editorStyles.h3}>{infoboxTitle}</h3>
-          {infoboxDescription && (
-            <p
-              className={getClassNames(editorStyles, [
-                "body-1",
-                "infocols-infobox-description",
-              ])}
-            >
-              {infoboxDescription}
-            </p>
-          )}
-        </div>
-      )
-    }
     return (
       <section
         className={getClassNames(editorStyles, [
@@ -105,9 +111,9 @@ const TemplateInfocolsSection = forwardRef<
                         infoboxes.length > 2 ? "space-between" : "", // This specifically helps to make 3 infocols wrap nicely to 2 rows for md-xl screens
                       ])}
                     >
-                      {infoboxGroup.map((infobox) => {
-                        return getInfoBox(infobox.title, infobox.description)
-                      })}
+                      {infoboxGroup.map((infobox) => (
+                        <TemplateInfobox {...infobox} />
+                      ))}
                     </div>
                   )
                 })
@@ -120,9 +126,9 @@ const TemplateInfocolsSection = forwardRef<
                     infoboxes.length > 2 ? "space-between" : "", // This specifically helps to make 3 infocols wrap nicely to 2 rows for md-xl screens
                   ])}
                 >
-                  {infoboxes.map((infobox) =>
-                    getInfoBox(infobox.title, infobox.description)
-                  )}
+                  {infoboxes.map((infobox) => (
+                    <TemplateInfobox {...infobox} />
+                  ))}
                 </div>
               )}
             </div>
