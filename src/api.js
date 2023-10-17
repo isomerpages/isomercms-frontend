@@ -1,66 +1,16 @@
 import axios from "axios"
 
+<<<<<<< HEAD
 import { getNavFolderDropdownFromFolderOrder } from "./utils/generate"
+=======
+import { generateImageorFilePath } from "./utils/generate"
+>>>>>>> 62b6ef2f (chore(api): remove unused API functions)
 
 // axios settings
 axios.defaults.withCredentials = true
 
 // Constants
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 const BACKEND_URL_V2 = process.env.REACT_APP_BACKEND_URL_V2
-
-const getAllCategoriesApiEndpoint = ({ siteName, isResource }) => {
-  if (isResource) {
-    return `${BACKEND_URL}/sites/${siteName}/resources`
-  }
-  return `${BACKEND_URL}/sites/${siteName}/collections`
-}
-
-const getAllCategories = async ({ siteName, isResource }) => {
-  const apiEndpoint = getAllCategoriesApiEndpoint({ siteName, isResource })
-  const resp = await axios.get(apiEndpoint)
-  return resp.data
-}
-
-// EditNavBar
-const getEditNavBarData = async (siteName) => {
-  let foldersContent
-
-  const resp = await axios.get(`${BACKEND_URL}/sites/${siteName}/navigation`)
-  const { content, sha } = resp.data
-  const navContent = content
-  const navSha = sha
-  const collectionContent = await getAllCategories({
-    siteName,
-    isResource: false,
-  })
-  const resourceContent = await getAllCategories({ siteName, isResource: true })
-  const foldersResp = await axios.get(
-    `${BACKEND_URL}/sites/${siteName}/folders/all`
-  )
-  if (foldersResp.data && foldersResp.data.allFolderContent) {
-    // parse directory files
-    foldersContent = foldersResp.data.allFolderContent.reduce(
-      (acc, currFolder) => {
-        const collectionKey = Object.keys(currFolder.content.collections)[0]
-        const folderOrder = currFolder.content.collections[collectionKey].order
-        acc[currFolder.name] = getNavFolderDropdownFromFolderOrder(folderOrder)
-        return acc
-      },
-      {}
-    )
-  }
-
-  if (!navContent) return undefined
-
-  return {
-    navContent,
-    navSha,
-    collectionContent,
-    foldersContent,
-    resourceContent,
-  }
-}
 
 // Login
 const getEmailOtp = (email) => {
@@ -86,8 +36,6 @@ const verifyMobileNumberOtp = async (mobile, otp) => {
 }
 
 export {
-  getEditNavBarData,
-  getAllCategories,
   getEmailOtp,
   verifyEmailOtp,
   getMobileNumberOtp,
