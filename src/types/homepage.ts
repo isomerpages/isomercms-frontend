@@ -92,7 +92,7 @@ export interface TextcardsSection {
   cards: TextCardItem[]
 }
 
-export interface Infobox {
+export interface InfocolInfobox {
   title: string
   description?: string
 }
@@ -101,7 +101,7 @@ export interface InfocolsSection {
   subtitle?: string
   linktext?: string
   url?: string
-  infoboxes: Infobox[]
+  infoboxes: InfocolInfobox[]
 }
 
 export interface HomepageDto {

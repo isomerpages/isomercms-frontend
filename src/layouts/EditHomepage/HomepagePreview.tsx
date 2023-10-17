@@ -198,7 +198,7 @@ export const HomepagePreview = ({
               />
             </>
           )}
-          {/* TODO: Infocols section */}
+          {/* Infocols section */}
           {EditorHomepageFrontmatterSection.isInfocols(section) && (
             <>
               <TemplateInfocolsSection
