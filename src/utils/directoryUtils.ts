@@ -1,4 +1,8 @@
-import { DirectoryType } from "types/directory"
+import { DirectoryData, DirectoryType } from "types/directory"
+
+export const isDirectoryData = (item: unknown): item is DirectoryData => {
+  return (item as DirectoryData).type === "dir"
+}
 
 const getDirectoryType = (
   mediaDirectoryName: string,
