@@ -314,8 +314,6 @@ const EditHomepage = ({ match }) => {
         const scrollRefs = []
         const announcementScrollRefs = []
 
-        console.log(`Homepage Loaded`, homepageData)
-
         frontMatter.sections.forEach((section) => {
           scrollRefs.push(createRef())
           // If this is the hero section, hide all highlights/dropdownelems by default
@@ -435,9 +433,6 @@ const EditHomepage = ({ match }) => {
           textcards: textCardItemErrors,
           infocols: infocolInfoboxErrors,
         }
-
-        console.log(`Setting errors after homepage load`, errors)
-
         setFrontMatter(frontMatter)
         setOriginalFrontMatter(_.cloneDeep(frontMatter))
         setSha(sha)
@@ -476,9 +471,6 @@ const EditHomepage = ({ match }) => {
       const { id, value } = event.target
       const idArray = id.split("-")
       const elemType = idArray[0]
-
-      console.log("idArray", idArray)
-      console.log("elemType", elemType)
 
       switch (elemType) {
         case "site": {
@@ -766,8 +758,6 @@ const EditHomepage = ({ match }) => {
           break
         }
         case "infocolInfobox": {
-          console.log("Case infocolInfobox", frontMatter)
-
           // The field that changed is a info box element
           const { sections } = frontMatter
 
@@ -789,7 +779,6 @@ const EditHomepage = ({ match }) => {
               },
             },
           })
-          console.log("old errors", errors)
           const newErrors = update(errors, {
             infocols: {
               [sectionIndex]: {
@@ -803,13 +792,6 @@ const EditHomepage = ({ match }) => {
               },
             },
           })
-
-          console.log("setting new frontmatter", {
-            ...frontMatter,
-            sections: newSections,
-          })
-          console.log("setting new errors", newErrors)
-
           setFrontMatter({
             ...frontMatter,
             sections: newSections,
@@ -922,10 +904,6 @@ const EditHomepage = ({ match }) => {
             for (let i = 0; i < 3; i += 1) {
               const infobox = INFOCOLS_INFOBOX_SECTION
               const infoboxErr = getErrorValues(INFOCOLS_INFOBOX_SECTION)
-              console.log(
-                "Passing in infoboxErr for intermediate state:",
-                infoboxErr
-              )
               intermediateHomepageState = onCreate(
                 intermediateHomepageState,
                 `infocolInfobox-${parentId}`,
@@ -933,7 +911,6 @@ const EditHomepage = ({ match }) => {
                 infoboxErr
               )
             }
-            console.log(`Intermediate state`, intermediateHomepageState)
             setHomepageState(intermediateHomepageState)
           }
           break
@@ -1012,7 +989,6 @@ const EditHomepage = ({ match }) => {
             val,
             err
           )
-          console.log(`UpdatedHP:`, updatedHomepageState)
           setHomepageState(updatedHomepageState)
           break
         }
@@ -1318,7 +1294,6 @@ const EditHomepage = ({ match }) => {
       }
 
       resetFirstLoad()
-      console.log(`Save page:`, params)
       await updateHomepageHandler(params)
     } catch (err) {
       if (err.response.status !== 409) {
