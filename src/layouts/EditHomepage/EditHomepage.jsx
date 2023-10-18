@@ -81,6 +81,8 @@ import {
   TEXTCARDS_ITEM_SECTION,
   INFOCOLS_BLOCK_SECTION,
   INFOCOLS_INFOBOX_SECTION,
+  DEFAULT_NUMBER_OF_INFOCOL_INFOBOXES,
+  DEFAULT_NUMBER_OF_TEXTCARD_ITEMS,
 } from "./constants"
 import { HomepagePreview } from "./HomepagePreview"
 import { getErrorValues } from "./utils"
@@ -403,7 +405,6 @@ const EditHomepage = ({ match }) => {
             )
           }
 
-          // TODO: seems to load an existing state incorrectly into the errors object
           if (section.infocols) {
             sectionsErrors.push({
               infocols: getErrorValues(INFOCOLS_BLOCK_SECTION),
@@ -885,7 +886,7 @@ const EditHomepage = ({ match }) => {
             const parentId =
               updatedHomepageState.frontMatter.sections.length - 1
             let intermediateHomepageState = updatedHomepageState
-            for (let i = 0; i < 3; i += 1) {
+            for (let i = 0; i < DEFAULT_NUMBER_OF_TEXTCARD_ITEMS; i += 1) {
               const cardVal = TEXTCARDS_ITEM_SECTION
               const cardErr = getErrorValues(TEXTCARDS_ITEM_SECTION)
               intermediateHomepageState = onCreate(
@@ -899,12 +900,12 @@ const EditHomepage = ({ match }) => {
           } else if (val.infocols) {
             // Create 3 infoboxes by default
 
-            // his happens within the create handler. so at the point of creation
+            // This happens within the create handler. so at the point of creation
             // of a new block, this is being added to the last index of the sections array
             const parentId =
               updatedHomepageState.frontMatter.sections.length - 1
             let intermediateHomepageState = updatedHomepageState
-            for (let i = 0; i < 3; i += 1) {
+            for (let i = 0; i < DEFAULT_NUMBER_OF_INFOCOL_INFOBOXES; i += 1) {
               const infobox = INFOCOLS_INFOBOX_SECTION
               const infoboxErr = getErrorValues(INFOCOLS_INFOBOX_SECTION)
               intermediateHomepageState = onCreate(
