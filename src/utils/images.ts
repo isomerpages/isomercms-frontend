@@ -1,3 +1,9 @@
+import * as cheerio from "cheerio"
+
+import { MediaData } from "types/directory"
+
+import { isLinkInternal } from "./misc"
+
 /**
  * Util method to retrieve image details from /images folder from the relative file path,
  * e.g. "/images/album%/picture$.jpg" -> { imageDirectory: "images%2Falbum%25", fileName: "picture%24.jpg" }
@@ -17,4 +23,53 @@ export const getImageDetails = (
     fileName,
     imageDirectory,
   }
+}
+
+/**
+ * Util method to adjust image src in provided HTML, so that they can load from
+ * the correct source (i.e. GitHub or as base64).
+ */
+export const adjustImageSrcs = (
+  html: string,
+  mediaData: MediaData[]
+): string => {
+  const $ = cheerio.load(html)
+
+  $("img").each((_, element) => {
+    const src = $(element).attr("src")
+
+    if (src && isLinkInternal(src)) {
+      $(element).attr(
+        "src",
+        mediaData.find((media) => src === `/${media.mediaPath}`)?.mediaUrl ||
+          "/placeholder_no_image.png"
+      )
+    }
+
+    // Set default placeholder image if image fails to load
+    $(element).attr(
+      "onerror",
+      "this.onerror=null; this.src='/placeholder_no_image.png';"
+    )
+  })
+
+  return $.html()
+}
+
+/**
+ * Util method to extract all image srcs that are internal from the provided HTML.
+ */
+export const getMediaSrcsFromHtml = (html: string): Set<string> => {
+  const $ = cheerio.load(html)
+  const mediaSrcs = new Set<string>()
+
+  $("img").each((_, element) => {
+    const src = $(element).attr("src")
+
+    if (src && isLinkInternal(src)) {
+      mediaSrcs.add(src)
+    }
+  })
+
+  return mediaSrcs
 }
