@@ -6,40 +6,36 @@ import * as DirectoryService from "services/DirectoryService/index"
 
 import {
   DirectoryData,
-  PageData,
   SecondLevelFoldersAndPagesParams,
 } from "types/directory"
 import { isDirectoryData } from "utils"
 
-interface CollectionOrder {
+interface OrderedCollection {
   collectionName: string
   order: string[]
-}
-
-const getCollectionOrder = (
-  siteName: string,
-  collectionName: string
-): Promise<CollectionOrder> => {
-  return DirectoryService.getCollection({
-    siteName,
-    collectionName,
-  }).then((data) => ({ collectionName, order: data.map(({ name }) => name) }))
 }
 
 export const useGetSecondLevelFoldersAndPages = ({
   siteName,
   collectionsData = [],
-}: SecondLevelFoldersAndPagesParams): UseQueryResult<CollectionOrder[]>[] => {
+}: SecondLevelFoldersAndPagesParams): UseQueryResult<OrderedCollection[]>[] => {
   const directoryQueries = collectionsData
     .filter<DirectoryData>((item): item is DirectoryData =>
       isDirectoryData(item)
     )
     .map(({ name }) => ({
       queryKey: [DIR_SECOND_LEVEL_DIRECTORIES_KEY, siteName, name],
-      queryFn: () => getCollectionOrder(siteName, name),
+      queryFn: () =>
+        DirectoryService.getCollection({
+          siteName,
+          collectionName: name,
+        }).then((data) => ({
+          collectionName: name,
+          order: data.map(({ name: directoryName }) => directoryName),
+        })),
     }))
 
-  return useQueries<CollectionOrder[]>(directoryQueries) as UseQueryResult<
-    CollectionOrder[]
+  return useQueries<OrderedCollection[]>(directoryQueries) as UseQueryResult<
+    OrderedCollection[]
   >[]
 }
