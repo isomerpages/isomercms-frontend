@@ -1,5 +1,6 @@
 import { useFeatureValue } from "@growthbook/growthbook-react"
 import _ from "lodash"
+import { useCallback } from "react"
 
 import { FEATURE_FLAGS } from "constants/featureFlags"
 import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
@@ -18,9 +19,11 @@ const getIsFeatureEnabled = (
   return _.intersection(blockKeys, enabledBlocks).length > 0
 }
 
-export const useFrontmatterSections = (
-  baseFrontmatterSections: EditorHomepageFrontmatterSection[]
-): EditorHomepageFrontmatterSection[] => {
+type UseFrontmatterSectionsReturn = (
+  sections: EditorHomepageFrontmatterSection[]
+) => EditorHomepageFrontmatterSection[]
+
+export const useFrontmatterSections = (): UseFrontmatterSectionsReturn => {
   const [storedFrontmatter, setStoredFrontmatter] = useLocalStorage<
     EditorHomepageFrontmatterSection[]
   >(LOCAL_STORAGE_KEYS.FrontmatterSections, [])
@@ -29,38 +32,45 @@ export const useFrontmatterSections = (
     blocks: [],
   })
 
-  const actualBlocks = baseFrontmatterSections.filter((section) =>
-    getIsFeatureEnabled(section, blocks)
+  return useCallback(
+    (baseFrontmatterSections: EditorHomepageFrontmatterSection[]) => {
+      const actualBlocks = baseFrontmatterSections.filter((section) =>
+        getIsFeatureEnabled(section, blocks)
+      )
+
+      // NOTE: First, check if there are blocks that are on our sections
+      // that are NOT enabled.
+      // These blocks have been rolled back and should be
+      // saved to local storage to avoid data loss.
+      const rolledBackBlocks = _.cloneDeep(
+        baseFrontmatterSections.filter(
+          (section) => !getIsFeatureEnabled(section, blocks)
+        )
+      )
+
+      const enabledStoredFrontmatterBlocks = storedFrontmatter.filter(
+        (section) => {
+          return getIsFeatureEnabled(section, blocks)
+        }
+      )
+
+      const remainingStoredFrontmatterBlocks = storedFrontmatter.filter(
+        (section) => {
+          return !getIsFeatureEnabled(section, blocks)
+        }
+      )
+
+      setStoredFrontmatter(
+        _.uniqBy(
+          [...rolledBackBlocks, ...remainingStoredFrontmatterBlocks],
+          (obj) => JSON.stringify(obj)
+        )
+      )
+
+      console.log("===", enabledStoredFrontmatterBlocks, actualBlocks)
+
+      return [...actualBlocks, ...enabledStoredFrontmatterBlocks]
+    },
+    [blocks]
   )
-
-  // NOTE: First, check if there are blocks that are on our sections
-  // that are NOT enabled.
-  // These blocks have been rolled back and should be
-  // saved to local storage to avoid data loss.
-  const rolledBackBlocks = _.cloneDeep(
-    baseFrontmatterSections.filter(
-      (section) => !getIsFeatureEnabled(section, blocks)
-    )
-  )
-
-  const enabledStoredFrontmatterBlocks = storedFrontmatter.filter((section) => {
-    return getIsFeatureEnabled(section, blocks)
-  })
-
-  const remainingStoredFrontmatterBlocks = storedFrontmatter.filter(
-    (section) => {
-      return !getIsFeatureEnabled(section, blocks)
-    }
-  )
-
-  const updatedFrontmatter = [
-    ...actualBlocks,
-    ...enabledStoredFrontmatterBlocks,
-  ]
-  setStoredFrontmatter([
-    ...rolledBackBlocks,
-    ...remainingStoredFrontmatterBlocks,
-  ])
-
-  return updatedFrontmatter
 }

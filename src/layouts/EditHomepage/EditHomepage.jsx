@@ -192,6 +192,7 @@ const EditHomepage = ({ match }) => {
   const [hasLoaded, setHasLoaded] = useState(false)
   const [scrollRefs, setScrollRefs] = useState([])
   const [announcementScrollRefs, setAnnouncementScrollRefs] = useState([])
+  const computeFrontmatter = useFrontmatterSections()
 
   const [frontMatter, setFrontMatter] = useState({
     title: "",
@@ -265,7 +266,10 @@ const EditHomepage = ({ match }) => {
     displayAnnouncementItems,
   }) => {
     setDisplaySections(displaySections)
-    setFrontMatter(frontMatter)
+    setFrontMatter({
+      ...frontMatter,
+      sections: computeFrontmatter(frontMatter.sections),
+    })
     setErrors(errors)
     setDisplayDropdownElems(displayDropdownElems)
     setDisplayHighlights(displayHighlights)
@@ -276,8 +280,6 @@ const EditHomepage = ({ match }) => {
     JSON.stringify(originalFrontMatter) !== JSON.stringify(frontMatter)
 
   const errorToast = useErrorToast()
-
-  const featureFlaggedSections = useFrontmatterSections(frontMatter.sections)
 
   // TODO: Tidy up these `useEffects` and figure out what they do
   // TODO: Shift this into react query + custom hook
@@ -318,7 +320,10 @@ const EditHomepage = ({ match }) => {
         const scrollRefs = []
         const announcementScrollRefs = []
 
-        frontMatter.sections.forEach((section) => {
+        const sections = computeFrontmatter(frontMatter.sections)
+
+        sections.forEach((section) => {
+          console.log(section)
           scrollRefs.push(createRef())
           // If this is the hero section, hide all highlights/dropdownelems by default
           if (section.hero) {
@@ -436,7 +441,10 @@ const EditHomepage = ({ match }) => {
           textcards: textCardItemErrors,
           infocols: infocolInfoboxErrors,
         }
-        setFrontMatter(frontMatter)
+        setFrontMatter({
+          ...frontMatter,
+          sections,
+        })
         setOriginalFrontMatter(_.cloneDeep(frontMatter))
         setSha(sha)
         setDisplaySections(displaySections)
@@ -1479,7 +1487,7 @@ const EditHomepage = ({ match }) => {
                             }
                           >
                             <VStack p={0} spacing="1.5rem">
-                              {featureFlaggedSections.map(
+                              {frontMatter.sections.map(
                                 (section, sectionIndex) => (
                                   <>
                                     {section.resources && (
