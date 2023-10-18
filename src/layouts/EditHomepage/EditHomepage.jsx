@@ -28,7 +28,7 @@ import { FEATURE_FLAGS } from "constants/featureFlags"
 // Import hooks
 import { EditableContextProvider } from "contexts/EditableContext"
 
-import { useGetHomepageHook } from "hooks/homepageHooks"
+import { useFrontmatterSections, useGetHomepageHook } from "hooks/homepageHooks"
 import { useUpdateHomepageHook } from "hooks/homepageHooks/useUpdateHomepageHook"
 import { useAfterFirstLoad } from "hooks/useAfterFirstLoad"
 import useSiteColorsHook from "hooks/useSiteColorsHook"
@@ -276,6 +276,8 @@ const EditHomepage = ({ match }) => {
     JSON.stringify(originalFrontMatter) !== JSON.stringify(frontMatter)
 
   const errorToast = useErrorToast()
+
+  const featureFlaggedSections = useFrontmatterSections(frontMatter.sections)
 
   // TODO: Tidy up these `useEffects` and figure out what they do
   // TODO: Shift this into react query + custom hook
@@ -1477,7 +1479,7 @@ const EditHomepage = ({ match }) => {
                             }
                           >
                             <VStack p={0} spacing="1.5rem">
-                              {frontMatter.sections.map(
+                              {featureFlaggedSections.map(
                                 (section, sectionIndex) => (
                                   <>
                                     {section.resources && (
