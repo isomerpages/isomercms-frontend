@@ -1,11 +1,5 @@
 import axios from "axios"
 
-<<<<<<< HEAD
-import { getNavFolderDropdownFromFolderOrder } from "./utils/generate"
-=======
-import { generateImageorFilePath } from "./utils/generate"
->>>>>>> 62b6ef2f (chore(api): remove unused API functions)
-
 // axios settings
 axios.defaults.withCredentials = true
 
