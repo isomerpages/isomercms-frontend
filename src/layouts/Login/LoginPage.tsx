@@ -78,7 +78,6 @@ const FooterLink = ({
 
 const LoginContent = (): JSX.Element => {
   const { pathname, search } = useLocation()
-  const isSgidLogin = pathname === "/ogp-login"
 
   const params = new URLSearchParams(search)
   const statusCode = params.get("status")
@@ -167,36 +166,32 @@ const LoginContent = (): JSX.Element => {
             </Button>
           </TabPanel>
           <TabPanel>
-            {isSgidLogin && (
-              <>
-                <Button
-                  onClick={() => getSgidAuth()}
-                  isLoading={isSgidAuthLoading}
-                  w="full"
-                >
-                  Log in with <SingpassLogo mb="-0.2rem" /> app
-                </Button>
-                <Text
-                  mt="1rem"
-                  color="interaction.links.neutral-default"
-                  fontSize="0.75rem"
-                >
-                  Public officers in{" "}
-                  <Link
-                    href={SGID_AGENCY_FAQ_LINK}
-                    color="interaction.links.neutral-default"
-                  >
-                    select organisations
-                  </Link>{" "}
-                  can use this option.
-                </Text>
-                <Flex align="center" py="3rem">
-                  <Divider />
-                  <Text px="1.5rem">or</Text>
-                  <Divider />
-                </Flex>
-              </>
-            )}
+            <Button
+              onClick={() => getSgidAuth()}
+              isLoading={isSgidAuthLoading}
+              w="full"
+            >
+              Log in with <SingpassLogo mb="-0.2rem" /> app
+            </Button>
+            <Text
+              mt="1rem"
+              color="interaction.links.neutral-default"
+              fontSize="0.75rem"
+            >
+              Public officers in{" "}
+              <Link
+                href={SGID_AGENCY_FAQ_LINK}
+                color="interaction.links.neutral-default"
+              >
+                select organisations
+              </Link>{" "}
+              can use this option.
+            </Text>
+            <Flex align="center" py="3rem">
+              <Divider />
+              <Text px="1.5rem">or</Text>
+              <Divider />
+            </Flex>
             {email ? (
               <OtpForm
                 email={email}
