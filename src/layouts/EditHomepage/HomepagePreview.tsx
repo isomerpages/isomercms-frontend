@@ -7,6 +7,7 @@ import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 import { TemplateAnnouncementsSection } from "templates/homepage/AnnouncementsSection"
 import { TemplateHeroSection } from "templates/homepage/HeroSection"
 import TemplateInfobarSection from "templates/homepage/InfobarSection"
+import TemplateInfocolsSection from "templates/homepage/InfocolsSection"
 import TemplateInfopicLeftSection from "templates/homepage/InfopicLeftSection"
 import TemplateInfopicRightSection from "templates/homepage/InfopicRightSection"
 import TemplateResourcesSection from "templates/homepage/ResourcesSection"
@@ -192,6 +193,17 @@ export const HomepagePreview = ({
                 subtitle={section.textcards.subtitle}
                 description={section.textcards.description}
                 cards={section.textcards.cards}
+                sectionIndex={sectionIndex}
+                ref={scrollRefs[sectionIndex] as Ref<HTMLDivElement>}
+              />
+            </>
+          )}
+          {/* Infocols section */}
+          {EditorHomepageFrontmatterSection.isInfocols(section) && (
+            <>
+              <TemplateInfocolsSection
+                key={`section-${sectionIndex}`}
+                {...section.infocols}
                 sectionIndex={sectionIndex}
                 ref={scrollRefs[sectionIndex] as Ref<HTMLDivElement>}
               />

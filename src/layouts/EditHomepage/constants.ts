@@ -86,3 +86,21 @@ export const TEXTCARDS_ITEM_SECTION = {
   linktext: "Learn more",
   url: "", // No default value so that no broken link is created
 } as const
+
+export const DEFAULT_NUMBER_OF_TEXTCARD_ITEMS = 3
+
+export const INFOCOLS_BLOCK_SECTION = {
+  title: "Info-columns",
+  subtitle: "Add snippets of text in columns",
+  id: "infocols",
+  linktext: "Learn more",
+  url: "", // No default value so that no broken link is created
+  infoboxes: [],
+} as const
+
+export const INFOCOLS_INFOBOX_SECTION = {
+  title: "Infobox",
+  description: "Infobox description",
+} as const
+
+export const DEFAULT_NUMBER_OF_INFOCOL_INFOBOXES = 3
