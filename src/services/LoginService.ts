@@ -49,6 +49,6 @@ export const verifySgidLogin = async ({
 export const verifySgidMultiuserLogin = async ({
   email,
 }: VerifySgidMultiuserLoginParams): Promise<void> => {
-  const endpoint = `/auth/sgid/verify-multiuser-login`
+  const endpoint = `/auth/sgid/verify/multi/login`
   return apiService.post(endpoint, { email })
 }
