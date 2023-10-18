@@ -1,5 +1,6 @@
 import { AxiosError } from "axios"
 import { useMutation, UseMutationResult } from "react-query"
+import { useHistory } from "react-router-dom"
 
 import * as LoginService from "services/LoginService"
 
@@ -10,14 +11,15 @@ export const useSgidMultiuserLogin = (): UseMutationResult<
   AxiosError,
   VerifySgidMultiuserLoginParams
 > => {
+  const history = useHistory()
   return useMutation<void, AxiosError, VerifySgidMultiuserLoginParams>(
     (body) => LoginService.verifySgidMultiuserLogin(body),
     {
       onSuccess: () => {
-        window.location.replace("/sites")
+        history.push("/sites")
       },
       onError: (err: AxiosError) => {
-        window.location.replace(`/ogp-login?status=${err.response?.status}`)
+        history.push(`?status=${err.response?.status}`)
       },
     }
   )
