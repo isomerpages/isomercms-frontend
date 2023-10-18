@@ -1,18 +1,23 @@
 import { AxiosError } from "axios"
-import { UseMutationResult, useQueryClient, useMutation } from "react-query"
+import { useMutation, UseMutationResult, useQueryClient } from "react-query"
 
-import { GET_NAV_KEY } from "constants/queryKeys"
+import {
+  DIR_CONTENT_KEY,
+  DIR_SECOND_LEVEL_DIRECTORIES_KEY,
+  NAVIGATION_CONTENT_KEY,
+  RESOURCE_ROOM_NAME_KEY,
+} from "constants/queryKeys"
 
 import { NavService } from "services"
 import { MiddlewareError } from "types/error"
 import {
-  NavDto,
-  SinglePageNav,
   CollectionNav,
+  NavDto,
   ResourceNav,
+  SinglePageNav,
   SubmenuNav,
 } from "types/nav"
-import { useSuccessToast, useErrorToast, DEFAULT_RETRY_MSG } from "utils"
+import { DEFAULT_RETRY_MSG, useErrorToast, useSuccessToast } from "utils"
 
 export interface UpdateNavParams {
   originalNav: NavDto
@@ -39,13 +44,17 @@ export const useUpdateNavHook = (
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries([GET_NAV_KEY, siteName])
+        queryClient.invalidateQueries([NAVIGATION_CONTENT_KEY, siteName])
+        queryClient.invalidateQueries([DIR_CONTENT_KEY, { siteName }])
+        queryClient.invalidateQueries([RESOURCE_ROOM_NAME_KEY, { siteName }])
+        queryClient.invalidateQueries([
+          DIR_SECOND_LEVEL_DIRECTORIES_KEY,
+          siteName,
+        ])
         successToast({
           id: "update-nav-success",
           description: "Navigation bar updated successfully",
         })
-        // TODO: remove once we have v2 endpoints to support get nav bar details
-        window.location.reload()
       },
       onError: (err: AxiosError) => {
         errorToast({

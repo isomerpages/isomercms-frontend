@@ -1372,7 +1372,7 @@ const EditHomepage = ({ match }) => {
       <VStack>
         <Header
           title="Homepage"
-          shouldAllowEditPageBackNav={hasChanges}
+          shouldAllowEditPageBackNav={!hasChanges}
           isEditPage
           backButtonText="Back to My Workspace"
           backButtonUrl={`/sites/${siteName}/workspace`}
