@@ -54,7 +54,7 @@ const MediasSelectModal = ({
   const { params } = useRouteMatch()
   const { siteName } = params
 
-  const { mediaRoom } = queryParams
+  const { mediaRoom, mediaDirectoryName } = queryParams
 
   const [curPage, setCurPage] = usePaginate()
 
@@ -85,7 +85,7 @@ const MediasSelectModal = ({
   const files = useGetAllMediaFiles(
     mediaFolderFiles || [],
     params.siteName,
-    mediaRoom
+    mediaDirectoryName
   )
 
   const [searchValue, setSearchedValue] = useState("")
