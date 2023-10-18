@@ -3,6 +3,8 @@ import {
   LoginParams,
   VerifyOtpParams,
   VerifySgidLoginParams,
+  VerifySgidLoginResponseDto,
+  VerifySgidMultiuserLoginParams,
 } from "types/login"
 
 import { apiService } from "./ApiService"
@@ -22,12 +24,31 @@ export const verifyLoginOtp = async ({
 
 export const getSgidAuthUrl = async (): Promise<SgidAuthUrlResponseDto> => {
   return apiService
-    .get<SgidAuthUrlResponseDto>(`/auth/sgid/auth-url`)
-    .then(({ data }) => data)
+    .get<SgidAuthUrlResponseDto>(`/auth/sgid/auth-url`, {
+      headers: {
+        "Cache-Control": "no-cache",
+        Pragma: "no-cache",
+        Expires: "0",
+      },
+    })
+    .then(({ data }) => {
+      return data
+    })
 }
 
 export const verifySgidLogin = async ({
   code,
-}: VerifySgidLoginParams): Promise<void> => {
-  await apiService.get<void>(`/auth/sgid/verify-login?code=${code}`)
+}: VerifySgidLoginParams): Promise<VerifySgidLoginResponseDto> => {
+  return apiService
+    .get<VerifySgidLoginResponseDto>(`/auth/sgid/verify-login?code=${code}`)
+    .then(({ data }) => {
+      return data
+    })
+}
+
+export const verifySgidMultiuserLogin = async ({
+  email,
+}: VerifySgidMultiuserLoginParams): Promise<void> => {
+  const endpoint = `/auth/sgid/verify-multiuser-login`
+  return apiService.post(endpoint, { email })
 }
