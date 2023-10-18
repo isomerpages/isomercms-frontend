@@ -77,7 +77,7 @@ const FooterLink = ({
 )
 
 const LoginContent = (): JSX.Element => {
-  const { pathname, search } = useLocation()
+  const { search } = useLocation()
 
   const params = new URLSearchParams(search)
   const statusCode = params.get("status")
@@ -181,6 +181,7 @@ const LoginContent = (): JSX.Element => {
               Public officers in{" "}
               <Link
                 href={SGID_AGENCY_FAQ_LINK}
+                isExternal
                 color="interaction.links.neutral-default"
               >
                 select organisations
@@ -210,7 +211,9 @@ const LoginContent = (): JSX.Element => {
             )}
           </TabPanel>
           <Text color="text.helper" fontSize="0.625rem" pt="2rem">
-            By clicking ‘Log in’, you are acknowledging and agreeing to Isomer’s{" "}
+            {
+              "By logging into the IsomerCMS, you are acknowledging and agreeing to Isomer's "
+            }
             <Link href={TERMS_OF_USE_LINK} isExternal>
               Terms of Use
             </Link>
