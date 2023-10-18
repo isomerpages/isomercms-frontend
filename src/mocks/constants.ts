@@ -8,6 +8,7 @@ import {
   PageData,
   ResourcePageData,
 } from "types/directory"
+import { VerifySgidLoginResponseDto } from "types/login"
 import { NotificationData } from "types/notifications"
 import {
   EditedItemProps,
@@ -532,6 +533,23 @@ export const MOCK_LAUNCHING_SITE_LAUNCH_DTO: SiteLaunchDto = {
       source: "sourceURL",
       type: "CNAME",
       target: "targetURL",
+    },
+  ],
+}
+
+export const MOCK_SGID_USER_DATA: VerifySgidLoginResponseDto = {
+  userData: [
+    {
+      email: "user1@open.gov.sg",
+      departmentName: "Important department",
+      employmentTitle: "Special title",
+      agencyName: "Agency",
+    },
+    {
+      email: "user2@moe.edu.sg",
+      departmentName: "Big department",
+      employmentTitle: "Very important person",
+      agencyName: "Another agency",
     },
   ],
 }
