@@ -40,7 +40,7 @@ export const useGetMultipleMediaHook = (
   queryOptions?: Omit<UseQueryOptions<MediaData[]>, "queryFn" | "queryKey">
 ): UseQueryResult<MediaData[]> => {
   return useQuery<MediaData[]>(
-    [MEDIA_MULTIPLE_CONTENT_KEY, params],
+    [MEDIA_MULTIPLE_CONTENT_KEY, ...params.mediaSrcs],
     () => getMultipleMedia(params),
     {
       ...queryOptions,
