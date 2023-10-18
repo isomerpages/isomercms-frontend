@@ -246,7 +246,7 @@ export const LoginPage = (): JSX.Element => (
             textStyle="h2"
             position="absolute"
             maxW="14.25rem"
-            top="3rem"
+            top="5vh"
             right="5.5rem"
           >
             Rapidly build & launch informational sites
@@ -260,7 +260,7 @@ export const LoginPage = (): JSX.Element => (
           maxW="54rem"
           alignItems="start"
           justifyContent="center"
-          pt="3rem"
+          pt="5vh"
         >
           <LoginContent />
         </Flex>
