@@ -265,6 +265,7 @@ export const LoginPage = (): JSX.Element => (
           <LoginContent />
         </Flex>
       </GridItem>
+      {/* Custom colour to match stairs */}
       <GridItem area="credits" bgColor="#E9F0FB" borderColor="#E9F0FB">
         <Flex h="100%" alignItems="center" justifyContent="center">
           <HStack h="2rem" gap="2rem">
