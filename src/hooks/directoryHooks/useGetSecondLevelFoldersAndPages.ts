@@ -1,6 +1,6 @@
 import { useQueries, UseQueryResult } from "react-query"
 
-import { DIR_SECOND_LEVEL_CONTENT_KEY } from "constants/queryKeys"
+import { DIR_SECOND_LEVEL_DIRECTORIES_KEY } from "constants/queryKeys"
 
 import * as DirectoryService from "services/DirectoryService/index"
 
@@ -35,7 +35,7 @@ export const useGetSecondLevelFoldersAndPages = ({
       isDirectoryData(item)
     )
     .map(({ name }) => ({
-      queryKey: [DIR_SECOND_LEVEL_CONTENT_KEY, siteName, name],
+      queryKey: [DIR_SECOND_LEVEL_DIRECTORIES_KEY, siteName, name],
       queryFn: () => getCollectionOrder(siteName, name),
     }))
 

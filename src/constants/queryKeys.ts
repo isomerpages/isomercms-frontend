@@ -1,6 +1,6 @@
 export const PAGE_CONTENT_KEY = "page-contents"
 export const DIR_CONTENT_KEY = "dir-contents"
-export const DIR_SECOND_LEVEL_CONTENT_KEY = "dir-second-level-contents"
+export const DIR_SECOND_LEVEL_DIRECTORIES_KEY = "dir-second-level-directories"
 export const THIRD_NAV_CONTENT_KEY = "third-nav-contents"
 export const CSP_CONTENT_KEY = "csp-contents"
 export const NAVIGATION_CONTENT_KEY = "navigation-contents"
