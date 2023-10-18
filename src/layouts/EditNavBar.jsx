@@ -1,5 +1,6 @@
 import {
   Box,
+  Code,
   HStack,
   Skeleton,
   Text,
@@ -78,7 +79,7 @@ const EditNavBar = ({ match }) => {
     links: [],
     sublinks: [],
   })
-  const [deletedLinks, setDeletedLinks] = useState("")
+  const [deletedLinks, setDeletedLinks] = useState([])
 
   const {
     isOpen: isRemovedContentWarningOpen,
@@ -197,7 +198,7 @@ const EditNavBar = ({ match }) => {
       links: _.fill(Array(initialLinks.length), enumSection("error")),
       sublinks: [],
     }
-    let deletedDisplayText = ""
+    const initialDeletedLinks = []
     const filteredInitialLinks = []
     initialLinks.forEach((link, idx) => {
       let numSublinks = 0
@@ -206,8 +207,7 @@ const EditNavBar = ({ match }) => {
       }
       if ("collection" in link && !(link.collection in foldersContent)) {
         // Invalid collection linked
-        deletedDisplayText += `<br/>For link <code>${idx + 1}</code>: <br/>`
-        deletedDisplayText += `    <code>${link.collection}</code> has been removed</br>`
+        initialDeletedLinks.push({ link, idx })
         return
       }
       filteredInitialLinks.push(link)
@@ -222,7 +222,7 @@ const EditNavBar = ({ match }) => {
     setHasLoaded(true)
     setDisplayLinks(initialDisplayLinks)
     setDisplaySublinks(initialDisplaySublinks)
-    setDeletedLinks(deletedDisplayText)
+    setDeletedLinks(initialDeletedLinks)
     setOriginalNav(content)
     setSha(navSha)
     setCollections(initialCollections)
@@ -561,7 +561,7 @@ const EditNavBar = ({ match }) => {
 
   return (
     <>
-      {!isEmpty(deletedLinks) && (
+      {!_.isEmpty(deletedLinks) && (
         <WarningModal
           isOpen={isRemovedContentWarningOpen}
           onClose={onRemovedContentWarningClose}
@@ -574,8 +574,13 @@ const EditNavBar = ({ match }) => {
                 on the next page.
               </Text>
               <br />
-              {deletedLinks.map((link) => (
-                <Text>{link}</Text>
+              {deletedLinks.map(({ link, idx }) => (
+                <>
+                  <Text>
+                    For link <Code>{idx}</Code>: <Code>{link.collection}</Code>{" "}
+                    has been removed
+                  </Text>
+                </>
               ))}
             </Box>
           }

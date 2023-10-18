@@ -3,6 +3,7 @@ import { useMutation, UseMutationResult, useQueryClient } from "react-query"
 
 import {
   DIR_CONTENT_KEY,
+  DIR_SECOND_LEVEL_DIRECTORIES_KEY,
   NAVIGATION_CONTENT_KEY,
   RESOURCE_ROOM_NAME_KEY,
 } from "constants/queryKeys"
@@ -46,6 +47,10 @@ export const useUpdateNavHook = (
         queryClient.invalidateQueries([NAVIGATION_CONTENT_KEY, siteName])
         queryClient.invalidateQueries([DIR_CONTENT_KEY, { siteName }])
         queryClient.invalidateQueries([RESOURCE_ROOM_NAME_KEY, { siteName }])
+        queryClient.invalidateQueries([
+          DIR_SECOND_LEVEL_DIRECTORIES_KEY,
+          siteName,
+        ])
         successToast({
           id: "update-nav-success",
           description: "Navigation bar updated successfully",
