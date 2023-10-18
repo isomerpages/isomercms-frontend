@@ -10,7 +10,7 @@ import {
 import { Link } from "@opengovsg/design-system-react"
 import { useEffect } from "react"
 import { BiChevronRight } from "react-icons/bi"
-import { useHistory, useLocation } from "react-router-dom"
+import { useLocation } from "react-router-dom"
 
 import { useSgidLogin, useSgidMultiuserLogin } from "hooks/loginHooks"
 
@@ -25,12 +25,11 @@ export const SgidLoginCallbackPage = (): JSX.Element => {
   const { data: employments } = useSgidLogin({ code })
 
   const { mutateAsync: onSelectLogin } = useSgidMultiuserLogin()
-  const history = useHistory()
 
   useEffect(() => {
     if (!employments) return
     if (employments.length === 1) {
-      history.push("/sites")
+      window.location.replace("/sites")
     }
   }, [employments])
 
