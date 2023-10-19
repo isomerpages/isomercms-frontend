@@ -30,7 +30,8 @@ export function useUpdateMediaHook(params, queryParams) {
       onSettled: () => {
         queryClient.invalidateQueries([MEDIA_CONTENT_KEY, { ...params }])
       },
-      onSuccess: () => {
+      onSuccess: async () => {
+        await new Promise((resolve) => setTimeout(resolve, 500))
         successToast({
           id: "update-media-file-success",
           description: `Successfully updated media file!`,

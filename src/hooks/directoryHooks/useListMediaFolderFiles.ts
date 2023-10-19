@@ -22,7 +22,7 @@ export const useListMediaFolderFiles = (
 
   return useQuery<GetMediaFilesDto>(
     [LIST_MEDIA_DIRECTORY_FILES_KEY, params],
-    () => DirectoryService.getMediaFolderFiles(params),
+    async () => DirectoryService.getMediaFolderFiles(params),
     {
       ...queryOptions,
       retry: false,

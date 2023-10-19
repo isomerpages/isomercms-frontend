@@ -35,7 +35,8 @@ export function useMoveHook(params, queryParams) {
         })
       if (queryParams && queryParams.onError) queryParams.onError()
     },
-    onSuccess: (resp) => {
+    onSuccess: async (resp) => {
+      await new Promise((resolve) => setTimeout(resolve, 500))
       if (!resp)
         successToast({
           id: "move-file-present-success",
