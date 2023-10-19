@@ -153,13 +153,25 @@ const EditNavBar = ({ match }) => {
 
   // get nav bar data
   const { data: navBarContents } = useGetNavHook(siteName)
-  const { data: collectionsData } = useGetFoldersAndPages({ siteName })
-  const { data: resourceRoomName } = useGetResourceRoomName(siteName)
-  const { data: resourceRoomContents } = useGetResourceRoom({
+  const {
+    data: collectionsData,
+    isLoading: isCollectionsDataLoading,
+  } = useGetFoldersAndPages({ siteName })
+  const {
+    data: resourceRoomName,
+    isLoading: isResourceRoomNameLoading,
+  } = useGetResourceRoomName(siteName)
+  const {
+    data: resourceRoomContents,
+    isLoading: isResourceRoomContentsLoading,
+  } = useGetResourceRoom({
     siteName,
     resourceRoomName: resourceRoomName || "",
   })
-  const secondLevelData = useGetSecondLevelFoldersAndPages({
+  const {
+    data: secondLevelData,
+    isLoading: isSecondLevelDataLoading,
+  } = useGetSecondLevelFoldersAndPages({
     siteName,
     collectionsData,
   })
@@ -168,7 +180,14 @@ const EditNavBar = ({ match }) => {
   const { mutateAsync: saveNavData } = useUpdateNavHook(siteName)
 
   useEffect(() => {
-    if (_.isEmpty(navBarContents)) return
+    if (
+      _.isEmpty(navBarContents) ||
+      isCollectionsDataLoading ||
+      isResourceRoomNameLoading ||
+      isResourceRoomContentsLoading ||
+      isSecondLevelDataLoading
+    )
+      return
 
     const { content, sha: navSha } = navBarContents
     const initialCollections = collectionsData.map((item) => item.name)
@@ -181,15 +200,15 @@ const EditNavBar = ({ match }) => {
           deslugifyDirectory(resource.name)
         )
       : undefined
-    const foldersContent =
-      secondLevelData && secondLevelData.every(({ isLoading }) => !isLoading)
-        ? secondLevelData.reduce((acc, curr) => {
-            const { data } = curr
-            const { collectionName, order } = data
-            acc[collectionName] = getNavFolderDropdownFromFolderOrder(order)
-            return acc
-          }, {})
-        : {}
+    const foldersContent = secondLevelData
+      ? secondLevelData.reduce((acc, curr) => {
+          // const { data } = curr
+          if (!curr) return acc
+          const { collectionName, order } = curr
+          acc[collectionName] = getNavFolderDropdownFromFolderOrder(order)
+          return acc
+        }, {})
+      : {}
 
     // Add booleans for displaying links and sublinks
     const { links: initialLinks } = content
@@ -232,7 +251,13 @@ const EditNavBar = ({ match }) => {
     setResources(resourcesData)
     setFolderDropdowns(foldersContent)
     setErrors(initialErrors)
-  }, [navBarContents, collectionsData, resourceRoomName, resourceRoomContents])
+  }, [
+    navBarContents,
+    collectionsData,
+    resourceRoomName,
+    resourceRoomContents,
+    secondLevelData,
+  ])
 
   useEffect(() => {
     setHasChanges(
