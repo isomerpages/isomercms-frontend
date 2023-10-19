@@ -202,7 +202,6 @@ const EditNavBar = ({ match }) => {
       : undefined
     const foldersContent = secondLevelData
       ? secondLevelData.reduce((acc, curr) => {
-          // const { data } = curr
           if (!curr) return acc
           const { collectionName, order } = curr
           acc[collectionName] = getNavFolderDropdownFromFolderOrder(order)
