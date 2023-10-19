@@ -36,7 +36,7 @@ export const adjustImageSrcs = (
   const $ = cheerio.load(html)
 
   $("img").each((_, element) => {
-    const src = $(element).attr("src")
+    const src = $(element).attr("src")?.replaceAll("%20", " ")
 
     if (src && isLinkInternal(src)) {
       $(element).attr(
