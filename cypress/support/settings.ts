@@ -1,17 +1,11 @@
 import {
   BASE_SEO_LINK,
-  COOKIE_NAME,
-  COOKIE_VALUE,
-  E2E_USER,
-  LOCAL_STORAGE_USERID_KEY,
-  LOCAL_STORAGE_USER_KEY,
   TEST_PRIMARY_COLOR,
   TEST_REPO_NAME,
 } from "../fixtures/constants"
-import { setCookieWithDomain } from "../utils/cookies"
 
 Cypress.Commands.add("saveSettings", () => {
-  cy.intercept("POST", "/v2/sites/e2e-test-repo/settings").as("awaitSave")
+  cy.intercept("POST", `/v2/sites/${TEST_REPO_NAME}/settings`).as("awaitSave")
   cy.contains("button", "Save").click()
   cy.wait("@awaitSave")
 })
