@@ -8,7 +8,7 @@ import {
   Flex,
   Image,
 } from "@chakra-ui/react"
-import { useFeatureIsOn } from "@growthbook/growthbook-react"
+import { useFeatureValue } from "@growthbook/growthbook-react"
 import { Infobox } from "@opengovsg/design-system-react"
 import _ from "lodash"
 import { useEffect, useState } from "react"
@@ -16,7 +16,10 @@ import { Link } from "react-router-dom"
 
 import { AllSitesHeader } from "components/Header/AllSitesHeader"
 
-import { FEATURE_FLAGS } from "constants/featureFlags"
+import {
+  FEATURE_FLAGS,
+  NUM_DEFAULT_HOMEPAGE_BLOCKS,
+} from "constants/featureFlags"
 import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 
 import { useLoginContext } from "contexts/LoginContext"
@@ -163,7 +166,10 @@ export const Sites = (): JSX.Element => {
     )
   }, [siteRequestData])
 
-  const showNewLayouts = useFeatureIsOn(FEATURE_FLAGS.HOMEPAGE_TEMPLATES)
+  const { blocks } = useFeatureValue(FEATURE_FLAGS.ENABLED_BLOCKS, {
+    blocks: [],
+  })
+  const showNewLayouts = blocks.length > NUM_DEFAULT_HOMEPAGE_BLOCKS
   const isGithubUser = userType === UserTypes.Github
   /**
    * Currently the announcement modal takes in all the keyboard events,
