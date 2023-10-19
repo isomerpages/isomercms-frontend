@@ -24,7 +24,8 @@ export function useDeleteMediaHook(params, queryParams) {
       })
       if (queryParams && queryParams.onError) queryParams.onError()
     },
-    onSuccess: () => {
+    onSuccess: async () => {
+      await new Promise((resolve) => setTimeout(resolve, 500))
       successToast({
         id: "delete-media-file-success",
         description: `Successfully deleted media file!`,

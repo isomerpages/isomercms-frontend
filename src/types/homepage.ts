@@ -92,6 +92,18 @@ export interface TextcardsSection {
   cards: TextCardItem[]
 }
 
+export interface InfocolInfobox {
+  title: string
+  description?: string
+}
+export interface InfocolsSection {
+  title: string
+  subtitle?: string
+  linktext?: string
+  url?: string
+  infoboxes: InfocolInfobox[]
+}
+
 export interface HomepageDto {
   content: {
     frontMatter: {
@@ -108,6 +120,7 @@ export interface HomepageDto {
         | ResourcesSection
         | AnnouncementsBlockSection
         | TextcardsSection
+        | InfocolsSection
       )[]
     }
     pageBody?: string
@@ -121,6 +134,8 @@ export type EditorHomepageElement =
   | "highlight"
   | "announcement"
   | `textCardItem-${number}`
+  | `infocolInfobox-${number}`
+
 export type PossibleEditorSections = IterableElement<
   | EditorHomepageState["frontMatter"]["sections"]
   | EditorHeroDropdownSection["dropdown"]["options"]
@@ -165,6 +180,21 @@ export type TextcardFrontmatterSection = {
   textcards: EditorTextcardSection
 }
 
+export interface EditorinfocolInfoboxSection {
+  infoboxes: []
+}
+
+export interface EditorInfocolsSection extends EditorinfocolInfoboxSection {
+  title: string
+  subtitle: string
+  linktext: string
+  url: string
+}
+
+export type InfocolsFrontmatterSection = {
+  infocols: EditorInfocolsSection
+}
+
 export type EditorHomepageFrontmatterSection =
   | HeroFrontmatterSection
   | ResourcesFrontmatterSection
@@ -172,6 +202,7 @@ export type EditorHomepageFrontmatterSection =
   | InfobarFrontmatterSection
   | AnnouncementsFrontmatterSection
   | TextcardFrontmatterSection
+  | InfocolsFrontmatterSection
 
 export const EditorHomepageFrontmatterSection = {
   isHero: (
@@ -198,6 +229,10 @@ export const EditorHomepageFrontmatterSection = {
     section: EditorHomepageFrontmatterSection
   ): section is TextcardFrontmatterSection =>
     !!(section as TextcardFrontmatterSection).textcards,
+  isInfocols: (
+    section: EditorHomepageFrontmatterSection
+  ): section is InfocolsFrontmatterSection =>
+    !!(section as InfocolsFrontmatterSection).infocols,
 }
 
 export interface EditorHomepageState {
@@ -210,6 +245,7 @@ export interface EditorHomepageState {
     highlights: unknown[]
     announcementItems: unknown[]
     textcards: unknown[][]
+    infocols: unknown[][]
   }
   displaySections: unknown[]
   displayDropdownElems: unknown[]

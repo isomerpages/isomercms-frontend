@@ -52,7 +52,7 @@ export const RouteSelector = () => {
       <Switch>
         <RedirectIfLoggedInRoute
           exact
-          path={["/", "/ogp-login"]}
+          path={["/"]}
           unauthedComponent={LoginPage}
         />
 

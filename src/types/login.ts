@@ -13,3 +13,17 @@ export interface SgidAuthUrlResponseDto {
 export interface VerifySgidLoginParams {
   code: string
 }
+
+export interface VerifySgidMultiuserLoginParams {
+  email: string
+}
+
+export interface PublicOfficerData {
+  email: string
+  agencyName: string
+  departmentName: string
+  employmentTitle: string
+}
+export interface VerifySgidLoginResponseDto {
+  userData: PublicOfficerData[]
+}

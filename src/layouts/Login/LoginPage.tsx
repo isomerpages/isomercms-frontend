@@ -30,10 +30,13 @@ import { useGetSgidAuth, useLogin, useVerifyOtp } from "hooks/loginHooks"
 import { getAxiosErrorMessage } from "utils/axios"
 import { useErrorToast, useSuccessToast } from "utils/toasts"
 
-import { IsomerLogo, LoginImage, OGPLogo } from "assets"
+import { IsomerLogo, LoginImage, OGPLogo, SingpassLogo } from "assets"
 import { DEFAULT_RETRY_MSG } from "utils"
 
 import { LoginForm, LoginProps, OtpForm, OtpProps } from "./components"
+
+const SGID_AGENCY_FAQ_LINK =
+  "https://docs.id.gov.sg/faq-users#as-a-government-officer-why-am-i-not-able-to-login-to-my-work-tool-using-sgid"
 
 const LOGIN_GRID_LAYOUT: Pick<
   GridProps,
@@ -45,7 +48,7 @@ const LOGIN_GRID_LAYOUT: Pick<
 > = {
   gridTemplateAreas: `"image content" 
                       "credits links"`,
-  gridTemplateColumns: "2fr 4fr",
+  gridTemplateColumns: "1fr 1fr",
   gridTemplateRows: "1fr 5rem",
   height: "100%",
   width: "100%",
@@ -74,8 +77,7 @@ const FooterLink = ({
 )
 
 const LoginContent = (): JSX.Element => {
-  const { pathname, search } = useLocation()
-  const isSgidLogin = pathname === "/ogp-login"
+  const { search } = useLocation()
 
   const params = new URLSearchParams(search)
   const statusCode = params.get("status")
@@ -137,9 +139,6 @@ const LoginContent = (): JSX.Element => {
 
   return (
     <VStack gap="2.5rem" alignItems="start" width="65%">
-      <Text fontSize="2.5rem" color="text.title.brand" textStyle="display-2">
-        Rapidly build & launch informational sites
-      </Text>
       <Infobox>
         We’re moving in phases from GitHub IDs to email addresses as the login
         method. For those currently using GitHub ID, you’ll be informed when you
@@ -149,7 +148,6 @@ const LoginContent = (): JSX.Element => {
         <TabList>
           <Tab>Github Login</Tab>
           <Tab>Email Login</Tab>
-          {isSgidLogin && <Tab>sgID Login</Tab>}
         </TabList>
         <TabPanels pt="2rem" minHeight="16.5rem">
           <TabPanel>
@@ -157,6 +155,7 @@ const LoginContent = (): JSX.Element => {
               as={Link}
               rel="noopener noreferrer"
               textDecoration="none"
+              w="full"
               _hover={{
                 textDecoration: "none",
                 bgColor: "primary.600",
@@ -167,6 +166,33 @@ const LoginContent = (): JSX.Element => {
             </Button>
           </TabPanel>
           <TabPanel>
+            <Button
+              onClick={() => getSgidAuth()}
+              isLoading={isSgidAuthLoading}
+              w="full"
+            >
+              Log in with <SingpassLogo mb="-0.2rem" /> app
+            </Button>
+            <Text
+              mt="1rem"
+              color="interaction.links.neutral-default"
+              fontSize="0.75rem"
+            >
+              Public officers in{" "}
+              <Link
+                href={SGID_AGENCY_FAQ_LINK}
+                isExternal
+                color="interaction.links.neutral-default"
+              >
+                select organisations
+              </Link>{" "}
+              can use this option.
+            </Text>
+            <Flex align="center" py="3rem">
+              <Divider />
+              <Text px="1.5rem">or</Text>
+              <Divider />
+            </Flex>
             {email ? (
               <OtpForm
                 email={email}
@@ -184,22 +210,10 @@ const LoginContent = (): JSX.Element => {
               />
             )}
           </TabPanel>
-          {isSgidLogin && (
-            <TabPanel>
-              <Infobox mb="1rem">
-                This is an experimental service currently offered to OGP
-                officers only.
-              </Infobox>
-              <Button
-                onClick={() => getSgidAuth()}
-                isLoading={isSgidAuthLoading}
-              >
-                Log in with Singpass app
-              </Button>
-            </TabPanel>
-          )}
           <Text color="text.helper" fontSize="0.625rem" pt="2rem">
-            By clicking ‘Log in’, you are acknowledging and agreeing to Isomer’s{" "}
+            {
+              "By logging into the IsomerCMS, you are acknowledging and agreeing to Isomer's "
+            }
             <Link href={TERMS_OF_USE_LINK} isExternal>
               Terms of Use
             </Link>
@@ -219,16 +233,40 @@ export const LoginPage = (): JSX.Element => (
     <RestrictedGovtMasthead />
     <Grid {...LOGIN_GRID_LAYOUT}>
       <GridItem area="image" bgColor="primary.500">
-        <Flex h="100%" w="100%" alignItems="end" justifyContent="center">
-          <LoginImage maxH="100%" />
+        <Flex
+          h="calc(100vh - 5rem - 2rem)"
+          w="100%"
+          alignItems="end"
+          justifyContent="start"
+          position="relative"
+        >
+          <Text
+            fontSize="2.25rem"
+            color="base.content.inverse"
+            textStyle="h2"
+            position="absolute"
+            maxW="14.25rem"
+            top="5vh"
+            right="5.5rem"
+          >
+            Rapidly build & launch informational sites
+          </Text>
+          <LoginImage maxH="100%" maxW="100%" />
         </Flex>
       </GridItem>
       <GridItem area="content" bgColor="white">
-        <Flex h="100%" maxW="54rem" alignItems="center" justifyContent="center">
+        <Flex
+          h="100%"
+          maxW="54rem"
+          alignItems="start"
+          justifyContent="center"
+          pt="5vh"
+        >
           <LoginContent />
         </Flex>
       </GridItem>
-      <GridItem area="credits" bgColor="primary.100">
+      {/* Custom colour to match stairs */}
+      <GridItem area="credits" bgColor="#E9F0FB" borderColor="#E9F0FB">
         <Flex h="100%" alignItems="center" justifyContent="center">
           <HStack h="2rem" gap="2rem">
             <IsomerLogo />

@@ -1,4 +1,4 @@
-import { FormControl } from "@chakra-ui/react"
+import { FormControl, HStack } from "@chakra-ui/react"
 import {
   Button,
   FormLabel,
@@ -24,7 +24,13 @@ export const LoginForm = ({
   onSubmit,
   errorMessage,
 }: LoginFormProps): JSX.Element => {
-  const { handleSubmit, register, formState, setError } = useForm<LoginProps>({
+  const {
+    handleSubmit,
+    register,
+    formState,
+    setError,
+    watch,
+  } = useForm<LoginProps>({
     mode: "onBlur",
   })
   useEffect(() => {
@@ -44,20 +50,26 @@ export const LoginForm = ({
         <FormLabel isRequired htmlFor="email">
           Log in with a .gov.sg or other whitelisted email address
         </FormLabel>
-        <Input
-          autoComplete="email"
-          autoFocus
-          placeholder="e.g. jane@data.gov.sg"
-          id="email"
-          type="email"
-          {...register("email", {
-            validate: validateEmail,
-          })}
-        />
+        <HStack spacing="0.5rem">
+          <Input
+            autoComplete="email"
+            autoFocus
+            placeholder="e.g. jane@data.gov.sg"
+            id="email"
+            type="email"
+            {...register("email", {
+              validate: validateEmail,
+            })}
+          />
+          <Button
+            type="submit"
+            isLoading={formState.isSubmitting}
+            isDisabled={!watch("email")}
+          >
+            Log in
+          </Button>
+        </HStack>
         <FormErrorMessage>{formState.errors.email?.message}</FormErrorMessage>
-        <Button mt="1rem" type="submit" isLoading={formState.isSubmitting}>
-          Log in
-        </Button>
       </FormControl>
     </form>
   )

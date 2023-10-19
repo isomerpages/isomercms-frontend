@@ -136,6 +136,15 @@ const TEXTCARDS_CARD_DESCRIPTION_MAX_LENGTH = 80
 const TEXTCARDS_CARD_LINKTEXT_MIN_LENGTH = 0
 const TEXTCARDS_CARD_LINKTEXT_MAX_LENGTH = 50
 const TEXTCARDS_CARD_URL_MIN_LENGTH = 0
+// Infocols
+const INFOCOLS_BLOCK_TITLE_MIN_LENGTH = 0
+const INFOCOLS_BLOCK_TITLE_MAX_LENGTH = 50
+const INFOCOLS_BLOCK_SUBTITLE_MAX_LENGTH = 30
+const INFOCOLS_BLOCK_LINKTEXT_MAX_LENGTH = 50
+
+const INFOCOLS_INFOBOX_TITLE_MIN_LENGTH = 0
+const INFOCOLS_INFOBOX_TITLE_MAX_LENGTH = 50
+const INFOCOLS_INFOBOX_DESCRIPTION_MAX_LENGTH = 120
 
 // Contact Us Editor
 // ===============
@@ -692,6 +701,82 @@ const validateTextcard = (cardError, field, value) => {
   return newHighlightError
 }
 
+const validateInfocolsSection = (sectionError, sectionType, field, value) => {
+  const newSectionError = sectionError
+  let errorMessage = ""
+  switch (field) {
+    case "title": {
+      // Title is too short
+      if (value.length <= INFOCOLS_BLOCK_TITLE_MIN_LENGTH) {
+        errorMessage = `Title cannot be empty.`
+      }
+      // Title is too long
+      if (value.length >= INFOCOLS_BLOCK_TITLE_MAX_LENGTH) {
+        errorMessage = `Title should be shorter than ${INFOCOLS_BLOCK_TITLE_MAX_LENGTH} characters.`
+      }
+      break
+    }
+    case "subtitle": {
+      // Subtitle is too long
+      if (value.length >= INFOCOLS_BLOCK_SUBTITLE_MAX_LENGTH) {
+        errorMessage = `Subtitle should be shorter than ${TEXTCARDS_BLOCK_SUBTITLE_MAX_LENGTH} characters.`
+      }
+      break
+    }
+    case "linktext": {
+      // Link text is too long
+      if (value.length >= INFOCOLS_BLOCK_LINKTEXT_MAX_LENGTH) {
+        errorMessage = `Text should be shorter than ${INFOCOLS_BLOCK_LINKTEXT_MAX_LENGTH} characters.`
+      }
+      break
+    }
+    case "url": {
+      // if (!permalinkRegexTest.test(value)) {
+      //   errorMessage = `The url should start and end with slashes and contain
+      //     lowercase words separated by hyphens only.
+      //     `;
+      // }
+      // TODO: Allow external URLs
+      // TODO: Add validation such that if linktext is present, url is mandatory
+      break
+    }
+    default:
+      break
+  }
+  newSectionError[sectionType][field] = errorMessage
+  return newSectionError
+}
+
+const validateInfocolInfobox = (infoboxError, field, value) => {
+  const newHighlightError = infoboxError
+  let errorMessage = ""
+  switch (field) {
+    case "title": {
+      // Title is too short
+      if (value.length <= INFOCOLS_INFOBOX_TITLE_MIN_LENGTH) {
+        errorMessage = `Title cannot be empty`
+      }
+      // Title is too long
+      if (value.length >= INFOCOLS_INFOBOX_TITLE_MAX_LENGTH) {
+        errorMessage = `Title should be shorter than ${INFOCOLS_INFOBOX_TITLE_MAX_LENGTH} characters`
+      }
+      break
+    }
+    case "description": {
+      // Description is too long
+      if (value.length >= INFOCOLS_INFOBOX_DESCRIPTION_MAX_LENGTH) {
+        errorMessage = `The description should be shorter than ${INFOCOLS_INFOBOX_DESCRIPTION_MAX_LENGTH} characters (${value.length}/${INFOCOLS_INFOBOX_DESCRIPTION_MAX_LENGTH})`
+      }
+      break
+    }
+
+    default:
+      break
+  }
+  newHighlightError[field] = errorMessage
+  return newHighlightError
+}
+
 const validateSections = (sectionError, sectionType, field, value) => {
   let newSectionError = sectionError
   switch (sectionType) {
@@ -742,6 +827,15 @@ const validateSections = (sectionError, sectionType, field, value) => {
     }
     case "textcards": {
       newSectionError = validateTextcardsSection(
+        sectionError,
+        sectionType,
+        field,
+        value
+      )
+      break
+    }
+    case "infocols": {
+      newSectionError = validateInfocolsSection(
         sectionError,
         sectionType,
         field,
@@ -1176,6 +1270,7 @@ export {
   validateAnnouncementItems,
   validateDropdownElems,
   validateTextcard,
+  validateInfocolInfobox,
   validateSections,
   validatePageSettings,
   validateResourceSettings,

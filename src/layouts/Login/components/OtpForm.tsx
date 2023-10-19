@@ -62,25 +62,28 @@ export const OtpForm = ({
         <FormLabel isRequired htmlFor="otp">
           {`Enter OTP sent to ${email}`}
         </FormLabel>
-        <Input
-          type="text"
-          maxLength={6}
-          inputMode="numeric"
-          autoComplete="one-time-code"
-          {...register("otp", {
-            pattern: {
-              value: /^[0-9\b]+$/, // \b is a word boundary - link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Assertions
-              message: "Only numbers are allowed.",
-            },
-            validate: validateOtp,
-          })}
-        />
-        <FormErrorMessage>{formState.errors.otp?.message}</FormErrorMessage>
-        <HStack mt="1rem" alignItems="center" spacing="2.5rem">
+        <HStack spacing="0.5rem">
+          <Input
+            type="text"
+            maxLength={6}
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            {...register("otp", {
+              pattern: {
+                value: /^[0-9\b]+$/, // \b is a word boundary - link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Assertions
+                message: "Only numbers are allowed.",
+              },
+              validate: validateOtp,
+            })}
+          />
           <Button type="submit" isLoading={formState.isSubmitting}>
             Log in
           </Button>
+        </HStack>
+        <FormErrorMessage>{formState.errors.otp?.message}</FormErrorMessage>
+        <HStack mt="1rem" alignItems="center" spacing="2.5rem">
           <Button
+            p="0"
             variant="link"
             isDisabled={timer > 0}
             onClick={() => {

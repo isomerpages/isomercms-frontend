@@ -56,3 +56,8 @@ export interface GetMediaFilesDto {
   files: MediaFilePathData[]
   total: number
 }
+
+export interface SecondLevelFoldersAndPagesParams {
+  siteName: string
+  collectionsData?: (PageData | DirectoryData)[]
+}
