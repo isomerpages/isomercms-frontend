@@ -403,6 +403,8 @@ const EditHomepage = ({ match }) => {
             textCardItemErrors.push(
               _.map(cards, () => getErrorValues(TEXTCARDS_ITEM_SECTION))
             )
+          } else {
+            textCardItemErrors.push([])
           }
 
           if (section.infocols) {
@@ -417,7 +419,6 @@ const EditHomepage = ({ match }) => {
             )
           } else {
             // populate for nested components
-            textCardItemErrors.push([])
             infocolInfoboxErrors.push([])
           }
 
