@@ -36,6 +36,7 @@ export function useMoveHook(params, queryParams) {
       if (queryParams && queryParams.onError) queryParams.onError()
     },
     onSuccess: async (resp) => {
+      await new Promise((resolve) => setTimeout(resolve, 500))
       if (!resp)
         successToast({
           id: "move-file-present-success",
@@ -46,7 +47,6 @@ export function useMoveHook(params, queryParams) {
           id: "move-file-success",
           description: `Successfully moved file`,
         })
-      await new Promise((resolve) => setTimeout(resolve, 500))
       if (params.mediaRoom || params.collectionName) {
         queryClient.invalidateQueries([
           // invalidates collection pages or resource pages

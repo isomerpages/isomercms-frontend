@@ -31,11 +31,11 @@ export function useUpdateMediaHook(params, queryParams) {
         queryClient.invalidateQueries([MEDIA_CONTENT_KEY, { ...params }])
       },
       onSuccess: async () => {
+        await new Promise((resolve) => setTimeout(resolve, 500))
         successToast({
           id: "update-media-file-success",
           description: `Successfully updated media file!`,
         })
-        await new Promise((resolve) => setTimeout(resolve, 500))
         queryClient.invalidateQueries([
           LIST_MEDIA_DIRECTORY_FILES_KEY,
           _.omit(params, "fileName"),
