@@ -181,14 +181,15 @@ const EditNavBar = ({ match }) => {
           deslugifyDirectory(resource.name)
         )
       : undefined
-    const foldersContent = secondLevelData
-      ? secondLevelData.reduce((acc, curr) => {
-          const { data } = curr
-          const { collectionName, order } = data
-          acc[collectionName] = getNavFolderDropdownFromFolderOrder(order)
-          return acc
-        }, {})
-      : {}
+    const foldersContent =
+      secondLevelData && secondLevelData.every(({ isLoading }) => !isLoading)
+        ? secondLevelData.reduce((acc, curr) => {
+            const { data } = curr
+            const { collectionName, order } = data
+            acc[collectionName] = getNavFolderDropdownFromFolderOrder(order)
+            return acc
+          }, {})
+        : {}
 
     // Add booleans for displaying links and sublinks
     const { links: initialLinks } = content
