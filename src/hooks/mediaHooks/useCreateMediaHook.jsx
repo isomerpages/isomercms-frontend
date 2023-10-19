@@ -24,12 +24,12 @@ export function useCreateMediaHook(params, queryParams) {
     },
     {
       ...queryParams,
-      onSuccess: () => {
+      onSuccess: async () => {
         successToast({
           id: "upload-media-file-success",
           description: `Media file successfully uploaded!`,
         })
-
+        await new Promise((resolve) => setTimeout(resolve, 500))
         queryClient.invalidateQueries([
           // invalidates media directory
           LIST_MEDIA_DIRECTORY_FILES_KEY,

@@ -24,11 +24,12 @@ export function useDeleteMediaHook(params, queryParams) {
       })
       if (queryParams && queryParams.onError) queryParams.onError()
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       successToast({
         id: "delete-media-file-success",
         description: `Successfully deleted media file!`,
       })
+      await new Promise((resolve) => setTimeout(resolve, 500))
       queryClient.invalidateQueries([
         // invalidates media directory
         LIST_MEDIA_DIRECTORY_FILES_KEY,

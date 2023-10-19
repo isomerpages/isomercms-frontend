@@ -22,10 +22,7 @@ export const useListMediaFolderFiles = (
 
   return useQuery<GetMediaFilesDto>(
     [LIST_MEDIA_DIRECTORY_FILES_KEY, params],
-    async () => {
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-      return DirectoryService.getMediaFolderFiles(params)
-    },
+    async () => DirectoryService.getMediaFolderFiles(params),
     {
       ...queryOptions,
       retry: false,
