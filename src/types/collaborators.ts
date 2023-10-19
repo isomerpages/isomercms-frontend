@@ -1,4 +1,4 @@
-export type SiteMemberRole = "CONTRIBUTOR" | "ADMIN"
+export type SiteMemberRole = "CONTRIBUTOR" | "ADMIN" | "ISOMERADMIN"
 
 export interface CollaboratorDto {
   id: string
