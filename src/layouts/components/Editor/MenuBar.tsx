@@ -57,6 +57,12 @@ export default ({ editor }: { editor: Editor }) => {
       isActive: () => editor.isActive("heading", { level: 2 }),
     },
     {
+      icon: "h-3",
+      title: "Heading 3",
+      action: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
+      isActive: () => editor.isActive("heading", { level: 3 }),
+    },
+    {
       icon: "paragraph",
       title: "Paragraph",
       action: () => editor.chain().focus().setParagraph().run(),
@@ -130,6 +136,18 @@ export default ({ editor }: { editor: Editor }) => {
       icon: "file-image-line",
       title: "Add image",
       action: () => showModal("images"),
+    },
+    {
+      icon: "file-pdf-line",
+      title: "Add file",
+      action: () => showModal("files"),
+    },
+    {
+      icon: "links-line",
+      title: "Add link",
+      isActive: () => editor.isActive("link"),
+      // TODO: Add linking for files + hyper links
+      action: () => editor.chain().focus().unsetLink().run(),
     },
   ]
 
