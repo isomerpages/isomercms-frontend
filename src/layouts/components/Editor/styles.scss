@@ -2,15 +2,15 @@
   outline: none;
 }
 
-.tiptap.ProseMirror {
-  // height: webkit-fill-available;
-  flex-grow: 1;
-}
-
 /* Basic editor styles */
 .tiptap {
   > * + * {
     margin-top: 0.75em;
+  }
+
+  a {
+    color: #68cef8;
+    text-decoration: underline;
   }
 
   ul,
