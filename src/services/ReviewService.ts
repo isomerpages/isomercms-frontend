@@ -86,13 +86,6 @@ export const updateReviewRequestViewed = async (
   return apiService.post(endpoint)
 }
 
-export const getSiteUrl = async (siteName: string): Promise<string> => {
-  const endpoint = `/sites/${siteName}/siteUrl`
-  return apiService
-    .get<{ siteUrl: string }>(endpoint)
-    .then(({ data }) => data.siteUrl)
-}
-
 export const updateReviewRequest = async (
   siteName: string,
   prNumber: number,
