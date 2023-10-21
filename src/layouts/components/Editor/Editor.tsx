@@ -13,7 +13,7 @@ export const Editor = () => {
   if (!editor) return null
 
   return (
-    <Box className="editor" h="100%" ml="1rem" minH="70vh">
+    <Box className="editor" h="100%" ml="1rem" minH="70vh" maxW="40%">
       {editor && <MenuBar editor={editor} />}
       <EditorContent className="editor__content" editor={editor} />
       <Divider />
