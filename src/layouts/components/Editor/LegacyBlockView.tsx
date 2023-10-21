@@ -35,8 +35,6 @@ import {
 //   }
 
 export const LegacyBlockView = ({ node }: NodeViewProps) => {
-  console.log(node)
-
   return (
     <Box
       as={NodeViewWrapper}
@@ -45,6 +43,7 @@ export const LegacyBlockView = ({ node }: NodeViewProps) => {
       borderRadius="0.5rem"
       margin="1rem 0"
       position="relative"
+      data-drag-handle
     >
       <Text
         ml="1rem"
