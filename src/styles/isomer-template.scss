@@ -12653,6 +12653,10 @@ html.has-navbar-fixed-top-widescreen {
   cursor: zoom-out;
 }
 
+.remove-after:after {
+  content: "" !important
+}
+
 .bg-primary {
   background-color: #6031b6;
 }

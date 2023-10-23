@@ -35,7 +35,7 @@ import * as CollaboratorHooks from "hooks/collaboratorHooks"
 
 import { Collaborator } from "types/collaborators"
 import { MiddlewareError } from "types/error"
-import { DEFAULT_RETRY_MSG, useSuccessToast } from "utils"
+import { DEFAULT_RETRY_MSG, isAdminUser, useSuccessToast } from "utils"
 
 import { ACK_REQUIRED_ERROR_MESSAGE } from "../constants"
 
@@ -162,7 +162,7 @@ export const MainSubmodal = ({
     addCollaboratorError?.response?.data.error
   )
   const showAckModal = errorMessage === ACK_REQUIRED_ERROR_MESSAGE
-  const isDisabled = role !== "ADMIN"
+  const isDisabled = !isAdminUser(role)
 
   const collaboratorFormMethods = useForm({
     mode: "onTouched",

@@ -58,26 +58,39 @@ const TemplateInfopicRightSection = (
                 className={getClassNames(editorStyles, [
                   "padding--bottom",
                   "has-text-secondary",
+                  "h1",
                 ])}
               >
-                <b>{title}</b>
+                {title}
               </h1>
-              <p>{description}</p>
+              <p className={getClassNames(editorStyles, ["body-1"])}>
+                {description}
+              </p>
               <div
                 className={getClassNames(editorStyles, [
-                  "bp-sec-button",
-                  "margin--top",
-                  "padding--bottom",
+                  "py-4",
+                  "link-button",
+                  "remove-after",
+                  "is-flex",
+                  "flex-start",
+                  "is-vh-centered",
                 ])}
               >
                 {button ? (
                   <div>
-                    <span>{button}</span>
+                    <span
+                      className={getClassNames(editorStyles, [
+                        "link-button-text",
+                      ])}
+                    >
+                      {button}
+                    </span>
                     <i
                       className={getClassNames(editorStyles, [
                         "sgds-icon",
                         "sgds-icon-arrow-right",
                         "is-size-4",
+                        "ml-3",
                       ])}
                       aria-hidden="true"
                     />
@@ -119,8 +132,7 @@ const TemplateInfopicRightSection = (
               <p
                 className={getClassNames(editorStyles, [
                   "padding--bottom",
-                  "eyebrow",
-                  "is-uppercase",
+                  "subtitle-2",
                 ])}
               >
                 {subtitle}
@@ -129,30 +141,43 @@ const TemplateInfopicRightSection = (
                 className={getClassNames(editorStyles, [
                   "padding--bottom",
                   "has-text-secondary",
+                  "h1",
                 ])}
               >
-                <b>{title}</b>
+                {title}
               </h1>
-              <p>{description}</p>
+              <p className={getClassNames(editorStyles, ["body-1"])}>
+                {description}
+              </p>
               <div
                 className={getClassNames(editorStyles, [
-                  "bp-sec-button",
-                  "margin--top",
-                  "padding--bottom",
+                  "py-4",
+                  "link-button",
+                  "remove-after",
+                  "is-flex",
+                  "flex-start",
+                  "is-vh-centered",
                 ])}
               >
                 {button ? (
-                  <div>
-                    <span>{button}</span>
+                  <>
+                    <span
+                      className={getClassNames(editorStyles, [
+                        "link-button-text",
+                      ])}
+                    >
+                      {button}
+                    </span>
                     <i
                       className={getClassNames(editorStyles, [
                         "sgds-icon",
                         "sgds-icon-arrow-right",
                         "is-size-4",
+                        "ml-3",
                       ])}
                       aria-hidden="true"
                     />
-                  </div>
+                  </>
                 ) : null}
               </div>
             </div>
@@ -202,30 +227,43 @@ const TemplateInfopicRightSection = (
                 className={getClassNames(editorStyles, [
                   "padding--bottom",
                   "has-text-secondary",
+                  "h1",
                 ])}
               >
-                <b>{title}</b>
+                {title}
               </h1>
-              <p>{description}</p>
+              <p className={getClassNames(editorStyles, ["body-1"])}>
+                {description}
+              </p>
               <div
                 className={getClassNames(editorStyles, [
-                  "bp-sec-button",
-                  "margin--top",
-                  "padding--bottom",
+                  "py-4",
+                  "link-button",
+                  "remove-after",
+                  "is-flex",
+                  "flex-start",
+                  "is-vh-centered",
                 ])}
               >
                 {button ? (
-                  <div>
-                    <span>{button}</span>
+                  <>
+                    <span
+                      className={getClassNames(editorStyles, [
+                        "link-button-text",
+                      ])}
+                    >
+                      {button}
+                    </span>
                     <i
                       className={getClassNames(editorStyles, [
                         "sgds-icon",
                         "sgds-icon-arrow-right",
                         "is-size-4",
+                        "ml-3",
                       ])}
                       aria-hidden="true"
                     />
-                  </div>
+                  </>
                 ) : null}
               </div>
             </div>

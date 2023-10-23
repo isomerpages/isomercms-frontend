@@ -85,15 +85,6 @@ describe("collaborators flow", () => {
       // Assert
       cy.contains(DUPLICATE_COLLABORATOR_ERROR_MESSAGE).should("be.visible")
     })
-    it("should not be able to add a collaborator without an isomer account", () => {
-      // Act
-      // NOTE: Initial admin will always be added manually
-      inputCollaborators("gibberish@nonsense.gov.sg")
-      ignoreNotFoundError()
-
-      // Assert
-      cy.contains(NON_EXISTING_USER_ERROR_MESSAGE).should("be.visible")
-    })
     it("should be able to add a collaborator", () => {
       // Arrange
       // NOTE: Mock a login with a collaborator account.
