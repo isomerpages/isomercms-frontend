@@ -79,8 +79,7 @@ const TemplateResourceSection = (
               <p
                 className={getClassNames(editorStyles, [
                   "padding--bottom",
-                  "eyebrow",
-                  "is-uppercase",
+                  "subtitle-2",
                 ])}
               >
                 {subtitle}
@@ -92,9 +91,10 @@ const TemplateResourceSection = (
                 className={getClassNames(editorStyles, [
                   "padding--bottom",
                   "has-text-secondary",
+                  "h1",
                 ])}
               >
-                <b>{title}</b>
+                {title}
               </h1>
             ) : null}
           </div>
@@ -137,24 +137,30 @@ const TemplateResourceSection = (
               "is-one-third",
             ])}
           >
-            <div className={getClassNames(editorStyles, ["bp-sec-button"])}>
-              <div
-                className={getClassNames(editorStyles, [
-                  "d-flex",
-                  "align-items-center",
-                  "justify-content-center",
-                ])}
+            <div
+              className={getClassNames(editorStyles, [
+                "py-4",
+                "link-button",
+                "remove-after",
+                "is-flex",
+                "flex-center",
+                "is-vh-centered",
+              ])}
+            >
+              <span
+                className={getClassNames(editorStyles, ["link-button-text"])}
               >
-                <span>{button || "MORE"}</span>
-                <i
-                  className={getClassNames(editorStyles, [
-                    "sgds-icon",
-                    "sgds-icon-arrow-right",
-                    "is-size-4",
-                  ])}
-                  aria-hidden="true"
-                />
-              </div>
+                {button || "MORE"}
+              </span>
+              <i
+                className={getClassNames(editorStyles, [
+                  "sgds-icon",
+                  "sgds-icon-arrow-right",
+                  "is-size-4",
+                  "ml-3",
+                ])}
+                aria-hidden="true"
+              />
             </div>
           </div>
         </div>
