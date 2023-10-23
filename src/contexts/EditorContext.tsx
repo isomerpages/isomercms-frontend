@@ -2,7 +2,7 @@ import { Editor } from "@tiptap/react"
 import { PropsWithChildren, createContext, useContext } from "react"
 
 interface EditorContextProps {
-  editor: Editor | null
+  editor: Editor
 }
 
 const EditorContext = createContext<null | EditorContextProps>(null)

@@ -1,5 +1,6 @@
 import { useDisclosure, HStack, VStack } from "@chakra-ui/react"
-import { Button } from "@opengovsg/design-system-react"
+import { Button, Toggle } from "@opengovsg/design-system-react"
+import BubbleMenu from "@tiptap/extension-bubble-menu"
 import CharacterCount from "@tiptap/extension-character-count"
 import Highlight from "@tiptap/extension-highlight"
 import Image from "@tiptap/extension-image"
@@ -12,6 +13,7 @@ import axios from "axios"
 import _ from "lodash"
 import { useEffect, useContext, Context, useState } from "react"
 import { useParams } from "react-router-dom"
+import { Markdown } from "tiptap-markdown"
 
 import { Footer } from "components/Footer"
 import { Greyscale } from "components/Greyscale"
@@ -26,6 +28,8 @@ import { ServicesContext } from "contexts/ServicesContext"
 import { useGetPageHook, useUpdatePageHook } from "hooks/pageHooks"
 import { useGetSiteColorsHook } from "hooks/settingsHooks"
 import useRedirectHook from "hooks/useRedirectHook"
+
+import Iframe from "layouts/components/Editor/Iframe"
 
 import { MediaService } from "services/MediaService"
 
@@ -81,9 +85,15 @@ export const EditPage = () => {
       CharacterCount,
       Image.configure({ allowBase64: true }),
       Link.configure({ openOnClick: false }),
+      Iframe,
+      Markdown,
+      BubbleMenu,
     ],
     content: pageData?.content?.pageBody,
+    autofocus: "start",
   })
+
+  const [editable, setIsEditable] = useState(editor?.isEditable)
 
   const {
     isOpen: isMediaModalOpen,
@@ -124,6 +134,8 @@ export const EditPage = () => {
     }
   }, [isLoadingPage])
 
+  if (!editor) return null
+
   return (
     <EditorContextProvider editor={editor}>
       <EditorModalContextProvider
@@ -139,6 +151,14 @@ export const EditPage = () => {
             isEditPage
             params={decodedParams}
           />
+          <Toggle
+            label="enabled"
+            isChecked={editor?.isEditable}
+            onChange={() => {
+              editor?.setEditable(!editable)
+              setIsEditable(!editable)
+            }}
+          />
           <Greyscale isActive={isWriteDisabled}>
             <HStack className={elementStyles.wrapper}>
               {isMediaModalOpen && (
@@ -146,7 +166,6 @@ export const EditPage = () => {
                   onClose={onMediaModalClose}
                   type={mediaType}
                   onProceed={async ({ selectedMediaPath, altText }) => {
-                    console.log("mediaType", mediaType)
                     if (mediaType === "images") {
                       const { mediaUrl } = await getImageSrc(selectedMediaPath)
                       editor
