@@ -27,7 +27,7 @@ import { WarningModal } from "components/WarningModal"
 import { useDirtyFieldContext } from "contexts/DirtyFieldContext"
 import { useLoginContext } from "contexts/LoginContext"
 
-import { useStagingUrl } from "hooks/settingsHooks"
+import { useGetStagingUrl } from "hooks/siteDashboardHooks"
 
 import { ReviewRequestModal } from "layouts/ReviewRequest"
 
@@ -49,7 +49,7 @@ export const SiteEditHeader = (): JSX.Element => {
     onClose: onReviewRequestModalClose,
   } = useDisclosure()
   const { siteName } = useParams<{ siteName: string }>()
-  const { data: stagingUrl, isLoading } = useStagingUrl({ siteName })
+  const { data: stagingUrl, isLoading } = useGetStagingUrl(siteName)
   const { userId } = useLoginContext()
   // NOTE: Even if we have an unknown user, we assume that it is github
   // and avoid showing new features.

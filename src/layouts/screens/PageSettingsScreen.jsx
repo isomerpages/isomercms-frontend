@@ -9,10 +9,11 @@ import {
   useGetPageHook,
   useUpdatePageHook,
 } from "hooks/pageHooks"
-import { useSiteUrlHook } from "hooks/settingsHooks"
+import { useGetSiteUrl } from "hooks/siteDashboardHooks"
 
 export const PageSettingsScreen = ({ match, onClose }) => {
   const { params, decodedParams } = match
+  const { siteName } = params
 
   const { fileName, resourceRoomName } = params
   const { data: pageData } = useGetPageHook(params, { enabled: !!fileName })
@@ -27,7 +28,7 @@ export const PageSettingsScreen = ({ match, onClose }) => {
     },
     { initialData: [] }
   )
-  const { data: siteUrl } = useSiteUrlHook(params)
+  const { data: siteUrl } = useGetSiteUrl(siteName)
 
   return resourceRoomName ? (
     <ResourcePageSettingsModal

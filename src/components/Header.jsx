@@ -28,8 +28,10 @@ import { WarningModal } from "components/WarningModal"
 
 import { useLoginContext } from "contexts/LoginContext"
 
-import { useStagingUrl } from "hooks/settingsHooks"
-import { useGetReviewRequests } from "hooks/siteDashboardHooks"
+import {
+  useGetReviewRequests,
+  useGetStagingUrl,
+} from "hooks/siteDashboardHooks"
 import useRedirectHook from "hooks/useRedirectHook"
 
 import { ReviewRequestModal } from "layouts/ReviewRequest"
@@ -52,7 +54,7 @@ const Header = ({
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { setRedirectToPage } = useRedirectHook()
   const { siteName } = useParams()
-  const { data: stagingUrl, isLoading } = useStagingUrl({ siteName })
+  const { data: stagingUrl, isLoading } = useGetStagingUrl({ siteName })
   const {
     isOpen: isWarningModalOpen,
     onOpen: onWarningModalOpen,
