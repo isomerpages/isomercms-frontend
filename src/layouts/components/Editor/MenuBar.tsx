@@ -146,8 +146,18 @@ export default ({ editor }: { editor: Editor }) => {
       icon: "links-line",
       title: "Add link",
       isActive: () => editor.isActive("link"),
-      // TODO: Add linking for files + hyper links
       action: () => editor.chain().focus().unsetLink().run(),
+    },
+    {
+      icon: "table-line",
+      title: "Add table",
+      action: () =>
+        editor
+          .chain()
+          .focus()
+          // NOTE: Default to smallest multi table
+          .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+          .run(),
     },
   ]
 
