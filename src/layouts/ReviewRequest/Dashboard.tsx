@@ -97,11 +97,11 @@ export const ReviewRequestDashboard = (): JSX.Element => {
       setRedirectToPage(`/sites/${siteName}/dashboard`)
     }
     if (hasInvalidReviewRequest) {
-      errorToast({
-        id: "invalid-review-request",
-        description:
-          "Please ensure that you have selected a valid review request.",
-      })
+      // errorToast({
+      //   id: "invalid-review-request",
+      //   description:
+      //     "Please ensure that you have selected a valid review request.",
+      // })
       setRedirectToPage(`/sites/${siteName}/dashboard`)
     }
     if (reviewStatus && isApproved === null) {
