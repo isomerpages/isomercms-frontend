@@ -169,13 +169,4 @@
   * {
     font-family: "Lato";
   }
-
-  transform: scale(0.95);
-  transform-origin: center;
-  width: calc(100vw - #{$page-editor-sidebar-width});
-  left: $page-editor-sidebar-width;
-  box-sizing: border-box;
-  overflow-y: auto;
-  height: calc(100vh - #{$header-height} - #{$footer-height} - 1rem);
-  background-color: white;
 }

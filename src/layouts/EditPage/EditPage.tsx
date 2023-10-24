@@ -1,4 +1,4 @@
-import { useDisclosure, HStack, VStack } from "@chakra-ui/react"
+import { useDisclosure, Flex, Spacer } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import BubbleMenu from "@tiptap/extension-bubble-menu"
 import CharacterCount from "@tiptap/extension-character-count"
@@ -37,8 +37,6 @@ import useRedirectHook from "hooks/useRedirectHook"
 import Iframe from "layouts/components/Editor/Iframe"
 
 import { MediaService } from "services/MediaService"
-
-import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 import { getImageDetails } from "utils/images"
 import { isWriteActionsDisabled } from "utils/reviewRequests"
@@ -170,15 +168,16 @@ export const EditPage = () => {
           onMediaModalOpen()
         }}
       >
-        <VStack>
-          <Header
-            title={pageData?.content?.frontMatter?.title || ""}
-            shouldAllowEditPageBackNav
-            isEditPage
-            params={decodedParams}
-          />
-          <Greyscale isActive={isWriteDisabled}>
-            <HStack className={elementStyles.wrapper}>
+        <Greyscale isActive={isWriteDisabled}>
+          <Flex flexDir="column" h="full">
+            <Header
+              title={pageData?.content?.frontMatter?.title || ""}
+              // TODO: Add this check back in dynamically
+              shouldAllowEditPageBackNav
+              isEditPage
+              params={decodedParams}
+            />
+            <Flex flexDir="row" w="100%" h="100%">
               {isMediaModalOpen && (
                 <MediaModal
                   onClose={onMediaModalClose}
@@ -213,7 +212,8 @@ export const EditPage = () => {
               <PagePreview
                 title={pageData?.content?.frontMatter?.title || ""}
               />
-            </HStack>
+            </Flex>
+            <Spacer />
             <Footer>
               <Button
                 onClick={() => {
@@ -230,8 +230,8 @@ export const EditPage = () => {
                 Save
               </Button>
             </Footer>
-          </Greyscale>
-        </VStack>
+          </Flex>
+        </Greyscale>
       </EditorModalContextProvider>
     </EditorContextProvider>
   )

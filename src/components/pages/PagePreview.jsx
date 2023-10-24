@@ -1,7 +1,6 @@
+import { Box } from "@chakra-ui/react"
 import PropTypes from "prop-types"
 import { useParams } from "react-router-dom"
-
-import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
 import CollectionPageTemplate from "templates/pages/CollectionPageTemplate"
 import PageTemplate from "templates/pages/PageTemplate"
@@ -26,9 +25,9 @@ const PagePreview = ({ title }) => {
   }
 
   return (
-    <div className={editorStyles.pageEditorMain}>
+    <Box w="100%" h="100%" bg="white" overflowY="auto">
       <RenderedPreview />
-    </div>
+    </Box>
   )
 }
 
