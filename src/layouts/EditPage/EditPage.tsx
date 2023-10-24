@@ -5,6 +5,7 @@ import CharacterCount from "@tiptap/extension-character-count"
 import Highlight from "@tiptap/extension-highlight"
 import Image from "@tiptap/extension-image"
 import Link from "@tiptap/extension-link"
+import Placeholder from "@tiptap/extension-placeholder"
 import Table from "@tiptap/extension-table"
 import TableCell from "@tiptap/extension-table-cell"
 import TableHeader from "@tiptap/extension-table-header"
@@ -50,6 +51,8 @@ import { getDecodedParams } from "utils"
 import "easymde/dist/easymde.min.css"
 
 import { Editor } from "../components/Editor/Editor"
+
+import { DEFAULT_BODY } from "./constants"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -103,8 +106,8 @@ export const EditPage = () => {
       TableRow,
       TableHeader,
       TableCell,
+      Placeholder,
     ],
-    content: pageData?.content?.pageBody,
     autofocus: "start",
   })
 
@@ -145,9 +148,19 @@ export const EditPage = () => {
 
   useEffect(() => {
     if (!isLoadingPage) {
-      editor?.commands.setContent(pageData?.content?.pageBody)
+      // NOTE: If the page load is completed, set the content
+      // only if the existing page body has content.
+      if (pageData?.content?.pageBody) {
+        editor?.commands.setContent(pageData?.content?.pageBody)
+      } else {
+        // Otherwise, prefill with the default
+        editor?.commands.setContent(DEFAULT_BODY)
+      }
     }
-  }, [isLoadingPage])
+    // NOTE: We disable as the editor is a class and holds its own internal state.
+    // Adding it here would cause a render on every keystroke.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoadingPage, pageData?.content?.pageBody])
 
   if (!editor) return null
 

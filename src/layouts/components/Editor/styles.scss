@@ -18,6 +18,14 @@
     margin-top: 0.75em;
   }
 
+  p.is-empty::before {
+    color: #adb5bd;
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    pointer-events: none;
+  }
+
   table {
     border-collapse: collapse;
     margin: 0;
