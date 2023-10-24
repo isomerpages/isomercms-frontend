@@ -54,7 +54,7 @@ const Header = ({
   const { isOpen, onOpen, onClose } = useDisclosure()
   const { setRedirectToPage } = useRedirectHook()
   const { siteName } = useParams()
-  const { data: stagingUrl, isLoading } = useGetStagingUrl({ siteName })
+  const { data: stagingUrl, isLoading } = useGetStagingUrl(siteName)
   const {
     isOpen: isWarningModalOpen,
     onOpen: onWarningModalOpen,
