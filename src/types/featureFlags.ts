@@ -8,7 +8,7 @@ export interface FeatureFlags {
     message: string
   }
   [FEATURE_FLAGS.NPS_FORM]: boolean
-  [FEATURE_FLAGS.ENABLED_BLOCKS]: string[]
+  [FEATURE_FLAGS.HOMEPAGE_ENABLED_BLOCKS]: string[]
 }
 
 export type GBAttributes = {

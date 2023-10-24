@@ -26,9 +26,9 @@ type UseFrontmatterSectionsReturn = (
 export const useFrontmatterSections = (): UseFrontmatterSectionsReturn => {
   const [storedFrontmatter, setStoredFrontmatter] = useLocalStorage<
     EditorHomepageFrontmatterSection[]
-  >(LOCAL_STORAGE_KEYS.FrontmatterSections, [])
+  >(LOCAL_STORAGE_KEYS.HomepageFrontmatterSections, [])
 
-  const { blocks } = useFeatureValue(FEATURE_FLAGS.ENABLED_BLOCKS, {
+  const { blocks } = useFeatureValue(FEATURE_FLAGS.HOMEPAGE_ENABLED_BLOCKS, {
     blocks: [],
   })
 
@@ -67,10 +67,12 @@ export const useFrontmatterSections = (): UseFrontmatterSectionsReturn => {
         )
       )
 
-      console.log("===", enabledStoredFrontmatterBlocks, actualBlocks)
-
       return [...actualBlocks, ...enabledStoredFrontmatterBlocks]
     },
+    // NOTE: We are disabling the eslint rule here because
+    // the function referenced in the dependency array
+    // would change on every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [blocks]
   )
 }

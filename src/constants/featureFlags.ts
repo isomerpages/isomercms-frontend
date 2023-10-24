@@ -2,7 +2,7 @@ export const FEATURE_FLAGS = {
   REPO_PRIVATISATION: "repo_privatisation",
   BANNER: "banner",
   NPS_FORM: "nps_form",
-  ENABLED_BLOCKS: "homepage_enabled_blocks",
+  HOMEPAGE_ENABLED_BLOCKS: "homepage_enabled_blocks",
 } as const
 
 // NOTE: Only have 4 default blocks:
