@@ -1,5 +1,4 @@
-import "./MenuBar.scss"
-
+import { Box, Divider, HStack } from "@chakra-ui/react"
 import { Editor } from "@tiptap/react"
 import { Fragment } from "react"
 
@@ -162,17 +161,30 @@ export default ({ editor }: { editor: Editor }) => {
   ]
 
   return (
-    <div className="editor__header">
+    <HStack
+      bgColor="gray.50"
+      flex="0 0 auto"
+      flexWrap="wrap"
+      p="0.25rem"
+      borderBottom="1px solid"
+      borderColor="base.divider.strong"
+      borderTopRadius="0.25rem"
+    >
       {items.map((item, index) => (
         // eslint-disable-next-line react/no-array-index-key
         <Fragment key={index}>
           {item.type === "divider" ? (
-            <div className="divider" />
+            <Divider
+              orientation="vertical"
+              border="px solid"
+              borderColor="base.divider.strong"
+              h="1.25rem"
+            />
           ) : (
             <MenuItem {...item} />
           )}
         </Fragment>
       ))}
-    </div>
+    </HStack>
   )
 }

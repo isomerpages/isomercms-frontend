@@ -1,5 +1,5 @@
 import { useDisclosure, HStack, VStack } from "@chakra-ui/react"
-import { Button, Toggle } from "@opengovsg/design-system-react"
+import { Button } from "@opengovsg/design-system-react"
 import BubbleMenu from "@tiptap/extension-bubble-menu"
 import CharacterCount from "@tiptap/extension-character-count"
 import Highlight from "@tiptap/extension-highlight"
@@ -111,8 +111,6 @@ export const EditPage = () => {
     autofocus: "start",
   })
 
-  const [editable, setIsEditable] = useState(editor?.isEditable)
-
   const {
     isOpen: isMediaModalOpen,
     onOpen: onMediaModalOpen,
@@ -178,14 +176,6 @@ export const EditPage = () => {
             shouldAllowEditPageBackNav
             isEditPage
             params={decodedParams}
-          />
-          <Toggle
-            label="enabled"
-            isChecked={editor?.isEditable}
-            onChange={() => {
-              editor?.setEditable(!editable)
-              setIsEditable(!editable)
-            }}
           />
           <Greyscale isActive={isWriteDisabled}>
             <HStack className={elementStyles.wrapper}>
