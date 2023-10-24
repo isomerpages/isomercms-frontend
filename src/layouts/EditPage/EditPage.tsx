@@ -15,8 +15,13 @@ import TaskList from "@tiptap/extension-task-list"
 import { useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import axios from "axios"
-import _ from "lodash"
-import { useEffect, useContext, Context, useState } from "react"
+import {
+  useEffect,
+  useContext,
+  Context,
+  useState,
+  PropsWithChildren,
+} from "react"
 import { useParams } from "react-router-dom"
 import { Markdown } from "tiptap-markdown"
 
@@ -55,10 +60,89 @@ import { DEFAULT_BODY } from "./constants"
 // axios settings
 axios.defaults.withCredentials = true
 
+interface EditPageLayoutProps {
+  getPageBody: () => string
+}
+
+const EditPageLayout = ({
+  getPageBody,
+  children,
+}: PropsWithChildren<EditPageLayoutProps>) => {
+  const params = useParams<{ siteName: string }>()
+  const decodedParams = getDecodedParams(params)
+  const {
+    mutateAsync: updatePageHandler,
+    isLoading: isSavingPage,
+  } = useUpdatePageHook(params, {
+    // NOTE: Not deleting this as this is important enough
+    // to leave here so that we avoid regression.
+    // onError: (err) => {
+    //   if (err.response.status === 409) onOverwriteOpen()
+    // },
+  })
+
+  const { siteName } = decodedParams
+
+  const { setRedirectToNotFound } = useRedirectHook()
+  const { data: pageData, isLoading: isLoadingPage } = useGetPageHook(params, {
+    onError: () => setRedirectToNotFound(siteName),
+  })
+  const { data: siteColorsData } = useGetSiteColorsHook(params)
+
+  const isWriteDisabled = isWriteActionsDisabled(siteName)
+
+  useEffect(() => {
+    if (siteColorsData)
+      createPageStyleSheet(
+        siteName,
+        siteColorsData.primaryColor,
+        siteColorsData.secondaryColor
+      )
+  }, [siteColorsData, siteName])
+
+  return (
+    <Greyscale isActive={isWriteDisabled}>
+      <Flex flexDir="column" h="full">
+        <Header
+          title={pageData?.content?.frontMatter?.title || ""}
+          // TODO: Add this check back in dynamically
+          shouldAllowEditPageBackNav
+          isEditPage
+          params={decodedParams}
+        />
+        <Flex flexDir="row" w="100%" h="100%">
+          {/* Editor */}
+          {children}
+        </Flex>
+        <Spacer />
+        <Footer>
+          <Button
+            onClick={() => {
+              updatePageHandler(({
+                pageData: {
+                  frontMatter: pageData?.content?.frontMatter,
+                  pageBody: getPageBody(),
+                  sha: pageData.sha,
+                },
+              } as unknown) as void)
+            }}
+            isLoading={isSavingPage}
+          >
+            Save
+          </Button>
+        </Footer>
+      </Flex>
+    </Greyscale>
+  )
+}
+
 export const EditPage = () => {
   const params = useParams<{ siteName: string }>()
   const decodedParams = getDecodedParams(params)
   const [mediaType, setMediaType] = useState<"files" | "images">("images")
+  const { data: initialPageData, isLoading: isLoadingPage } = useGetPageHook(
+    params
+  )
 
   const { siteName } = decodedParams
 
@@ -74,12 +158,6 @@ export const EditPage = () => {
       fileName,
     })
   }
-
-  const { setRedirectToNotFound } = useRedirectHook()
-
-  const { data: pageData, isLoading: isLoadingPage } = useGetPageHook(params, {
-    onError: () => setRedirectToNotFound(siteName),
-  })
 
   const editor = useEditor({
     extensions: [
@@ -115,39 +193,12 @@ export const EditPage = () => {
     onClose: onMediaModalClose,
   } = useDisclosure()
 
-  const {
-    mutateAsync: updatePageHandler,
-    isLoading: isSavingPage,
-  } = useUpdatePageHook(params, {
-    // NOTE: Not deleting this as this is important enough
-    // to leave here so that we avoid regression.
-    // onError: (err) => {
-    //   if (err.response.status === 409) onOverwriteOpen()
-    // },
-  })
-
-  const { data: siteColorsData } = useGetSiteColorsHook(params)
-  const isWriteDisabled = isWriteActionsDisabled(siteName)
-
-  /** ******************************** */
-  /*     useEffects to load data     */
-  /** ******************************** */
-
-  useEffect(() => {
-    if (siteColorsData)
-      createPageStyleSheet(
-        siteName,
-        siteColorsData.primaryColor,
-        siteColorsData.secondaryColor
-      )
-  }, [siteColorsData, siteName])
-
   useEffect(() => {
     if (!isLoadingPage) {
       // NOTE: If the page load is completed, set the content
       // only if the existing page body has content.
-      if (pageData?.content?.pageBody) {
-        editor?.commands.setContent(pageData?.content?.pageBody)
+      if (initialPageData?.content?.pageBody) {
+        editor?.commands.setContent(initialPageData?.content?.pageBody)
       } else {
         // Otherwise, prefill with the default
         editor?.commands.setContent(DEFAULT_BODY)
@@ -155,84 +206,55 @@ export const EditPage = () => {
     }
     // NOTE: We disable as the editor is a class and holds its own internal state.
     // Adding it here would cause a render on every keystroke.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoadingPage, pageData?.content?.pageBody])
+  }, [editor, isLoadingPage, initialPageData?.content?.pageBody])
 
   if (!editor) return null
 
   return (
-    <EditorContextProvider editor={editor}>
-      <EditorModalContextProvider
-        showModal={(modalType) => {
-          setMediaType(modalType)
-          onMediaModalOpen()
-        }}
-      >
-        <Greyscale isActive={isWriteDisabled}>
-          <Flex flexDir="column" h="full">
-            <Header
-              title={pageData?.content?.frontMatter?.title || ""}
-              // TODO: Add this check back in dynamically
-              shouldAllowEditPageBackNav
-              isEditPage
-              params={decodedParams}
+    <EditPageLayout getPageBody={() => editor.getHTML()}>
+      <EditorContextProvider editor={editor}>
+        <EditorModalContextProvider
+          showModal={(modalType) => {
+            setMediaType(modalType)
+            onMediaModalOpen()
+          }}
+        >
+          {isMediaModalOpen && (
+            <MediaModal
+              onClose={onMediaModalClose}
+              type={mediaType}
+              onProceed={async ({ selectedMediaPath, altText }) => {
+                if (mediaType === "images") {
+                  const { mediaUrl } = await getImageSrc(selectedMediaPath)
+                  editor
+                    ?.chain()
+                    .focus()
+                    .setImage({
+                      src: mediaUrl,
+                      alt: altText,
+                    })
+                    .run()
+                } else {
+                  editor
+                    ?.chain()
+                    .focus()
+                    .setLink({ href: selectedMediaPath })
+                    .run()
+                }
+                onMediaModalClose()
+              }}
             />
-            <Flex flexDir="row" w="100%" h="100%">
-              {isMediaModalOpen && (
-                <MediaModal
-                  onClose={onMediaModalClose}
-                  type={mediaType}
-                  onProceed={async ({ selectedMediaPath, altText }) => {
-                    if (mediaType === "images") {
-                      const { mediaUrl } = await getImageSrc(selectedMediaPath)
-                      editor
-                        ?.chain()
-                        .focus()
-                        .setImage({
-                          src: mediaUrl,
-                          alt: altText,
-                        })
-                        .run()
-                    } else {
-                      editor
-                        ?.chain()
-                        .focus()
-                        .setLink({ href: selectedMediaPath })
-                        .run()
-                    }
-                    onMediaModalClose()
-                  }}
-                />
-              )}
+          )}
 
-              {/* Editor */}
-              <Editor />
-
-              {/* Preview */}
-              <PagePreview
-                title={pageData?.content?.frontMatter?.title || ""}
-              />
-            </Flex>
-            <Spacer />
-            <Footer>
-              <Button
-                onClick={() => {
-                  updatePageHandler(({
-                    pageData: {
-                      frontMatter: pageData.content.frontMatter,
-                      pageBody: editor?.getHTML(),
-                      sha: pageData.sha,
-                    },
-                  } as unknown) as void)
-                }}
-                isLoading={isSavingPage}
-              >
-                Save
-              </Button>
-            </Footer>
-          </Flex>
-        </Greyscale>
-      </EditorModalContextProvider>
-    </EditorContextProvider>
+          {/* Editor */}
+          <Editor />
+          {/* Preview */}
+          <PagePreview
+            chunk={editor.getHTML()}
+            title={initialPageData?.content?.frontMatter?.title || ""}
+          />
+        </EditorModalContextProvider>
+      </EditorContextProvider>
+    </EditPageLayout>
   )
 }

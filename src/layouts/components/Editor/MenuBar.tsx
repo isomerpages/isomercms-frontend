@@ -1,4 +1,4 @@
-import { Box, Divider, HStack } from "@chakra-ui/react"
+import { Divider, HStack } from "@chakra-ui/react"
 import { Editor } from "@tiptap/react"
 import { Fragment } from "react"
 
