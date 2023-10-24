@@ -37,6 +37,8 @@ import { AnnouncementModal } from "features/AnnouncementModal/AnnouncementModal"
 import { SiteData } from "types/sites"
 import { UserTypes } from "types/user"
 
+import { getShouldShowNewLayouts } from "./EditHomepage/utils"
+
 const SitePreviewImage = ({ imageUrl }: { imageUrl?: string }) => {
   return (
     <Image
@@ -166,10 +168,10 @@ export const Sites = (): JSX.Element => {
     )
   }, [siteRequestData])
 
-  const { blocks } = useFeatureValue(FEATURE_FLAGS.ENABLED_BLOCKS, {
+  const { blocks } = useFeatureValue(FEATURE_FLAGS.HOMEPAGE_ENABLED_BLOCKS, {
     blocks: [],
   })
-  const showNewLayouts = blocks.length > NUM_DEFAULT_HOMEPAGE_BLOCKS
+  const showNewLayouts = getShouldShowNewLayouts(blocks)
   const isGithubUser = userType === UserTypes.Github
   /**
    * Currently the announcement modal takes in all the keyboard events,

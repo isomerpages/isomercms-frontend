@@ -327,7 +327,6 @@ const EditHomepage = ({ match }) => {
         const sections = computeFrontmatter(frontMatter.sections)
 
         sections.forEach((section) => {
-          console.log(section)
           scrollRefs.push(createRef())
           // If this is the hero section, hide all highlights/dropdownelems by default
           if (section.hero) {
@@ -1333,7 +1332,7 @@ const EditHomepage = ({ match }) => {
       },
     })
   }
-  const { blocks } = useFeatureValue(FEATURE_FLAGS.ENABLED_BLOCKS, {
+  const { blocks } = useFeatureValue(FEATURE_FLAGS.HOMEPAGE_ENABLED_BLOCKS, {
     blocks: [],
   })
   return (

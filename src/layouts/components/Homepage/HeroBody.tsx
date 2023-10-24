@@ -28,14 +28,13 @@ import { Editable } from "components/Editable"
 import { FormContext, FormError, FormTitle } from "components/Form"
 import FormFieldMedia from "components/FormFieldMedia"
 
-import {
-  FEATURE_FLAGS,
-  NUM_DEFAULT_HOMEPAGE_BLOCKS,
-} from "constants/featureFlags"
+import { FEATURE_FLAGS } from "constants/featureFlags"
 import { HERO_LAYOUTS } from "constants/homepage"
 import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 
 import { useEditableContext } from "contexts/EditableContext"
+
+import { getShouldShowNewLayouts } from "layouts/EditHomepage/utils"
 
 import { BxGrayTranslucent } from "assets"
 import { FeatureTourHandler } from "features/FeatureTour/FeatureTour"
@@ -298,10 +297,10 @@ const HeroLayoutForm = ({
   children,
 }: HeroLayoutFormProps): JSX.Element => {
   const { onChange } = useEditableContext()
-  const { blocks } = useFeatureValue(FEATURE_FLAGS.ENABLED_BLOCKS, {
+  const { blocks } = useFeatureValue(FEATURE_FLAGS.HOMEPAGE_ENABLED_BLOCKS, {
     blocks: [],
   })
-  const showNewLayouts = blocks.length > NUM_DEFAULT_HOMEPAGE_BLOCKS
+  const showNewLayouts = getShouldShowNewLayouts(blocks)
 
   // We only want to show the feature tour when the
   // DOM elements are in view. Else, the feature tour
@@ -396,10 +395,10 @@ export const HeroBody = ({
     initialSectionType
   )
   const { onChange } = useEditableContext()
-  const { blocks } = useFeatureValue(FEATURE_FLAGS.ENABLED_BLOCKS, {
+  const { blocks } = useFeatureValue(FEATURE_FLAGS.HOMEPAGE_ENABLED_BLOCKS, {
     blocks: [],
   })
-  const showNewLayouts = blocks.length > NUM_DEFAULT_HOMEPAGE_BLOCKS
+  const showNewLayouts = getShouldShowNewLayouts(blocks)
 
   return (
     <>
