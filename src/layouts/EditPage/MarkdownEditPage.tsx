@@ -10,9 +10,8 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Alert,
 } from "@chakra-ui/react"
-import { Button } from "@opengovsg/design-system-react"
+import { Button, Infobox } from "@opengovsg/design-system-react"
 import axios from "axios"
 import DOMPurify from "dompurify"
 import _ from "lodash"
@@ -228,10 +227,10 @@ const PreviewModal = ({
         <ModalCloseButton />
         <ModalBody>
           <Editor maxW="100%" p="0" />
-          <Alert variant="solid">
+          <Infobox mt="1rem" variant="warning">
             Changes you make here will reflect on the new editor if you use the
             new one!
-          </Alert>
+          </Infobox>
         </ModalBody>
         <ModalFooter>
           <Button colorScheme="red" mr={3} onClick={onClose}>
