@@ -84,9 +84,10 @@ const EditPage = ({ match }) => {
 
   const [editorValue, setEditorValue] = useState("")
   const [mediaSrcs, setMediaSrcs] = useState([])
-  const [currSha, setCurrSha] = useState("")
   const [htmlChunk, setHtmlChunk] = useState("")
 
+  // TODO: Migrate the below 4 to the new `EditPageLayout`
+  const [currSha, setCurrSha] = useState("")
   const [hasChanges, setHasChanges] = useState(false)
   const [isContentViolation, setIsContentViolation] = useState(false)
   const [isXSSViolation, setIsXSSViolation] = useState(false)
