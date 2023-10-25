@@ -40,7 +40,7 @@ const PagePreview = ({ title, chunk }) => {
 
   return (
     <Box
-      w="100%"
+      w="50%"
       h="100%"
       bg="white"
       overflowY="auto"

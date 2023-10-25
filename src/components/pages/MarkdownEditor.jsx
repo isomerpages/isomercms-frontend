@@ -1,3 +1,4 @@
+import { Box } from "@chakra-ui/react"
 import { useMemo, useState, useCallback } from "react"
 import SimpleMDE from "react-simplemde-editor"
 
@@ -20,13 +21,7 @@ import {
   guideButton,
 } from "utils/markdownToolbar"
 
-const MarkdownEditor = ({
-  siteName,
-  onChange,
-  value,
-  isDisabled,
-  isLoading,
-}) => {
+const MarkdownEditor = ({ siteName, onChange, value, isLoading }) => {
   const [editorModalType, setEditorModalType] = useState("")
   const [insertingMediaType, setInsertingMediaType] = useState("")
   const { toMarkdown } = useMarkdown()
@@ -109,16 +104,6 @@ const MarkdownEditor = ({
   }, [])
 
   const StatusIcon = () => {
-    if (isDisabled) {
-      return (
-        <div
-          className={`text-center ${editorStyles.pageEditorSidebarDisabled}`}
-        >
-          Editing is disabled for downloadable files.
-        </div>
-      )
-    }
-
     if (isLoading) {
       return (
         <div
@@ -131,7 +116,8 @@ const MarkdownEditor = ({
   }
 
   return (
-    <>
+    // NOTE: This is overflowing
+    <Box h="100%" overflowY="auto">
       <EditorModals
         siteName={siteName}
         modalType={editorModalType}
@@ -146,13 +132,12 @@ const MarkdownEditor = ({
       />
       <div
         className={`${editorStyles.pageEditorSidebar} ${
-          isLoading || isDisabled ? editorStyles.pageEditorSidebarLoading : null
+          isLoading ? editorStyles.pageEditorSidebarLoading : null
         }`}
       >
         <StatusIcon />
         <SimpleMDE
           id="simplemde-editor"
-          className="h-100"
           onChange={onChange}
           value={value}
           options={options}
@@ -161,7 +146,7 @@ const MarkdownEditor = ({
           getLineAndCursor={getLineAndCursorCallback}
         />
       </div>
-    </>
+    </Box>
   )
 }
 
