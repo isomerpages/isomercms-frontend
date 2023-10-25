@@ -81,6 +81,7 @@ interface PageSettingsModalParams {
   pagesData: PageParams[]
   siteUrl: string
   onClose: () => void
+  showEditorToggle?: boolean
 }
 
 // eslint-disable-next-line import/prefer-default-export
@@ -91,6 +92,7 @@ export const PageSettingsModal = ({
   pagesData,
   siteUrl,
   onClose,
+  showEditorToggle,
 }: PageSettingsModalParams) => {
   const { siteName, fileName } = params
 
@@ -191,31 +193,38 @@ export const PageSettingsModal = ({
                 />
                 <FormErrorMessage>{errors.permalink?.message}</FormErrorMessage>
               </FormControl>
-              <br />
-              <FormControl isInvalid={!!errors.permalink?.message} isRequired>
-                <Flex mb="0.75rem" alignItems="center">
-                  <FormLabel mb={0}>Enable new editor</FormLabel>
-                  <Spacer />
-                  <Controller
-                    name="variant"
-                    render={({ field: { onChange, value } }) => {
-                      return (
-                        <Toggle
-                          defaultChecked
-                          onChange={(event) => {
-                            event.target.checked
-                              ? onChange("tiptap")
-                              : onChange("markdown")
-                          }}
-                          isChecked={value === "tiptap"}
-                          label=""
-                        />
-                      )
-                    }}
-                    control={control}
-                  />
-                </Flex>
-              </FormControl>
+              {showEditorToggle && (
+                <>
+                  <br />
+                  <FormControl
+                    isInvalid={!!errors.permalink?.message}
+                    isRequired
+                  >
+                    <Flex mb="0.75rem" alignItems="center">
+                      <FormLabel mb={0}>Enable new editor</FormLabel>
+                      <Spacer />
+                      <Controller
+                        name="variant"
+                        render={({ field: { onChange, value } }) => {
+                          return (
+                            <Toggle
+                              defaultChecked
+                              onChange={(event) => {
+                                event.target.checked
+                                  ? onChange("tiptap")
+                                  : onChange("markdown")
+                              }}
+                              isChecked={value === "tiptap"}
+                              label=""
+                            />
+                          )
+                        }}
+                        control={control}
+                      />
+                    </Flex>
+                  </FormControl>
+                </>
+              )}
               <br />
               <br />
               <Text textStyle="h4">Page details</Text>
