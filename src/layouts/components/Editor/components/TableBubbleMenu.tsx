@@ -14,7 +14,15 @@ export const TableBubbleMenu = () => {
       editor={editor}
       tippyOptions={{ duration: 100 }}
     >
-      <Box background="grey.50" borderRadius="2rem" p="2px 6px">
+      <Box
+        background="grey.50"
+        borderRadius="2rem"
+        p="2px 6px"
+        opacity="50%"
+        _hover={{
+          opacity: "100%",
+        }}
+      >
         <MenuItem
           icon="insert-column-left"
           action={() => editor.chain().focus().addColumnBefore().run()}
@@ -28,6 +36,12 @@ export const TableBubbleMenu = () => {
           isRound
         />
         <MenuItem
+          icon="delete-column"
+          action={() => editor.chain().focus().deleteColumn().run()}
+          title="Delete column"
+          isRound
+        />
+        <MenuItem
           icon="insert-row-top"
           action={() => editor.chain().focus().addRowBefore().run()}
           title="Add row before"
@@ -37,6 +51,12 @@ export const TableBubbleMenu = () => {
           icon="insert-row-bottom"
           action={() => editor.chain().focus().addRowAfter().run()}
           title="Add row after"
+          isRound
+        />
+        <MenuItem
+          icon="delete-row"
+          action={() => editor.chain().focus().deleteRow().run()}
+          title="Delete row"
           isRound
         />
       </Box>
