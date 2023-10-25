@@ -25,7 +25,7 @@ import { ServicesContext } from "contexts/ServicesContext"
 
 import { useGetPageHook } from "hooks/pageHooks"
 
-import Iframe from "layouts/components/Editor/Iframe"
+import { Iframe } from "layouts/components/Editor/extensions"
 
 import { MediaService } from "services"
 import { getDecodedParams, getImageDetails } from "utils"
