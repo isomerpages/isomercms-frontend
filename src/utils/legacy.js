@@ -169,6 +169,9 @@ export const getBackButton = ({
   return {}
 }
 
+// NOTE: This is only ever called inside pages.
+// Resource pages use another method defined inside the modal
+// to retrieve the default frontmatter.
 export const getDefaultFrontMatter = (params, existingTitles) => {
   const {
     collectionName,
