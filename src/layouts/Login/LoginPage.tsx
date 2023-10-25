@@ -246,6 +246,7 @@ export const LoginPage = (): JSX.Element => (
           alignItems="center"
           justifyContent="center"
           px="10%"
+          py="2rem"
         >
           <Text
             fontSize="2.25rem"
@@ -269,7 +270,7 @@ export const LoginPage = (): JSX.Element => (
         <Flex h="100%" alignItems="center" justifyContent="center">
           <HStack h="2rem" gap="2rem">
             <IsomerLogoInverted />
-            <Divider orientation="vertical" borderColor="neutral.300" />
+            <Divider orientation="vertical" borderColor="text.inverse" />
             <OGPLogoInverted />
           </HStack>
         </Flex>
