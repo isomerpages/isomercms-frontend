@@ -1,6 +1,6 @@
 import "./styles.scss"
 
-import { Box, Divider, Flex, Text } from "@chakra-ui/react"
+import { Box, BoxProps, Divider, Flex, Text } from "@chakra-ui/react"
 import { EditorContent } from "@tiptap/react"
 
 import { useEditorContext } from "contexts/EditorContext"
@@ -9,11 +9,11 @@ import { LinkBubbleMenu } from "./LinkBubbleMenu"
 import MenuBar from "./MenuBar"
 import { TableBubbleMenu } from "./TableBubbleMenu"
 
-export const Editor = () => {
+export const Editor = (props: BoxProps) => {
   const { editor } = useEditorContext()
 
   return (
-    <Box p="1.25rem" h="100%" maxW="40%">
+    <Box p="1.25rem" h="100%" maxW="50%" {...props}>
       <Flex
         bg="white"
         border="1px solid"
