@@ -58,7 +58,7 @@ const LOGIN_GRID_LAYOUT: Pick<
   gridTemplateRows: "1fr 5rem",
   height: "100%",
   width: "100%",
-  backgroundColor: "white",
+  backgroundColor: "base.content.inverse",
 }
 
 interface FooterLinkProps {
@@ -261,7 +261,12 @@ export const LoginPage = (): JSX.Element => (
         </VStack>
       </GridItem>
       <GridItem area="content" bgColor="white">
-        <Flex h="100%" alignItems="start" justifyContent="center" pt="5vh">
+        <Flex
+          h="100%"
+          alignItems="start"
+          justifyContent="base.content.inverse"
+          pt="5vh"
+        >
           <LoginContent />
         </Flex>
       </GridItem>
@@ -275,7 +280,7 @@ export const LoginPage = (): JSX.Element => (
           </HStack>
         </Flex>
       </GridItem>
-      <GridItem area="links" bgColor="white">
+      <GridItem area="links" bgColor="base.content.inverse">
         <Flex h="100%" alignItems="center" justifyContent="center">
           <Box w="100%">
             <HStack fontSize="0.75rem" gap="1.5rem" justifyContent="end">
