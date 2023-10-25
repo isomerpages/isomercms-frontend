@@ -76,10 +76,12 @@ export const EditPageLayout = ({
             onClick={() => {
               updatePageHandler(({
                 pageData: {
-                  frontMatter: pageData?.content?.frontMatter,
+                  frontMatter: {
+                    ...(pageData?.content?.frontMatter || {}),
+                    variant,
+                  },
                   pageBody: getPageBody(),
                   sha: pageData.sha,
-                  variant,
                 },
               } as unknown) as void)
             }}
