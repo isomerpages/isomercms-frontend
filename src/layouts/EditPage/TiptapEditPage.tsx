@@ -8,10 +8,6 @@ import { useEditorContext } from "contexts/EditorContext"
 
 import { useGetPageHook } from "hooks/pageHooks"
 
-// Isomer utils
-
-import "easymde/dist/easymde.min.css"
-
 import { Editor } from "../components/Editor/Editor"
 
 import { DEFAULT_BODY } from "./constants"
