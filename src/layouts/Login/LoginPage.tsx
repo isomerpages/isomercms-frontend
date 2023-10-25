@@ -30,7 +30,12 @@ import { useGetSgidAuth, useLogin, useVerifyOtp } from "hooks/loginHooks"
 import { getAxiosErrorMessage } from "utils/axios"
 import { useErrorToast, useSuccessToast } from "utils/toasts"
 
-import { IsomerLogo, LoginImage, OGPLogo, SingpassLogo } from "assets"
+import {
+  IsomerLogoInverted,
+  LoginImage,
+  OGPLogoInverted,
+  SingpassLogo,
+} from "assets"
 import { DEFAULT_RETRY_MSG } from "utils"
 
 import { LoginForm, LoginProps, OtpForm, OtpProps } from "./components"
@@ -45,13 +50,15 @@ const LOGIN_GRID_LAYOUT: Pick<
   | "gridTemplateRows"
   | "height"
   | "width"
+  | "backgroundColor"
 > = {
-  gridTemplateAreas: `"image content" 
-                      "credits links"`,
-  gridTemplateColumns: "1fr 1fr",
+  gridTemplateAreas: `"image . content ." 
+                      "credits . links ."`,
+  gridTemplateColumns: "5fr 1fr 5fr 1fr",
   gridTemplateRows: "1fr 5rem",
   height: "100%",
   width: "100%",
+  backgroundColor: "white",
 }
 
 interface FooterLinkProps {
@@ -138,7 +145,7 @@ const LoginContent = (): JSX.Element => {
   }, [errorToast, statusCode])
 
   return (
-    <VStack gap="2.5rem" alignItems="start" width="65%">
+    <VStack gap="2.5rem" alignItems="start" width="100%">
       <Infobox>
         We’re moving in phases from GitHub IDs to email addresses as the login
         method. For those currently using GitHub ID, you’ll be informed when you
@@ -233,51 +240,43 @@ export const LoginPage = (): JSX.Element => (
     <RestrictedGovtMasthead />
     <Grid {...LOGIN_GRID_LAYOUT}>
       <GridItem area="image" bgColor="primary.500">
-        <Flex
-          h="calc(100vh - 5rem - 2rem)"
+        <VStack
+          h="100%"
           w="100%"
-          alignItems="end"
-          justifyContent="start"
-          position="relative"
+          alignItems="center"
+          justifyContent="center"
+          px="10%"
         >
           <Text
             fontSize="2.25rem"
             color="base.content.inverse"
             textStyle="h2"
-            position="absolute"
-            maxW="14.25rem"
-            top="5vh"
-            right="5.5rem"
+            maxW="90%"
+            pb="3.5rem"
           >
             Rapidly build & launch informational sites
           </Text>
-          <LoginImage maxH="100%" maxW="100%" />
-        </Flex>
+          <LoginImage maxH="100%" />
+        </VStack>
       </GridItem>
       <GridItem area="content" bgColor="white">
-        <Flex
-          h="100%"
-          maxW="54rem"
-          alignItems="start"
-          justifyContent="center"
-          pt="5vh"
-        >
+        <Flex h="100%" alignItems="start" justifyContent="center" pt="5vh">
           <LoginContent />
         </Flex>
       </GridItem>
       {/* Custom colour to match stairs */}
-      <GridItem area="credits" bgColor="#E9F0FB" borderColor="#E9F0FB">
+      <GridItem area="credits" bgColor="primary.500" borderColor="primary.500">
         <Flex h="100%" alignItems="center" justifyContent="center">
           <HStack h="2rem" gap="2rem">
-            <IsomerLogo />
+            <IsomerLogoInverted />
             <Divider orientation="vertical" borderColor="neutral.300" />
-            <OGPLogo />
+            <OGPLogoInverted />
           </HStack>
         </Flex>
       </GridItem>
       <GridItem area="links" bgColor="white">
         <Flex h="100%" alignItems="center" justifyContent="center">
-          <Box w="65%">
+          <Box w="100%">
             <HStack fontSize="0.75rem" gap="1.5rem" justifyContent="end">
               <FooterLink link="https://form.gov.sg/#!/5dc80f7c03b2790012428dc5">
                 Contact Us
