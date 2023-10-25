@@ -1,21 +1,4 @@
-import {
-  Box,
-  Flex,
-  Icon,
-  Text,
-  HStack,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  useDisclosure,
-  Skeleton,
-  Center,
-  VStack,
-} from "@chakra-ui/react"
+import { Box, Flex, Icon, Text, HStack, useDisclosure } from "@chakra-ui/react"
 import { Button, IconButton } from "@opengovsg/design-system-react"
 import axios from "axios"
 import PropTypes from "prop-types"
@@ -24,6 +7,7 @@ import { useParams } from "react-router-dom"
 
 import { ButtonLink } from "components/ButtonLink"
 import { NotificationMenu } from "components/Header/NotificationMenu"
+import { ViewStagingSiteModal } from "components/ViewStagingSiteModal"
 import { WarningModal } from "components/WarningModal"
 
 import { useLoginContext } from "contexts/LoginContext"
@@ -36,7 +20,6 @@ import useRedirectHook from "hooks/useRedirectHook"
 
 import { ReviewRequestModal } from "layouts/ReviewRequest"
 
-import { NavImage } from "assets"
 import { getBackButton } from "utils"
 
 // axios settings
@@ -170,36 +153,13 @@ const Header = ({
         </HStack>
       </Flex>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader />
-          <ModalCloseButton />
-          <ModalBody>
-            <VStack spacing="1.5rem">
-              <Center>
-                <NavImage />
-              </Center>
-              <Text textStyle="body-2">
-                Your changes may take some time to be reflected. Refresh your
-                staging site to see if your changes have been built.
-              </Text>
-            </VStack>
-          </ModalBody>
-          <ModalFooter>
-            <HStack w="100%" spacing={2} justifyContent="flex-end">
-              <Button variant="clear" onClick={onClose}>
-                Cancel
-              </Button>
-              <Skeleton isLoaded={!isLoading}>
-                <ButtonLink href={stagingUrl}>
-                  <Text color="white">Proceed to staging site</Text>
-                </ButtonLink>
-              </Skeleton>
-            </HStack>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <ViewStagingSiteModal
+        isOpen={isOpen}
+        onClose={onClose}
+        isLoading={isLoading}
+        stagingUrl={stagingUrl}
+        editMode
+      />
       <WarningModal
         isOpen={isWarningModalOpen}
         onClose={onWarningModalClose}

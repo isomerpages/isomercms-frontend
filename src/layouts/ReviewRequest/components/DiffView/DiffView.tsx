@@ -1,12 +1,23 @@
-import { Box, Flex, Spacer, VStack, Text, Heading } from "@chakra-ui/react"
+import {
+  Box,
+  Flex,
+  Spacer,
+  VStack,
+  Text,
+  Heading,
+  useDisclosure,
+  HStack,
+} from "@chakra-ui/react"
 import { Button, Link } from "@opengovsg/design-system-react"
 import { useEffect } from "react"
 import ReactDiffViewer, {
   DiffMethod,
   ReactDiffViewerProps,
 } from "react-diff-viewer"
-import { BiLeftArrowAlt } from "react-icons/bi"
+import { BiLeftArrowAlt, BiLinkExternal } from "react-icons/bi"
 import { useParams } from "react-router-dom"
+
+import { ViewStagingSiteModal } from "components/ViewStagingSiteModal"
 
 import { useBlob } from "hooks/githubHooks/useBlob"
 
@@ -49,6 +60,7 @@ export const DiffViewer = ({
 }
 
 const StatusBar = ({ onClick, stagingUrl }: DiffViewProps): JSX.Element => {
+  const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: true })
   return (
     <Flex dir="row" w="100%" alignItems="center">
       <Button
@@ -59,15 +71,19 @@ const StatusBar = ({ onClick, stagingUrl }: DiffViewProps): JSX.Element => {
         Back to review request
       </Button>
       <Spacer />
-      <Link
-        isExternal
-        isDisabled={!stagingUrl}
-        href={stagingUrl || ""}
-        textDecorationLine="none"
-        textStyle="subhead-1"
-      >
-        Open page in staging
-      </Link>
+      <Button variant="link" isDisabled={!stagingUrl} onClick={onOpen}>
+        <HStack spacing="0.25rem">
+          <Text textStyle="subhead-1">Open page in staging</Text>
+          <BiLinkExternal />
+        </HStack>
+      </Button>
+      <ViewStagingSiteModal
+        isOpen={isOpen}
+        onClose={onClose}
+        isLoading={false}
+        stagingUrl={stagingUrl || undefined}
+        editMode={false}
+      />
     </Flex>
   )
 }
