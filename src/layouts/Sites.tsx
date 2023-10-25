@@ -70,7 +70,7 @@ const SitesCard = (
             <Text fontSize="0.9em">{repoName}</Text>
             {lastUpdated && (
               <Text fontSize="0.6em" color="base.content.light">
-                {convertUtcToTimeDiff(lastUpdated)}
+                Updated {convertUtcToTimeDiff(lastUpdated)}
               </Text>
             )}
           </VStack>

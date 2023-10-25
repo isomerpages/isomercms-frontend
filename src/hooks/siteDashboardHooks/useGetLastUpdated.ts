@@ -12,7 +12,7 @@ import { useErrorToast } from "utils/toasts"
 
 const getRelativeLastUpdated = (siteName: string) => {
   return SiteDashboardService.getLastUpdated(siteName).then((res) => {
-    return convertUtcToTimeDiff(res.lastUpdated)
+    return `Updated ${convertUtcToTimeDiff(res.lastUpdated)}`
   })
 }
 
