@@ -6,8 +6,9 @@ export type ContextMenuItemProps = Omit<MenuItemProps, "iconSpacing">
 
 // eslint-disable-next-line import/prefer-default-export
 export const ContextMenuItem = forwardRef<ContextMenuItemProps, "button">(
-  ({ icon, ...props }: ContextMenuItemProps, ref): JSX.Element => {
-    const iconColour = useToken("colors", "icon.alt")
+  ({ icon, color, ...props }: ContextMenuItemProps, ref): JSX.Element => {
+    // This is a safe cast as we always pass in a string to the color prop
+    const iconColour = useToken("colors", (color as string) || "icon.alt")
     // NOTE: This will override the component props set on icon
     const innerIcon =
       icon &&
@@ -27,7 +28,7 @@ export const ContextMenuItem = forwardRef<ContextMenuItemProps, "button">(
         }}
         borderRadius={0}
         ref={ref}
-        color="text.body"
+        color={color || "text.body"}
         _hover={{
           textDecoration: "none",
           backgroundColor: "primary.100",

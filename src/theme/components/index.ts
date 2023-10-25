@@ -1,5 +1,6 @@
 import { Breadcrumb } from "./Breadcrumb"
 import { Card, CARD_THEME_KEY } from "./Card"
+import { Checkbox } from "./Checkbox"
 import { DISPLAY_CARD_THEME_KEY, DisplayCard } from "./DisplayCard"
 import { Infobox } from "./Infobox"
 import { Rating } from "./Rating"
@@ -8,6 +9,7 @@ import { Rating } from "./Rating"
 export const components = {
   [CARD_THEME_KEY]: Card,
   [DISPLAY_CARD_THEME_KEY]: DisplayCard,
+  Checkbox,
   Breadcrumb,
   Infobox,
   Rating,
