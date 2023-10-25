@@ -8,7 +8,7 @@ import {
   useDisclosure,
   HStack,
 } from "@chakra-ui/react"
-import { Button, Link } from "@opengovsg/design-system-react"
+import { Button } from "@opengovsg/design-system-react"
 import { useEffect } from "react"
 import ReactDiffViewer, {
   DiffMethod,
@@ -60,7 +60,7 @@ export const DiffViewer = ({
 }
 
 const StatusBar = ({ onClick, stagingUrl }: DiffViewProps): JSX.Element => {
-  const { isOpen, onOpen, onClose } = useDisclosure({ defaultIsOpen: true })
+  const { isOpen, onOpen, onClose } = useDisclosure()
   return (
     <Flex dir="row" w="100%" alignItems="center">
       <Button
