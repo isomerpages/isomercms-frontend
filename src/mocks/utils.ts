@@ -8,6 +8,7 @@ import {
   PageData,
   ResourcePageData,
 } from "types/directory"
+import { VerifySgidLoginResponseDto } from "types/login"
 import { NotificationData } from "types/notifications"
 import { BlobDiff, ReviewRequest } from "types/reviewRequest"
 import { BackendPasswordSettings, BackendSiteSettings } from "types/settings"
@@ -186,4 +187,9 @@ export const buildDiffData = apiDataBuilder<BlobDiff>(
 
 export const buildSiteLaunchDto = apiDataBuilder<SiteLaunchDto>(
   "*/sites/:siteName/launchInfo"
+)
+
+export const buildSgidUserData = apiDataBuilder<VerifySgidLoginResponseDto>(
+  "*/auth/sgid/verify-login",
+  "get"
 )
