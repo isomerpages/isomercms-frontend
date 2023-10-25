@@ -1,5 +1,4 @@
 export * from "./LoginImage"
-export * from "./OGPLogo"
 export * from "./OGPLogoInverted"
 export * from "./IsomerLogoNoText"
 export * from "./IsomerLogo"
