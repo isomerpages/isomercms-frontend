@@ -3,7 +3,7 @@ import { BubbleMenu } from "@tiptap/react"
 
 import { useEditorContext } from "contexts/EditorContext"
 
-import MenuItem from "./MenuItem"
+import { MenuItem } from "./MenuItem"
 
 export const TableBubbleMenu = () => {
   const { editor } = useEditorContext()

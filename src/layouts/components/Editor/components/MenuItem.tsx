@@ -10,7 +10,7 @@ interface MenuItemProps {
   isRound?: boolean
 }
 
-export default ({
+export const MenuItem = ({
   icon,
   title,
   action,

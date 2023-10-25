@@ -4,9 +4,9 @@ import { Fragment } from "react"
 
 import { useEditorModal } from "contexts/EditorModalContext"
 
-import MenuItem from "./MenuItem"
+import { MenuItem } from "./MenuItem"
 
-export default ({ editor }: { editor: Editor }) => {
+export const MenuBar = ({ editor }: { editor: Editor }) => {
   const { showModal } = useEditorModal()
 
   const items = [
