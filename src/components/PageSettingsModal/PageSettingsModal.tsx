@@ -11,6 +11,8 @@ import {
   Center,
   Spinner,
   FormControl,
+  Flex,
+  Spacer,
 } from "@chakra-ui/react"
 import { yupResolver } from "@hookform/resolvers/yup"
 import {
@@ -18,10 +20,11 @@ import {
   Link,
   FormLabel,
   ModalCloseButton,
+  Toggle,
 } from "@opengovsg/design-system-react"
 import _ from "lodash"
 import { useEffect } from "react"
-import { useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 
 import { Breadcrumb } from "components/folders/Breadcrumb"
 import {
@@ -53,6 +56,7 @@ interface PageFrontMatter {
   third_nav_title?: string
   description?: string
   image?: string
+  variant: "tiptap" | "markdown"
 }
 
 interface PageParams {
@@ -94,7 +98,10 @@ export const PageSettingsModal = ({
     .filter((page) => page.name !== fileName)
     .map((page) => pageFileNameToTitle(page.name))
 
-  const defaultFrontMatter = getDefaultFrontMatter(params, existingTitlesArray)
+  const defaultFrontMatter = {
+    ...getDefaultFrontMatter(params, existingTitlesArray),
+    variant: "tiptap",
+  } as const
   const isWriteDisabled = isWriteActionsDisabled(siteName)
 
   const {
@@ -103,6 +110,7 @@ export const PageSettingsModal = ({
     handleSubmit,
     formState: { errors },
     setValue,
+    control,
   } = useForm<PageFrontMatter>({
     mode: "onTouched",
     resolver: yupResolver(PageSettingsSchema(existingTitlesArray)),
@@ -184,6 +192,31 @@ export const PageSettingsModal = ({
                 <FormErrorMessage>{errors.permalink?.message}</FormErrorMessage>
               </FormControl>
               <br />
+              <FormControl isInvalid={!!errors.permalink?.message} isRequired>
+                <Flex mb="0.75rem" alignItems="center">
+                  <FormLabel mb={0}>Enable new editor</FormLabel>
+                  <Spacer />
+                  <Controller
+                    name="variant"
+                    render={({ field: { onChange, value } }) => {
+                      return (
+                        <Toggle
+                          defaultChecked
+                          onChange={(event) => {
+                            event.target.checked
+                              ? onChange("tiptap")
+                              : onChange("markdown")
+                          }}
+                          isChecked={value === "tiptap"}
+                          label=""
+                        />
+                      )
+                    }}
+                    control={control}
+                  />
+                </Flex>
+              </FormControl>
+              <br />
               <br />
               <Text textStyle="h4">Page details</Text>
               <FormControl isInvalid={!!errors.description?.message}>
@@ -198,7 +231,7 @@ export const PageSettingsModal = ({
                     {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
                     {/* @ts-ignore */}
                     <Text>
-                      Description snippet shown in search results.
+                      Description snippet shown in search results.{" "}
                       <Link isExternal href="https://go.gov.sg/isomer-meta">
                         Learn more
                       </Link>
