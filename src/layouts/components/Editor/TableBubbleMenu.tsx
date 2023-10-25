@@ -1,8 +1,9 @@
 import { Box } from "@chakra-ui/react"
 import { BubbleMenu } from "@tiptap/react"
-import remixiconUrl from "remixicon/fonts/remixicon.symbol.svg"
 
 import { useEditorContext } from "contexts/EditorContext"
+
+import MenuItem from "./MenuItem"
 
 export const TableBubbleMenu = () => {
   const { editor } = useEditorContext()
@@ -13,50 +14,31 @@ export const TableBubbleMenu = () => {
       editor={editor}
       tippyOptions={{ duration: 100 }}
     >
-      <Box background="black" borderRadius="2rem" p="2px 6px">
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().addColumnBefore().run()}
+      <Box background="grey.50" borderRadius="2rem" p="2px 6px">
+        <MenuItem
+          icon="insert-column-left"
+          action={() => editor.chain().focus().addColumnBefore().run()}
           title="Add column before"
-          className="menu-item"
-        >
-          <svg className="remix">
-            <use xlinkHref={`${remixiconUrl}#ri-insert-column-left`} />
-          </svg>
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().addColumnAfter().run()}
+          isRound
+        />
+        <MenuItem
+          icon="insert-column-right"
+          action={() => editor.chain().focus().addColumnAfter().run()}
           title="Add column after"
-          className="menu-item"
-        >
-          <svg className="remix">
-            <use xlinkHref={`${remixiconUrl}#ri-insert-column-right`} />
-          </svg>
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().addRowBefore().run()}
+          isRound
+        />
+        <MenuItem
+          icon="insert-row-top"
+          action={() => editor.chain().focus().addRowBefore().run()}
           title="Add row before"
-          className="menu-item"
-          style={{
-            fill: "red",
-          }}
-        >
-          <svg className="remix">
-            <use xlinkHref={`${remixiconUrl}#ri-insert-row-top`} />
-          </svg>
-        </button>
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().addRowAfter().run()}
+          isRound
+        />
+        <MenuItem
+          icon="insert-row-bottom"
+          action={() => editor.chain().focus().addRowAfter().run()}
           title="Add row after"
-          className="menu-item"
-        >
-          <svg className="remix">
-            <use xlinkHref={`${remixiconUrl}#ri-insert-row-bottom`} />
-          </svg>
-        </button>
+          isRound
+        />
       </Box>
     </BubbleMenu>
   )
