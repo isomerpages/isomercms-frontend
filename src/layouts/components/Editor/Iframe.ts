@@ -2,7 +2,7 @@ import { Node, nodePasteRule } from "@tiptap/core"
 import { ReactNodeViewRenderer } from "@tiptap/react"
 import _ from "lodash"
 
-import { LegacyBlockView } from "./LegacyBlockView"
+import { IframeView } from "./IframeView"
 
 export interface IframeOptions {
   allowFullscreen: boolean
@@ -115,6 +115,6 @@ export default Node.create<IframeOptions>({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(LegacyBlockView)
+    return ReactNodeViewRenderer(IframeView)
   },
 })
