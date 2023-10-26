@@ -33,11 +33,13 @@ import { sanitiseRawHtml, updateHtmlWithMediaData } from "./utils"
 
 interface EditPageLayoutProps {
   getEditorContent: () => string
+  setEditorContent: (content: string) => void
   variant: "markdown" | "tiptap"
 }
 
 export const EditPageLayout = ({
   getEditorContent,
+  setEditorContent,
   variant = "markdown",
   children,
 }: PropsWithChildren<EditPageLayoutProps>) => {
@@ -55,6 +57,13 @@ export const EditPageLayout = ({
     mutateAsync: updatePageHandler,
     isLoading: isSavingPage,
   } = useUpdatePageHook(params, {
+    onSuccess: (data: {
+      content: {
+        pageBody: string
+      }
+    }) => {
+      setEditorContent(data?.content?.pageBody)
+    },
     onError: (err: AxiosError) => {
       if (err.response?.status === 409) onOverwriteOpen()
     },
