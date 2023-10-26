@@ -75,12 +75,11 @@ export const ImagePreviewCard = ({
         gridTemplateAreas="'image image' 'footer footer'"
         borderRadius="0.25rem"
         _hover={{ bg: undefined }}
-        backgroundColor="base.canvas.overlay"
-        borderColor={isSelected ? "base.divider.brand" : undefined}
-        borderWidth={isSelected ? "2px" : undefined}
+        borderColor={isSelected ? "base.divider.brand" : "base.divider.medium"}
+        borderWidth="2px"
       >
         <GridItem gridArea="image">
-          <Box position="relative">
+          <Box position="relative" backgroundColor="base.canvas.overlay">
             {/* White overlay over image */}
             <Box
               position="absolute"
