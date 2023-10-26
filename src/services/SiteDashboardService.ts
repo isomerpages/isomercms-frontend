@@ -21,6 +21,27 @@ export const getSiteInfo = async (
   return apiService.get<SiteDashboardInfo>(endpoint).then((res) => res.data)
 }
 
+export const getUserProvidedSiteUrl = async (
+  siteName: string
+): Promise<string> => {
+  const endpoint = `/sites/${siteName}/settings`
+  return apiService.get<{ url: string }>(endpoint).then(({ data }) => data.url)
+}
+
+export const getSiteUrl = async (siteName: string): Promise<string> => {
+  const endpoint = `/sites/${siteName}/siteUrl`
+  return apiService
+    .get<{ siteUrl: string }>(endpoint)
+    .then(({ data }) => data.siteUrl)
+}
+
+export const getStagingUrl = async (siteName: string): Promise<string> => {
+  const endpoint = `/sites/${siteName}/stagingUrl`
+  return apiService
+    .get<{ stagingUrl: string }>(endpoint)
+    .then(({ data }) => data.stagingUrl)
+}
+
 export const getReviewRequests = async (
   siteName: string
 ): Promise<SiteDashboardReviewRequest[] | null> => {

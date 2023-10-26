@@ -15,7 +15,7 @@ import { useQueryClient } from "react-query"
 import { useParams } from "react-router-dom"
 
 import { invalidateMergeRelatedQueries } from "hooks/reviewHooks"
-import { useGetSiteUrl } from "hooks/settingsHooks"
+import { useGetSiteUrl } from "hooks/siteDashboardHooks"
 
 import { RocketBlastOffImage } from "assets"
 

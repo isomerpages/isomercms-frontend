@@ -4,17 +4,7 @@ import {
   Spacer,
   Text,
   HStack,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
   useDisclosure,
-  Skeleton,
-  Center,
-  VStack,
 } from "@chakra-ui/react"
 import { Button, IconButton } from "@opengovsg/design-system-react"
 import { BiArrowBack, BiCheckCircle } from "react-icons/bi"
@@ -22,18 +12,17 @@ import { useParams, useHistory } from "react-router-dom"
 
 import { ButtonLink } from "components/ButtonLink"
 import { NotificationMenu } from "components/Header/NotificationMenu"
+import { ViewStagingSiteModal } from "components/ViewStagingSiteModal"
 import { WarningModal } from "components/WarningModal"
 
 import { useDirtyFieldContext } from "contexts/DirtyFieldContext"
 import { useLoginContext } from "contexts/LoginContext"
 
-import { useStagingUrl } from "hooks/settingsHooks"
+import { useGetStagingUrl } from "hooks/siteDashboardHooks"
 
 import { ReviewRequestModal } from "layouts/ReviewRequest"
 
 import { doesOpenReviewRequestExist } from "utils/reviewRequests"
-
-import { NavImage } from "assets"
 
 export const SiteEditHeader = (): JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -49,7 +38,7 @@ export const SiteEditHeader = (): JSX.Element => {
     onClose: onReviewRequestModalClose,
   } = useDisclosure()
   const { siteName } = useParams<{ siteName: string }>()
-  const { data: stagingUrl, isLoading } = useStagingUrl({ siteName })
+  const { data: stagingUrl, isLoading } = useGetStagingUrl(siteName)
   const { userId } = useLoginContext()
   // NOTE: Even if we have an unknown user, we assume that it is github
   // and avoid showing new features.
@@ -123,37 +112,13 @@ export const SiteEditHeader = (): JSX.Element => {
           )}
         </HStack>
       </Flex>
-
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader />
-          <ModalCloseButton />
-          <ModalBody>
-            <VStack spacing="1.5rem">
-              <Center>
-                <NavImage />
-              </Center>
-              <Text textStyle="body-2">
-                Your changes may take some time to be reflected. Refresh your
-                staging site to see if your changes have been built.
-              </Text>
-            </VStack>
-          </ModalBody>
-          <ModalFooter>
-            <HStack w="100%" spacing={2} justifyContent="flex-end">
-              <Button variant="clear" onClick={onClose}>
-                Cancel
-              </Button>
-              <Skeleton isLoaded={!isLoading}>
-                <ButtonLink href={stagingUrl}>
-                  <Text color="white">Proceed to staging site</Text>
-                </ButtonLink>
-              </Skeleton>
-            </HStack>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+      <ViewStagingSiteModal
+        isOpen={isOpen}
+        onClose={onClose}
+        isLoading={isLoading}
+        stagingUrl={stagingUrl}
+        editMode
+      />
       <ReviewRequestModal
         isOpen={isReviewRequestModalOpen}
         onClose={onReviewRequestModalClose}

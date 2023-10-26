@@ -4,18 +4,24 @@ import { formatDuration, intervalToDuration } from "date-fns"
  * Converts a date/time string retrieved from Github to human readable string representing time difference.
  * e.g. 2022-08-24T08:30:46Z to Updated today
  */
-export const convertUtcToTimeDiff = (lastUpdatedTime: string): string => {
-  const gapInUpdate = new Date().getTime() - new Date(lastUpdatedTime).getTime()
+export const convertUtcToTimeDiff = (timestamp: string | number): string => {
+  const gapInUpdate = new Date().getTime() - new Date(timestamp).getTime()
   const numDaysAgo = Math.floor(gapInUpdate / (1000 * 60 * 60 * 24))
-  // return a message for number of days ago repo was last updated
-  switch (numDaysAgo) {
-    case 0:
-      return "Updated today"
-    case 1:
-      return "Updated 1 day ago"
-    default:
-      return `Updated ${numDaysAgo} days ago`
+
+  if (gapInUpdate < 1000 * 60) {
+    // Threshold for "just now" is 1 minute
+    return "just now"
   }
+  if (numDaysAgo === 0) {
+    return "today"
+  }
+  if (numDaysAgo === 1) {
+    return "yesterday"
+  }
+  if (numDaysAgo >= 365) {
+    return "more than a year ago"
+  }
+  return `${numDaysAgo} days ago`
 }
 
 /**

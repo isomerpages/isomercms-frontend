@@ -1,12 +1,13 @@
 {
   "name": "isomercms-frontend",
-  "version": "0.53.0",
+  "version": "0.54.0",
   "private": true,
   "engines": {
     "node": ">=16.0.0"
   },
   "dependencies": {
     "@braintree/sanitize-url": "^6.0.1",
+    "@chakra-ui/anatomy": "^2.2.1",
     "@chakra-ui/cli": "^2.4.1",
     "@chakra-ui/react": "2.7.1",
     "@chakra-ui/theme": "^3.1.2",
@@ -51,6 +52,7 @@
     "postcss": "^8.4.21",
     "postcss-loader": "^7.2.4",
     "prop-types": "^15.8.1",
+    "qrcode": "^1.5.3",
     "react": "^18.2.0",
     "react-beautiful-dnd": "^13.1.1",
     "react-color": "^2.19.3",
@@ -152,6 +154,7 @@
     "@tsconfig/recommended": "^1.0.1",
     "@types/invariant": "^2.2.35",
     "@types/jest": "^29.4.4",
+    "@types/qrcode": "^1.5.4",
     "@types/react-color": "^3.0.6",
     "@types/react-router-dom": "^5.3.3",
     "@types/turndown": "^5.0.1",
