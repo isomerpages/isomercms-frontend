@@ -145,7 +145,11 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
     {
       icon: "links-line",
       title: "Add link",
-      isActive: () => editor.isActive("link"),
+      action: () => showModal("hyperlink"),
+    },
+    {
+      icon: "link-unlink",
+      title: "Remove link",
       action: () => editor.chain().focus().unsetLink().run(),
     },
     {
