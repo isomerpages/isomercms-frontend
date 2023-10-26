@@ -119,7 +119,11 @@ export const MarkdownEditPage = ({ togglePreview }: MarkdownPageProps) => {
   }, [mediaData, editorValue])
 
   return (
-    <EditPageLayout variant="markdown" getEditorContent={() => editorValue}>
+    <EditPageLayout
+      variant="markdown"
+      getEditorContent={() => editorValue}
+      setEditorContent={(content: string) => setEditorValue(content)}
+    >
       <Box maxW="50%" p="1.25rem">
         <Flex flexDir="row" bg="gray.100" p="1.38rem" mb="1.38rem">
           <Flex flexDir="column" alignContent="flex-start" mr="1rem">
