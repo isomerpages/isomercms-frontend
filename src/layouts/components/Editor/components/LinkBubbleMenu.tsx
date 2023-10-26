@@ -80,12 +80,16 @@ const LinkButton = () => {
               colorScheme="blue"
               mr={3}
               onClick={() => {
-                editor
-                  .chain()
-                  .focus()
-                  // NOTE: Force `https` by default
-                  .setLink({ href })
-                  .run()
+                if (href) {
+                  editor
+                    .chain()
+                    .focus()
+                    // NOTE: Force `https` by default
+                    .setLink({ href })
+                    .run()
+                } else {
+                  editor.chain().focus().unsetLink().run()
+                }
                 onClose()
               }}
             >
