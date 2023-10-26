@@ -50,7 +50,7 @@ export const TiptapEditPage = ({
   ])
 
   return (
-    <EditPageLayout getPageBody={() => editor.getHTML()} variant="tiptap">
+    <EditPageLayout getEditorContent={() => editor.getHTML()} variant="tiptap">
       {/* Editor */}
       <Editor />
       {/* Preview */}

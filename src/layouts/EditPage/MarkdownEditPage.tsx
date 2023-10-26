@@ -41,43 +41,6 @@ import { EditPageLayout } from "./EditPageLayout"
 // axios settings
 axios.defaults.withCredentials = true
 
-DOMPurify.setConfig({
-  ADD_TAGS: ["iframe", "#comment", "script"],
-  ADD_ATTR: [
-    "allow",
-    "allowfullscreen",
-    "frameborder",
-    "scrolling",
-    "marginheight",
-    "marginwidth",
-    "target",
-    "async",
-  ],
-  // required in case <script> tag appears as the first line of the markdown
-  FORCE_BODY: true,
-})
-DOMPurify.addHook("uponSanitizeElement", (node, data) => {
-  // Allow script tags if it has a src attribute
-  // Script sources are handled by our CSP sanitiser
-  if (
-    data.tagName === "script" &&
-    !(node.hasAttribute("src") && node.innerHTML === "")
-  ) {
-    // Adapted from https://github.com/cure53/DOMPurify/blob/e0970d88053c1c564b6ccd633b4af7e7d9a10375/src/purify.js#L719-L736
-    DOMPurify.removed.push({ element: node })
-    try {
-      node.parentNode?.removeChild(node)
-    } catch (e) {
-      try {
-        // eslint-disable-next-line no-param-reassign
-        node.outerHTML = ""
-      } catch (ex) {
-        node.remove()
-      }
-    }
-  }
-})
-
 interface MarkdownPageProps {
   togglePreview: () => void
 }
@@ -156,7 +119,7 @@ export const MarkdownEditPage = ({ togglePreview }: MarkdownPageProps) => {
   }, [mediaData, editorValue])
 
   return (
-    <EditPageLayout getPageBody={() => editorValue} variant="markdown">
+    <EditPageLayout variant="markdown" getEditorContent={() => editorValue}>
       <Box maxW="50%" p="1.25rem">
         <Flex flexDir="row" bg="gray.100" p="1.38rem" mb="1.38rem">
           <Flex flexDir="column" alignContent="flex-start" mr="1rem">
