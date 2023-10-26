@@ -1,1 +1,1 @@
-export { EditPage } from "./EditPage"
+export { FeatureFlaggedEditPage as EditPage } from "./FeatureFlaggedEditPage"

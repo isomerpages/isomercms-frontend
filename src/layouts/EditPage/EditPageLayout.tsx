@@ -21,7 +21,7 @@ interface EditPageLayoutProps {
 
 export const EditPageLayout = ({
   getPageBody,
-  variant,
+  variant = "markdown",
   children,
 }: PropsWithChildren<EditPageLayoutProps>) => {
   const params = useParams<{ siteName: string }>()
@@ -66,7 +66,7 @@ export const EditPageLayout = ({
           isEditPage
           params={decodedParams}
         />
-        <Flex flexDir="row" w="100%" h="100%">
+        <Flex flexDir="row" w="100%" h="100%" alignItems="flex-start">
           {/* Editor */}
           {children}
         </Flex>

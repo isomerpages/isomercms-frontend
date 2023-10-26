@@ -8,6 +8,7 @@ export interface FeatureFlags {
     message: string
   }
   [FEATURE_FLAGS.NPS_FORM]: boolean
+  [FEATURE_FLAGS.TIPTAP_EDITOR]: boolean
 }
 
 export type GBAttributes = {
