@@ -38,7 +38,6 @@ export const PageSettingsScreen = ({ match, onClose }) => {
       onProceed={fileName ? updateHandler : createHandler}
       pagesData={dirData ? dirData.filter((item) => item.type === "file") : []}
       siteUrl={siteUrl}
-      showEditorToggle={!fileName}
     />
   ) : (
     <PageSettingsModal
@@ -48,7 +47,6 @@ export const PageSettingsScreen = ({ match, onClose }) => {
       onProceed={fileName ? updateHandler : createHandler}
       pagesData={dirData ? dirData.filter((item) => item.type === "file") : []}
       siteUrl={siteUrl}
-      showEditorToggle={!fileName}
     />
   )
 }

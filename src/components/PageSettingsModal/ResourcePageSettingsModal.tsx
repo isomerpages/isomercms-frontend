@@ -92,7 +92,6 @@ interface ResourcePageSettingsModalParams {
   pagesData: ResourcePageParams[]
   siteUrl: string
   onClose: () => void
-  showEditorToggle?: boolean
 }
 
 const generateDefaultFrontMatter = (
@@ -136,7 +135,6 @@ export const ResourcePageSettingsModal = ({
   pagesData,
   siteUrl,
   onClose,
-  showEditorToggle,
 }: ResourcePageSettingsModalParams): JSX.Element => {
   const { siteName, fileName, resourceRoomName, resourceCategoryName } = params
 
@@ -326,38 +324,31 @@ export const ResourcePageSettingsModal = ({
                 />
                 <FormErrorMessage>{errors.date?.message}</FormErrorMessage>
               </FormControl>
-              {showEditorToggle && (
-                <>
-                  <br />
-                  <FormControl
-                    isInvalid={!!errors.permalink?.message}
-                    isRequired
-                  >
-                    <Flex mb="0.75rem" alignItems="center">
-                      <FormLabel mb={0}>Enable new editor</FormLabel>
-                      <Spacer />
-                      <Controller
-                        name="variant"
-                        render={({ field: { onChange, value } }) => {
-                          return (
-                            <Toggle
-                              defaultChecked
-                              onChange={(event) => {
-                                event.target.checked
-                                  ? onChange("tiptap")
-                                  : onChange("markdown")
-                              }}
-                              isChecked={value === "tiptap"}
-                              label=""
-                            />
-                          )
-                        }}
-                        control={control}
-                      />
-                    </Flex>
-                  </FormControl>
-                </>
-              )}
+              <br />
+              <FormControl isInvalid={!!errors.permalink?.message} isRequired>
+                <Flex mb="0.75rem" alignItems="center">
+                  <FormLabel mb={0}>Enable new editor</FormLabel>
+                  <Spacer />
+                  <Controller
+                    name="variant"
+                    render={({ field: { onChange, value } }) => {
+                      return (
+                        <Toggle
+                          defaultChecked
+                          onChange={(event) => {
+                            event.target.checked
+                              ? onChange("tiptap")
+                              : onChange("markdown")
+                          }}
+                          isChecked={value === "tiptap"}
+                          label=""
+                        />
+                      )
+                    }}
+                    control={control}
+                  />
+                </Flex>
+              </FormControl>
               <Divider mt="2rem" mb="1rem" />
               {/* File URL */}
               {watch("layout") === "file" && (
