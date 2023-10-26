@@ -9,7 +9,7 @@ export const TableBubbleMenu = () => {
 
   return (
     <BubbleMenu
-      shouldShow={() => editor.isActive("table")}
+      shouldShow={() => editor.isActive("table") && !editor.isActive("link")}
       editor={editor}
       tippyOptions={{ duration: 100 }}
     >
