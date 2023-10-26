@@ -20,6 +20,8 @@ export function useUpdatePageHook(params, queryParams) {
   const { pageService } = useContext(ServicesContext)
   const successToast = useSuccessToast()
   const errorToast = useErrorToast()
+  const { siteName, fileName } = params
+
   return useMutation(
     (body) => {
       const { newFileName, sha, frontMatter, pageBody } = extractPageInfo(body)
@@ -33,7 +35,7 @@ export function useUpdatePageHook(params, queryParams) {
     {
       ...queryParams,
       onSettled: () => {
-        queryClient.invalidateQueries([PAGE_CONTENT_KEY, { ...params }])
+        queryClient.invalidateQueries([PAGE_CONTENT_KEY, siteName, fileName])
       },
       onSuccess: () => {
         if (params.collectionName)
