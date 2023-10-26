@@ -1,10 +1,12 @@
-import { Flex, Spacer, Button } from "@chakra-ui/react"
+import { Flex, Spacer, Button, useDisclosure } from "@chakra-ui/react"
+import { AxiosError } from "axios"
 import { PropsWithChildren, useEffect } from "react"
 import { useParams } from "react-router-dom"
 
 import { Footer } from "components/Footer"
 import { Greyscale } from "components/Greyscale"
 import Header from "components/Header"
+import { OverwriteChangesModal } from "components/OverwriteChangesModal"
 
 import { useGetPageHook, useUpdatePageHook } from "hooks/pageHooks"
 import { useGetSiteColorsHook } from "hooks/settingsHooks"
@@ -15,31 +17,36 @@ import { isWriteActionsDisabled } from "utils/reviewRequests"
 import { createPageStyleSheet, getDecodedParams } from "utils"
 
 interface EditPageLayoutProps {
-  getPageBody: () => string
+  getEditorContent: () => string
   variant: "markdown" | "tiptap"
 }
 
 export const EditPageLayout = ({
-  getPageBody,
+  getEditorContent,
   variant = "markdown",
   children,
 }: PropsWithChildren<EditPageLayoutProps>) => {
   const params = useParams<{ siteName: string }>()
   const decodedParams = getDecodedParams(params)
   const {
+    isOpen: isOverwriteOpen,
+    onOpen: onOverwriteOpen,
+    onClose: onOverwriteClose,
+  } = useDisclosure()
+
+  const {
     mutateAsync: updatePageHandler,
     isLoading: isSavingPage,
   } = useUpdatePageHook(params, {
-    // NOTE: Not deleting this as this is important enough
-    // to leave here so that we avoid regression.
-    // onError: (err) => {
-    //   if (err.response.status === 409) onOverwriteOpen()
-    // },
+    onError: (err: AxiosError) => {
+      if (err.response?.status === 409) onOverwriteOpen()
+    },
   })
 
   const { siteName } = decodedParams
 
   const { setRedirectToNotFound } = useRedirectHook()
+  // TODO: Add loading state for page
   const { data: pageData, isLoading: isLoadingPage } = useGetPageHook(params, {
     onError: () => setRedirectToNotFound(siteName),
   })
@@ -56,41 +63,54 @@ export const EditPageLayout = ({
       )
   }, [siteColorsData, siteName])
 
+  const onSave = () => {
+    updatePageHandler(({
+      pageData: {
+        frontMatter: {
+          ...(pageData?.content?.frontMatter || {}),
+          variant,
+        },
+        pageBody: getEditorContent(),
+        sha: pageData.sha,
+      },
+      // NOTE: We require the cast here as the original hook is written in js.
+      // because of this, the return handler has types as `unknown`
+    } as unknown) as void)
+  }
+
   return (
-    <Greyscale isActive={isWriteDisabled}>
-      <Flex flexDir="column" h="full">
-        <Header
-          title={pageData?.content?.frontMatter?.title || ""}
-          // TODO: Add this check back in dynamically
-          shouldAllowEditPageBackNav
-          isEditPage
-          params={decodedParams}
-        />
-        <Flex flexDir="row" w="100%" h="100%" alignItems="flex-start">
-          {/* Editor */}
-          {children}
+    <>
+      <OverwriteChangesModal
+        isOpen={isOverwriteOpen}
+        onClose={onOverwriteClose}
+        onProceed={() => {
+          onSave()
+          onOverwriteClose()
+        }}
+      />
+
+      <Greyscale isActive={isWriteDisabled}>
+        <Flex flexDir="column" h="full">
+          <Header
+            title={pageData?.content?.frontMatter?.title || ""}
+            shouldAllowEditPageBackNav={
+              getEditorContent() === pageData?.content?.pageBody?.trim()
+            }
+            isEditPage
+            params={decodedParams}
+          />
+          <Flex flexDir="row" w="100%" h="100%" alignItems="flex-start">
+            {/* Editor */}
+            {children}
+          </Flex>
+          <Spacer />
+          <Footer>
+            <Button onClick={onSave} isLoading={isSavingPage}>
+              Save
+            </Button>
+          </Footer>
         </Flex>
-        <Spacer />
-        <Footer>
-          <Button
-            onClick={() => {
-              updatePageHandler(({
-                pageData: {
-                  frontMatter: {
-                    ...(pageData?.content?.frontMatter || {}),
-                    variant,
-                  },
-                  pageBody: getPageBody(),
-                  sha: pageData.sha,
-                },
-              } as unknown) as void)
-            }}
-            isLoading={isSavingPage}
-          >
-            Save
-          </Button>
-        </Footer>
-      </Flex>
-    </Greyscale>
+      </Greyscale>
+    </>
   )
 }
