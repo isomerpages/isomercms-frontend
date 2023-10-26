@@ -13,13 +13,11 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  Spacer,
-  Divider,
 } from "@chakra-ui/react"
 import { Button, Searchbar, Pagination } from "@opengovsg/design-system-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useFormContext } from "react-hook-form"
-import { Link, useRouteMatch } from "react-router-dom"
+import { useRouteMatch } from "react-router-dom"
 
 import { FolderCard } from "components/FolderCard"
 import { BreadcrumbItem } from "components/folders/Breadcrumb"
@@ -52,25 +50,26 @@ const MediasSelectModal = ({
   setQueryParams,
 }) => {
   const { params } = useRouteMatch()
-  const { siteName } = params
+  const { siteName, fileName } = params
 
   const { mediaRoom, mediaDirectoryName } = queryParams
 
   const [curPage, setCurPage] = usePaginate()
 
-  const {
-    data: { directories: mediaFolderSubdirectories },
-    isLoading: isListMediaFolderSubdirectoriesLoading,
-  } = useListMediaFolderSubdirectories(
-    {
-      ...queryParams,
-    },
-    { initialData: { directories: [] } }
-  )
+  const [mediaFolderSubdirectories, setMediaFolderSubdirectories] = useState([])
+  const [mediaFolderFiles, setMediaFolderFiles] = useState([])
+  const [total, setTotal] = useState()
 
   const [searchValue, setSearchedValue] = useState("")
   const {
-    data: { files: mediaFolderFiles, total },
+    data: listMediaDirectoriesData,
+    isLoading: isListMediaFolderSubdirectoriesLoading,
+  } = useListMediaFolderSubdirectories({
+    ...queryParams,
+  })
+
+  const {
+    data: listMediaFilesData,
     isLoading: isListMediaFilesLoading,
   } = useListMediaFolderFiles(
     {
@@ -83,6 +82,18 @@ const MediasSelectModal = ({
     },
     { initialData: { files: [] } }
   )
+
+  useEffect(() => {
+    if (listMediaDirectoriesData)
+      setMediaFolderSubdirectories(listMediaDirectoriesData.directories)
+  }, [listMediaDirectoriesData])
+
+  useEffect(() => {
+    if (listMediaFilesData) {
+      setMediaFolderFiles(listMediaFilesData.files)
+      setTotal(listMediaFilesData.total)
+    }
+  }, [listMediaFilesData])
 
   const files = useGetAllMediaFiles(
     mediaFolderFiles || [],
@@ -110,37 +121,38 @@ const MediasSelectModal = ({
       closeOnOverlayClick={false}
     >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent padding="0.5rem">
         <ModalHeader>
-          <Flex mr="3rem">
-            <Text textStyle="h1">{`Select ${mediaRoom.slice(0, -1)}`}</Text>
-            <Spacer />
-            {/* Search medias */}
-            <Box w="33%" px="1rem">
-              <Searchbar isExpanded onSearch={(val) => setSearchedValue(val)} />
-            </Box>
-            {/* Upload medias */}
-            <Button onClick={onUpload} mr={2}>
-              Add new
-            </Button>
-          </Flex>
+          <VStack alignItems="right" gap="1rem">
+            <Text textStyle="h4">{`Add ${mediaRoom.slice(0, -1)}${
+              fileName ? ` to ${decodeURIComponent(fileName)}` : ""
+            }`}</Text>
+            <Text textStyle="body-1">
+              Choose from your images or upload a new image. You can organise
+              your images in Workspace &gt; Images.
+            </Text>
+            <Flex w="100%" justifyContent="space-between">
+              {/* Search medias */}
+              <Box>
+                <Searchbar
+                  isExpanded
+                  onSearch={(val) => setSearchedValue(val)}
+                  placeholder="Press enter to search"
+                />
+              </Box>
+              {/* Upload medias */}
+              <Button
+                variant="inverse"
+                color="interaction.main.default"
+                onClick={onUpload}
+              >
+                Upload new image
+              </Button>
+            </Flex>
+          </VStack>
         </ModalHeader>
         <ModalCloseButton onClick={onClose} />
         <ModalBody>
-          <Divider mb="0.75rem" />
-          <div className={`${contentStyles.segment} mb-0`}>
-            <p>
-              For {mediaRoom} other than
-              {mediaRoom === "images"
-                ? ` 'png', 'jpg', '.jpeg', 'gif', 'tif', '.tiff', 'bmp', 'ico', 'svg'`
-                : ` 'pdf'`}
-              , please use
-              <Link to={{ pathname: `https://go.gov.sg` }} target="_blank">
-                https://go.gov.sg
-              </Link>
-              to upload and link them to your Isomer site.
-            </p>
-          </div>
           <div className={`${contentStyles.segment} mb-3`}>
             {queryParams.mediaDirectoryName
               ? queryParams.mediaDirectoryName.split("%2F").map((dir, idx) => (
@@ -205,24 +217,28 @@ const MediasSelectModal = ({
               isLoaded={!isListMediaFilesLoading}
             >
               <SimpleGrid w="100%" columns={3} spacing="2.5%">
-                {files
-                  .filter(({ data }) => filteredMedias.includes(data?.name))
-                  .map(({ data, isLoading }, mediaItemIndex) => (
-                    <Skeleton
-                      w="100%"
-                      h={isLoading ? "4.5rem" : "fit-content"}
-                      isLoaded={!isLoading}
-                      key={data.name}
-                    >
-                      <MediaCard
-                        type={mediaRoom}
-                        media={data}
-                        mediaItemIndex={mediaItemIndex}
-                        onClick={() => onMediaSelect(data)}
-                        isSelected={data.name === watch("selectedMedia")?.name}
-                      />
-                    </Skeleton>
-                  ))}
+                {files &&
+                  files
+                    .filter(({ data }) => filteredMedias.includes(data?.name))
+                    .map(({ data, isLoading }, mediaItemIndex) => (
+                      <Skeleton
+                        w="100%"
+                        h={isLoading ? "4.5rem" : "fit-content"}
+                        isLoaded={!isLoading}
+                        key={data.name}
+                      >
+                        <MediaCard
+                          type={mediaRoom}
+                          media={data}
+                          mediaItemIndex={mediaItemIndex}
+                          onClick={() => onMediaSelect(data)}
+                          isSelected={
+                            data.name === watch("selectedMedia")?.name
+                          }
+                          showSettings={false}
+                        />
+                      </Skeleton>
+                    ))}
               </SimpleGrid>
             </Skeleton>
           </div>
