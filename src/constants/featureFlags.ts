@@ -3,6 +3,7 @@ export const FEATURE_FLAGS = {
   BANNER: "banner",
   NPS_FORM: "nps_form",
   HOMEPAGE_ENABLED_BLOCKS: "homepage_enabled_blocks",
+  TIPTAP_EDITOR: "is-tiptap-enabled",
 } as const
 
 // NOTE: Only have 4 default blocks:
