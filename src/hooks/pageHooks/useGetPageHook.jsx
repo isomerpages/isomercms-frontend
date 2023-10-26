@@ -12,8 +12,10 @@ import { DEFAULT_RETRY_MSG } from "utils"
 export function useGetPageHook(params, queryParams) {
   const { pageService } = useContext(ServicesContext)
   const errorToast = useErrorToast()
+  const { siteName, fileName } = params
+
   return useQuery(
-    [PAGE_CONTENT_KEY, { ...params }],
+    [PAGE_CONTENT_KEY, siteName, fileName],
     () => pageService.get(params),
     {
       ...queryParams,
