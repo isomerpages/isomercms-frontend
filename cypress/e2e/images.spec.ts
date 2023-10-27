@@ -44,7 +44,7 @@ describe("Images", () => {
     })
 
     it("Should be able to create new album", () => {
-      cy.contains("Create album").click()
+      cy.contains("Or, create an album").click()
       cy.get("#newDirectoryName").clear().type(OTHER_ALBUM_TITLE)
 
       cy.get("button")
@@ -116,7 +116,7 @@ describe("Images", () => {
       cy.visit(
         `/sites/${TEST_REPO_NAME}/media/images/mediaDirectory/images%2F${ALBUM_TITLE}`
       ).wait(Interceptors.GET)
-      cy.contains("Create album").click()
+      cy.contains("Or, create an album").click()
       cy.get("#newDirectoryName").clear().type(OTHER_ALBUM_TITLE)
       cy.get("button")
         .contains(/^Next$/)
