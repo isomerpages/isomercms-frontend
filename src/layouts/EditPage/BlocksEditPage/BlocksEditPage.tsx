@@ -111,9 +111,14 @@ const ContentView = () => {
           Explore what blocks you can use to put your page together!"
           image={<HomepageStartEditingImage />}
           isEmpty={blocks.length === 0}
-          h="100%"
         >
-          <VStack spacing="1.25rem" p="1.5rem">
+          <VStack
+            maxH="calc(100vh - 64px)"
+            overflow="auto"
+            spacing="1.25rem"
+            p="1.5rem"
+            h="100%"
+          >
             {blocks.map(({ variant }, index) => {
               return (
                 <Editable.DraggableAccordionItem title={variant} index={index}>
@@ -216,7 +221,7 @@ export const BlocksEditPage = () => {
         <Grid templateColumns="36rem 1fr" w="100%" h="100%">
           <GridItem>
             <VStack h="100%">
-              <Editable.Sidebar title="Edit Content" w="36rem" h="100%">
+              <Editable.Sidebar title="Edit Content" w="36rem" h="100%" pb={0}>
                 <ContentView />
                 <AddBlockView />
                 {/* <EditView /> */}
