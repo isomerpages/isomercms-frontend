@@ -31,8 +31,13 @@ import { Iframe } from "layouts/components/Editor/extensions"
 import { MediaService } from "services"
 import { getDecodedParams, getImageDetails } from "utils"
 
+import { BlocksEditPage } from "./BlocksEditPage"
+import { BlocksContextProvider } from "./BlocksEditPage/BlocksContext"
+import { DEFAULT_BLOCKS } from "./BlocksEditPage/constants"
 import { MarkdownEditPage } from "./MarkdownEditPage"
 import { TiptapEditPage } from "./TiptapEditPage"
+
+type EditorVariant = "markdown" | "tiptap" | "blocks"
 
 export const EditPage = () => {
   const params = useParams<{ siteName: string }>()
@@ -40,7 +45,7 @@ export const EditPage = () => {
   const { data: initialPageData, isLoading: isLoadingPage } = useGetPageHook(
     params
   )
-  const [variant, setVariant] = useState(
+  const [variant, setVariant] = useState<EditorVariant>(
     initialPageData?.content?.frontMatter?.variant || "markdown"
   )
   const [mediaType, setMediaType] = useState<"files" | "images">("images")
@@ -137,64 +142,66 @@ export const EditPage = () => {
             onClose={onHyperlinkModalClose}
           />
         )}
-        {isMediaModalOpen && (
-          <MediaModal
-            onClose={onMediaModalClose}
-            type={mediaType}
-            onProceed={async ({ selectedMediaPath, altText }) => {
-              if (mediaType === "images") {
-                const { mediaUrl } = await getImageSrc(selectedMediaPath)
-                editor
-                  .chain()
-                  .focus()
-                  .setImage({
-                    src: mediaUrl,
-                    alt: altText,
-                  })
-                  .run()
-                // NOTE: If it's a file and there's no selection made, just add a link with default text
-              } else if (editor.state.selection.empty)
-                editor
-                  .chain()
-                  .focus()
-                  .insertContent(
-                    `<a target="_blank" rel="noopener noreferrer nofollow" href="${selectedMediaPath}">file</a>`
-                  )
-                  .run()
-              else {
-                editor
-                  .chain()
-                  .focus()
-                  .setLink({ href: selectedMediaPath })
-                  .run()
+        <BlocksContextProvider blocks={[DEFAULT_BLOCKS.text]}>
+          {isMediaModalOpen && (
+            <MediaModal
+              onClose={onMediaModalClose}
+              type={mediaType}
+              onProceed={async ({ selectedMediaPath, altText }) => {
+                if (mediaType === "images") {
+                  const { mediaUrl } = await getImageSrc(selectedMediaPath)
+                  editor
+                    .chain()
+                    .focus()
+                    .setImage({
+                      src: mediaUrl,
+                      alt: altText,
+                    })
+                    .run()
+                  // NOTE: If it's a file and there's no selection made, just add a link with default text
+                } else if (editor.state.selection.empty)
+                  editor
+                    .chain()
+                    .focus()
+                    .insertContent(
+                      `<a target="_blank" rel="noopener noreferrer nofollow" href="${selectedMediaPath}">file</a>`
+                    )
+                    .run()
+                else {
+                  editor
+                    .chain()
+                    .focus()
+                    .setLink({ href: selectedMediaPath })
+                    .run()
+                }
+                onMediaModalClose()
+              }}
+            />
+          )}
+          {variant === "markdown" && (
+            <MarkdownEditPage
+              togglePreview={() => {
+                if (variant === "markdown") setVariant("tiptap")
+                else setVariant("markdown")
+              }}
+            />
+          )}
+          {variant === "tiptap" && (
+            <TiptapEditPage
+              // NOTE: We should not use the fetched data if the variant
+              // changed from `markdown` -> `tiptap`.
+              // This is because this implies that the user has
+              // changed the variant from markdown to tiptap.
+              // Hence, there might be changes in either markdown editor content
+              // or in the preview editor that should be persisted.
+              shouldUseFetchedData={
+                variant === "tiptap" &&
+                initialPageData?.content?.frontMatter?.variant === "tiptap"
               }
-              onMediaModalClose()
-            }}
-          />
-        )}
-
-        {variant === "markdown" ? (
-          <MarkdownEditPage
-            togglePreview={() => {
-              variant === "markdown"
-                ? setVariant("tiptap")
-                : setVariant("markdown")
-            }}
-          />
-        ) : (
-          <TiptapEditPage
-            // NOTE: We should not use the fetched data if the variant
-            // changed from `markdown` -> `tiptap`.
-            // This is because this implies that the user has
-            // changed the variant from markdown to tiptap.
-            // Hence, there might be changes in either markdown editor content
-            // or in the preview editor that should be persisted.
-            shouldUseFetchedData={
-              variant === "tiptap" &&
-              initialPageData?.content?.frontMatter?.variant === "tiptap"
-            }
-          />
-        )}
+            />
+          )}
+          {variant === "blocks" && <BlocksEditPage />}
+        </BlocksContextProvider>
       </EditorModalContextProvider>
     </EditorContextProvider>
   )
