@@ -35,9 +35,10 @@ import { BlocksEditPage } from "./BlocksEditPage"
 import { BlocksContextProvider } from "./BlocksEditPage/BlocksContext"
 import { DEFAULT_BLOCKS } from "./BlocksEditPage/constants"
 import { MarkdownEditPage } from "./MarkdownEditPage"
+import { PreviewEditPage } from "./PreviewEditPage/PreviewEditPage"
 import { TiptapEditPage } from "./TiptapEditPage"
 
-type EditorVariant = "markdown" | "tiptap" | "blocks"
+type EditorVariant = "markdown" | "tiptap" | "blocks" | "preview"
 
 export const EditPage = () => {
   const params = useParams<{ siteName: string }>()
@@ -202,6 +203,7 @@ export const EditPage = () => {
             />
           )}
           {variant === "blocks" && <BlocksEditPage />}
+          {variant === "preview" && <PreviewEditPage />}
         </BlocksContextProvider>
       </EditorModalContextProvider>
     </EditorContextProvider>
