@@ -13,14 +13,21 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
+  HStack,
+  BreadcrumbItem,
+  BreadcrumbLink,
 } from "@chakra-ui/react"
-import { Button, Searchbar, Pagination } from "@opengovsg/design-system-react"
+import {
+  Button,
+  Searchbar,
+  Pagination,
+  Breadcrumb,
+} from "@opengovsg/design-system-react"
 import { useState, useEffect } from "react"
 import { useFormContext } from "react-hook-form"
 import { useRouteMatch } from "react-router-dom"
 
 import { FolderCard } from "components/FolderCard"
-import { BreadcrumbItem } from "components/folders/Breadcrumb"
 import { LoadingButton } from "components/LoadingButton"
 import MediaCard from "components/media/MediaCard"
 
@@ -121,12 +128,15 @@ const MediasSelectModal = ({
       closeOnOverlayClick={false}
     >
       <ModalOverlay />
-      <ModalContent padding="0.5rem">
+      <ModalContent padding="0.5rem" paddingTop="1rem">
         <ModalHeader>
           <VStack alignItems="right" gap="1rem">
-            <Text textStyle="h4">{`Add ${mediaRoom.slice(0, -1)}${
-              fileName ? ` to ${decodeURIComponent(fileName)}` : ""
-            }`}</Text>
+            <HStack justifyContent="space-between">
+              <Text textStyle="h4">{`Add ${mediaRoom.slice(0, -1)}${
+                fileName ? ` to ${decodeURIComponent(fileName)}` : ""
+              }`}</Text>
+              <ModalCloseButton onClick={onClose} position="static" />
+            </HStack>
             <Text textStyle="body-1">
               Choose from your images or upload a new image. You can organise
               your images in Workspace &gt; Images.
@@ -151,31 +161,34 @@ const MediasSelectModal = ({
             </Flex>
           </VStack>
         </ModalHeader>
-        <ModalCloseButton onClick={onClose} />
         <ModalBody>
-          <div className={`${contentStyles.segment} mb-3`}>
+          <Breadcrumb pb="1.25rem">
             {queryParams.mediaDirectoryName
               ? queryParams.mediaDirectoryName.split("%2F").map((dir, idx) => (
                   <BreadcrumbItem
-                    item={deslugifyDirectory(dir)}
-                    isLast={
+                    isCurrentPage={
                       idx ===
                       queryParams.mediaDirectoryName.split("%2F").length - 1
                     }
-                    onClick={(e) => {
-                      e.preventDefault()
-                      setQueryParams((prevState) => ({
-                        ...prevState,
-                        mediaDirectoryName: getMediaDirectoryName(
-                          queryParams.mediaDirectoryName,
-                          { end: idx + 1 }
-                        ),
-                      }))
-                    }}
-                  />
+                  >
+                    <BreadcrumbLink
+                      onClick={(e) => {
+                        e.preventDefault()
+                        setQueryParams((prevState) => ({
+                          ...prevState,
+                          mediaDirectoryName: getMediaDirectoryName(
+                            queryParams.mediaDirectoryName,
+                            { end: idx + 1 }
+                          ),
+                        }))
+                      }}
+                    >
+                      {deslugifyDirectory(dir)}
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
                 ))
               : null}
-          </div>
+          </Breadcrumb>
           <div
             className={`${mediaStyles.mediaCards} justify-content-center pt-3 pl-2`}
           >
