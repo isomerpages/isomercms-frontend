@@ -10,10 +10,13 @@ import {
   VStack,
 } from "@chakra-ui/react"
 import { Checkbox } from "@opengovsg/design-system-react"
-import { ChangeEvent, useState } from "react"
+import { ChangeEvent } from "react"
 import { BiEditAlt, BiTrash } from "react-icons/bi"
+import { Link as RouterLink, useRouteMatch } from "react-router-dom"
 
 import { ContextMenu } from "components/ContextMenu"
+
+import useRedirectHook from "hooks/useRedirectHook"
 
 import { convertUtcToTimeDiff } from "utils/dateUtils"
 
@@ -38,6 +41,9 @@ export const ImagePreviewCard = ({
   isMenuNeeded = true,
   onCheck,
 }: ImagePreviewCardProps): JSX.Element => {
+  const { url } = useRouteMatch()
+  const { setRedirectToPage } = useRedirectHook()
+  const encodedName = encodeURIComponent(name)
   const styles = useMultiStyleConfig(CARD_THEME_KEY, {})
   const relativeTime = convertUtcToTimeDiff(addedTime)
 
@@ -80,6 +86,9 @@ export const ImagePreviewCard = ({
         // Note: Outline is required to avoid the card from shifting when selected
         outline={isSelected ? "solid 2px" : "solid 1px"}
         outlineColor={isSelected ? "base.divider.brand" : "base.divider.medium"}
+        onClick={() =>
+          setRedirectToPage(`${url}/editMediaSettings/${encodedName}`)
+        }
       >
         <GridItem gridArea="image">
           <Box position="relative" backgroundColor="base.canvas.overlay">
@@ -151,16 +160,16 @@ export const ImagePreviewCard = ({
           <ContextMenu.List>
             <ContextMenu.Item
               icon={<BiEditAlt />}
-              // as={RouterLink}
-              // to={`${url}/editMediaSettings/${encodedName}`}
+              as={RouterLink}
+              to={`${url}/editMediaSettings/${encodedName}`}
             >
               <Text>Rename image</Text>
             </ContextMenu.Item>
             <ContextMenu.Item
               icon={<BiTrash />}
               color="interaction.critical.default"
-              // as={RouterLink}
-              // to={`${url}/deleteMedia/${encodedName}`}
+              as={RouterLink}
+              to={`${url}/deleteMedia/${encodedName}`}
             >
               <Text>Delete image</Text>
             </ContextMenu.Item>
