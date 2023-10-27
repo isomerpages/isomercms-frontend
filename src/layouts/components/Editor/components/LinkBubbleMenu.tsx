@@ -10,17 +10,22 @@ import {
   InputGroup,
 } from "@chakra-ui/react"
 import { Button, Input } from "@opengovsg/design-system-react"
-import { BubbleMenu } from "@tiptap/react"
+import { BubbleMenu, Editor } from "@tiptap/react"
 import { useState } from "react"
 
 import { useEditorContext } from "contexts/EditorContext"
 import { useEditorModal } from "contexts/EditorModalContext"
 
-const LinkButton = () => {
-  const { editor } = useEditorContext()
+interface LinkBubbleMenuProps {
+  editor?: Editor
+}
+
+const LinkButton = ({ editor: passedEditor }: LinkBubbleMenuProps) => {
+  const { editor: contextEditor } = useEditorContext()
   const { onClose, onOpen, isOpen } = useDisclosure()
   const { showModal } = useEditorModal()
   const [href, setHref] = useState("")
+  const editor = passedEditor || contextEditor
 
   return (
     <>
@@ -102,8 +107,11 @@ const LinkButton = () => {
   )
 }
 
-export const LinkBubbleMenu = () => {
-  const { editor } = useEditorContext()
+export const LinkBubbleMenu = ({
+  editor: passedEditor,
+}: LinkBubbleMenuProps) => {
+  const { editor: contextEditor } = useEditorContext()
+  const editor = passedEditor || contextEditor
 
   return (
     <BubbleMenu
@@ -111,7 +119,7 @@ export const LinkBubbleMenu = () => {
       editor={editor}
       tippyOptions={{ duration: 100 }}
     >
-      <LinkButton />
+      <LinkButton editor={editor} />
     </BubbleMenu>
   )
 }
