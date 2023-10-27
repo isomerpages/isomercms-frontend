@@ -1,4 +1,5 @@
 import type { Meta, StoryFn } from "@storybook/react"
+import { useState } from "react"
 
 import { ImagePreviewCard, ImagePreviewCardProps } from "./ImagePreviewCard"
 
@@ -9,10 +10,23 @@ const imagePreviewCardMeta = {
 
 type ImagePreviewCardTemplateArgs = ImagePreviewCardProps
 
-const Template: StoryFn<ImagePreviewCardTemplateArgs> = (
-  props: ImagePreviewCardTemplateArgs
-) => {
-  return <ImagePreviewCard {...props} />
+const Template: StoryFn<ImagePreviewCardTemplateArgs> = ({
+  isSelected: discardedSelected,
+  onCheck: discardedCheck,
+  ...props
+}: ImagePreviewCardTemplateArgs) => {
+  const [isSelected, setIsSelected] = useState(false)
+
+  return (
+    <ImagePreviewCard
+      isSelected={isSelected}
+      onCheck={() => {
+        setIsSelected(!isSelected)
+        console.log(!isSelected)
+      }}
+      {...props}
+    />
+  )
 }
 
 export const Default = Template.bind({})
@@ -21,7 +35,6 @@ Default.args = {
   addedTime: 1693217477000,
   mediaUrl: "https://placehold.co/600x400",
   isMenuNeeded: true,
-  onCheck: (e) => console.log(e.target.checked),
 }
 
 export default imagePreviewCardMeta

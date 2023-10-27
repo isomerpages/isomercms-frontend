@@ -23,6 +23,7 @@ export interface ImagePreviewCardProps {
   name: string
   addedTime: number
   mediaUrl: string
+  isSelected: boolean
   isMenuNeeded?: boolean
   onCheck?: (event: ChangeEvent<HTMLInputElement>) => void
 }
@@ -33,10 +34,10 @@ export const ImagePreviewCard = ({
   name,
   addedTime,
   mediaUrl,
+  isSelected,
   isMenuNeeded = true,
   onCheck,
 }: ImagePreviewCardProps): JSX.Element => {
-  const [isSelected, setIsSelected] = useState(false)
   const styles = useMultiStyleConfig(CARD_THEME_KEY, {})
   const relativeTime = convertUtcToTimeDiff(addedTime)
 
@@ -59,8 +60,8 @@ export const ImagePreviewCard = ({
           outline: "none",
         }}
         zIndex={1}
+        isChecked={isSelected}
         onChange={(e) => {
-          setIsSelected(!isSelected)
           if (onCheck) onCheck(e)
         }}
       />
