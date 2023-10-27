@@ -48,7 +48,6 @@ import { CreateButton } from "../components"
 import { SiteEditLayout } from "../layouts"
 
 import {
-  // ImagePreviewCard,
   FilePreviewCard,
   MediaBreadcrumbs,
   MediaDirectoryCard,
