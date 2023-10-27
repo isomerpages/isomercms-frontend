@@ -23,7 +23,7 @@ import {
 
 const RADIX_PARSE_INT = 10
 
-const updatePositions = <T,>(
+export const updatePositions = <T,>(
   section: T[],
   source: number,
   destination: number,
