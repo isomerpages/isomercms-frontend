@@ -8,7 +8,6 @@ import {
 import {
   buildAllNotificationData,
   buildCollaboratorData,
-  buildGetStagingUrlData,
   buildLastUpdated,
   buildLoginData,
   buildMarkNotificationsAsReadData,
@@ -19,7 +18,6 @@ import {
 
 export const handlers = [
   buildLastUpdated({ lastUpdated: new Date().toISOString() }),
-  buildGetStagingUrlData({ stagingUrl: "https://www.google.com" }),
   buildSiteDashboardReviewRequests({ reviews: [] }),
   buildReviewRequestDiffData({ items: [] }),
   buildLoginData(MOCK_USER),
