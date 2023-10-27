@@ -97,7 +97,7 @@ export const CustomiseSectionsHeader = () => (
   </>
 )
 
-interface EmptySectionProps {
+interface EmptySectionProps extends FlexProps {
   image?: JSX.Element
   title: string
   subtitle: string
@@ -109,6 +109,7 @@ export const EmptySection = ({
   title,
   subtitle,
   isEmpty,
+  ...rest
 }: PropsWithChildren<EmptySectionProps>) => {
   return isEmpty ? (
     <Flex
@@ -116,6 +117,7 @@ export const EmptySection = ({
       flexDir="column"
       p="3.75rem 1.5rem"
       justifyContent="center"
+      {...rest}
     >
       {image}
       <Text
@@ -181,6 +183,7 @@ type DroppableZone =
   | HomepageDroppableZone
   | ContactUsDroppableZone
   | NavDroppableZone
+  | "Blocks"
 
 type DropInfo = {
   droppableId: DroppableZone
@@ -293,10 +296,11 @@ interface DraggableAccordionItemProps {
   // TODO: Should get these props automatically
   // rather than having us pass in manually
   index: number
-  draggableId: string
+  draggableId?: string
   isInvalid?: boolean
   isNested?: boolean
 }
+
 // NOTE: Separating editable/draggable
 // due to semantics on `Draggables`
 /**
@@ -465,7 +469,11 @@ const DraggableAccordionItem = ({
   )
 }
 
-const EditableAccordion = (props: AccordionProps) => {
+const EditableAccordion = (
+  props: Omit<AccordionProps, "allowMultiple" | "onChange"> & {
+    onChange?: (idx: number) => void
+  }
+) => {
   return <Accordion allowToggle bg="base.canvas.default" {...props} />
 }
 
