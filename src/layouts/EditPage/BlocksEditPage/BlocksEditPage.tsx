@@ -36,7 +36,7 @@ import { useBlocks } from "./BlocksContext"
 import { BLOCKS_CONTENT } from "./constants"
 import { BlockAddView } from "./types"
 
-const AddBlockView = () => {
+export const AddBlockView = () => {
   const { curTab } = useBlocks()
 
   if (curTab !== "add") return null
@@ -57,7 +57,7 @@ const AddBlockView = () => {
   )
 }
 
-const BlockContentCard = ({
+export const BlockContentCard = ({
   title,
   description,
   icon,
@@ -92,7 +92,7 @@ const BlockContentCard = ({
   )
 }
 
-const ContentView = () => {
+export const ContentView = () => {
   const { blocks, curTab, focus } = useBlocks()
 
   if (curTab !== "content") return null
