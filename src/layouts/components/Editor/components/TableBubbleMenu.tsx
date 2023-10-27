@@ -1,12 +1,19 @@
 import { Box } from "@chakra-ui/react"
-import { BubbleMenu } from "@tiptap/react"
+import { BubbleMenu, Editor } from "@tiptap/react"
 
 import { useEditorContext } from "contexts/EditorContext"
 
 import { MenuItem } from "./MenuItem"
 
-export const TableBubbleMenu = () => {
-  const { editor } = useEditorContext()
+interface TableBubbleMenuProps {
+  editor?: Editor
+}
+
+export const TableBubbleMenu = ({
+  editor: passedEditor,
+}: TableBubbleMenuProps) => {
+  const { editor: contextEditor } = useEditorContext()
+  const editor = passedEditor || contextEditor
 
   return (
     <BubbleMenu
