@@ -40,8 +40,9 @@ const PagePreview = ({ title, chunk, ...rest }) => {
 
   return (
     <Box
-      w="50%"
+      w="100%"
       h="100%"
+      maxH="100vh"
       bg="white"
       overflowY="auto"
       className={editorStyles.pageEditorMain}
