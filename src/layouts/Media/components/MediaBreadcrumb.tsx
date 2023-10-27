@@ -19,7 +19,10 @@ export const MediaBreadcrumbs = (): JSX.Element => {
   const firstItem = directories[0]
 
   return (
-    <Breadcrumb spacing="2px" separator={<BiChevronRight color="text.body" />}>
+    <Breadcrumb
+      spacing="0.5rem"
+      separator={<BiChevronRight color="text.body" />}
+    >
       {directories
         .slice(1)
         .reduce(
@@ -45,7 +48,16 @@ export const MediaBreadcrumbs = (): JSX.Element => {
           ]
         )
         .map(({ name, url }, idx) => {
-          const hasModifier = idx === directories.length - 1
+          if (
+            directories.length > 3 &&
+            idx > 1 &&
+            idx < directories.length - 2
+          ) {
+            return <></>
+          }
+
+          const isEllipsis = directories.length > 3 && idx === 1
+          const hasModifier = idx === directories.length - 1 || isEllipsis
 
           return (
             <BreadcrumbItem
@@ -53,13 +65,16 @@ export const MediaBreadcrumbs = (): JSX.Element => {
               isCurrentPage={hasModifier}
             >
               <BreadcrumbLink
-                textStyle="body-2"
-                color={hasModifier ? "text.link.default" : "text.body"}
+                textStyle="caption-2"
+                color={
+                  hasModifier
+                    ? "base.content.default"
+                    : "interaction.links.default"
+                }
                 as={RouterLink}
-                to={url}
-                textDecoration={hasModifier ? "underline" : "inherit"}
+                to={isEllipsis ? "#" : url}
               >
-                {name}
+                {isEllipsis ? "..." : name}
               </BreadcrumbLink>
             </BreadcrumbItem>
           )

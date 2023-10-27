@@ -17,7 +17,7 @@ export const ContextMenuButton = forwardRef<MenuButtonProps, "button">(
         icon={
           <Icon
             as={BiDotsVerticalRounded}
-            fill="icon.default"
+            fill="base.content.strong"
             fontSize="1.25rem"
           />
         }
