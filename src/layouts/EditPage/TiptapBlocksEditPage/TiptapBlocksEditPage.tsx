@@ -37,7 +37,7 @@ import { BLOCKS_CONTENT } from "../BlocksEditPage/constants"
 import { BlockAddView } from "../BlocksEditPage/types"
 import { EditPageLayout } from "../EditPageLayout"
 
-import { usePreviewEditor } from "./usePreviewEditor"
+import { usePreviewEditor } from "./useBlockEditor"
 
 export const AddBlockView = () => {
   const { curTab } = useBlocks()
@@ -124,7 +124,7 @@ export const BlockContentCard = ({
   )
 }
 
-export const PreviewEditPage = () => {
+export const TiptapBlocksEditPage = () => {
   const params = useParams<{ siteName: string }>()
   const { data: initialPageData, isLoading: isLoadingPage } = useGetPageHook(
     params
