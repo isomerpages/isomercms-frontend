@@ -1,5 +1,5 @@
-import { Box, Text } from "@chakra-ui/react"
-import { IconButton } from "@opengovsg/design-system-react"
+import { Box } from "@chakra-ui/react"
+import { Tag } from "@opengovsg/design-system-react"
 import { NodeViewContent, NodeViewProps, NodeViewWrapper } from "@tiptap/react"
 
 import { BxDraggableVertical } from "assets"
@@ -14,7 +14,7 @@ const draggableStyles = {
       0px 10px 20px rgba(0, 0, 0, 0.1)`,
 }
 
-export const DraggableView = () => {
+export const DraggableView = ({ node }: NodeViewProps) => {
   return (
     <Box as={NodeViewWrapper} {...draggableStyles}>
       <Box
@@ -30,7 +30,12 @@ export const DraggableView = () => {
       >
         <BxDraggableVertical />
       </Box>
-      <NodeViewContent />
+      <Box w="100%">
+        <Tag _hover={{}} _active={{}} mb="0.25rem">
+          {node.child(0).type.name}
+        </Tag>
+        <NodeViewContent />
+      </Box>
     </Box>
   )
 }

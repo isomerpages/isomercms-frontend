@@ -16,13 +16,19 @@ import { Iframe } from "layouts/components/Editor/extensions"
 
 import { Block, BlockAddView, BlockVariant } from "./types"
 
-export const BLOCKS_CONTENT: Record<BlockVariant, BlockAddView> = {
+export const BLOCKS_CONTENT: Record<
+  BlockVariant,
+  BlockAddView & {
+    getContent: (props: string) => string
+  }
+> = {
   text: {
     title: "Text",
     description:
       "Deliver useful information to your site visitors by using headings, body texts, links, and more.",
     icon: BiText,
     variant: "text",
+    getContent: (content) => `<p>${content}</p>`,
   },
   image: {
     title: "Image",
@@ -30,6 +36,7 @@ export const BLOCKS_CONTENT: Record<BlockVariant, BlockAddView> = {
       "Add an image to your page. You can add a caption and alt text to the image.",
     icon: BiImage,
     variant: "image",
+    getContent: (src) => `<img src="${src}"/>`,
   },
   embed: {
     title: "Embed",
@@ -37,12 +44,15 @@ export const BLOCKS_CONTENT: Record<BlockVariant, BlockAddView> = {
       "Add rich content such as YouTube, FormSG, CheckFirst and more.",
     icon: BiCode,
     variant: "embed",
+    getContent: (src) => `<iframe src="${src}" frameborder="0"></iframe>`,
   },
   table: {
     title: "Table",
     description: "Use a table to display key information in columns and rows.",
     icon: BiTable,
     variant: "table",
+    getContent: (content) =>
+      `<table><tbody><tr><th><p>${content}</p></th></tr></tbody></table>`,
   },
 }
 
