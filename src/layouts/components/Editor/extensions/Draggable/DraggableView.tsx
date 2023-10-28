@@ -2,6 +2,8 @@ import { Box } from "@chakra-ui/react"
 import { Tag } from "@opengovsg/design-system-react"
 import { NodeViewContent, NodeViewProps, NodeViewWrapper } from "@tiptap/react"
 
+import { useEditorContext } from "contexts/EditorContext"
+
 import { BxDraggableVertical } from "assets"
 
 const draggableStyles = {
@@ -15,7 +17,9 @@ const draggableStyles = {
 }
 
 export const DraggableView = ({ node }: NodeViewProps) => {
-  return (
+  const { editor } = useEditorContext()
+
+  return editor.isEditable ? (
     <Box as={NodeViewWrapper} {...draggableStyles}>
       <Box
         alignSelf="center"
@@ -37,5 +41,9 @@ export const DraggableView = ({ node }: NodeViewProps) => {
         <NodeViewContent />
       </Box>
     </Box>
+  ) : (
+    <NodeViewWrapper>
+      <NodeViewContent />
+    </NodeViewWrapper>
   )
 }
