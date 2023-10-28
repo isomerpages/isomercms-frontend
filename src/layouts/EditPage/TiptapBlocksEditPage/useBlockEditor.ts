@@ -16,7 +16,7 @@ import { Markdown } from "tiptap-markdown"
 
 import { Iframe } from "layouts/components/Editor/extensions"
 
-import DraggableItem from "./DraggableItem"
+import DraggableItem from "../../components/Editor/extensions/Draggable"
 
 export const usePreviewEditor = () => {
   const editor = useEditor({
