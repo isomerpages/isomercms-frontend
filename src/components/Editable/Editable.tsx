@@ -73,7 +73,7 @@ const getDraggableAccordionItemStyle = ({
 interface SidebarHeaderProps {
   title: string
 }
-const SidebarHeader = ({ title }: SidebarHeaderProps) => {
+export const SidebarHeader = ({ title }: SidebarHeaderProps) => {
   return (
     <Flex
       w="100%"

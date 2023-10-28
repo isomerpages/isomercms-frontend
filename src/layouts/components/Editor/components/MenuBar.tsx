@@ -1,4 +1,4 @@
-import { Divider, HStack } from "@chakra-ui/react"
+import { Divider, HStack, Text } from "@chakra-ui/react"
 import { Editor } from "@tiptap/react"
 import { Fragment } from "react"
 import { v4 as uuid } from "uuid"
@@ -175,20 +175,27 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
       borderColor="base.divider.strong"
       borderTopRadius="0.25rem"
     >
-      {items.map((item) => (
-        <Fragment key={uuid()}>
-          {item.type === "divider" ? (
-            <Divider
-              orientation="vertical"
-              border="px solid"
-              borderColor="base.divider.strong"
-              h="1.25rem"
-            />
-          ) : (
-            <MenuItem {...item} />
-          )}
-        </Fragment>
-      ))}
+      {editor.isEditable ? (
+        items.map((item) => (
+          <Fragment key={uuid()}>
+            {item.type === "divider" ? (
+              <Divider
+                orientation="vertical"
+                border="px solid"
+                borderColor="base.divider.strong"
+                h="1.25rem"
+              />
+            ) : (
+              <MenuItem {...item} />
+            )}
+          </Fragment>
+        ))
+      ) : (
+        <>
+          <MenuItem icon="lock-line" title="Editing locked" />
+          <Text as="h6">Previewing!</Text>
+        </>
+      )}
     </HStack>
   )
 }
