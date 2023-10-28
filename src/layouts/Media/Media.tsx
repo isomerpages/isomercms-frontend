@@ -61,6 +61,13 @@ interface MediaLabels {
   pluralDirectoryLabel: "directories" | "albums"
 }
 
+interface CreateDirectoryButtonProps {
+  isWriteDisabled: boolean | undefined
+  directoryLevel: number
+  singularDirectoryLabel: string
+  url: string
+}
+
 // Utility method to help ease over the various labels associated
 // with the media type so that we can avoid repeated conditionals
 const getMediaLabels = (mediaType: "files" | "images"): MediaLabels => {
@@ -83,6 +90,7 @@ const getMediaLabels = (mediaType: "files" | "images"): MediaLabels => {
   }
 }
 
+// Utility method for getting the text under the page title in the header
 const getSubheadText = (
   countSubdirectories: number,
   countFiles: number,
@@ -111,31 +119,42 @@ const getSubheadText = (
   return results.join(" and ")
 }
 
-export const Media = (): JSX.Element => {
-  const CreateAlbumButton = () => (
-    <Greyscale isActive={isWriteDisabled}>
-      <CreateButton
-        as={Link}
-        to={
-          mediaDirectoryName.split("%2F").length < MAX_MEDIA_LEVELS
-            ? `${url}/createDirectory`
-            : "#"
-        }
-        isDisabled={mediaDirectoryName.split("%2F").length >= MAX_MEDIA_LEVELS}
-      >
-        {`Create ${singularDirectoryLabel}`}
-      </CreateButton>
-    </Greyscale>
-  )
+// Utility method for getting the text to display in the empty state (i.e. when
+// there are no files and folders to display
+const getPlaceholderText = (
+  directoryLevel: number,
+  { pluralDirectoryLabel, pluralMediaLabel }: MediaLabels
+) => {
+  const results = []
+  results.push(_.upperFirst(pluralMediaLabel))
 
-  const handleSelect = (filePath: string) => {
-    if (selectedImages.includes(filePath)) {
-      setSelectedImages(selectedImages.filter((img) => img !== filePath))
-    } else {
-      setSelectedImages([...selectedImages, filePath])
-    }
+  if (directoryLevel < MAX_MEDIA_LEVELS) {
+    results.push(`and ${pluralDirectoryLabel}`)
   }
 
+  results.push("you add will appear here.")
+
+  return results.join(" ")
+}
+
+const CreateDirectoryButton = ({
+  isWriteDisabled,
+  directoryLevel,
+  singularDirectoryLabel,
+  url,
+}: CreateDirectoryButtonProps) => (
+  <Greyscale isActive={isWriteDisabled}>
+    <CreateButton
+      as={Link}
+      to={directoryLevel < MAX_MEDIA_LEVELS ? `${url}/createDirectory` : "#"}
+      isDisabled={directoryLevel >= MAX_MEDIA_LEVELS}
+    >
+      {`Create ${singularDirectoryLabel}`}
+    </CreateButton>
+  </Greyscale>
+)
+
+export const Media = (): JSX.Element => {
   const history = useHistory()
   const [curPage, setCurPage] = usePaginate()
   const { params, path, url } = useRouteMatch<{
@@ -145,6 +164,14 @@ export const Media = (): JSX.Element => {
   }>()
   const { siteName, mediaRoom: mediaType, mediaDirectoryName } = params
   const [selectedImages, setSelectedImages] = useState<string[]>([])
+
+  const handleSelect = (filePath: string) => {
+    if (selectedImages.includes(filePath)) {
+      setSelectedImages(selectedImages.filter((img) => img !== filePath))
+    } else {
+      setSelectedImages([...selectedImages, filePath])
+    }
+  }
 
   useEffect(() => {
     // NOTE: Because this component is shared between different media types + subfolders,
@@ -190,13 +217,13 @@ export const Media = (): JSX.Element => {
     articleLabel,
     pluralMediaLabel,
     singularDirectoryLabel,
-    pluralDirectoryLabel,
   } = getMediaLabels(mediaType)
 
   const isWriteDisabled = isWriteActionsDisabled(siteName)
   const countSubdirectories =
     mediaFolderSubdirectories?.directories?.length || 0
   const countFiles = mediaFolderFiles?.total || 0
+  const directoryLevel = mediaDirectoryName.split("%2F").length
   const isUngrouped = !mediaDirectoryName.includes("%2F")
 
   return (
@@ -205,6 +232,7 @@ export const Media = (): JSX.Element => {
         <VStack spacing="2rem" w="100%">
           {/* Header section */}
           <HStack w="100%">
+            {/* Page title segment */}
             <VStack spacing="0.5rem" align="left" w="40%">
               <MediaBreadcrumbs />
               <Text as="h4" textStyle="h4">
@@ -219,103 +247,111 @@ export const Media = (): JSX.Element => {
                 )}
               </Text>
             </VStack>
-            {files &&
-              mediaFolderFiles &&
-              (countSubdirectories !== 0 ||
-                countFiles !== 0 ||
-                selectedImages.length > 0) && (
-                <>
-                  <Spacer />
-                  {selectedImages.length > 0 ? (
-                    <>
-                      <Box mt="auto">
-                        <Button
+
+            {/* Action buttons segment */}
+            {(countSubdirectories !== 0 || countFiles !== 0) && (
+              <>
+                <Spacer />
+
+                {selectedImages.length > 0 && (
+                  <>
+                    <Box mt="auto">
+                      <Button
+                        variant="clear"
+                        color="base.content.strong"
+                        onClick={() => setSelectedImages([])}
+                      >
+                        Deselect all
+                      </Button>
+                    </Box>
+                    <Box mt="auto">
+                      <Menu isStretch={false}>
+                        <Menu.Button
                           variant="clear"
-                          color="base.content.strong"
-                          onClick={() => setSelectedImages([])}
+                          colorScheme="slate"
+                          sx={{
+                            color: "base.content.strong",
+                            _hover: {
+                              backgroundColor: "interaction.tinted.main.hover",
+                            },
+                            _active: {
+                              backgroundColor: "interaction.tinted.main.active",
+                            },
+                          }}
                         >
-                          Deselect all
+                          Edit selected
+                          <Badge
+                            borderRadius="3.125rem"
+                            bgColor="interaction.sub-subtle.default"
+                            color="interaction.sub.default"
+                            ml="0.5rem"
+                          >
+                            {selectedImages.length}
+                          </Badge>
+                        </Menu.Button>
+                        <Menu.List>
+                          <Menu.Item>
+                            <Icon
+                              as={BiFolderOpen}
+                              mr="1rem"
+                              fontSize="1.25rem"
+                            />
+                            Move images to album
+                          </Menu.Item>
+                          <Menu.Item>
+                            <Icon
+                              as={BiFolderPlus}
+                              mr="1rem"
+                              fontSize="1.25rem"
+                            />
+                            Create new album with images
+                          </Menu.Item>
+                          <Menu.Item color="interaction.critical.default">
+                            <Icon as={BiTrash} mr="1rem" fontSize="1.25rem" />
+                            Delete all
+                          </Menu.Item>
+                        </Menu.List>
+                      </Menu>
+                    </Box>
+                  </>
+                )}
+
+                {selectedImages.length === 0 && (
+                  <>
+                    <Box mt="auto">
+                      {directoryLevel >= MAX_MEDIA_LEVELS ? (
+                        <Tooltip
+                          label={`You can only add up to ${MAX_MEDIA_LEVELS} levels of ${pluralMediaLabel}`}
+                          hasArrow
+                          gutter={16}
+                        >
+                          <CreateDirectoryButton
+                            isWriteDisabled={isWriteDisabled}
+                            directoryLevel={directoryLevel}
+                            singularDirectoryLabel={singularDirectoryLabel}
+                            url={url}
+                          />
+                        </Tooltip>
+                      ) : (
+                        <CreateDirectoryButton
+                          isWriteDisabled={isWriteDisabled}
+                          directoryLevel={directoryLevel}
+                          singularDirectoryLabel={singularDirectoryLabel}
+                          url={url}
+                        />
+                      )}
+                    </Box>
+                    <Box mt="auto">
+                      <Greyscale isActive={isWriteDisabled}>
+                        <Button as={Link} to={`${url}/createMedia`}>
+                          {`Upload ${pluralMediaLabel}`}
                         </Button>
-                      </Box>
-                      <Box mt="auto">
-                        <Menu isStretch={false}>
-                          <Menu.Button
-                            variant="clear"
-                            colorScheme="slate"
-                            sx={{
-                              color: "base.content.strong",
-                              _hover: {
-                                backgroundColor:
-                                  "interaction.tinted.main.hover",
-                              },
-                              _active: {
-                                backgroundColor:
-                                  "interaction.tinted.main.active",
-                              },
-                            }}
-                          >
-                            Edit selected
-                            <Badge
-                              borderRadius="3.125rem"
-                              bgColor="interaction.sub-subtle.default"
-                              color="interaction.sub.default"
-                              ml="0.5rem"
-                            >
-                              {selectedImages.length}
-                            </Badge>
-                          </Menu.Button>
-                          <Menu.List>
-                            <Menu.Item>
-                              <Icon
-                                as={BiFolderOpen}
-                                mr="1rem"
-                                fontSize="1.25rem"
-                              />
-                              Move images to album
-                            </Menu.Item>
-                            <Menu.Item>
-                              <Icon
-                                as={BiFolderPlus}
-                                mr="1rem"
-                                fontSize="1.25rem"
-                              />
-                              Create new album with images
-                            </Menu.Item>
-                            <Menu.Item color="interaction.critical.default">
-                              <Icon as={BiTrash} mr="1rem" fontSize="1.25rem" />
-                              Delete all
-                            </Menu.Item>
-                          </Menu.List>
-                        </Menu>
-                      </Box>
-                    </>
-                  ) : (
-                    <>
-                      <Box mt="auto">
-                        {mediaDirectoryName.split("%2F").length >=
-                        MAX_MEDIA_LEVELS ? (
-                          <Tooltip
-                            label={`You can only add up to ${MAX_MEDIA_LEVELS} levels of ${pluralMediaLabel}`}
-                            hasArrow
-                            gutter={16}
-                          >
-                            <CreateAlbumButton />
-                          </Tooltip>
-                        ) : (
-                          <CreateAlbumButton />
-                        )}
-                      </Box>
-                      <Box mt="auto">
-                        <Greyscale isActive={isWriteDisabled}>
-                          <Button as={Link} to={`${url}/createMedia`}>
-                            {`Upload ${pluralMediaLabel}`}
-                          </Button>
-                        </Greyscale>
-                      </Box>
-                    </>
-                  )}
-                </>
-              )}
+                      </Greyscale>
+                    </Box>
+                  </>
+                )}
+              </>
+            )}
           </HStack>
 
           {/* Subdirectories section */}
@@ -340,18 +376,15 @@ export const Media = (): JSX.Element => {
             isLoaded={!isListMediaFilesLoading}
             mt="0.25rem"
           >
-            {files &&
-            mediaFolderFiles &&
-            countSubdirectories === 0 &&
-            countFiles === 0 ? (
+            {countSubdirectories === 0 && countFiles === 0 ? (
               <Center mt="5.75rem">
                 <VStack spacing={0}>
                   <EmptyAlbumImage width="16.25rem" />
                   <Text textStyle="subhead-1" mt="2.25rem">
-                    {_.upperFirst(pluralMediaLabel)}{" "}
-                    {mediaDirectoryName.split("%2F").length <
-                      MAX_MEDIA_LEVELS && ` and ${pluralDirectoryLabel}`}{" "}
-                    you add will appear here.
+                    {getPlaceholderText(
+                      directoryLevel,
+                      getMediaLabels(mediaType)
+                    )}
                   </Text>
                   <Text textStyle="body-2" mt="0.25rem">
                     Upload {pluralMediaLabel} to link them on your pages.
@@ -361,8 +394,7 @@ export const Media = (): JSX.Element => {
                       {`Upload ${pluralMediaLabel}`}
                     </Button>
                   </Greyscale>
-                  {mediaDirectoryName.split("%2F").length <
-                    MAX_MEDIA_LEVELS && (
+                  {directoryLevel < MAX_MEDIA_LEVELS && (
                     <Greyscale isActive={isWriteDisabled}>
                       <Button
                         as={Link}
@@ -404,7 +436,9 @@ export const Media = (): JSX.Element => {
                     )
                   })}
                 </SimpleGrid>
-                {files && mediaFolderFiles && countFiles !== 0 && (
+
+                {/* Pagination segment */}
+                {countFiles !== 0 && (
                   <Center mt="3rem">
                     <Pagination
                       totalCount={mediaFolderFiles?.total || 0}
