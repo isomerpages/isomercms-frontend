@@ -44,7 +44,7 @@ export const BLOCKS_CONTENT: Record<
       "Add rich content such as YouTube, FormSG, CheckFirst and more.",
     icon: BiCode,
     variant: "embed",
-    getContent: (embed) => embed,
+    getContent: (embed) => embed.trim(),
   },
   table: {
     title: "Table",
