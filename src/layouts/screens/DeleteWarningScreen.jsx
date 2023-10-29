@@ -80,24 +80,37 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
     onSuccess: () => onClose(),
   })
 
+  const mediaType =
+    mediaRoom === "images"
+      ? { dirType: "album", resourceType: "image" }
+      : { dirType: "folder", resourceType: "file" }
+
   return (
     <WarningModal
       isOpen={!!deleteItemName} // Modal is always present for delete screens
       onClose={onClose}
-      displayTitle={`Delete ${deleteItemName}`}
+      displayTitle={`Delete ${deleteItemName}?`}
       displayText={
-        <Text>Are you sure you want to delete {deleteItemName}?</Text>
+        <Text>
+          Are you sure you want to delete this {mediaType.dirType} and all its
+          child {mediaType.dirType}s and {mediaType.resourceType}s? If you used
+          its child contents on any page, site visitors may see a broken{" "}
+          {mediaType.resourceType}. This cannot be undone.
+        </Text>
       }
     >
+      <Checkbox onChange={(e) => setIsDeleteChecked(e.target.checked)}>
+        Yes, delete this {mediaType.dirType} and all its contents
+      </Checkbox>
       <Button variant="clear" colorScheme="secondary" onClick={onClose}>
         Cancel
       </Button>
       <LoadingButton
         colorScheme="critical"
         onClick={deleteHandler}
-        isDisabled={isWriteDisabled}
+        isDisabled={isWriteDisabled || !isDeleteChecked}
       >
-        Yes, delete
+        Delete {mediaType.dirType}
       </LoadingButton>
     </WarningModal>
   )
