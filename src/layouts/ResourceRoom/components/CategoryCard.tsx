@@ -1,5 +1,5 @@
 import { Divider, Icon, LinkBox, LinkOverlay, Text } from "@chakra-ui/react"
-import { BiEditAlt, BiFolder, BiTrash, BiWrench } from "react-icons/bi"
+import { BiFolder, BiTrash, BiEdit } from "react-icons/bi"
 import { Link as RouterLink, useRouteMatch } from "react-router-dom"
 
 import { Card, CardBody } from "components/Card"
@@ -36,27 +36,20 @@ export const CategoryCard = ({ title }: CategoryCardProps): JSX.Element => {
         <ContextMenu.Button />
         <ContextMenu.List>
           <ContextMenu.Item
-            icon={<BiEditAlt />}
-            as={RouterLink}
-            to={generatedLink}
-          >
-            <Text>Edit category</Text>
-          </ContextMenu.Item>
-          <ContextMenu.Item
-            icon={<BiWrench />}
+            icon={<BiEdit />}
             as={RouterLink}
             to={`${url}/editDirectorySettings/${title}`}
           >
-            Category settings
+            Rename category
           </ContextMenu.Item>
           <>
-            <Divider />
             <ContextMenu.Item
               icon={<BiTrash />}
               as={RouterLink}
               to={`${url}/deleteDirectory/${title}`}
+              color="text.danger"
             >
-              Delete
+              Delete category
             </ContextMenu.Item>
           </>
         </ContextMenu.List>
