@@ -36,7 +36,7 @@ export const BLOCKS_CONTENT: Record<
       "Add an image to your page. You can add a caption and alt text to the image.",
     icon: BiImage,
     variant: "image",
-    getContent: (src) => `<img src="${src}"/>`,
+    getContent: (src) => `<img src="${src.trim()}"/>`,
   },
   embed: {
     title: "Embed",
