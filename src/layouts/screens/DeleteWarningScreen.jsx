@@ -26,6 +26,8 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
         decodedParams[getLastItemType(decodedParams)],
         !!(params.resourceRoomName && params.fileName)
       )
+
+  console.log(`match`, match)
   const isWriteDisabled = isWriteActionsDisabled(siteName)
 
   if (fileName) {
@@ -40,12 +42,20 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
           onSuccess: () => onClose(),
         })
 
+    const mediaType = mediaRoom === "images" ? "image" : "file"
+
     return (
       <WarningModal
         isOpen={!!fileData}
         onClose={onClose}
-        displayTitle={`Delete ${fileName}`}
-        displayText={<Text>Are you sure you want to delete {fileName}?</Text>}
+        displayTitle={`Delete ${fileName}?`}
+        displayText={
+          <Text>
+            Are you sure you want to delete this {mediaType}? If you used this{" "}
+            {mediaType} on any page, site visitors may see a broken {mediaType}.
+            This cannot be undone.
+          </Text>
+        }
       >
         <Button variant="clear" colorScheme="secondary" onClick={onClose}>
           Cancel
@@ -55,7 +65,7 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
           onClick={() => deleteHandler({ sha: fileData.sha })}
           isDisabled={isWriteDisabled}
         >
-          Yes, delete
+          Delete {mediaType}
         </LoadingButton>
       </WarningModal>
     )
