@@ -73,8 +73,9 @@ export const BlockContentCard = ({
   const { register, handleSubmit } = useForm()
   const onSave = handleSubmit((data) => {
     showContentView()
+    const { size } = editor.view.state.doc.content
     editor?.commands.insertContentAt(
-      0,
+      size,
       `<div data-type="draggable-item">${getContent(data[variant])}</div>`
     )
   })
