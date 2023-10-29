@@ -1,5 +1,5 @@
 import { LinkOverlay, LinkBox, Divider, Text, Icon } from "@chakra-ui/react"
-import { BiEditAlt, BiFolder, BiTrash, BiWrench } from "react-icons/bi"
+import { BiEdit, BiFolder, BiTrash } from "react-icons/bi"
 import { Link as RouterLink, useRouteMatch } from "react-router-dom"
 
 import { Card, CardBody } from "components/Card"
@@ -35,27 +35,20 @@ export const FolderCard = ({
         <ContextMenu.Button position="absolute" />
         <ContextMenu.List>
           <ContextMenu.Item
-            icon={<BiEditAlt />}
-            as={RouterLink}
-            to={`/sites/${siteName}/folders/${title}`}
-          >
-            <Text>Edit folder</Text>
-          </ContextMenu.Item>
-          <ContextMenu.Item
-            icon={<BiWrench />}
+            icon={<BiEdit />}
             as={RouterLink}
             to={`${url}/editDirectorySettings/${title}`}
           >
-            Folder settings
+            Rename folder
           </ContextMenu.Item>
           <>
-            <Divider />
             <ContextMenu.Item
               icon={<BiTrash />}
               as={RouterLink}
               to={`${url}/deleteDirectory/${title}`}
+              color="text.danger"
             >
-              Delete
+              Delete folder
             </ContextMenu.Item>
           </>
         </ContextMenu.List>
