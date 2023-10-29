@@ -1,6 +1,7 @@
 import { Text } from "@chakra-ui/react"
-import { Button } from "@opengovsg/design-system-react"
+import { Button, Checkbox } from "@opengovsg/design-system-react"
 import PropTypes from "prop-types"
+import { useState } from "react"
 
 import { LoadingButton } from "components/LoadingButton"
 import { WarningModal } from "components/WarningModal"
@@ -18,6 +19,7 @@ import {
 } from "utils"
 
 export const DeleteWarningScreen = ({ match, onClose }) => {
+  const [isDeleteChecked, setIsDeleteChecked] = useState(false)
   const { params, decodedParams } = match
   const { siteName, fileName, mediaRoom } = params
   const deleteItemName = params.mediaDirectoryName
@@ -57,13 +59,16 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
           </Text>
         }
       >
+        <Checkbox onChange={(e) => setIsDeleteChecked(e.target.checked)}>
+          Yes, delete {mediaType}
+        </Checkbox>
         <Button variant="clear" colorScheme="secondary" onClick={onClose}>
           Cancel
         </Button>
         <LoadingButton
           colorScheme="critical"
           onClick={() => deleteHandler({ sha: fileData.sha })}
-          isDisabled={isWriteDisabled}
+          isDisabled={isWriteDisabled || !isDeleteChecked}
         >
           Delete {mediaType}
         </LoadingButton>
