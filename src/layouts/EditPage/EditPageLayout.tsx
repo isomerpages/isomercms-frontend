@@ -214,7 +214,7 @@ export const EditPageLayout = ({
               // TODO: Add an alert/modal
               // to warn the user when they violate our csp
               // so they know why + can take action to remedy
-              isDisabled={isContentViolation}
+              isDisabled
               isLoading={isSavingPage}
             >
               Save
