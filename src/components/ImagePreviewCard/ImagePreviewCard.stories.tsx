@@ -1,11 +1,27 @@
 import type { Meta, StoryFn } from "@storybook/react"
 import { useState } from "react"
+import { MemoryRouter, Route } from "react-router-dom"
 
 import { ImagePreviewCard, ImagePreviewCardProps } from "./ImagePreviewCard"
 
 const imagePreviewCardMeta = {
   title: "Components/Image Preview Card",
   component: ImagePreviewCard,
+  decorators: [
+    (Story) => {
+      return (
+        <MemoryRouter
+          initialEntries={[
+            "/sites/storybook/media/images/mediaDirectory/images",
+          ]}
+        >
+          <Route path="/sites/:siteName/media/:mediaRoom/mediaDirectory/:mediaDirectoryName">
+            <Story />
+          </Route>
+        </MemoryRouter>
+      )
+    },
+  ],
 } as Meta<typeof ImagePreviewCard>
 
 type ImagePreviewCardTemplateArgs = ImagePreviewCardProps
