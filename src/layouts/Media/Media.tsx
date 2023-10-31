@@ -269,6 +269,8 @@ export const Media = (): JSX.Element => {
                         <Menu.Button
                           variant="clear"
                           colorScheme="slate"
+                          // This prop is necessary as we are not able to set
+                          // the colors inside the button, it is far too deep
                           sx={{
                             color: "base.content.strong",
                             _hover: {
