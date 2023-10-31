@@ -34,8 +34,6 @@ import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 
 import { useEditableContext } from "contexts/EditableContext"
 
-import { getShouldShowNewLayouts } from "layouts/EditHomepage/utils"
-
 import { BxGrayTranslucent } from "assets"
 import { FeatureTourHandler } from "features/FeatureTour/FeatureTour"
 import { HERO_OPTIONS_FEATURE_STEPS } from "features/FeatureTour/FeatureTourSequence"
@@ -46,6 +44,7 @@ import {
 } from "types/hero"
 import { HeroBannerLayouts, HighlightOption } from "types/homepage"
 
+import { HOMEPAGE_BLOCKS } from "./constants"
 import { HeroDropdownFormFields } from "./HeroDropdownSection"
 
 type HeroHighlightSectionFormFields = HighlightOption
@@ -297,10 +296,13 @@ const HeroLayoutForm = ({
   children,
 }: HeroLayoutFormProps): JSX.Element => {
   const { onChange } = useEditableContext()
-  const { blocks } = useFeatureValue(FEATURE_FLAGS.HOMEPAGE_ENABLED_BLOCKS, {
-    blocks: [],
-  })
-  const showNewLayouts = getShouldShowNewLayouts(blocks)
+  const { blocks } = useFeatureValue<{ blocks: string[] }>(
+    FEATURE_FLAGS.HOMEPAGE_ENABLED_BLOCKS,
+    {
+      blocks: [],
+    }
+  )
+  const showNewLayouts = blocks.includes(HOMEPAGE_BLOCKS.HERO)
 
   // We only want to show the feature tour when the
   // DOM elements are in view. Else, the feature tour
@@ -395,10 +397,13 @@ export const HeroBody = ({
     initialSectionType
   )
   const { onChange } = useEditableContext()
-  const { blocks } = useFeatureValue(FEATURE_FLAGS.HOMEPAGE_ENABLED_BLOCKS, {
-    blocks: [],
-  })
-  const showNewLayouts = getShouldShowNewLayouts(blocks)
+  const { blocks } = useFeatureValue<{ blocks: string[] }>(
+    FEATURE_FLAGS.HOMEPAGE_ENABLED_BLOCKS,
+    {
+      blocks: [],
+    }
+  )
+  const showNewLayouts = blocks.includes(HOMEPAGE_BLOCKS.HERO)
 
   return (
     <>

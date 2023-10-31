@@ -16,10 +16,7 @@ import { Link } from "react-router-dom"
 
 import { AllSitesHeader } from "components/Header/AllSitesHeader"
 
-import {
-  FEATURE_FLAGS,
-  NUM_DEFAULT_HOMEPAGE_BLOCKS,
-} from "constants/featureFlags"
+import { FEATURE_FLAGS } from "constants/featureFlags"
 import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 
 import { useLoginContext } from "contexts/LoginContext"
