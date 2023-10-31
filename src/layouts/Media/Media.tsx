@@ -28,7 +28,8 @@ import { Greyscale } from "components/Greyscale"
 import { ImagePreviewCard } from "components/ImagePreviewCard"
 import { MoveMediaModal } from "components/MoveMediaModal"
 
-import { MAX_MEDIA_LEVELS, MEDIA_PAGINATION_SIZE } from "constants/media"
+import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
+import { MEDIA_PAGINATION_SIZE, MAX_MEDIA_LEVELS } from "constants/media"
 
 import { useCreateDirectoryAndMoveFilesHook } from "hooks/directoryHooks/useCreateDirectoryAndMoveFilesHook"
 import { useGetAllMediaFiles } from "hooks/directoryHooks/useGetAllMediaFiles"
@@ -40,7 +41,6 @@ import { usePaginate } from "hooks/usePaginate"
 import useRedirectHook from "hooks/useRedirectHook"
 
 import { DeleteWarningScreen } from "layouts/screens/DeleteWarningScreen"
-import { DirectoryCreationScreen } from "layouts/screens/DirectoryCreationScreen"
 import { DirectorySettingsScreen } from "layouts/screens/DirectorySettingsScreen"
 import { MediaCreationScreen } from "layouts/screens/MediaCreationScreen"
 import { MediaSettingsScreen } from "layouts/screens/MediaSettingsScreen"
@@ -51,6 +51,11 @@ import { getMediaLabels, getSelectedMediaDto } from "utils/media"
 import { isWriteActionsDisabled } from "utils/reviewRequests"
 
 import { EmptyAlbumImage, EmptyDirectoryImage } from "assets"
+import { FeatureTourHandler } from "features/FeatureTour/FeatureTour"
+import {
+  MEDIA_FEATURE_STEPS,
+  MEDIA_ONSELECT_FEATURE_STEPS,
+} from "features/FeatureTour/FeatureTourSequence"
 import { MediaData } from "types/directory"
 import { MediaFolderTypes, MediaLabels, SelectedMediaDto } from "types/media"
 import { DEFAULT_RETRY_MSG, useErrorToast, useSuccessToast } from "utils"
@@ -396,6 +401,21 @@ export const Media = (): JSX.Element => {
           )
         }}
       />
+      {(subDirCount !== 0 || filesCount !== 0) &&
+        selectedMedia.length === 0 && (
+          <FeatureTourHandler
+            localStorageKey={LOCAL_STORAGE_KEYS.MediaFeatureTour}
+            steps={MEDIA_FEATURE_STEPS}
+          />
+        )}
+
+      {(subDirCount !== 0 || filesCount !== 0) &&
+        selectedMedia.length !== 0 && (
+          <FeatureTourHandler
+            localStorageKey={LOCAL_STORAGE_KEYS.MediaOnSelectFeatureTour}
+            steps={MEDIA_ONSELECT_FEATURE_STEPS}
+          />
+        )}
 
       <SiteEditLayout overflow="hidden">
         <VStack spacing={0} w="100%">
@@ -433,7 +453,12 @@ export const Media = (): JSX.Element => {
                     Deselect all
                   </Button>
                 </Box>
-                <Box mt="auto">
+                <Box
+                  mt="auto"
+                  id={MEDIA_ONSELECT_FEATURE_STEPS[0].target
+                    .toString()
+                    .replace("#", "")}
+                >
                   <Menu
                     isStretch={false}
                     onOpen={() => setIndividualMedia(null)}
@@ -531,7 +556,12 @@ export const Media = (): JSX.Element => {
                       />
                     )}
                   </Box>
-                  <Box mt="auto">
+                  <Box
+                    mt="auto"
+                    id={MEDIA_FEATURE_STEPS[0].target
+                      .toString()
+                      .replace("#", "")}
+                  >
                     <Greyscale isActive={isWriteDisabled}>
                       <Button as={Link} to={`${url}/createMedia`}>
                         {`Upload ${pluralMediaLabel}`}
@@ -615,7 +645,12 @@ export const Media = (): JSX.Element => {
               </Center>
             ) : (
               <>
-                <SimpleGrid columns={3} spacing="1.5rem" w="100%">
+                <SimpleGrid
+                  columns={3}
+                  spacing="1.5rem"
+                  w="100%"
+                  id="isomer-media-feature-tour-step-2"
+                >
                   {files.map(({ data, isLoading }) => {
                     return (
                       // NOTE: Inner skeleton here is to allow for progressive load.

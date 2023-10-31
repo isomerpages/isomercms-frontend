@@ -1,5 +1,4 @@
-import { HomepageNewFeatures, IsomerThumbsUp } from "assets"
-import { IsomerWaitingLine } from "assets/images/IsomerWaitingLine"
+import { HomepageNewFeatures, IsomerThumbsUp, IsomerWaitingLine } from "assets"
 import { AnnouncementBatch } from "types/announcements"
 
 import { AnnouncementDescription } from "./components/AnnouncementDescription"
@@ -31,6 +30,18 @@ export const ANNOUNCEMENT_BATCH: AnnouncementBatch[] = [
       {
         title: "Customise your Hero banner with IsomerCMS",
         description: AnnouncementDescription(),
+        image: HomepageNewFeatures,
+        tags: ["New Feature"],
+      },
+    ],
+  },
+  {
+    onCloseButtonText: "Got it",
+    announcements: [
+      {
+        title: "Bulk image uploads are here!",
+        description:
+          "Now, you can upload multiple images at once. To ensure that your site runs fast, we recommend only uploading images that you need for your Isomer site.",
         image: HomepageNewFeatures,
         tags: ["New Feature"],
       },
