@@ -59,8 +59,10 @@ export const ImagePreviewCard = ({
         size="md"
         p="1rem"
         variant="transparent"
+        display={isSelected ? "inline-block" : "none"}
         _groupHover={{
           bg: "transparent",
+          display: "inline-block",
         }}
         _focusWithin={{
           outline: "none",

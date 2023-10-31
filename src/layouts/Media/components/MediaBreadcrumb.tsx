@@ -73,6 +73,7 @@ export const MediaBreadcrumbs = (): JSX.Element => {
                 }
                 as={RouterLink}
                 to={isEllipsis ? "#" : url}
+                noOfLines={1}
               >
                 {isEllipsis ? "..." : name}
               </BreadcrumbLink>

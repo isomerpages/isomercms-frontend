@@ -109,7 +109,7 @@ const getSubheadText = (
   }
 
   results.push(
-    `${countFiles} ${isUngrouped ? "ungrouped " : ""}${
+    `${countFiles} ${isUngrouped && countFiles > 0 ? "ungrouped " : ""}${
       countFiles === 1
         ? mediaLabels.singularMediaLabel
         : mediaLabels.pluralMediaLabel
@@ -217,6 +217,7 @@ export const Media = (): JSX.Element => {
     articleLabel,
     pluralMediaLabel,
     singularDirectoryLabel,
+    pluralDirectoryLabel,
   } = getMediaLabels(mediaType)
 
   const isWriteDisabled = isWriteActionsDisabled(siteName)
@@ -235,10 +236,10 @@ export const Media = (): JSX.Element => {
             {/* Page title segment */}
             <VStack spacing="0.5rem" align="left" w="40%">
               <MediaBreadcrumbs />
-              <Text as="h4" textStyle="h4">
+              <Text as="h4" textStyle="h4" mt="0.75rem">
                 All {mediaType}
               </Text>
-              <Text textStyle="subhead-2" mt="0.25rem">
+              <Text textStyle="subhead-2" color="base.content.medium">
                 {getSubheadText(
                   countSubdirectories,
                   countFiles,
@@ -321,7 +322,7 @@ export const Media = (): JSX.Element => {
                     <Box mt="auto">
                       {directoryLevel >= MAX_MEDIA_LEVELS ? (
                         <Tooltip
-                          label={`You can only add up to ${MAX_MEDIA_LEVELS} levels of ${pluralMediaLabel}`}
+                          label={`You can only add up to ${MAX_MEDIA_LEVELS} levels of ${pluralDirectoryLabel}`}
                           hasArrow
                           gutter={16}
                         >
