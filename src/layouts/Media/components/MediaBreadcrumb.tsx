@@ -2,6 +2,8 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from "@chakra-ui/react"
 import { BiChevronRight } from "react-icons/bi"
 import { useRouteMatch, Link as RouterLink } from "react-router-dom"
 
+import { MAX_MEDIA_LEVELS } from "constants/media"
+
 import { deslugifyDirectory } from "utils"
 
 // NOTE: Media directories are recursively nested;
@@ -49,14 +51,14 @@ export const MediaBreadcrumbs = (): JSX.Element => {
         )
         .map(({ name, url }, idx) => {
           if (
-            directories.length > 3 &&
+            directories.length > MAX_MEDIA_LEVELS &&
             idx > 1 &&
-            idx < directories.length - 2
+            idx < directories.length - (MAX_MEDIA_LEVELS - 1)
           ) {
             return <></>
           }
 
-          const isEllipsis = directories.length > 3 && idx === 1
+          const isEllipsis = directories.length > MAX_MEDIA_LEVELS && idx === 1
           const hasModifier = idx === directories.length - 1 || isEllipsis
 
           return (

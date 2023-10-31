@@ -92,16 +92,16 @@ const getMediaLabels = (mediaType: "files" | "images"): MediaLabels => {
 
 // Utility method for getting the text under the page title in the header
 const getSubheadText = (
-  countSubdirectories: number,
-  countFiles: number,
+  subDirCount: number,
+  filesCount: number,
   mediaLabels: MediaLabels,
   isUngrouped: boolean
 ) => {
   const results = []
-  if (countSubdirectories > 0) {
+  if (subDirCount > 0) {
     results.push(
-      `${countSubdirectories} ${
-        countSubdirectories === 1
+      `${subDirCount} ${
+        subDirCount === 1
           ? mediaLabels.singularDirectoryLabel
           : mediaLabels.pluralDirectoryLabel
       }`
@@ -109,8 +109,8 @@ const getSubheadText = (
   }
 
   results.push(
-    `${countFiles} ${isUngrouped && countFiles > 0 ? "ungrouped " : ""}${
-      countFiles === 1
+    `${filesCount} ${isUngrouped && filesCount > 0 ? "ungrouped " : ""}${
+      filesCount === 1
         ? mediaLabels.singularMediaLabel
         : mediaLabels.pluralMediaLabel
     }`
@@ -221,9 +221,8 @@ export const Media = (): JSX.Element => {
   } = getMediaLabels(mediaType)
 
   const isWriteDisabled = isWriteActionsDisabled(siteName)
-  const countSubdirectories =
-    mediaFolderSubdirectories?.directories?.length || 0
-  const countFiles = mediaFolderFiles?.total || 0
+  const subDirCount = mediaFolderSubdirectories?.directories?.length || 0
+  const filesCount = mediaFolderFiles?.total || 0
   const directoryLevel = mediaDirectoryName.split("%2F").length
   const isUngrouped = !mediaDirectoryName.includes("%2F")
 
@@ -241,8 +240,8 @@ export const Media = (): JSX.Element => {
               </Text>
               <Text textStyle="subhead-2" color="base.content.medium">
                 {getSubheadText(
-                  countSubdirectories,
-                  countFiles,
+                  subDirCount,
+                  filesCount,
                   getMediaLabels(mediaType),
                   isUngrouped
                 )}
@@ -250,7 +249,7 @@ export const Media = (): JSX.Element => {
             </VStack>
 
             {/* Action buttons segment */}
-            {(countSubdirectories !== 0 || countFiles !== 0) && (
+            {(subDirCount !== 0 || filesCount !== 0) && (
               <>
                 <Spacer />
 
@@ -377,7 +376,7 @@ export const Media = (): JSX.Element => {
             isLoaded={!isListMediaFilesLoading}
             mt="0.25rem"
           >
-            {countSubdirectories === 0 && countFiles === 0 ? (
+            {subDirCount === 0 && filesCount === 0 ? (
               <Center mt="5.75rem">
                 <VStack spacing={0}>
                   <EmptyAlbumImage width="16.25rem" />
@@ -439,7 +438,7 @@ export const Media = (): JSX.Element => {
                 </SimpleGrid>
 
                 {/* Pagination segment */}
-                {countFiles !== 0 && (
+                {filesCount !== 0 && (
                   <Center mt="3rem">
                     <Pagination
                       totalCount={mediaFolderFiles?.total || 0}
