@@ -1,4 +1,3 @@
-import { Button } from "@chakra-ui/react"
 import { IconButton } from "@opengovsg/design-system-react"
 import { MouseEventHandler } from "react"
 import remixiconUrl from "remixicon/fonts/remixicon.symbol.svg"
@@ -12,7 +11,6 @@ interface MenuItemProps {
 
 export default ({ icon, title, action, isActive = null }: MenuItemProps) => (
   <IconButton
-    // variant="unstyled"
     type="button"
     className="menu-item"
     _hover={{ bg: "gray.100" }}

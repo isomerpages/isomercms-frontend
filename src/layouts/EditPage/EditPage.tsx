@@ -84,7 +84,7 @@ const EditPageLayout = ({
   const { siteName } = decodedParams
 
   const { setRedirectToNotFound } = useRedirectHook()
-  const { data: pageData, isLoading: isLoadingPage } = useGetPageHook(params, {
+  const { data: pageData } = useGetPageHook(params, {
     onError: () => setRedirectToNotFound(siteName),
   })
   const { data: siteColorsData } = useGetSiteColorsHook(params)

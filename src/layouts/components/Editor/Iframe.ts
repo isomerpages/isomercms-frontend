@@ -1,4 +1,4 @@
-import { Node, nodeInputRule, nodePasteRule } from "@tiptap/core"
+import { Node, nodePasteRule } from "@tiptap/core"
 import { ReactNodeViewRenderer } from "@tiptap/react"
 import _ from "lodash"
 
@@ -7,7 +7,7 @@ import { LegacyBlockView } from "./LegacyBlockView"
 export interface IframeOptions {
   allowFullscreen: boolean
   HTMLAttributes: {
-    [key: string]: any
+    [key: string]: string
   }
 }
 
@@ -100,6 +100,8 @@ export default Node.create<IframeOptions>({
         getAttributes: (match) => {
           const srcIndex = match.input?.search("src=")
           if (srcIndex && srcIndex > -1) {
+            // NOTE: Extract the `src` property from the pasted `iframe` tag
+            // and set the property on the node so that users have a view.
             const substring = match.input?.substring(srcIndex + 5)
             const src = _.takeWhile(substring, (char) => char !== '"').join("")
             return {

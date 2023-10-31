@@ -1,6 +1,7 @@
 import { Divider, HStack } from "@chakra-ui/react"
 import { Editor } from "@tiptap/react"
 import { Fragment } from "react"
+import { v4 as uuid } from "uuid"
 
 import { useEditorModal } from "contexts/EditorModalContext"
 
@@ -170,9 +171,9 @@ export default ({ editor }: { editor: Editor }) => {
       borderColor="base.divider.strong"
       borderTopRadius="0.25rem"
     >
-      {items.map((item, index) => (
+      {items.map((item) => (
         // eslint-disable-next-line react/no-array-index-key
-        <Fragment key={index}>
+        <Fragment key={uuid()}>
           {item.type === "divider" ? (
             <Divider
               orientation="vertical"
