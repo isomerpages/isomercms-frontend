@@ -24,14 +24,12 @@ export const DraggableView = ({ node }: NodeViewProps) => {
         <Flex flexDir="row" alignItems="center">
           <Box
             alignSelf="center"
-            // variant="clear"
             cursor="grab"
             aria-label="drag item"
             mr="0.5rem"
             contentEditable="false"
             draggable
             data-drag-handle
-            // icon={<BxDraggableVertical />}
           >
             <BxDraggableVertical />
           </Box>

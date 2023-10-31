@@ -12,6 +12,13 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
 
   const items = [
     {
+      icon: "lock-unlock-line",
+      title: "Unlocked",
+    },
+    {
+      type: "divider",
+    },
+    {
       icon: "bold",
       title: "Bold",
       action: () => editor.chain().focus().toggleBold().run(),
