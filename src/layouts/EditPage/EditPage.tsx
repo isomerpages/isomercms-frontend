@@ -129,7 +129,7 @@ export const EditPage = () => {
                 .chain()
                 .focus()
                 .insertContent(
-                  `<a target="_blank" rel="noopener noreferrer nofollow" href=${href}>${text}</a>`
+                  `<a target="_blank" rel="noopener noreferrer nofollow" href="${href}">${text}</a>`
                 )
                 .run()
               onHyperlinkModalClose()
@@ -161,12 +161,13 @@ export const EditPage = () => {
                     `<a target="_blank" rel="noopener noreferrer nofollow" href="${selectedMediaPath}">file</a>`
                   )
                   .run()
-              else
+              else {
                 editor
                   .chain()
                   .focus()
                   .setLink({ href: selectedMediaPath })
                   .run()
+              }
               onMediaModalClose()
             }}
           />
