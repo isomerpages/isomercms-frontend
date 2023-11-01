@@ -1,4 +1,5 @@
 import { HomepageNewFeatures, IsomerThumbsUp, IsomerWaitingLine } from "assets"
+import { BulkUploadAnnouncementImage } from "assets/images/BulkUploadAnnouncementImage"
 import { AnnouncementBatch } from "types/announcements"
 
 import { AnnouncementDescription } from "./components/AnnouncementDescription"
@@ -42,7 +43,7 @@ export const ANNOUNCEMENT_BATCH: AnnouncementBatch[] = [
         title: "Bulk image uploads are here!",
         description:
           "Now, you can upload multiple images at once. To ensure that your site runs fast, we recommend only uploading images that you need for your Isomer site.",
-        image: HomepageNewFeatures,
+        image: BulkUploadAnnouncementImage,
         tags: ["New Feature"],
       },
     ],

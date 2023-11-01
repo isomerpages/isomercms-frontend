@@ -30,10 +30,17 @@ SiteCollaboratorsAnnouncement.args = {
 }
 
 export const HeroBannerNewFeaturesAnnouncement = Template.bind({})
-
 HeroBannerNewFeaturesAnnouncement.args = {
   onClose,
   isOpen: true,
   announcements: ANNOUNCEMENT_BATCH[1].announcements,
   onCloseButtonText: ANNOUNCEMENT_BATCH[1].onCloseButtonText,
+}
+
+export const BulkUploadingAnnouncement = Template.bind({})
+BulkUploadingAnnouncement.args = {
+  onClose,
+  isOpen: true,
+  announcements: ANNOUNCEMENT_BATCH[2].announcements,
+  onCloseButtonText: ANNOUNCEMENT_BATCH[2].onCloseButtonText,
 }
