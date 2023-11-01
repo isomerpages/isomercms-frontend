@@ -89,9 +89,7 @@ BuildingStagingSite.parameters = {
     handlers: [
       ...handlers,
       buildGetStagingBuildStatusData({
-        commit: "123",
         status: "PENDING",
-        timeLastSaved: Date.now() - 5 * 60 * 1000,
       }),
     ],
   },
@@ -103,9 +101,7 @@ SuccessStagingBuild.parameters = {
     handlers: [
       ...handlers,
       buildGetStagingBuildStatusData({
-        commit: "123",
         status: "READY",
-        timeLastSaved: Date.now() - 60 * 60 * 1000,
       }),
     ],
   },
@@ -117,9 +113,7 @@ ErrorStagingBuild.parameters = {
     handlers: [
       ...handlers,
       buildGetStagingBuildStatusData({
-        commit: "123",
         status: "ERROR",
-        timeLastSaved: Date.now() - 1 * 60 * 1000,
       }),
     ],
   },

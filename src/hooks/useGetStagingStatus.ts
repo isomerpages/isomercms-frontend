@@ -14,6 +14,7 @@ export const useGetStagingStatus = (
     () => getStagingBuildStatus({ siteName }),
     {
       retry: false,
+      refetchInterval: 1000 * 30, // 30 sec
     }
   )
 }

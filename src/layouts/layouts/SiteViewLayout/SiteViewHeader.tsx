@@ -6,6 +6,7 @@ import {
   HStack,
   LinkBox,
   LinkOverlay,
+  Skeleton,
 } from "@chakra-ui/react"
 import { IconButton } from "@opengovsg/design-system-react"
 import { BiArrowBack } from "react-icons/bi"
@@ -13,16 +14,23 @@ import { Link as RouterLink, useLocation, useParams } from "react-router-dom"
 
 import { AvatarMenu } from "components/Header/AvatarMenu"
 import { NotificationMenu } from "components/Header/NotificationMenu"
+import { StatusBadge } from "components/Header/StatusBadge"
 
 import { ISOMER_GUIDE_LINK } from "constants/config"
 
 import { useLoginContext } from "contexts/LoginContext"
+
+import { useGetStagingStatus } from "hooks/useGetStagingStatus"
 
 export const SiteViewHeader = (): JSX.Element => {
   const { displayedName } = useLoginContext()
   const { pathname } = useLocation()
   const isAtSiteDashboard = pathname.endsWith("dashboard")
   const { siteName } = useParams<{ siteName: string }>()
+  const {
+    data: getStagingStatusData,
+    isLoading: isGetStagingStatusLoading,
+  } = useGetStagingStatus(siteName)
   return (
     <Flex
       py="0.625rem"
@@ -50,6 +58,9 @@ export const SiteViewHeader = (): JSX.Element => {
       </HStack>
       <Spacer />
       <HStack>
+        <Skeleton isLoaded={!isGetStagingStatusLoading}>
+          {getStagingStatusData && <StatusBadge {...getStagingStatusData} />}
+        </Skeleton>
         <LinkBox position="relative">
           <LinkOverlay href={ISOMER_GUIDE_LINK} isExternal>
             <Text

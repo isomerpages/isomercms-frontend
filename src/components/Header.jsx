@@ -1,4 +1,12 @@
-import { Box, Flex, Icon, Text, HStack, useDisclosure } from "@chakra-ui/react"
+import {
+  Box,
+  Flex,
+  Icon,
+  Text,
+  HStack,
+  useDisclosure,
+  Skeleton,
+} from "@chakra-ui/react"
 import { Button, IconButton } from "@opengovsg/design-system-react"
 import axios from "axios"
 import PropTypes from "prop-types"
@@ -7,6 +15,7 @@ import { useParams } from "react-router-dom"
 
 import { ButtonLink } from "components/ButtonLink"
 import { NotificationMenu } from "components/Header/NotificationMenu"
+import { StatusBadge } from "components/Header/StatusBadge"
 import { ViewStagingSiteModal } from "components/ViewStagingSiteModal"
 import { WarningModal } from "components/WarningModal"
 
@@ -16,6 +25,7 @@ import {
   useGetReviewRequests,
   useGetStagingUrl,
 } from "hooks/siteDashboardHooks"
+import { useGetStagingStatus } from "hooks/useGetStagingStatus"
 import useRedirectHook from "hooks/useRedirectHook"
 
 import { ReviewRequestModal } from "layouts/ReviewRequest"
@@ -78,6 +88,10 @@ const Header = ({
     if (isEditPage && !shouldAllowEditPageBackNav) onWarningModalOpen()
     else toggleBackNav()
   }
+  const {
+    data: getStagingStatusData,
+    isLoading: isGetStagingStatusLoading,
+  } = useGetStagingStatus(siteName)
 
   return (
     <>
@@ -125,6 +139,9 @@ const Header = ({
           </Flex>
         ) : null}
         <HStack flex={1} justifyContent="flex-end">
+          <Skeleton isLoaded={!isGetStagingStatusLoading}>
+            {getStagingStatusData && <StatusBadge {...getStagingStatusData} />}
+          </Skeleton>
           <NotificationMenu />
           <Button
             onClick={onOpen}
