@@ -1,5 +1,6 @@
 import {
   Box,
+  Divider,
   forwardRef,
   Text,
   ThemingProps,
@@ -11,21 +12,21 @@ import {
 import { dataAttr } from "@chakra-ui/utils"
 import { omit } from "lodash"
 import { useCallback, useMemo } from "react"
-import { DropzoneProps, useDropzone } from "react-dropzone"
+import { DropzoneProps, FileRejection, useDropzone } from "react-dropzone"
 import type { Promisable } from "type-fest"
-
-import { getFileExt } from "utils"
 
 import { AttachmentStylesProvider } from "./AttachmentContext"
 import { AttachmentDropzone } from "./AttachmentDropzone"
+import { AttachmentError } from "./AttachmentError"
 import { AttachmentFileInfo } from "./AttachmentFileInfo"
+import { MAX_NUM_UPLOADS } from "./constants"
 import { getReadableFileSize } from "./utils"
 
 export interface AttachmentProps extends UseFormControlProps<HTMLElement> {
   /**
    * Callback to be invoked when the file is attached or removed.
    */
-  onChange: (file?: File) => void
+  onChange: (files: File[], rejections: FileRejection[]) => void
   /**
    * If exists, callback to be invoked when file has errors.
    */
@@ -33,7 +34,7 @@ export interface AttachmentProps extends UseFormControlProps<HTMLElement> {
   /**
    * Current value of the input.
    */
-  value: File | undefined
+  value: File[]
   /**
    * Name of the input.
    */
@@ -72,11 +73,14 @@ export interface AttachmentProps extends UseFormControlProps<HTMLElement> {
    * If the function returns null, the file will be considered valid.
    */
   onFileValidation?: (file: File) => Promisable<string | null>
+  rejected: FileRejection[]
 }
 
 export const Attachment = forwardRef<AttachmentProps, "div">(
   (
     {
+      // TODO: Add back functionality for
+      // `onError` and `onFileValidation`
       onChange,
       onError,
       maxSize,
@@ -87,6 +91,7 @@ export const Attachment = forwardRef<AttachmentProps, "div">(
       colorScheme,
       imagePreview,
       onFileValidation,
+      rejected,
       ...props
     },
     ref
@@ -118,9 +123,8 @@ export const Attachment = forwardRef<AttachmentProps, "div">(
       inputProps["aria-describedby"]
         ?.split(" ")
         .map((id) => describedByIds.add(id))
-      if (showMaxSize) {
-        describedByIds.add(maxSizeTextId)
-      }
+
+      if (showMaxSize) describedByIds.add(maxSizeTextId)
 
       // Remove helptext, since label should already consist of the text
       describedByIds.delete(`${inputProps.id}-helptext`)
@@ -129,35 +133,10 @@ export const Attachment = forwardRef<AttachmentProps, "div">(
     }, [inputProps, maxSizeTextId, showMaxSize])
 
     const handleFileDrop = useCallback<NonNullable<DropzoneProps["onDrop"]>>(
-      async ([acceptedFile], rejectedFiles) => {
-        if (rejectedFiles.length > 0) {
-          const firstError = rejectedFiles[0].errors[0]
-          let errorMessage
-          switch (firstError.code) {
-            case "file-invalid-type": {
-              const fileExt = getFileExt(rejectedFiles[0].file.name)
-              errorMessage = `Your file's extension ending in *${fileExt} is not allowed`
-              break
-            }
-            case "too-many-files": {
-              errorMessage = "You can only upload a single file in this input"
-              break
-            }
-            default:
-              errorMessage = firstError.message
-          }
-          return onError?.(errorMessage)
-        }
-        const fileValidationErrorMessage = await onFileValidation?.(
-          acceptedFile
-        )
-        if (fileValidationErrorMessage) {
-          return onError?.(fileValidationErrorMessage)
-        }
-
-        return onChange(acceptedFile)
+      async (acceptedFiles, rejectedFiles) => {
+        onChange(acceptedFiles, rejectedFiles)
       },
-      [onChange, onError, onFileValidation]
+      [onChange]
     )
 
     const fileValidator = useCallback<NonNullable<DropzoneProps["validator"]>>(
@@ -165,23 +144,20 @@ export const Attachment = forwardRef<AttachmentProps, "div">(
         if (maxSize && file.size > maxSize) {
           return {
             code: "file-too-large",
-            message: `You have exceeded the limit, please upload a file below ${readableMaxSize}`,
+            message: `Upload too big (${getReadableFileSize(file.size)})`,
           }
         }
         return null
       },
-      [maxSize, readableMaxSize]
+      [maxSize]
     )
 
     const { getRootProps, getInputProps, isDragActive, rootRef } = useDropzone({
-      multiple: false,
       accept,
       disabled: inputProps.disabled,
       validator: fileValidator,
-      noKeyboard: inputProps.readOnly || value !== undefined,
-      noClick: inputProps.readOnly || value !== undefined,
-      noDrag: inputProps.readOnly || value !== undefined,
       onDrop: handleFileDrop,
+      maxFiles: MAX_NUM_UPLOADS,
     })
 
     const mergedRefs = useMergeRefs(rootRef, ref)
@@ -191,11 +167,6 @@ export const Attachment = forwardRef<AttachmentProps, "div">(
       colorScheme,
       imagePreview,
     })
-
-    const handleRemoveFile = useCallback(() => {
-      onChange(undefined)
-      rootRef.current?.focus()
-    }, [onChange, rootRef])
 
     // Bunch of memoization to avoid unnecessary re-renders.
     const processedRootProps = useMemo(() => {
@@ -227,34 +198,43 @@ export const Attachment = forwardRef<AttachmentProps, "div">(
             {...processedRootProps}
             ref={mergedRefs}
             data-active={dataAttr(isDragActive)}
-            __css={value ? undefined : styles.dropzone}
+            __css={styles.dropzone}
           >
-            {value ? (
-              <AttachmentFileInfo
-                file={value}
-                imagePreview={imagePreview}
-                handleRemoveFile={handleRemoveFile}
-                isDisabled={inputProps.disabled}
-                isReadOnly={inputProps.readOnly}
-              />
-            ) : (
-              <AttachmentDropzone
-                isDragActive={isDragActive}
-                inputProps={processedInputProps}
-              />
-            )}
+            <AttachmentDropzone
+              isDragActive={isDragActive}
+              inputProps={processedInputProps}
+            />
           </Box>
-          {showMaxSize ? (
+          {showMaxSize && (
             <Text
               id={maxSizeTextId}
               color="base.content.medium"
               mt="0.5rem"
               textStyle="body-2"
             >
-              Maximum file size: {readableMaxSize}
+              Maximum size: {readableMaxSize}
             </Text>
-          ) : null}
+          )}
         </Box>
+        <Box mt="1.5rem" mb="0.75rem">
+          <Text textStyle="subhead-1">Selected images</Text>
+          <Text textStyle="caption-2">{`${value.length}/5 images can be uploaded`}</Text>
+        </Box>
+        {value?.map((file) => (
+          <>
+            <Divider />
+            <AttachmentFileInfo
+              file={file}
+              imagePreview={imagePreview}
+              isDisabled={inputProps.disabled}
+            />
+          </>
+        ))}
+        {rejected?.map((fileRejection) => (
+          <AttachmentError fileRejection={fileRejection} />
+        ))}
+        {/* NOTE: Add last divider if we have content above */}
+        {(value?.length > 0 || rejected.length > 0) && <Divider />}
       </AttachmentStylesProvider>
     )
   }

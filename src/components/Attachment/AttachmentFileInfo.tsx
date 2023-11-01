@@ -1,28 +1,28 @@
 import {
   Flex,
   forwardRef,
+  Icon,
   Image,
-  Stack,
+  Spacer,
   Text,
   VisuallyHidden,
 } from "@chakra-ui/react"
 import { dataAttr } from "@chakra-ui/utils"
-import { IconButton, BxTrash } from "@opengovsg/design-system-react"
 import { useEffect, useMemo, useState } from "react"
+
+import { BxImage } from "assets"
 
 import { useAttachmentStyles } from "./AttachmentContext"
 import { getReadableFileSize } from "./utils"
 
 export interface AttachmentFileInfoProps {
   file: File
-  handleRemoveFile: () => void
   imagePreview?: "small" | "large"
   isDisabled?: boolean
-  isReadOnly?: boolean
 }
 
 export const AttachmentFileInfo = forwardRef<AttachmentFileInfoProps, "div">(
-  ({ file, handleRemoveFile, imagePreview, isDisabled, isReadOnly }, ref) => {
+  ({ file, imagePreview, isDisabled }, ref) => {
     const [previewSrc, setPreviewSrc] = useState("")
     const styles = useAttachmentStyles()
     const readableFileSize = useMemo(() => getReadableFileSize(file.size), [
@@ -59,23 +59,15 @@ export const AttachmentFileInfo = forwardRef<AttachmentFileInfoProps, "div">(
           />
         )}
         <Flex sx={styles.fileInfo}>
-          <Stack spacing="0.25rem" flexDir="column" aria-hidden>
-            <Text>{file.name}</Text>
-            <Text
-              data-disabled={dataAttr(isDisabled)}
-              sx={styles.fileInfoDescription}
-            >
-              {readableFileSize}
-            </Text>
-          </Stack>
-          <IconButton
-            variant="clear"
-            colorScheme="critical"
-            aria-label="Remove file"
-            icon={<BxTrash />}
-            onClick={handleRemoveFile}
-            isDisabled={isDisabled || isReadOnly}
-          />
+          <Icon as={BxImage} />
+          <Text ml="2rem">{file.name}</Text>
+          <Spacer />
+          <Text
+            data-disabled={dataAttr(isDisabled)}
+            sx={styles.fileInfoDescription}
+          >
+            {readableFileSize}
+          </Text>
         </Flex>
       </Flex>
     )
