@@ -19,6 +19,7 @@ import {
 } from "types/siteDashboard"
 import { SiteLaunchDto } from "types/siteLaunch"
 import { SiteDataRequest } from "types/sites"
+import { StagingBuildStatus } from "types/stagingBuildStatus"
 import { LoggedInUser } from "types/user"
 
 type HttpVerb = "get" | "post" | "delete"
@@ -141,6 +142,11 @@ export const buildMarkNotificationsAsReadData = apiDataBuilder<
 
 export const buildGetStagingUrlData = apiDataBuilder<{ stagingUrl: string }>(
   "*/sites/:siteName/stagingUrl",
+  "get"
+)
+
+export const buildGetStagingBuildStatusData = apiDataBuilder<StagingBuildStatus>(
+  "*/sites/:siteName/getStagingBuildStatus",
   "get"
 )
 
