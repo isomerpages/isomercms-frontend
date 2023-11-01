@@ -172,7 +172,6 @@ export default ({ editor }: { editor: Editor }) => {
       borderTopRadius="0.25rem"
     >
       {items.map((item) => (
-        // eslint-disable-next-line react/no-array-index-key
         <Fragment key={uuid()}>
           {item.type === "divider" ? (
             <Divider
