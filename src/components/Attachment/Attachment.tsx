@@ -212,7 +212,7 @@ export const Attachment = forwardRef<AttachmentProps, "div">(
               mt="0.5rem"
               textStyle="body-2"
             >
-              Maximum size: {readableMaxSize}
+              Maximum size per image: {readableMaxSize}
             </Text>
           )}
         </Box>
