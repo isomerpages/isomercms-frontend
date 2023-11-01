@@ -2,7 +2,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from "@chakra-ui/react"
 import { BiChevronRight } from "react-icons/bi"
 import { useRouteMatch, Link as RouterLink } from "react-router-dom"
 
-import { MAX_MEDIA_LEVELS } from "constants/media"
+import { MAX_MEDIA_BREADCRUMBS_LENGTH } from "constants/media"
 
 import { deslugifyDirectory } from "utils"
 
@@ -50,15 +50,19 @@ export const MediaBreadcrumbs = (): JSX.Element => {
           ]
         )
         .map(({ name, url }, idx) => {
+          // Note: Intermediate albums/directories are not shown in the breadcrumbs
+          // but it only affects users that are nesting more than
+          // MAX_MEDIA_BREADCRUMBS_LENGTH levels deep
           if (
-            directories.length > MAX_MEDIA_LEVELS &&
+            directories.length > MAX_MEDIA_BREADCRUMBS_LENGTH &&
             idx > 1 &&
-            idx < directories.length - (MAX_MEDIA_LEVELS - 1)
+            idx < directories.length - (MAX_MEDIA_BREADCRUMBS_LENGTH - 1)
           ) {
             return <></>
           }
 
-          const isEllipsis = directories.length > MAX_MEDIA_LEVELS && idx === 1
+          const isEllipsis =
+            directories.length > MAX_MEDIA_BREADCRUMBS_LENGTH && idx === 1
           const hasModifier = idx === directories.length - 1 || isEllipsis
 
           return (
