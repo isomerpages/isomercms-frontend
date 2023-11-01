@@ -18,19 +18,27 @@ import { getReadableFileSize } from "./utils"
 
 const getErrorMessage = (rejection: FileRejection): string => {
   const { errors } = rejection
-  const displayedError = errors.reduce((acc, error) => {
-    // Preferentially display invalid, then size exceeded
-    if (acc.code === "file-invalid-type" || error.code === "file-invalid-type")
-      return {
-        code: "file-invalid-type",
-        message: "Invalid file type",
-      }
+  const displayedError = errors.reduce(
+    (acc, error) => {
+      // Preferentially display invalid, then size exceeded
+      if (
+        acc.code === "file-invalid-type" ||
+        error.code === "file-invalid-type"
+      )
+        return {
+          code: "file-invalid-type",
+          message: "Invalid file type",
+        }
 
-    if (error.code === "file-too-large" && acc.code !== "file-invalid-type")
+      if (error.code === "file-too-large" && acc.code !== "file-invalid-type")
+        return error
+
       return error
-
-    return error
-  })
+    },
+    // NOTE: Requires initial argument otherwise
+    // `reduce` will not run for arrays of length 1
+    { code: "", message: "" }
+  )
   return displayedError.message
 }
 
