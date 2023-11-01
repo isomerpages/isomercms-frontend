@@ -7,10 +7,12 @@ import {
   DirectoryData,
   PageData,
   ResourcePageData,
+  GetMediaFilesDto,
+  GetMediaSubdirectoriesDto,
 } from "types/directory"
 import { VerifySgidLoginResponseDto } from "types/login"
 import { NotificationData } from "types/notifications"
-import { BlobDiff, ReviewRequest } from "types/reviewRequest"
+import { BlobDiff, EditedItemProps, ReviewRequest } from "types/reviewRequest"
 import { BackendPasswordSettings, BackendSiteSettings } from "types/settings"
 import {
   CollaboratorsStats,
@@ -121,8 +123,18 @@ export const buildResourceCategoryData = apiDataBuilder<ResourcePageData[]>(
   "get"
 )
 
-export const buildMediaData = apiDataBuilder<(MediaData | DirectoryData)[]>(
-  "*/sites/:siteName/media/:mediaDirectoryName",
+export const buildMediaFolderFilesData = apiDataBuilder<GetMediaFilesDto>(
+  "*/sites/:siteName/media/:mediaDirectoryName/files",
+  "get"
+)
+
+export const buildMediaFolderSubdirectoriesData = apiDataBuilder<GetMediaSubdirectoriesDto>(
+  "*/sites/:siteName/media/:mediaDirectoryName/subdirectories",
+  "get"
+)
+
+export const buildMediaFileData = apiDataBuilder<MediaData>(
+  "*/sites/:siteName/media/:mediaDirectoryName/pages/:fileName",
   "get"
 )
 
@@ -175,6 +187,10 @@ export const buildMarkCommentsAsReadData = apiDataBuilder<CommentData[]>(
 export const buildReviewRequestData = apiDataBuilder<{
   reviewRequest: ReviewRequest
 }>("*/sites/:siteName/review/:reviewId")
+
+export const buildReviewRequestDiffData = apiDataBuilder<{
+  items: EditedItemProps[]
+}>("*/sites/:siteName/review/compare")
 
 export const buildAllSitesData = apiDataBuilder<SiteDataRequest>(
   "*/sites",

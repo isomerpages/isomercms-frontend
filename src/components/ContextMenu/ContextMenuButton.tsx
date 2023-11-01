@@ -8,7 +8,6 @@ export const ContextMenuButton = forwardRef<MenuButtonProps, "button">(
   (props: MenuButtonProps, ref): JSX.Element => {
     return (
       <MenuButton
-        zIndex={2}
         position="absolute"
         bottom="1rem"
         right="1rem"
@@ -17,7 +16,7 @@ export const ContextMenuButton = forwardRef<MenuButtonProps, "button">(
         icon={
           <Icon
             as={BiDotsVerticalRounded}
-            fill="icon.default"
+            fill="base.content.strong"
             fontSize="1.25rem"
           />
         }

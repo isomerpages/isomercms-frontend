@@ -36,6 +36,7 @@ export interface MediaData {
   name: string
   sha: string
   type: "file"
+  addedTime: number
 }
 
 export type ResourcePageData = Required<Omit<PageData, "type">> & {

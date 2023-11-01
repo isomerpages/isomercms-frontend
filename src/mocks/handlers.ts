@@ -12,10 +12,14 @@ import {
   buildLoginData,
   buildMarkNotificationsAsReadData,
   buildRecentNotificationData,
+  buildReviewRequestDiffData,
+  buildSiteDashboardReviewRequests,
 } from "./utils"
 
 export const handlers = [
   buildLastUpdated({ lastUpdated: new Date().toISOString() }),
+  buildSiteDashboardReviewRequests({ reviews: [] }),
+  buildReviewRequestDiffData({ items: [] }),
   buildLoginData(MOCK_USER),
   buildRecentNotificationData(MOCK_NOTIFICATION_DATA),
   buildAllNotificationData(MOCK_ALL_NOTIFICATION_DATA),

@@ -26,6 +26,8 @@ import { BreadcrumbItem } from "components/folders/Breadcrumb"
 import { LoadingButton } from "components/LoadingButton"
 import MediaCard from "components/media/MediaCard"
 
+import { MEDIA_PAGINATION_SIZE } from "constants/media"
+
 import { useGetAllMediaFiles } from "hooks/directoryHooks/useGetAllMediaFiles"
 import { useListMediaFolderFiles } from "hooks/directoryHooks/useListMediaFolderFiles"
 import { useListMediaFolderSubdirectories } from "hooks/directoryHooks/useListMediaFolderSubdirectories"
@@ -35,8 +37,6 @@ import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 import mediaStyles from "styles/isomer-cms/pages/Media.module.scss"
 
 import { deslugifyDirectory, getMediaDirectoryName } from "utils"
-
-import { MEDIA_PAGINATION_SIZE } from "../../constants/pagination"
 
 const filterMediaByFileName = (medias, filterTerm) =>
   medias.filter((media) =>

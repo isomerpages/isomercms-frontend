@@ -4,16 +4,21 @@ import {
   chakra,
   Grid,
   GridItem,
+  HStack,
+  Icon,
   Image,
   Text,
   useMultiStyleConfig,
   VStack,
 } from "@chakra-ui/react"
 import { Checkbox } from "@opengovsg/design-system-react"
-import { ChangeEvent, useState } from "react"
-import { BiEditAlt, BiTrash } from "react-icons/bi"
+import { ChangeEvent } from "react"
+import { BiChevronRight, BiEditAlt, BiFolder, BiTrash } from "react-icons/bi"
+import { Link as RouterLink, useRouteMatch } from "react-router-dom"
 
 import { ContextMenu } from "components/ContextMenu"
+
+import useRedirectHook from "hooks/useRedirectHook"
 
 import { convertUtcToTimeDiff } from "utils/dateUtils"
 
@@ -23,6 +28,7 @@ export interface ImagePreviewCardProps {
   name: string
   addedTime: number
   mediaUrl: string
+  isSelected: boolean
   isMenuNeeded?: boolean
   onCheck?: (event: ChangeEvent<HTMLInputElement>) => void
 }
@@ -33,17 +39,21 @@ export const ImagePreviewCard = ({
   name,
   addedTime,
   mediaUrl,
+  isSelected,
   isMenuNeeded = true,
   onCheck,
 }: ImagePreviewCardProps): JSX.Element => {
-  const [isSelected, setIsSelected] = useState(false)
+  const { url } = useRouteMatch()
+  const { setRedirectToPage } = useRedirectHook()
+  const encodedName = encodeURIComponent(name)
   const styles = useMultiStyleConfig(CARD_THEME_KEY, {})
   const relativeTime = convertUtcToTimeDiff(addedTime)
 
   return (
     <Box position="relative" h="100%" data-group>
       {/* Checkbox overlay over image */}
-      <Checkbox
+      {/* FIXME: Disabled until we have the whole flow available */}
+      {/* <Checkbox
         position="absolute"
         left="0"
         top="0"
@@ -52,18 +62,20 @@ export const ImagePreviewCard = ({
         size="md"
         p="1rem"
         variant="transparent"
+        display={isSelected ? "inline-block" : "none"}
         _groupHover={{
           bg: "transparent",
+          display: "inline-block",
         }}
         _focusWithin={{
           outline: "none",
         }}
         zIndex={1}
+        isChecked={isSelected}
         onChange={(e) => {
-          setIsSelected(!isSelected)
           if (onCheck) onCheck(e)
         }}
-      />
+      /> */}
 
       <Grid
         as={chakra.button}
@@ -79,6 +91,9 @@ export const ImagePreviewCard = ({
         // Note: Outline is required to avoid the card from shifting when selected
         outline={isSelected ? "solid 2px" : "solid 1px"}
         outlineColor={isSelected ? "base.divider.brand" : "base.divider.medium"}
+        onClick={() =>
+          setRedirectToPage(`${url}/editMediaSettings/${encodedName}`)
+        }
       >
         <GridItem gridArea="image">
           <Box position="relative" backgroundColor="base.canvas.overlay">
@@ -150,16 +165,27 @@ export const ImagePreviewCard = ({
           <ContextMenu.List>
             <ContextMenu.Item
               icon={<BiEditAlt />}
-              // as={RouterLink}
-              // to={`${url}/editMediaSettings/${encodedName}`}
+              as={RouterLink}
+              to={`${url}/editMediaSettings/${encodedName}`}
             >
               <Text>Rename image</Text>
+            </ContextMenu.Item>
+            {/* FIXME: Remove once we have the whole flow available */}
+            <ContextMenu.Item
+              icon={<BiFolder />}
+              as={RouterLink}
+              to={`${url}/moveMedia/${encodedName}`}
+            >
+              <HStack spacing="4rem" alignItems="center">
+                <Text>Move to</Text>
+                <Icon as={BiChevronRight} fontSize="1.25rem" />
+              </HStack>
             </ContextMenu.Item>
             <ContextMenu.Item
               icon={<BiTrash />}
               color="interaction.critical.default"
-              // as={RouterLink}
-              // to={`${url}/deleteMedia/${encodedName}`}
+              as={RouterLink}
+              to={`${url}/deleteMedia/${encodedName}`}
             >
               <Text>Delete image</Text>
             </ContextMenu.Item>

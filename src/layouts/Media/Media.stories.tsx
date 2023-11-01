@@ -1,8 +1,17 @@
-import { ComponentStory, ComponentMeta } from "@storybook/react"
+import type { Meta, StoryFn } from "@storybook/react"
 import { MemoryRouter, Route } from "react-router-dom"
 
-import { MOCK_MEDIA_DATA } from "mocks/constants"
-import { buildMediaData } from "mocks/utils"
+import {
+  MOCK_MEDIA_ITEM_DATA,
+  MOCK_MEDIA_ITEM_ONE,
+  MOCK_MEDIA_SUBDIRECTORY_DATA,
+} from "mocks/constants"
+import { handlers } from "mocks/handlers"
+import {
+  buildMediaFileData,
+  buildMediaFolderFilesData,
+  buildMediaFolderSubdirectoriesData,
+} from "mocks/utils"
 
 import { Media } from "./Media"
 
@@ -28,28 +37,41 @@ const MediaMeta = {
       )
     },
   ],
-} as ComponentMeta<typeof Media>
+} as Meta<typeof Media>
 
-const Template: ComponentStory<typeof Media> = Media
+const Template: StoryFn<typeof Media> = Media
 
 export const Default = Template.bind({})
 Default.parameters = {
   msw: {
-    handlers: { media: buildMediaData(MOCK_MEDIA_DATA) },
+    handlers: [
+      ...handlers,
+      buildMediaFolderFilesData(MOCK_MEDIA_ITEM_DATA),
+      buildMediaFolderSubdirectoriesData(MOCK_MEDIA_SUBDIRECTORY_DATA),
+      buildMediaFileData(MOCK_MEDIA_ITEM_ONE),
+    ],
   },
 }
 
 export const Empty = Template.bind({})
 Empty.parameters = {
   msw: {
-    handlers: { media: buildMediaData([]) },
+    handlers: [
+      ...handlers,
+      buildMediaFolderFilesData({ files: [], total: 0 }),
+      buildMediaFolderSubdirectoriesData({ directories: [] }),
+    ],
   },
 }
 
 export const Loading = Template.bind({})
 Loading.parameters = {
   msw: {
-    handlers: { media: buildMediaData([], "infinite") },
+    handlers: [
+      ...handlers,
+      buildMediaFolderFilesData({ files: [], total: 0 }, "infinite"),
+      buildMediaFolderSubdirectoriesData({ directories: [] }, "infinite"),
+    ],
   },
 }
 

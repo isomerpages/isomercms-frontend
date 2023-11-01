@@ -2,6 +2,8 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from "@chakra-ui/react"
 import { BiChevronRight } from "react-icons/bi"
 import { useRouteMatch, Link as RouterLink } from "react-router-dom"
 
+import { MAX_MEDIA_BREADCRUMBS_LENGTH } from "constants/media"
+
 import { deslugifyDirectory } from "utils"
 
 // NOTE: Media directories are recursively nested;
@@ -19,7 +21,10 @@ export const MediaBreadcrumbs = (): JSX.Element => {
   const firstItem = directories[0]
 
   return (
-    <Breadcrumb spacing="2px" separator={<BiChevronRight color="text.body" />}>
+    <Breadcrumb
+      spacing="0.5rem"
+      separator={<BiChevronRight color="text.body" />}
+    >
       {directories
         .slice(1)
         .reduce(
@@ -45,7 +50,20 @@ export const MediaBreadcrumbs = (): JSX.Element => {
           ]
         )
         .map(({ name, url }, idx) => {
-          const hasModifier = idx === directories.length - 1
+          // Note: Intermediate albums/directories are not shown in the breadcrumbs
+          // but it only affects users that are nesting more than
+          // MAX_MEDIA_BREADCRUMBS_LENGTH levels deep
+          if (
+            directories.length > MAX_MEDIA_BREADCRUMBS_LENGTH &&
+            idx > 1 &&
+            idx < directories.length - (MAX_MEDIA_BREADCRUMBS_LENGTH - 1)
+          ) {
+            return <></>
+          }
+
+          const isEllipsis =
+            directories.length > MAX_MEDIA_BREADCRUMBS_LENGTH && idx === 1
+          const hasModifier = idx === directories.length - 1 || isEllipsis
 
           return (
             <BreadcrumbItem
@@ -53,13 +71,17 @@ export const MediaBreadcrumbs = (): JSX.Element => {
               isCurrentPage={hasModifier}
             >
               <BreadcrumbLink
-                textStyle="body-2"
-                color={hasModifier ? "text.link.default" : "text.body"}
+                textStyle="caption-2"
+                color={
+                  hasModifier
+                    ? "base.content.default"
+                    : "interaction.links.default"
+                }
                 as={RouterLink}
-                to={url}
-                textDecoration={hasModifier ? "underline" : "inherit"}
+                to={isEllipsis ? "#" : url}
+                noOfLines={1}
               >
-                {name}
+                {isEllipsis ? "..." : name}
               </BreadcrumbLink>
             </BreadcrumbItem>
           )
