@@ -167,7 +167,7 @@ export const EditPage = () => {
       TaskItem,
       CharacterCount,
       Image.configure({ allowBase64: true }),
-      Link.configure({ openOnClick: false }),
+      Link.configure({ openOnClick: false, protocols: ["mailto"] }),
       Iframe,
       Markdown,
       BubbleMenu.configure({

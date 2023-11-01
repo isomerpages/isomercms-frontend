@@ -8,7 +8,6 @@ import {
   ModalBody,
   ModalCloseButton,
   InputGroup,
-  InputLeftAddon,
 } from "@chakra-ui/react"
 import { Button, Input } from "@opengovsg/design-system-react"
 import { BubbleMenu } from "@tiptap/react"
@@ -38,10 +37,17 @@ const LinkButton = () => {
           // NOTE: If the link is an absolute link,
           // it's not a file on Isomer so we will just allow them to change the link
           // using the link modal.
+          const { href: _linkHref } = editor.getAttributes("link")
+          const linkHref = _linkHref as string
+          // NOTE: We only allow `mailto` and `http` protocols for our absolute links
+          // otherwise, they are relative links.
           if (
-            (editor.getAttributes("link").href as
-              | string
-              | undefined)?.startsWith("http")
+            linkHref.startsWith("http") ||
+            linkHref.startsWith("mailto") ||
+            // NOTE: Files are always guaranteed to be inside `/files`.
+            // If users use a relative link (from inside a page), it will be situated outside
+            // of the `files` folder, so this invariant still holds.
+            (linkHref.startsWith("/") && linkHref.split("/").at(1) !== "files")
           ) {
             onOpen()
           } else {
@@ -60,13 +66,10 @@ const LinkButton = () => {
           <ModalCloseButton />
           <ModalBody>
             <InputGroup size="sm">
-              <InputLeftAddon>https://</InputLeftAddon>
               <Input
-                defaultValue={(
+                defaultValue={
                   (editor.getAttributes("link").href as string) || ""
-                )
-                  // NOTE: trim the start of `https://` or `http://`
-                  .replace(/^https?:\/\//, "")}
+                }
                 onChange={(event) => setHref(event.target.value)}
               />
             </InputGroup>
@@ -81,7 +84,7 @@ const LinkButton = () => {
                   .chain()
                   .focus()
                   // NOTE: Force `https` by default
-                  .setLink({ href: `https://${href}` })
+                  .setLink({ href })
                   .run()
                 onClose()
               }}
