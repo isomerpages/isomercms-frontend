@@ -7,6 +7,7 @@ import {
   Skeleton,
   Spacer,
   Text,
+  useDisclosure,
   VStack,
 } from "@chakra-ui/react"
 import {
@@ -21,6 +22,7 @@ import { useEffect, useState } from "react"
 import { BiFolderOpen, BiFolderPlus, BiTrash } from "react-icons/bi"
 import { Link, Switch, useHistory, useRouteMatch } from "react-router-dom"
 
+import { DeleteMediaModal } from "components/DeleteMediaModal"
 import { Greyscale } from "components/Greyscale"
 import { ImagePreviewCard } from "components/ImagePreviewCard"
 
@@ -29,6 +31,7 @@ import { MEDIA_PAGINATION_SIZE, MAX_MEDIA_LEVELS } from "constants/media"
 import { useGetAllMediaFiles } from "hooks/directoryHooks/useGetAllMediaFiles"
 import { useListMediaFolderFiles } from "hooks/directoryHooks/useListMediaFolderFiles"
 import { useListMediaFolderSubdirectories } from "hooks/directoryHooks/useListMediaFolderSubdirectories"
+import { useDeleteMultipleMediaHook } from "hooks/mediaHooks"
 import { usePaginate } from "hooks/usePaginate"
 
 import { DeleteWarningScreen } from "layouts/screens/DeleteWarningScreen"
@@ -40,9 +43,12 @@ import { MoveScreen } from "layouts/screens/MoveScreen"
 
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
+import { getMediaLabels } from "utils/media"
 import { isWriteActionsDisabled } from "utils/reviewRequests"
 
 import { EmptyAlbumImage } from "assets"
+import { MediaData } from "types/directory"
+import { MediaLabels, SelectedMediaDto } from "types/media"
 
 import { CreateButton } from "../components"
 import { SiteEditLayout } from "../layouts"
@@ -53,41 +59,11 @@ import {
   MediaDirectoryCard,
 } from "./components"
 
-interface MediaLabels {
-  articleLabel: "a" | "an"
-  singularMediaLabel: "file" | "image"
-  pluralMediaLabel: "files" | "images"
-  singularDirectoryLabel: "directory" | "album"
-  pluralDirectoryLabel: "directories" | "albums"
-}
-
 interface CreateDirectoryButtonProps {
   isWriteDisabled: boolean | undefined
   directoryLevel: number
   singularDirectoryLabel: string
   url: string
-}
-
-// Utility method to help ease over the various labels associated
-// with the media type so that we can avoid repeated conditionals
-const getMediaLabels = (mediaType: "files" | "images"): MediaLabels => {
-  if (mediaType === "files") {
-    return {
-      articleLabel: "a",
-      singularMediaLabel: "file",
-      pluralMediaLabel: "files",
-      singularDirectoryLabel: "directory",
-      pluralDirectoryLabel: "directories",
-    }
-  }
-
-  return {
-    articleLabel: "an",
-    singularMediaLabel: "image",
-    pluralMediaLabel: "images",
-    singularDirectoryLabel: "album",
-    pluralDirectoryLabel: "albums",
-  }
 }
 
 // Utility method for getting the text under the page title in the header
@@ -163,13 +139,27 @@ export const Media = (): JSX.Element => {
     mediaDirectoryName: string
   }>()
   const { siteName, mediaRoom: mediaType, mediaDirectoryName } = params
-  const [selectedImages, setSelectedImages] = useState<string[]>([])
+  const [selectedMedia, setSelectedMedia] = useState<SelectedMediaDto[]>([])
 
-  const handleSelect = (filePath: string) => {
-    if (selectedImages.includes(filePath)) {
-      setSelectedImages(selectedImages.filter((img) => img !== filePath))
+  const handleSelect = (fileData: MediaData) => {
+    if (
+      selectedMedia.some(
+        (selectedData) => selectedData.filePath === fileData.mediaPath
+      )
+    ) {
+      setSelectedMedia(
+        selectedMedia.filter(
+          (selectedData) => selectedData.filePath !== fileData.mediaPath
+        )
+      )
     } else {
-      setSelectedImages([...selectedImages, filePath])
+      const selectedData: SelectedMediaDto = {
+        filePath: fileData.mediaPath,
+        sha: fileData.sha,
+        size: fileData.size || 0,
+      }
+
+      setSelectedMedia([...selectedMedia, selectedData])
     }
   }
 
@@ -214,11 +204,22 @@ export const Media = (): JSX.Element => {
   )
 
   const {
+    mutate: deleteMultipleMedia,
+    isLoading: isDeleteMultipleMediaLoading,
+  } = useDeleteMultipleMediaHook(params)
+
+  const {
     articleLabel,
     pluralMediaLabel,
     singularDirectoryLabel,
     pluralDirectoryLabel,
   } = getMediaLabels(mediaType)
+
+  const {
+    isOpen: isDeleteModalOpen,
+    onOpen: onDeleteModalOpen,
+    onClose: onDeleteModalClose,
+  } = useDisclosure()
 
   const isWriteDisabled = isWriteActionsDisabled(siteName)
   const subDirCount = mediaFolderSubdirectories?.directories?.length || 0
@@ -228,6 +229,19 @@ export const Media = (): JSX.Element => {
 
   return (
     <>
+      <DeleteMediaModal
+        selectedMedia={selectedMedia}
+        mediaLabels={getMediaLabels(mediaType)}
+        isWriteDisabled={isWriteDisabled}
+        isOpen={isDeleteModalOpen}
+        onClose={onDeleteModalClose}
+        onProceed={() => {
+          deleteMultipleMedia(selectedMedia)
+          onDeleteModalClose()
+          setSelectedMedia([])
+        }}
+      />
+
       <SiteEditLayout overflow="hidden">
         <VStack spacing="2rem" w="100%">
           {/* Header section */}
@@ -253,13 +267,13 @@ export const Media = (): JSX.Element => {
               <>
                 <Spacer />
 
-                {selectedImages.length > 0 && (
+                {selectedMedia.length > 0 && (
                   <>
                     <Box mt="auto">
                       <Button
                         variant="clear"
                         color="base.content.strong"
-                        onClick={() => setSelectedImages([])}
+                        onClick={() => setSelectedMedia([])}
                       >
                         Deselect all
                       </Button>
@@ -288,10 +302,11 @@ export const Media = (): JSX.Element => {
                             color="interaction.sub.default"
                             ml="0.5rem"
                           >
-                            {selectedImages.length}
+                            {selectedMedia.length}
                           </Badge>
                         </Menu.Button>
                         <Menu.List>
+                          {/* FIXME: To add back when flow is available
                           <Menu.Item>
                             <Icon
                               as={BiFolderOpen}
@@ -299,7 +314,8 @@ export const Media = (): JSX.Element => {
                               fontSize="1.25rem"
                             />
                             Move images to album
-                          </Menu.Item>
+                          </Menu.Item> */}
+                          {/* FIXME: To add back when flow is available
                           <Menu.Item>
                             <Icon
                               as={BiFolderPlus}
@@ -307,8 +323,11 @@ export const Media = (): JSX.Element => {
                               fontSize="1.25rem"
                             />
                             Create new album with images
-                          </Menu.Item>
-                          <Menu.Item color="interaction.critical.default">
+                          </Menu.Item> */}
+                          <Menu.Item
+                            color="interaction.critical.default"
+                            onClick={() => onDeleteModalOpen()}
+                          >
                             <Icon as={BiTrash} mr="1rem" fontSize="1.25rem" />
                             Delete all
                           </Menu.Item>
@@ -318,7 +337,7 @@ export const Media = (): JSX.Element => {
                   </>
                 )}
 
-                {selectedImages.length === 0 && (
+                {selectedMedia.length === 0 && (
                   <>
                     <Box mt="auto">
                       {directoryLevel >= MAX_MEDIA_LEVELS ? (
@@ -428,8 +447,11 @@ export const Media = (): JSX.Element => {
                             name={data.name}
                             addedTime={data.addedTime}
                             mediaUrl={data.mediaUrl}
-                            isSelected={selectedImages.includes(data.mediaPath)}
-                            onCheck={() => handleSelect(data.mediaPath)}
+                            isSelected={selectedMedia.some(
+                              (selectedData) =>
+                                selectedData.filePath === data.mediaPath
+                            )}
+                            onCheck={() => handleSelect(data)}
                           />
                         ) : (
                           data && <FilePreviewCard name={data.name} />

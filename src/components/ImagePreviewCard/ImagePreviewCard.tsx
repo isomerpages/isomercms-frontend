@@ -52,8 +52,7 @@ export const ImagePreviewCard = ({
   return (
     <Box position="relative" h="100%" data-group>
       {/* Checkbox overlay over image */}
-      {/* FIXME: Disabled until we have the whole flow available */}
-      {/* <Checkbox
+      <Checkbox
         position="absolute"
         left="0"
         top="0"
@@ -75,7 +74,7 @@ export const ImagePreviewCard = ({
         onChange={(e) => {
           if (onCheck) onCheck(e)
         }}
-      /> */}
+      />
 
       <Grid
         as={chakra.button}
