@@ -649,7 +649,7 @@ export const Media = (): JSX.Element => {
                   columns={3}
                   spacing="1.5rem"
                   w="100%"
-                  id="isomer-media-feature-tour-step-2"
+                  id={MEDIA_FEATURE_STEPS[1].target.toString().replace("#", "")}
                 >
                   {files.map(({ data, isLoading }) => {
                     return (
