@@ -60,7 +60,7 @@ export class PageService {
       newFileName,
       sha,
     }
-    await this.apiClient.post(this.getPageEndpoint(apiParams), body)
+    return this.apiClient.post(this.getPageEndpoint(apiParams), body)
   }
 
   async get(apiParams) {

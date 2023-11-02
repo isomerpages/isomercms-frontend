@@ -132,7 +132,7 @@ const MarkdownEditor = ({ siteName, onChange, value, isLoading }) => {
       />
       <div
         className={`${editorStyles.pageEditorSidebar} ${
-          isLoading ? editorStyles.pageEditorSidebarLoading : null
+          isLoading ? editorStyles.pageEditorSidebarLoading : ""
         }`}
       >
         <StatusIcon />
