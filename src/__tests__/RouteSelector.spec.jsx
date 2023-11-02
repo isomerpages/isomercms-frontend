@@ -119,8 +119,7 @@ jest.mock("layouts/Media", () => {
 
 jest.mock("layouts/EditPage", () => {
   return {
-    __esModule: true,
-    default: () => {
+    EditPage: () => {
       return <div>{EDIT_PAGE_LAYOUT_TEXT}</div>
     },
   }
