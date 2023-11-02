@@ -86,9 +86,9 @@ export const DeleteMediaModal = ({
                   {pluralMediaLabel}?
                   <br />
                   <br />
-                  If you used these {pluralMediaLabel} on any page, site
-                  visitors may see a broken {singularMediaLabel}. This cannot be
-                  undone.
+                  If you used any of these {pluralMediaLabel} on a page, your
+                  site visitors may see broken {pluralMediaLabel}. This cannot
+                  be undone.
                 </Text>
 
                 <Box w="100%">
