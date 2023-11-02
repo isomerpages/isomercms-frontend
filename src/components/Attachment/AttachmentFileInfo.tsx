@@ -11,9 +11,9 @@ import { dataAttr } from "@chakra-ui/utils"
 import { useEffect, useMemo, useState } from "react"
 
 import { BxImage } from "assets"
+import { getReadableFileSize } from "utils"
 
 import { useAttachmentStyles } from "./AttachmentContext"
-import { getReadableFileSize } from "./utils"
 
 export interface AttachmentFileInfoProps {
   file: File

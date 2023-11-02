@@ -219,7 +219,6 @@ const MediasSelectModal = ({
                         mediaItemIndex={mediaItemIndex}
                         onClick={() => onMediaSelect(data)}
                         isSelected={data.name === watch("selectedMedia")?.name}
-                        showSettings={false}
                       />
                     </Skeleton>
                   ))}

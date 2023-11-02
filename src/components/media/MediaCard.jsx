@@ -1,33 +1,14 @@
-import {
-  chakra,
-  Divider,
-  Box,
-  HStack,
-  Icon,
-  Text,
-  useToken,
-  VStack,
-} from "@chakra-ui/react"
+import { Box, chakra, useToken, VStack } from "@chakra-ui/react"
 import PropTypes from "prop-types"
-import { BiChevronRight, BiFolder, BiTrash, BiWrench } from "react-icons/bi"
-import { Link as RouterLink, useRouteMatch } from "react-router-dom"
-
-import { ContextMenu } from "components/ContextMenu"
+import { useRouteMatch } from "react-router-dom"
 
 import useRedirectHook from "hooks/useRedirectHook"
 
 import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
 import mediaStyles from "styles/isomer-cms/pages/Media.module.scss"
 
-const MediaCard = ({
-  type,
-  media,
-  onClick,
-  isSelected,
-  showSettings = true,
-}) => {
+const MediaCard = ({ type, media, onClick, isSelected }) => {
   const { name, mediaUrl } = media
-  const encodedName = encodeURIComponent(name)
   const borderColour = useToken("colors", "primary.500")
 
   const {
@@ -82,40 +63,6 @@ const MediaCard = ({
           </div>
         </VStack>
       </chakra.button>
-      {showSettings && (
-        <ContextMenu>
-          <ContextMenu.Button />
-          <ContextMenu.List>
-            <ContextMenu.Item
-              icon={<BiWrench />}
-              as={RouterLink}
-              to={`${url}/editMediaSettings/${encodedName}`}
-            >
-              Image settings
-            </ContextMenu.Item>
-            <ContextMenu.Item
-              icon={<BiFolder />}
-              as={RouterLink}
-              to={`${url}/moveMedia/${encodedName}`}
-            >
-              <HStack spacing="4rem" alignItems="center">
-                <Text>Move to</Text>
-                <Icon as={BiChevronRight} fontSize="1.25rem" />
-              </HStack>
-            </ContextMenu.Item>
-            <>
-              <Divider />
-              <ContextMenu.Item
-                icon={<BiTrash />}
-                as={RouterLink}
-                to={`${url}/deleteMedia/${encodedName}`}
-              >
-                Delete
-              </ContextMenu.Item>
-            </>
-          </ContextMenu.List>
-        </ContextMenu>
-      )}
     </Box>
   )
 }

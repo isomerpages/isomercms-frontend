@@ -121,6 +121,7 @@ export const MOCK_MEDIA_ITEM_ONE: MediaData = {
   sha: "sha",
   type: "file",
   addedTime: 0,
+  size: 1234,
 }
 
 export const MOCK_MEDIA_ITEM_TWO: MediaData = {
@@ -130,6 +131,7 @@ export const MOCK_MEDIA_ITEM_TWO: MediaData = {
   sha: "sha",
   type: "file",
   addedTime: 0,
+  size: 2345,
 }
 
 export const MOCK_MEDIA_ITEM_THREE: MediaData = {
@@ -139,6 +141,7 @@ export const MOCK_MEDIA_ITEM_THREE: MediaData = {
   sha: "sha",
   type: "file",
   addedTime: 0,
+  size: 3456,
 }
 
 export const MOCK_MEDIA_ITEM_FOUR: MediaData = {
@@ -149,6 +152,7 @@ export const MOCK_MEDIA_ITEM_FOUR: MediaData = {
   sha: "sha",
   type: "file",
   addedTime: 0,
+  size: 4567,
 }
 
 export const MOCK_MEDIA_ITEM_FIVE: MediaData = {
@@ -159,15 +163,26 @@ export const MOCK_MEDIA_ITEM_FIVE: MediaData = {
   sha: "sha",
   type: "file",
   addedTime: 0,
+  size: 5678,
 }
 
 export const MOCK_MEDIA_ITEM_DATA: GetMediaFilesDto = {
   files: [
-    _.omit(MOCK_MEDIA_ITEM_ONE, "mediaPath"),
-    _.omit(MOCK_MEDIA_ITEM_TWO, "mediaPath"),
-    _.omit(MOCK_MEDIA_ITEM_THREE, "mediaPath"),
-    _.omit(MOCK_MEDIA_ITEM_FOUR, "mediaPath"),
-    _.omit(MOCK_MEDIA_ITEM_FIVE, "mediaPath"),
+    Object.assign(_.omit(MOCK_MEDIA_ITEM_ONE, "mediaPath"), {
+      path: "/some/thing",
+    }),
+    Object.assign(_.omit(MOCK_MEDIA_ITEM_TWO, "mediaPath"), {
+      path: "/some/thing",
+    }),
+    Object.assign(_.omit(MOCK_MEDIA_ITEM_THREE, "mediaPath"), {
+      path: "/some/thing",
+    }),
+    Object.assign(_.omit(MOCK_MEDIA_ITEM_FOUR, "mediaPath"), {
+      path: "/some/thing",
+    }),
+    Object.assign(_.omit(MOCK_MEDIA_ITEM_FIVE, "mediaPath"), {
+      path: "/some/thing",
+    }),
   ],
   total: 5,
 }

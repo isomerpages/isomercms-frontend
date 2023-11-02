@@ -12,7 +12,6 @@ import {
   VStack,
 } from "@chakra-ui/react"
 import { Checkbox } from "@opengovsg/design-system-react"
-import { ChangeEvent } from "react"
 import { BiChevronRight, BiEditAlt, BiFolder, BiTrash } from "react-icons/bi"
 import { Link as RouterLink, useRouteMatch } from "react-router-dom"
 
@@ -30,7 +29,9 @@ export interface ImagePreviewCardProps {
   mediaUrl: string
   isSelected: boolean
   isMenuNeeded?: boolean
-  onCheck?: (event: ChangeEvent<HTMLInputElement>) => void
+  onOpen?: () => void
+  onCheck?: () => void
+  onDelete?: () => void
 }
 
 // Note: This is written as a separate component as the current Card API is not
@@ -41,7 +42,9 @@ export const ImagePreviewCard = ({
   mediaUrl,
   isSelected,
   isMenuNeeded = true,
+  onOpen,
   onCheck,
+  onDelete,
 }: ImagePreviewCardProps): JSX.Element => {
   const { url } = useRouteMatch()
   const { setRedirectToPage } = useRedirectHook()
@@ -52,8 +55,7 @@ export const ImagePreviewCard = ({
   return (
     <Box position="relative" h="100%" data-group>
       {/* Checkbox overlay over image */}
-      {/* FIXME: Disabled until we have the whole flow available */}
-      {/* <Checkbox
+      <Checkbox
         position="absolute"
         left="0"
         top="0"
@@ -72,10 +74,10 @@ export const ImagePreviewCard = ({
         }}
         zIndex={1}
         isChecked={isSelected}
-        onChange={(e) => {
-          if (onCheck) onCheck(e)
+        onChange={() => {
+          if (onCheck) onCheck()
         }}
-      /> */}
+      />
 
       <Grid
         as={chakra.button}
@@ -160,7 +162,7 @@ export const ImagePreviewCard = ({
         </GridItem>
       </Grid>
       {isMenuNeeded && (
-        <ContextMenu>
+        <ContextMenu onOpen={onOpen}>
           <ContextMenu.Button />
           <ContextMenu.List>
             <ContextMenu.Item
@@ -184,8 +186,7 @@ export const ImagePreviewCard = ({
             <ContextMenu.Item
               icon={<BiTrash />}
               color="interaction.critical.default"
-              as={RouterLink}
-              to={`${url}/deleteMedia/${encodedName}`}
+              onClick={onDelete}
             >
               <Text>Delete image</Text>
             </ContextMenu.Item>

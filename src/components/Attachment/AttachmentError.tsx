@@ -12,8 +12,9 @@ import { useEffect, useMemo, useState } from "react"
 import { FileRejection } from "react-dropzone"
 import { BiError } from "react-icons/bi"
 
+import { getReadableFileSize } from "utils"
+
 import { useAttachmentStyles } from "./AttachmentContext"
-import { getReadableFileSize } from "./utils"
 
 const getErrorMessage = (rejection: FileRejection): string => {
   const { errors } = rejection
