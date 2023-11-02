@@ -14,6 +14,7 @@ import {
   Flex,
   Spacer,
 } from "@chakra-ui/react"
+import { useFeatureIsOn } from "@growthbook/growthbook-react"
 import { yupResolver } from "@hookform/resolvers/yup"
 import {
   FormErrorMessage,
@@ -94,6 +95,7 @@ export const PageSettingsModal = ({
   onClose,
 }: PageSettingsModalParams) => {
   const { siteName, fileName } = params
+  const isTiptapEnabled = useFeatureIsOn("is-tiptap-enabled")
 
   const existingTitlesArray = pagesData
     .filter((page) => page.name !== fileName)
@@ -193,30 +195,32 @@ export const PageSettingsModal = ({
                 <FormErrorMessage>{errors.permalink?.message}</FormErrorMessage>
               </FormControl>
               <br />
-              <FormControl isInvalid={!!errors.permalink?.message} isRequired>
-                <Flex mb="0.75rem" alignItems="center">
-                  <FormLabel mb={0}>Enable new editor</FormLabel>
-                  <Spacer />
-                  <Controller
-                    name="variant"
-                    render={({ field: { onChange, value } }) => {
-                      return (
-                        <Toggle
-                          defaultChecked
-                          onChange={(event) => {
-                            event.target.checked
-                              ? onChange("tiptap")
-                              : onChange("markdown")
-                          }}
-                          isChecked={value === "tiptap"}
-                          label=""
-                        />
-                      )
-                    }}
-                    control={control}
-                  />
-                </Flex>
-              </FormControl>
+              {isTiptapEnabled && (
+                <FormControl isInvalid={!!errors.permalink?.message} isRequired>
+                  <Flex mb="0.75rem" alignItems="center">
+                    <FormLabel mb={0}>Enable new editor</FormLabel>
+                    <Spacer />
+                    <Controller
+                      name="variant"
+                      render={({ field: { onChange, value } }) => {
+                        return (
+                          <Toggle
+                            defaultChecked
+                            onChange={(event) => {
+                              event.target.checked
+                                ? onChange("tiptap")
+                                : onChange("markdown")
+                            }}
+                            isChecked={value === "tiptap"}
+                            label=""
+                          />
+                        )
+                      }}
+                      control={control}
+                    />
+                  </Flex>
+                </FormControl>
+              )}
               <br />
               <br />
               <Text textStyle="h4">Page details</Text>
