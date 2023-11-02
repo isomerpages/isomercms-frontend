@@ -38,7 +38,7 @@ export function useUpdatePageHook(params, queryParams) {
       onSettled: () => {
         queryClient.invalidateQueries([PAGE_CONTENT_KEY, siteName, fileName])
       },
-      onSuccess: () => {
+      onSuccess: ({ data }) => {
         if (params.collectionName)
           queryClient.invalidateQueries([
             // invalidates collection pages or resource pages
@@ -59,10 +59,10 @@ export function useUpdatePageHook(params, queryParams) {
           id: "update-resource-room-name-success",
           description: `Changes saved. See a preview on Staging, or request a Review for them to be published.`,
         })
-        if (queryParams && queryParams.onSuccess) queryParams.onSuccess()
+        if (queryParams && queryParams.onSuccess) queryParams.onSuccess(data)
       },
       onError: (err) => {
-        if (err.response.status !== 409) {
+        if (err.response?.status !== 409) {
           errorToast({
             id: "update-page-error",
             description: `Your page could not be updated. ${getAxiosErrorMessage(
