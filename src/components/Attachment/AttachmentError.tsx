@@ -10,8 +10,7 @@ import {
 import { dataAttr } from "@chakra-ui/utils"
 import { useEffect, useMemo, useState } from "react"
 import { FileRejection } from "react-dropzone"
-
-import { BxError } from "assets"
+import { BiError } from "react-icons/bi"
 
 import { useAttachmentStyles } from "./AttachmentContext"
 import { getReadableFileSize } from "./utils"
@@ -87,7 +86,7 @@ export const AttachmentError = forwardRef<AttachmentErrorProps, "div">(
           />
         )}
         <Flex sx={styles.fileInfo}>
-          <Icon as={BxError} />
+          <Icon as={BiError} />
           <Text ml="2rem">{file.name}</Text>
           <Spacer />
           <Text
