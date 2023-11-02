@@ -114,6 +114,17 @@ const getPlaceholderText = (
   return results.join(" ")
 }
 
+// Utility method to construct a SelectedMediaDto from MediaData
+const getSelectedMediaDto = (fileData: MediaData) => {
+  const selectedData: SelectedMediaDto = {
+    filePath: fileData.mediaPath,
+    sha: fileData.sha,
+    size: fileData.size || 0,
+  }
+
+  return selectedData
+}
+
 const CreateDirectoryButton = ({
   isWriteDisabled,
   directoryLevel,
@@ -141,6 +152,13 @@ export const Media = (): JSX.Element => {
   }>()
   const { siteName, mediaRoom: mediaType, mediaDirectoryName } = params
   const [selectedMedia, setSelectedMedia] = useState<SelectedMediaDto[]>([])
+  // Note: We need a separate variable here so that we do not lose the selection
+  // that the user might already have. If the user modifies this individual file
+  // and it was originally selected, we will remove it from selectedMedia.
+  const [
+    individualMedia,
+    setIndividualMedia,
+  ] = useState<SelectedMediaDto | null>(null)
 
   const {
     isOpen: isDeleteModalOpen,
@@ -171,12 +189,7 @@ export const Media = (): JSX.Element => {
         )
       )
     } else {
-      const selectedData: SelectedMediaDto = {
-        filePath: fileData.mediaPath,
-        sha: fileData.sha,
-        size: fileData.size || 0,
-      }
-
+      const selectedData = getSelectedMediaDto(fileData)
       setSelectedMedia([...selectedMedia, selectedData])
     }
   }
@@ -225,8 +238,19 @@ export const Media = (): JSX.Element => {
     mutate: deleteMultipleMedia,
     isLoading: isDeleteMultipleMediaLoading,
   } = useDeleteMultipleMediaHook(params, {
-    onSettled: () => {
-      setSelectedMedia([])
+    onSettled: (data, error, variables, context) => {
+      if (variables.length === 1) {
+        setSelectedMedia(
+          selectedMedia.filter((selectedData) =>
+            variables.some(
+              (variable) => variable.filePath !== selectedData.filePath
+            )
+          )
+        )
+      } else {
+        setSelectedMedia([])
+      }
+      if (individualMedia) setIndividualMedia(null)
       onDeleteModalClose()
     },
     onSuccess: (data, variables, context) => {
@@ -256,14 +280,19 @@ export const Media = (): JSX.Element => {
   return (
     <>
       <DeleteMediaModal
-        selectedMedia={selectedMedia}
+        selectedMedia={(individualMedia && [individualMedia]) || selectedMedia}
         mediaLabels={getMediaLabels(mediaType)}
         isWriteDisabled={isWriteDisabled}
         isOpen={isDeleteModalOpen}
         isLoading={isDeleteMultipleMediaLoading}
-        onClose={onDeleteModalClose}
+        onClose={() => {
+          setIndividualMedia(null)
+          onDeleteModalClose()
+        }}
         onProceed={() => {
-          deleteMultipleMedia(selectedMedia)
+          deleteMultipleMedia(
+            (individualMedia && [individualMedia]) || selectedMedia
+          )
         }}
       />
 
@@ -304,7 +333,10 @@ export const Media = (): JSX.Element => {
                       </Button>
                     </Box>
                     <Box mt="auto">
-                      <Menu isStretch={false}>
+                      <Menu
+                        isStretch={false}
+                        onOpen={() => setIndividualMedia(null)}
+                      >
                         <Menu.Button
                           variant="clear"
                           colorScheme="slate"
@@ -476,10 +508,22 @@ export const Media = (): JSX.Element => {
                               (selectedData) =>
                                 selectedData.filePath === data.mediaPath
                             )}
+                            onOpen={() =>
+                              setIndividualMedia(getSelectedMediaDto(data))
+                            }
                             onCheck={() => handleSelect(data)}
+                            onDelete={onDeleteModalOpen}
                           />
                         ) : (
-                          data && <FilePreviewCard name={data.name} />
+                          data && (
+                            <FilePreviewCard
+                              name={data.name}
+                              onOpen={() =>
+                                setIndividualMedia(getSelectedMediaDto(data))
+                              }
+                              onDelete={onDeleteModalOpen}
+                            />
+                          )
                         )}
                       </Skeleton>
                     )

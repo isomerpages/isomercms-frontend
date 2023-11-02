@@ -63,9 +63,9 @@ export const DeleteMediaModal = ({
             </ModalHeader>
 
             <ModalBody mt="1rem">
-              Are you sure you want to delete this image? If you used this image
-              on any page, site visitors may see a broken image. This cannot be
-              undone.
+              Are you sure you want to delete this {singularMediaLabel}? If you
+              used this {singularMediaLabel} on any page, site visitors may see
+              a broken {singularMediaLabel}. This cannot be undone.
             </ModalBody>
           </>
         )}
@@ -142,7 +142,10 @@ export const DeleteMediaModal = ({
             <Button
               colorScheme="critical"
               isLoading={isLoading}
-              onClick={() => onProceed(selectedMedia)}
+              onClick={() => {
+                setIsDeleteChecked(false)
+                onProceed(selectedMedia)
+              }}
               isDisabled={isWriteDisabled || !isDeleteChecked}
             >
               Delete{" "}
