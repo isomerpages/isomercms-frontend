@@ -15,18 +15,22 @@ import {
   InputGroup,
   Select,
   Divider,
+  Flex,
+  Spacer,
 } from "@chakra-ui/react"
+import { useFeatureIsOn } from "@growthbook/growthbook-react"
 import { yupResolver } from "@hookform/resolvers/yup"
 import {
   FormErrorMessage,
   FormLabel,
   ModalCloseButton,
   Link,
+  Toggle,
 } from "@opengovsg/design-system-react"
 import { format } from "date-fns-tz"
 import _ from "lodash"
 import { useEffect } from "react"
-import { useForm } from "react-hook-form"
+import { Controller, useForm } from "react-hook-form"
 import slugify from "slugify"
 
 import { Breadcrumb } from "components/folders/Breadcrumb"
@@ -41,6 +45,7 @@ import { LoadingButton } from "components/LoadingButton"
 
 import { isWriteActionsDisabled } from "utils/reviewRequests"
 
+import { PageVariant } from "types/pages"
 import { pageFileNameToTitle } from "utils"
 
 import { PageSettingsSchema } from "./PageSettingsSchema"
@@ -62,6 +67,7 @@ interface ResourcePageFrontMatter {
   external?: string
   description?: string
   image?: string
+  variant: PageVariant
 }
 
 interface ResourcePageParams {
@@ -119,6 +125,7 @@ const generateDefaultFrontMatter = (
     layout: exampleLayout,
     description: "",
     image: "",
+    variant: "tiptap" as const,
   }
 }
 
@@ -132,6 +139,7 @@ export const ResourcePageSettingsModal = ({
   onClose,
 }: ResourcePageSettingsModalParams): JSX.Element => {
   const { siteName, fileName, resourceRoomName, resourceCategoryName } = params
+  const isTiptapEnabled = useFeatureIsOn("is-tiptap-enabled")
 
   const existingTitlesArray = pagesData
     .filter((page: ResourcePageParams) => page.name !== fileName)
@@ -153,6 +161,7 @@ export const ResourcePageSettingsModal = ({
     formState: { errors },
     setValue,
     trigger,
+    control,
   } = useForm<ResourcePageFrontMatter>({
     mode: "onTouched",
     resolver: yupResolver(PageSettingsSchema(existingTitlesArray)),
@@ -318,6 +327,33 @@ export const ResourcePageSettingsModal = ({
                 />
                 <FormErrorMessage>{errors.date?.message}</FormErrorMessage>
               </FormControl>
+              <br />
+              {isTiptapEnabled && (
+                <FormControl isInvalid={!!errors.permalink?.message} isRequired>
+                  <Flex mb="0.75rem" alignItems="center">
+                    <FormLabel mb={0}>Enable new editor</FormLabel>
+                    <Spacer />
+                    <Controller
+                      name="variant"
+                      render={({ field: { onChange, value } }) => {
+                        return (
+                          <Toggle
+                            defaultChecked
+                            onChange={(event) => {
+                              event.target.checked
+                                ? onChange("tiptap")
+                                : onChange("markdown")
+                            }}
+                            isChecked={value === "tiptap"}
+                            label=""
+                          />
+                        )
+                      }}
+                      control={control}
+                    />
+                  </Flex>
+                </FormControl>
+              )}
               <Divider mt="2rem" mb="1rem" />
               {/* File URL */}
               {watch("layout") === "file" && (

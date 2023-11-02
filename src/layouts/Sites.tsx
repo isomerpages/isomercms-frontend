@@ -8,7 +8,7 @@ import {
   Flex,
   Image,
 } from "@chakra-ui/react"
-import { useFeatureIsOn } from "@growthbook/growthbook-react"
+import { useFeatureValue } from "@growthbook/growthbook-react"
 import { Infobox } from "@opengovsg/design-system-react"
 import _ from "lodash"
 import { useEffect, useState } from "react"
@@ -33,6 +33,8 @@ import { EmptySitesImage, IsomerLogoNoText } from "assets"
 import { AnnouncementModal } from "features/AnnouncementModal/AnnouncementModal"
 import { SiteData } from "types/sites"
 import { UserTypes } from "types/user"
+
+import { getShouldShowNewLayouts } from "./EditHomepage/utils"
 
 const SitePreviewImage = ({ imageUrl }: { imageUrl?: string }) => {
   return (
@@ -163,7 +165,10 @@ export const Sites = (): JSX.Element => {
     )
   }, [siteRequestData])
 
-  const showNewLayouts = useFeatureIsOn(FEATURE_FLAGS.HOMEPAGE_TEMPLATES)
+  const { blocks } = useFeatureValue(FEATURE_FLAGS.HOMEPAGE_ENABLED_BLOCKS, {
+    blocks: [],
+  })
+  const showNewLayouts = getShouldShowNewLayouts(blocks)
   const isGithubUser = userType === UserTypes.Github
   /**
    * Currently the announcement modal takes in all the keyboard events,

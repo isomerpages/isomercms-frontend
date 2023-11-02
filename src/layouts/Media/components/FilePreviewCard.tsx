@@ -17,10 +17,14 @@ import { BxFileArchiveSolid } from "assets"
 
 interface FilePreviewCardProps {
   name: string
+  onOpen?: () => void
+  onDelete?: () => void
 }
 
 export const FilePreviewCard = ({
   name,
+  onOpen,
+  onDelete,
 }: FilePreviewCardProps): JSX.Element => {
   const { url } = useRouteMatch()
   const encodedName = encodeURIComponent(name)
@@ -42,7 +46,7 @@ export const FilePreviewCard = ({
           </Card>
         </LinkOverlay>
       </LinkBox>
-      <ContextMenu>
+      <ContextMenu onOpen={onOpen}>
         <ContextMenu.Button />
         <ContextMenu.List>
           <ContextMenu.Item
@@ -66,8 +70,8 @@ export const FilePreviewCard = ({
             <Divider />
             <ContextMenu.Item
               icon={<BiTrash />}
-              as={RouterLink}
-              to={`${url}/deleteMedia/${encodedName}`}
+              color="interaction.critical.default"
+              onClick={onDelete}
             >
               Delete file
             </ContextMenu.Item>

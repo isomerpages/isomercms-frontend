@@ -5,6 +5,7 @@ import {
   Text,
   HStack,
   useDisclosure,
+  Skeleton,
 } from "@chakra-ui/react"
 import { Button, IconButton } from "@opengovsg/design-system-react"
 import { BiArrowBack, BiCheckCircle } from "react-icons/bi"
@@ -12,6 +13,7 @@ import { useParams, useHistory } from "react-router-dom"
 
 import { ButtonLink } from "components/ButtonLink"
 import { NotificationMenu } from "components/Header/NotificationMenu"
+import { StatusBadge } from "components/Header/StatusBadge"
 import { ViewStagingSiteModal } from "components/ViewStagingSiteModal"
 import { WarningModal } from "components/WarningModal"
 
@@ -19,6 +21,7 @@ import { useDirtyFieldContext } from "contexts/DirtyFieldContext"
 import { useLoginContext } from "contexts/LoginContext"
 
 import { useGetStagingUrl } from "hooks/siteDashboardHooks"
+import { useGetStagingStatus } from "hooks/useGetStagingStatus"
 
 import { ReviewRequestModal } from "layouts/ReviewRequest"
 
@@ -39,6 +42,11 @@ export const SiteEditHeader = (): JSX.Element => {
   } = useDisclosure()
   const { siteName } = useParams<{ siteName: string }>()
   const { data: stagingUrl, isLoading } = useGetStagingUrl(siteName)
+  const {
+    data: getStagingStatusData,
+    isLoading: isGetStagingStatusLoading,
+  } = useGetStagingStatus(siteName)
+
   const { userId } = useLoginContext()
   // NOTE: Even if we have an unknown user, we assume that it is github
   // and avoid showing new features.
@@ -84,6 +92,9 @@ export const SiteEditHeader = (): JSX.Element => {
         </HStack>
         <Spacer />
         <HStack>
+          <Skeleton isLoaded={!isGetStagingStatusLoading} mr="0.75rem">
+            {getStagingStatusData && <StatusBadge {...getStagingStatusData} />}
+          </Skeleton>
           <NotificationMenu />
           <Button
             onClick={onOpen}

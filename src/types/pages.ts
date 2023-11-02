@@ -6,3 +6,5 @@ export interface UnlinkedPageDto {
     pageBody: string
   }
 }
+
+export type PageVariant = "tiptap" | "markdown"

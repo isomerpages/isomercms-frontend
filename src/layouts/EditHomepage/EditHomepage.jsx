@@ -7,7 +7,7 @@ import {
   VStack,
   Divider,
 } from "@chakra-ui/react"
-import { useFeatureIsOn } from "@growthbook/growthbook-react"
+import { useFeatureValue } from "@growthbook/growthbook-react"
 import { DragDropContext } from "@hello-pangea/dnd"
 import { Button, Tag } from "@opengovsg/design-system-react"
 import update from "immutability-helper"
@@ -28,7 +28,7 @@ import { FEATURE_FLAGS } from "constants/featureFlags"
 // Import hooks
 import { EditableContextProvider } from "contexts/EditableContext"
 
-import { useGetHomepageHook } from "hooks/homepageHooks"
+import { useFrontmatterSections, useGetHomepageHook } from "hooks/homepageHooks"
 import { useUpdateHomepageHook } from "hooks/homepageHooks/useUpdateHomepageHook"
 import { useAfterFirstLoad } from "hooks/useAfterFirstLoad"
 import useSiteColorsHook from "hooks/useSiteColorsHook"
@@ -90,6 +90,10 @@ import { getErrorValues } from "./utils"
 /* eslint-disable react/no-array-index-key */
 
 const RADIX_PARSE_INT = 10
+
+const ANNOUNCEMENTS_FEATURE_KEY = "announcements"
+const TEXT_CARDS_FEATURE_KEY = "textcards"
+const INFOCOLS_FEATURE_KEY = "infocols"
 
 // NOTE: `scrollIntoView` does not work when called synchronously
 // to avoid this problem, we do a `setTimeout` to wrap it.
@@ -192,6 +196,7 @@ const EditHomepage = ({ match }) => {
   const [hasLoaded, setHasLoaded] = useState(false)
   const [scrollRefs, setScrollRefs] = useState([])
   const [announcementScrollRefs, setAnnouncementScrollRefs] = useState([])
+  const computeFrontmatter = useFrontmatterSections()
 
   const [frontMatter, setFrontMatter] = useState({
     title: "",
@@ -265,7 +270,10 @@ const EditHomepage = ({ match }) => {
     displayAnnouncementItems,
   }) => {
     setDisplaySections(displaySections)
-    setFrontMatter(frontMatter)
+    setFrontMatter({
+      ...frontMatter,
+      sections: computeFrontmatter(frontMatter.sections),
+    })
     setErrors(errors)
     setDisplayDropdownElems(displayDropdownElems)
     setDisplayHighlights(displayHighlights)
@@ -316,7 +324,9 @@ const EditHomepage = ({ match }) => {
         const scrollRefs = []
         const announcementScrollRefs = []
 
-        frontMatter.sections.forEach((section) => {
+        const sections = computeFrontmatter(frontMatter.sections)
+
+        sections.forEach((section) => {
           scrollRefs.push(createRef())
           // If this is the hero section, hide all highlights/dropdownelems by default
           if (section.hero) {
@@ -435,7 +445,10 @@ const EditHomepage = ({ match }) => {
           textcards: textCardItemErrors,
           infocols: infocolInfoboxErrors,
         }
-        setFrontMatter(frontMatter)
+        setFrontMatter({
+          ...frontMatter,
+          sections,
+        })
         setOriginalFrontMatter(_.cloneDeep(frontMatter))
         setSha(sha)
         setDisplaySections(displaySections)
@@ -1320,8 +1333,9 @@ const EditHomepage = ({ match }) => {
       },
     })
   }
-
-  const showNewLayouts = useFeatureIsOn(FEATURE_FLAGS.HOMEPAGE_TEMPLATES)
+  const { blocks } = useFeatureValue(FEATURE_FLAGS.HOMEPAGE_ENABLED_BLOCKS, {
+    blocks: [],
+  })
   return (
     <>
       {/* Section deletion warning modal */}
@@ -1552,8 +1566,7 @@ const EditHomepage = ({ match }) => {
                                       </Editable.DraggableAccordionItem>
                                     )}
 
-                                    {showNewLayouts &&
-                                      section.announcements &&
+                                    {section.announcements &&
                                       /**
                                        * Somehow, the errors are undefined for 2 renders, not sure
                                        * of the core reason. To avoid the CMS panel from crashing,
@@ -1723,7 +1736,7 @@ const EditHomepage = ({ match }) => {
                         {/* NOTE: Check if the sections contain any `announcements`
                                 and if it does, prevent creation of another `resources` section
                             */}
-                        {showNewLayouts &&
+                        {blocks.includes(ANNOUNCEMENTS_FEATURE_KEY) &&
                           !frontMatter.sections.some(
                             ({ announcements }) => !!announcements
                           ) && (
@@ -1739,7 +1752,7 @@ const EditHomepage = ({ match }) => {
                               />
                             </AddSectionButton.HelpOverlay>
                           )}
-                        {showNewLayouts && (
+                        {blocks.includes(TEXT_CARDS_FEATURE_KEY) && (
                           <AddSectionButton.HelpOverlay
                             title="Text cards"
                             description="Add clickable cards with bite-sized information to your homepage. You can link any page or external URL, such as blog posts, articles, and more."
@@ -1754,7 +1767,7 @@ const EditHomepage = ({ match }) => {
                             />
                           </AddSectionButton.HelpOverlay>
                         )}
-                        {showNewLayouts && (
+                        {blocks.includes(INFOCOLS_FEATURE_KEY) && (
                           <AddSectionButton.HelpOverlay
                             title="Info-columns"
                             description="Add bite-sized snippets of text in a multi-column layout. These texts aren’t clickable. Perfect for showing informative text that describes your organisation."

@@ -13,7 +13,17 @@ export const CreateButton = forwardRef<ButtonProps, "button">(
         {...props}
         ref={ref}
         iconSpacing="0.5rem"
-        leftIcon={<Icon as={BiPlus} fontSize="1.5rem" fill="icon.default" />}
+        leftIcon={
+          <Icon
+            as={BiPlus}
+            fontSize="1.5rem"
+            fill={
+              props.isDisabled
+                ? "interaction.support.disabled-content"
+                : "icon.default"
+            }
+          />
+        }
       />
     )
   }

@@ -1,5 +1,5 @@
 import { LinkOverlay, LinkBox, Divider, Text, Icon } from "@chakra-ui/react"
-import { BiEditAlt, BiFolder, BiTrash, BiWrench } from "react-icons/bi"
+import { BiEdit, BiFolder, BiTrash, BiWrench } from "react-icons/bi"
 import { Link as RouterLink, useRouteMatch } from "react-router-dom"
 
 import { Card, CardBody } from "components/Card"
@@ -45,27 +45,20 @@ export const MediaDirectoryCard = ({
         <ContextMenu.Button pos="absolute" />
         <ContextMenu.List>
           <ContextMenu.Item
-            icon={<BiEditAlt />}
-            as={RouterLink}
-            to={`/sites/${siteName}/media/${mediaType}/mediaDirectory/${encodedDirectoryPath}`}
-          >
-            <Text>Edit folder</Text>
-          </ContextMenu.Item>
-          <ContextMenu.Item
-            icon={<BiWrench />}
+            icon={<BiEdit />}
             as={RouterLink}
             to={`${url}/editDirectorySettings/${encodedDirectoryPath}`}
           >
-            Folder settings
+            Rename {mediaType === "images" ? "album" : "directory"}
           </ContextMenu.Item>
           <>
-            <Divider />
             <ContextMenu.Item
               icon={<BiTrash />}
               as={RouterLink}
               to={`${url}/deleteDirectory/${encodedDirectoryPath}`}
+              color="text.danger"
             >
-              Delete
+              Delete {mediaType === "images" ? "album" : "directory"}
             </ContextMenu.Item>
           </>
         </ContextMenu.List>

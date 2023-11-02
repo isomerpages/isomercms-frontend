@@ -10,6 +10,7 @@ import {
   buildRecentNotificationData,
   buildAllNotificationData,
   buildGetStagingUrlData,
+  buildGetStagingBuildStatusData,
 } from "mocks/utils"
 
 import { handlers } from "../../mocks/handlers"
@@ -78,6 +79,42 @@ ManyNotifications.parameters = {
         ...MOCK_ALL_NOTIFICATION_DATA,
       ]),
       ...handlers,
+    ],
+  },
+}
+
+export const BuildingStagingSite = Template.bind({})
+BuildingStagingSite.parameters = {
+  msw: {
+    handlers: [
+      ...handlers,
+      buildGetStagingBuildStatusData({
+        status: "PENDING",
+      }),
+    ],
+  },
+}
+
+export const SuccessStagingBuild = Template.bind({})
+SuccessStagingBuild.parameters = {
+  msw: {
+    handlers: [
+      ...handlers,
+      buildGetStagingBuildStatusData({
+        status: "READY",
+      }),
+    ],
+  },
+}
+
+export const ErrorStagingBuild = Template.bind({})
+ErrorStagingBuild.parameters = {
+  msw: {
+    handlers: [
+      ...handlers,
+      buildGetStagingBuildStatusData({
+        status: "ERROR",
+      }),
     ],
   },
 }

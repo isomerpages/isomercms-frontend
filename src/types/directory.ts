@@ -36,6 +36,8 @@ export interface MediaData {
   name: string
   sha: string
   type: "file"
+  addedTime: number
+  size: number
 }
 
 export type ResourcePageData = Required<Omit<PageData, "type">> & {
@@ -46,7 +48,12 @@ export interface ResourceRoomNameUpdateProps {
   newDirectoryName: string
 }
 
-export type MediaFilePathData = Pick<MediaData, "name" | "type">
+export type MediaFilePathData = Pick<
+  MediaData,
+  "name" | "type" | "sha" | "size"
+> & {
+  path: MediaData["mediaPath"]
+}
 
 export interface GetMediaSubdirectoriesDto {
   directories: DirectoryData[]

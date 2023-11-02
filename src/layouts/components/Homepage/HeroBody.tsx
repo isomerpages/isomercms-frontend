@@ -9,7 +9,7 @@ import {
   HStack,
   Spacer,
 } from "@chakra-ui/react"
-import { useFeatureIsOn } from "@growthbook/growthbook-react"
+import { useFeatureValue } from "@growthbook/growthbook-react"
 import {
   FormErrorMessage,
   FormLabel,
@@ -44,6 +44,7 @@ import {
 } from "types/hero"
 import { HeroBannerLayouts, HighlightOption } from "types/homepage"
 
+import { HOMEPAGE_BLOCKS } from "./constants"
 import { HeroDropdownFormFields } from "./HeroDropdownSection"
 
 type HeroHighlightSectionFormFields = HighlightOption
@@ -295,7 +296,13 @@ const HeroLayoutForm = ({
   children,
 }: HeroLayoutFormProps): JSX.Element => {
   const { onChange } = useEditableContext()
-  const showNewLayouts = useFeatureIsOn(FEATURE_FLAGS.HOMEPAGE_TEMPLATES)
+  const { blocks } = useFeatureValue<{ blocks: string[] }>(
+    FEATURE_FLAGS.HOMEPAGE_ENABLED_BLOCKS,
+    {
+      blocks: [],
+    }
+  )
+  const showNewLayouts = blocks.includes(HOMEPAGE_BLOCKS.HERO)
 
   // We only want to show the feature tour when the
   // DOM elements are in view. Else, the feature tour
@@ -390,7 +397,13 @@ export const HeroBody = ({
     initialSectionType
   )
   const { onChange } = useEditableContext()
-  const showNewLayouts = useFeatureIsOn(FEATURE_FLAGS.HOMEPAGE_TEMPLATES)
+  const { blocks } = useFeatureValue<{ blocks: string[] }>(
+    FEATURE_FLAGS.HOMEPAGE_ENABLED_BLOCKS,
+    {
+      blocks: [],
+    }
+  )
+  const showNewLayouts = blocks.includes(HOMEPAGE_BLOCKS.HERO)
 
   return (
     <>

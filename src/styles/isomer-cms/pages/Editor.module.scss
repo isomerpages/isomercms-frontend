@@ -126,13 +126,9 @@
 }
 
 .pageEditorSidebar {
-  width: $page-editor-sidebar-width;
   background: $base-background-light;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
-  padding: 30px;
-  padding-bottom: 100px;
-  height: calc(100vh - #{$header-height} - #{$footer-height} - 1rem);
   position: relative;
 }
 
@@ -169,13 +165,4 @@
   * {
     font-family: "Lato";
   }
-
-  transform: scale(0.95);
-  transform-origin: center;
-  width: calc(100vw - #{$page-editor-sidebar-width});
-  left: $page-editor-sidebar-width;
-  box-sizing: border-box;
-  overflow-y: auto;
-  height: calc(100vh - #{$header-height} - #{$footer-height} - 1rem);
-  background-color: white;
 }

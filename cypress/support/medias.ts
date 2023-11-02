@@ -2,12 +2,15 @@ import "cypress-pipe"
 import { Interceptors } from "../fixtures/constants"
 
 Cypress.Commands.add("uploadMedia", (mediaTitle, mediaPath, disableAction) => {
-  cy.contains(`Upload`).click().get("#file-upload").attachFile(mediaPath)
+  cy.contains(/^Upload (images|files)$/)
+    .click()
+    .get("#file-upload")
+    .attachFile(mediaPath)
 
   cy.get("#name").clear().type(mediaTitle).blur()
   if (!disableAction)
     cy.get("button")
-      .contains(/^Upload$/)
+      .contains(/^Upload/)
       .click() // necessary as multiple buttons containing Upload on page
       .wait(Interceptors.POST)
 })

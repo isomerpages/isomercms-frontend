@@ -1,6 +1,11 @@
 export const FEATURE_FLAGS = {
-  HOMEPAGE_TEMPLATES: "homepage_new_templates",
   REPO_PRIVATISATION: "repo_privatisation",
   BANNER: "banner",
   NPS_FORM: "nps_form",
+  HOMEPAGE_ENABLED_BLOCKS: "homepage_enabled_blocks",
+  TIPTAP_EDITOR: "is-tiptap-enabled",
 } as const
+
+// NOTE: Only have 4 default blocks:
+// hero/infobar/infopic/resources
+export const NUM_DEFAULT_HOMEPAGE_BLOCKS = 4
