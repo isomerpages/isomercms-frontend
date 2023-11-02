@@ -1,4 +1,6 @@
+import { Box } from "@chakra-ui/react"
 import PropTypes from "prop-types"
+import { useParams } from "react-router-dom"
 
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
@@ -6,7 +8,11 @@ import CollectionPageTemplate from "templates/pages/CollectionPageTemplate"
 import PageTemplate from "templates/pages/PageTemplate"
 import ResourcePageTemplate from "templates/pages/ResourcePageTemplate"
 
-const PagePreview = ({ pageParams, chunk, title }) => {
+import { getDecodedParams } from "utils"
+
+const PagePreview = ({ title, chunk }) => {
+  const params = useParams()
+  const pageParams = getDecodedParams(params)
   const { collectionName, resourceRoomName, resourceCategoryName } = pageParams
   const RenderedPreview = () => {
     if (collectionName) {
@@ -33,20 +39,19 @@ const PagePreview = ({ pageParams, chunk, title }) => {
   }
 
   return (
-    <div className={editorStyles.pageEditorMain}>
+    <Box
+      w="100%"
+      h="100%"
+      bg="white"
+      overflowY="auto"
+      className={editorStyles.pageEditorMain}
+    >
       <RenderedPreview />
-    </div>
+    </Box>
   )
 }
 
 PagePreview.propTypes = {
-  pageParams: PropTypes.shape({
-    collectionName: PropTypes.string,
-    subCollectionName: PropTypes.string,
-    resourceRoomName: PropTypes.string,
-    resourceCategoryName: PropTypes.string,
-    fileName: PropTypes.string.isRequired,
-  }).isRequired,
   title: PropTypes.string.isRequired,
   chunk: PropTypes.string.isRequired,
 }

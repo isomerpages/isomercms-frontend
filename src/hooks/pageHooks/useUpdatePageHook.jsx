@@ -25,6 +25,7 @@ export function useUpdatePageHook(params, queryParams) {
   return useMutation(
     (body) => {
       const { newFileName, sha, frontMatter, pageBody } = extractPageInfo(body)
+
       return pageService.update(params, {
         newFileName,
         sha,

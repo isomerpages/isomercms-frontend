@@ -74,6 +74,7 @@ export const SiteEditContent = ({
       w="100%"
       h="100%"
       divider={<StackDivider borderColor="border.divider.alt" />}
+      overflow="hidden"
       {...rest}
     >
       {children}
