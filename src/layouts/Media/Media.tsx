@@ -210,6 +210,14 @@ export const Media = (): JSX.Element => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [url])
 
+  useEffect(() => {
+    // Note: This component is shared between different media types. Hence, we
+    // need to reset the selected media when the media type changes. Otherwise,
+    // the user will still see the selected media from the previous media type.
+    setSelectedMedia([])
+    setIndividualMedia(null)
+  }, [mediaType])
+
   const {
     data: mediaFolderSubdirectories,
     isLoading: isListMediaFolderSubdirectoriesLoading,
@@ -563,10 +571,7 @@ export const Media = (): JSX.Element => {
           onClose={() => history.goBack()}
         />
         <ProtectedRouteWithProps
-          path={[
-            `${path}/deleteMedia/:fileName`,
-            `${path}/deleteDirectory/:mediaDirectoryName`,
-          ]}
+          path={[`${path}/deleteDirectory/:mediaDirectoryName`]}
           component={DeleteWarningScreen}
           onClose={() => history.goBack()}
         />
