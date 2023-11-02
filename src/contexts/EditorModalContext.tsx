@@ -9,7 +9,9 @@ const EditorModalContext = createContext<null | EditorModalContextProps>(null)
 export const useEditorModal = (): EditorModalContextProps => {
   const editorContext = useContext(EditorModalContext)
   if (!editorContext)
-    throw new Error("useLoginContext must be used within an LoginProvider")
+    throw new Error(
+      "useEditorModal must be used within an EditorModalContextProvider"
+    )
 
   return editorContext
 }
