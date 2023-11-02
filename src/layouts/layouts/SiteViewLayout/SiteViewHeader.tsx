@@ -58,7 +58,7 @@ export const SiteViewHeader = (): JSX.Element => {
       </HStack>
       <Spacer />
       <HStack>
-        <Skeleton isLoaded={!isGetStagingStatusLoading}>
+        <Skeleton isLoaded={!isGetStagingStatusLoading} mr="0.75rem">
           {getStagingStatusData && <StatusBadge {...getStagingStatusData} />}
         </Skeleton>
         <LinkBox position="relative">

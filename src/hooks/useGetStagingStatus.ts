@@ -14,8 +14,7 @@ export const useGetStagingStatus = (
     () => getStagingBuildStatus({ siteName }),
     {
       retry: false,
-      // todo: ideally should invalidate on save, now got time lag
-      refetchInterval: 1000 * 10, // 10 sec for quicker feedback when user press save
+      refetchInterval: 1000 * 5, // 5 sec for quicker feedback when user press save
     }
   )
 }

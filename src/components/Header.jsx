@@ -139,7 +139,7 @@ const Header = ({
           </Flex>
         ) : null}
         <HStack flex={1} justifyContent="flex-end">
-          <Skeleton isLoaded={!isGetStagingStatusLoading}>
+          <Skeleton isLoaded={!isGetStagingStatusLoading} mr="0.75rem">
             {getStagingStatusData && <StatusBadge {...getStagingStatusData} />}
           </Skeleton>
           <NotificationMenu />

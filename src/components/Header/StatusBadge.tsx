@@ -12,19 +12,20 @@ import { BsFillQuestionCircleFill } from "react-icons/bs"
 import { GoDotFill } from "react-icons/go"
 import { IconBaseProps } from "react-icons/lib"
 
-import { buildStatus } from "types/stagingBuildStatus"
+import { BuildStatus } from "types/stagingBuildStatus"
 
 interface StatusBadgeProps {
-  status: buildStatus
+  status: BuildStatus
 }
 
 interface StagingPopoverContentProps {
-  status: buildStatus
+  status: BuildStatus
 }
 
 const StagingPopoverContent = ({ status }: StagingPopoverContentProps) => {
   let headingText = ""
   let bodyText = ""
+
   let Icon = (props: IconBaseProps) => <BiLoader {...props} />
 
   switch (status) {
@@ -38,8 +39,9 @@ const StagingPopoverContent = ({ status }: StagingPopoverContentProps) => {
 
       break
     case "PENDING":
-      headingText = `Site building since last save `
-      bodyText = "We'll let you know when the staging site is ready."
+      headingText = `Staging site is building`
+      bodyText =
+        "We detected a change in your site. We'll let you know when the staging site is ready."
       Icon = (props: IconBaseProps) => (
         <BiLoader {...props} style={{ animation: "spin 2s linear infinite" }} />
       )
@@ -48,12 +50,14 @@ const StagingPopoverContent = ({ status }: StagingPopoverContentProps) => {
       headingText =
         "We had some trouble updating the staging site since the latest save. "
       bodyText =
-        "Don't worry, your production site isn't affected. Try saving your page again. If the issue persists, please contact Isomer Support."
+        "Don't worry, your production site isn't affected. Try saving your page again. If the issue persists, please contact support@isomer.gov.sg."
+
       Icon = (props: IconBaseProps) => <BiError {...props} />
       break
     default:
       break
   }
+
   return (
     <HStack align="start" spacing="0.75rem" m="0.75rem">
       <Box width="1.6rem" height="1.6rem" p="0.05rem">
@@ -62,7 +66,10 @@ const StagingPopoverContent = ({ status }: StagingPopoverContentProps) => {
 
       <Box alignItems="left">
         <Text textStyle="subhead-2">{headingText}</Text>
-        <Text textStyle="body-2">{bodyText}</Text>
+
+        <Text textStyle="body-2" mt="0.25rem">
+          {bodyText}
+        </Text>
       </Box>
     </HStack>
   )
@@ -95,9 +102,14 @@ export const StatusBadge = ({ status }: StatusBadgeProps): JSX.Element => {
   return (
     <Popover trigger="hover">
       <PopoverTrigger>
-        <Badge colorScheme={colourScheme} variant="subtle" cursor="default">
+        <Badge
+          colorScheme={colourScheme}
+          variant="subtle"
+          cursor="default"
+          borderRadius="3.125rem"
+        >
           <GoDotFill size="1rem" color={dotColor} />
-          <Text ml="0.5rem" mr="0.5rem">
+          <Text ml="0.25rem" mr="0.5rem">
             {displayText}
           </Text>
           <BsFillQuestionCircleFill color="#454953" />
