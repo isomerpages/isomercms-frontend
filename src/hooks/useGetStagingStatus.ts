@@ -14,6 +14,7 @@ export const useGetStagingStatus = (
     () => getStagingBuildStatus({ siteName }),
     {
       retry: false,
+      refetchInterval: 1000 * 5, // 5 sec for quicker feedback when user press save
     }
   )
 }

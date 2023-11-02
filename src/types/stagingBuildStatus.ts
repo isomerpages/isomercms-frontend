@@ -1,13 +1,10 @@
-export const statusStates = {
-  unSaved: "UNSAVED",
+export const StatusStates = {
   pending: "PENDING",
   ready: "READY",
   error: "ERROR",
 } as const
-export type buildStatus = typeof statusStates[keyof typeof statusStates]
+export type BuildStatus = typeof StatusStates[keyof typeof StatusStates]
 
 export interface StagingBuildStatus {
-  commit: string
-  status: buildStatus
-  timeLastSaved: number
+  status: BuildStatus
 }

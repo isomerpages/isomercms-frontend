@@ -12,48 +12,25 @@ import { BsFillQuestionCircleFill } from "react-icons/bs"
 import { GoDotFill } from "react-icons/go"
 import { IconBaseProps } from "react-icons/lib"
 
-import { buildStatus } from "types/stagingBuildStatus"
+import { BuildStatus } from "types/stagingBuildStatus"
 
 interface StatusBadgeProps {
-  status: buildStatus
-  timeLastSaved: number
+  status: BuildStatus
 }
 
 interface StagingPopoverContentProps {
-  status: buildStatus
-  timeLastSavedInMin: number
+  status: BuildStatus
 }
 
-const getTimeSavedInMins = (timeLastSaved: number): number => {
-  const timeLastSavedInMin = Math.floor(
-    (Date.now() - timeLastSaved) / 1000 / 60
-  )
-
-  return timeLastSavedInMin
-}
-
-const StagingPopoverContent = ({
-  status,
-  timeLastSavedInMin,
-}: StagingPopoverContentProps) => {
+const StagingPopoverContent = ({ status }: StagingPopoverContentProps) => {
   let headingText = ""
   let bodyText = ""
+
   let Icon = (props: IconBaseProps) => <BiLoader {...props} />
-  let timeText
-  if (timeLastSavedInMin < 60) {
-    timeText = `${timeLastSavedInMin} minute${
-      timeLastSavedInMin === 1 ? "" : "s"
-    } ago`
-  } else if (timeLastSavedInMin < 60 * 60) {
-    const hours = Math.floor(timeLastSavedInMin / 60)
-    timeText = `${hours} hour${hours === 1 ? "" : "s"} ago`
-  } else {
-    const days = Math.floor(timeLastSavedInMin / 60 / 24)
-    timeText = `${days} day${days === 1 ? "" : "s"} ago`
-  }
+
   switch (status) {
     case "READY":
-      headingText = `All saved edits from ${timeText} are on staging`
+      headingText = `All saved edits are on staging`
       bodyText = "Click on 'Open staging' to take a look."
 
       Icon = (props: IconBaseProps) => (
@@ -62,22 +39,25 @@ const StagingPopoverContent = ({
 
       break
     case "PENDING":
-      headingText = `Site building since last save ${timeText}`
-      bodyText = "We'll let you know when the staging site is ready."
+      headingText = `Staging site is building`
+      bodyText =
+        "We detected a change in your site. We'll let you know when the staging site is ready."
       Icon = (props: IconBaseProps) => (
         <BiLoader {...props} style={{ animation: "spin 2s linear infinite" }} />
       )
       break
     case "ERROR":
       headingText =
-        "We had some trouble updating the staging site since your latest save. "
+        "We had some trouble updating the staging site since the latest save. "
       bodyText =
-        "Don't worry, your production site isn't affected. Try saving your page again. If the issue persists, please contact Isomer Support."
+        "Don't worry, your production site isn't affected. Try saving your page again. If the issue persists, please contact support@isomer.gov.sg."
+
       Icon = (props: IconBaseProps) => <BiError {...props} />
       break
     default:
       break
   }
+
   return (
     <HStack align="start" spacing="0.75rem" m="0.75rem">
       <Box width="1.6rem" height="1.6rem" p="0.05rem">
@@ -86,17 +66,16 @@ const StagingPopoverContent = ({
 
       <Box alignItems="left">
         <Text textStyle="subhead-2">{headingText}</Text>
-        <Text textStyle="body-2">{bodyText}</Text>
+
+        <Text textStyle="body-2" mt="0.25rem">
+          {bodyText}
+        </Text>
       </Box>
     </HStack>
   )
 }
 
-export const StatusBadge = ({
-  status,
-  timeLastSaved,
-}: StatusBadgeProps): JSX.Element => {
-  const timeLastSavedInMin = getTimeSavedInMins(timeLastSaved ?? Date.now())
+export const StatusBadge = ({ status }: StatusBadgeProps): JSX.Element => {
   let displayText = ""
   let colourScheme = ""
   let dotColor = "#505660"
@@ -121,24 +100,26 @@ export const StatusBadge = ({
   }
 
   return (
-    <Box position="relative">
-      <Popover trigger="hover">
-        <PopoverTrigger>
-          <Badge colorScheme={colourScheme} variant="subtle" cursor="default">
-            <GoDotFill size="1rem" color={dotColor} />
-            <Text ml="0.5rem" mr="0.5rem">
-              {displayText}
-            </Text>
-            <BsFillQuestionCircleFill color="#454953" />
-          </Badge>
-        </PopoverTrigger>
-        <PopoverContent width="26.25rem" height="auto" mt="2rem">
-          <StagingPopoverContent
-            status={status}
-            timeLastSavedInMin={timeLastSavedInMin}
-          />
+    <Popover trigger="hover">
+      <PopoverTrigger>
+        <Badge
+          colorScheme={colourScheme}
+          variant="subtle"
+          cursor="default"
+          borderRadius="3.125rem"
+        >
+          <GoDotFill size="1rem" color={dotColor} />
+          <Text ml="0.25rem" mr="0.5rem">
+            {displayText}
+          </Text>
+          <BsFillQuestionCircleFill color="#454953" />
+        </Badge>
+      </PopoverTrigger>
+      <Box position="relative">
+        <PopoverContent width="26.25rem" height="auto">
+          <StagingPopoverContent status={status} />
         </PopoverContent>
-      </Popover>
-    </Box>
+      </Box>
+    </Popover>
   )
 }
