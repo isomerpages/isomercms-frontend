@@ -104,7 +104,7 @@ export const DeleteMediaModal = ({
                       <Tbody borderTop="1px" borderColor="gray.100">
                         {selectedMedia.map((selectedMediaData) => (
                           <Tr key={selectedMediaData.filePath}>
-                            <Td w="2.75rem">
+                            <Td w="2.75rem" lineHeight="0.5rem">
                               <Icon as={BiImage} fontSize="1rem" />
                             </Td>
                             <Td>
