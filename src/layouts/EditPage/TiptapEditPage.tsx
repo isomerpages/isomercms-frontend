@@ -58,9 +58,10 @@ export const TiptapEditPage = ({
       variant="tiptap"
     >
       {/* Editor */}
-      <Editor />
+      <Editor h="80vh" />
       {/* Preview */}
       <PagePreview
+        h="calc(100vh - 160px - 1rem)"
         chunk={editor.getHTML()}
         title={initialPageData?.content?.frontMatter?.title || ""}
       />
