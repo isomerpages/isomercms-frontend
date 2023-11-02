@@ -49,6 +49,7 @@ import { isWriteActionsDisabled } from "utils/reviewRequests"
 import { EmptyAlbumImage } from "assets"
 import { MediaData } from "types/directory"
 import { MediaLabels, SelectedMediaDto } from "types/media"
+import { DEFAULT_RETRY_MSG, useErrorToast, useSuccessToast } from "utils"
 
 import { CreateButton } from "../components"
 import { SiteEditLayout } from "../layouts"
@@ -141,6 +142,23 @@ export const Media = (): JSX.Element => {
   const { siteName, mediaRoom: mediaType, mediaDirectoryName } = params
   const [selectedMedia, setSelectedMedia] = useState<SelectedMediaDto[]>([])
 
+  const {
+    isOpen: isDeleteModalOpen,
+    onOpen: onDeleteModalOpen,
+    onClose: onDeleteModalClose,
+  } = useDisclosure()
+
+  const {
+    articleLabel,
+    singularMediaLabel,
+    pluralMediaLabel,
+    singularDirectoryLabel,
+    pluralDirectoryLabel,
+  } = getMediaLabels(mediaType)
+
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
+
   const handleSelect = (fileData: MediaData) => {
     if (
       selectedMedia.some(
@@ -206,20 +224,28 @@ export const Media = (): JSX.Element => {
   const {
     mutate: deleteMultipleMedia,
     isLoading: isDeleteMultipleMediaLoading,
-  } = useDeleteMultipleMediaHook(params)
-
-  const {
-    articleLabel,
-    pluralMediaLabel,
-    singularDirectoryLabel,
-    pluralDirectoryLabel,
-  } = getMediaLabels(mediaType)
-
-  const {
-    isOpen: isDeleteModalOpen,
-    onOpen: onDeleteModalOpen,
-    onClose: onDeleteModalClose,
-  } = useDisclosure()
+  } = useDeleteMultipleMediaHook(params, {
+    onSettled: () => {
+      setSelectedMedia([])
+      onDeleteModalClose()
+    },
+    onSuccess: (data, variables, context) => {
+      successToast({
+        id: "delete-multiple-media-success",
+        description: `Successfully deleted ${
+          variables.length === 1 ? singularMediaLabel : pluralMediaLabel
+        }!`,
+      })
+    },
+    onError: (err, variables, context) => {
+      errorToast({
+        id: "delete-multiple-media-error",
+        description: `Your ${
+          variables.length === 1 ? singularMediaLabel : pluralMediaLabel
+        } could not be deleted successfully. ${DEFAULT_RETRY_MSG}`,
+      })
+    },
+  })
 
   const isWriteDisabled = isWriteActionsDisabled(siteName)
   const subDirCount = mediaFolderSubdirectories?.directories?.length || 0
@@ -234,11 +260,10 @@ export const Media = (): JSX.Element => {
         mediaLabels={getMediaLabels(mediaType)}
         isWriteDisabled={isWriteDisabled}
         isOpen={isDeleteModalOpen}
+        isLoading={isDeleteMultipleMediaLoading}
         onClose={onDeleteModalClose}
         onProceed={() => {
           deleteMultipleMedia(selectedMedia)
-          onDeleteModalClose()
-          setSelectedMedia([])
         }}
       />
 

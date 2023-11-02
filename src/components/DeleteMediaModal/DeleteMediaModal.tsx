@@ -24,8 +24,6 @@ import {
 import { useState } from "react"
 import { BiImage } from "react-icons/bi"
 
-import { LoadingButton } from "components/LoadingButton"
-
 import { MediaLabels, SelectedMediaDto } from "types/media"
 
 interface DeleteMediaModalProps {
@@ -33,6 +31,7 @@ interface DeleteMediaModalProps {
   mediaLabels: MediaLabels
   isWriteDisabled: boolean | undefined
   isOpen: boolean
+  isLoading: boolean
   onClose: () => void
   onProceed: (selectedMedia: SelectedMediaDto[]) => void
 }
@@ -42,6 +41,7 @@ export const DeleteMediaModal = ({
   mediaLabels,
   isWriteDisabled,
   isOpen,
+  isLoading,
   onClose,
   onProceed,
 }: DeleteMediaModalProps): JSX.Element => {
@@ -139,8 +139,9 @@ export const DeleteMediaModal = ({
             <Button variant="clear" colorScheme="neutral" onClick={onClose}>
               Cancel
             </Button>
-            <LoadingButton
+            <Button
               colorScheme="critical"
+              isLoading={isLoading}
               onClick={() => onProceed(selectedMedia)}
               isDisabled={isWriteDisabled || !isDeleteChecked}
             >
@@ -148,7 +149,7 @@ export const DeleteMediaModal = ({
               {selectedMedia.length === 1
                 ? singularMediaLabel
                 : pluralMediaLabel}
-            </LoadingButton>
+            </Button>
           </HStack>
         </ModalFooter>
       </ModalContent>

@@ -34,6 +34,7 @@ const deleteMediaModalTemplate: StoryFn<typeof DeleteMediaModal> = ({
         mediaLabels={getMediaLabels("images")}
         isWriteDisabled={false}
         isOpen={isOpen}
+        isLoading={false}
         onClose={onClose}
         onProceed={onProceed}
       />

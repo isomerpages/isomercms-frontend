@@ -1,3 +1,5 @@
+import { MediaService } from "services"
+
 export interface MultipleMediaParams {
   siteName: string
   mediaSrcs: Set<string>
