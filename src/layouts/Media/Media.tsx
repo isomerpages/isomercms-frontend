@@ -46,7 +46,7 @@ import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 import { getMediaLabels } from "utils/media"
 import { isWriteActionsDisabled } from "utils/reviewRequests"
 
-import { EmptyAlbumImage } from "assets"
+import { EmptyAlbumImage, EmptyDirectoryImage } from "assets"
 import { MediaData } from "types/directory"
 import { MediaLabels, SelectedMediaDto } from "types/media"
 import { DEFAULT_RETRY_MSG, useErrorToast, useSuccessToast } from "utils"
@@ -465,7 +465,12 @@ export const Media = (): JSX.Element => {
             {subDirCount === 0 && filesCount === 0 ? (
               <Center mt="5.75rem">
                 <VStack spacing={0}>
-                  <EmptyAlbumImage width="16.25rem" />
+                  {mediaType === "images" && (
+                    <EmptyAlbumImage width="16.25rem" />
+                  )}
+                  {mediaType === "files" && (
+                    <EmptyDirectoryImage width="11.875rem" />
+                  )}
                   <Text textStyle="subhead-1" mt="2.25rem">
                     {getPlaceholderText(
                       directoryLevel,
