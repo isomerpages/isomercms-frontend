@@ -6,7 +6,10 @@ import {
   useQueryClient,
 } from "react-query"
 
-import { LIST_MEDIA_DIRECTORY_FILES_KEY } from "constants/queryKeys"
+import {
+  GET_ALL_MEDIA_FILES_KEY,
+  LIST_MEDIA_DIRECTORY_FILES_KEY,
+} from "constants/queryKeys"
 
 import { apiService } from "services/ApiService"
 
@@ -68,6 +71,7 @@ export const useDeleteMultipleMediaHook = (
       ...mutationOptions,
       onSettled: (data, error, variables, context) => {
         queryClient.invalidateQueries([LIST_MEDIA_DIRECTORY_FILES_KEY])
+        queryClient.invalidateQueries([GET_ALL_MEDIA_FILES_KEY])
         if (mutationOptions?.onSettled)
           mutationOptions.onSettled(data, error, variables, context)
       },
