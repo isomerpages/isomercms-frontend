@@ -17,6 +17,7 @@ import { Context, useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { Markdown } from "tiptap-markdown"
 
+import HyperlinkModal from "components/HyperlinkModal"
 import MediaModal from "components/media/MediaModal"
 
 import { EditorContextProvider } from "contexts/EditorContext"
@@ -85,6 +86,12 @@ export const EditPage = () => {
     onClose: onMediaModalClose,
   } = useDisclosure()
 
+  const {
+    isOpen: isHyperlinkModalOpen,
+    onOpen: onHyperlinkModalOpen,
+    onClose: onHyperlinkModalClose,
+  } = useDisclosure()
+
   const { siteName } = decodedParams
 
   const { mediaService } = useContext<{ mediaService: MediaService }>(
@@ -106,10 +113,30 @@ export const EditPage = () => {
     <EditorContextProvider editor={editor}>
       <EditorModalContextProvider
         showModal={(modalType) => {
-          setMediaType(modalType)
-          onMediaModalOpen()
+          if (modalType === "hyperlink") {
+            onHyperlinkModalOpen()
+          } else {
+            setMediaType(modalType)
+            onMediaModalOpen()
+          }
         }}
       >
+        {isHyperlinkModalOpen && (
+          <HyperlinkModal
+            initialText=""
+            onSave={(text, href) => {
+              editor
+                .chain()
+                .focus()
+                .insertContent(
+                  `<a target="_blank" rel="noopener noreferrer nofollow" href="${href}">${text}</a>`
+                )
+                .run()
+              onHyperlinkModalClose()
+            }}
+            onClose={onHyperlinkModalClose}
+          />
+        )}
         {isMediaModalOpen && (
           <MediaModal
             onClose={onMediaModalClose}
@@ -118,16 +145,25 @@ export const EditPage = () => {
               if (mediaType === "images") {
                 const { mediaUrl } = await getImageSrc(selectedMediaPath)
                 editor
-                  ?.chain()
+                  .chain()
                   .focus()
                   .setImage({
                     src: mediaUrl,
                     alt: altText,
                   })
                   .run()
-              } else {
+                // NOTE: If it's a file and there's no selection made, just add a link with default text
+              } else if (editor.state.selection.empty)
                 editor
-                  ?.chain()
+                  .chain()
+                  .focus()
+                  .insertContent(
+                    `<a target="_blank" rel="noopener noreferrer nofollow" href="${selectedMediaPath}">file</a>`
+                  )
+                  .run()
+              else {
+                editor
+                  .chain()
                   .focus()
                   .setLink({ href: selectedMediaPath })
                   .run()

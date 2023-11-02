@@ -1,11 +1,21 @@
-import { CloseButton, VStack, Box, Button, Flex } from "@chakra-ui/react"
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  Box,
+  VStack,
+  Button,
+  Text,
+} from "@chakra-ui/react"
+import { ModalCloseButton } from "@opengovsg/design-system-react"
 import axios from "axios"
 import PropTypes from "prop-types"
 import { useState } from "react"
 
 import FormField from "components/FormField"
-
-import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 import FormContext from "./Form/FormContext"
 import FormTitle from "./Form/FormTitle"
@@ -18,45 +28,44 @@ const HyperlinkModal = ({ onSave, initialText, onClose }) => {
   const [link, setLink] = useState("")
 
   return (
-    <>
-      <div className={elementStyles.overlay}>
-        <div className={elementStyles["modal-settings"]}>
-          <div className={elementStyles.modalHeader}>
-            <h1>Insert hyperlink</h1>
-            <CloseButton onClick={onClose} />
-          </div>
-          <div className={elementStyles.modalContent}>
-            <div>
-              <FormContext isRequired>
-                <VStack display="block">
-                  <Box>
-                    <FormTitle>Text</FormTitle>
-                    <FormField
-                      placeholder="Text"
-                      id="text"
-                      value={text}
-                      onChange={(event) => setText(event.target.value)}
-                    />
-                  </Box>
-                  <Box>
-                    <FormTitle>Link</FormTitle>
-                    <FormField
-                      placeholder="Link"
-                      id="link"
-                      value={link}
-                      onChange={(event) => setLink(event.target.value)}
-                    />
-                  </Box>
-                  <Flex justifyContent="end">
-                    <Button onClick={() => onSave(text, link)}>Save</Button>
-                  </Flex>
-                </VStack>
-              </FormContext>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
+    <Modal isOpen onClose={onClose}>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader>
+          <Text textStyle="h3" textColor="brand.primary.500">
+            Insert hyperlink
+          </Text>
+          <ModalCloseButton onClick={onClose} />
+        </ModalHeader>
+        <ModalBody>
+          <FormContext isRequired>
+            <VStack w="100%" spacing="1rem">
+              <Box w="100%">
+                <FormTitle>Text</FormTitle>
+                <FormField
+                  placeholder="Text"
+                  id="text"
+                  value={text}
+                  onChange={(event) => setText(event.target.value)}
+                />
+              </Box>
+              <Box w="100%">
+                <FormTitle>Link</FormTitle>
+                <FormField
+                  placeholder="Link"
+                  id="link"
+                  value={link}
+                  onChange={(event) => setLink(event.target.value)}
+                />
+              </Box>
+            </VStack>
+          </FormContext>
+        </ModalBody>
+        <ModalFooter>
+          <Button onClick={() => onSave(text, link)}>Save</Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   )
 }
 

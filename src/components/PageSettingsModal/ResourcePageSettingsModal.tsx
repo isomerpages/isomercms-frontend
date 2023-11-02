@@ -44,6 +44,7 @@ import { LoadingButton } from "components/LoadingButton"
 
 import { isWriteActionsDisabled } from "utils/reviewRequests"
 
+import { PageVariant } from "types/pages"
 import { pageFileNameToTitle } from "utils"
 
 import { PageSettingsSchema } from "./PageSettingsSchema"
@@ -65,7 +66,7 @@ interface ResourcePageFrontMatter {
   external?: string
   description?: string
   image?: string
-  variant: "tiptap" | "markdown"
+  variant: PageVariant
 }
 
 interface ResourcePageParams {

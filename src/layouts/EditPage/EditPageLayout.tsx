@@ -12,11 +12,12 @@ import useRedirectHook from "hooks/useRedirectHook"
 
 import { isWriteActionsDisabled } from "utils/reviewRequests"
 
+import { PageVariant } from "types/pages"
 import { createPageStyleSheet, getDecodedParams } from "utils"
 
 interface EditPageLayoutProps {
   getPageBody: () => string
-  variant: "markdown" | "tiptap"
+  variant: PageVariant
 }
 
 export const EditPageLayout = ({
