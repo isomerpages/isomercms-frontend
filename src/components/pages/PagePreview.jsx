@@ -10,7 +10,7 @@ import ResourcePageTemplate from "templates/pages/ResourcePageTemplate"
 
 import { getDecodedParams } from "utils"
 
-const PagePreview = ({ title, chunk }) => {
+const PagePreview = ({ title, chunk, ...rest }) => {
   const params = useParams()
   const pageParams = getDecodedParams(params)
   const { collectionName, resourceRoomName, resourceCategoryName } = pageParams
@@ -45,6 +45,7 @@ const PagePreview = ({ title, chunk }) => {
       bg="white"
       overflowY="auto"
       className={editorStyles.pageEditorMain}
+      {...rest}
     >
       <RenderedPreview />
     </Box>
