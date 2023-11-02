@@ -25,6 +25,7 @@ import { useState } from "react"
 import { BiImage } from "react-icons/bi"
 
 import { MediaLabels, SelectedMediaDto } from "types/media"
+import { getReadableFileSize } from "utils"
 
 interface DeleteMediaModalProps {
   selectedMedia: SelectedMediaDto[]
@@ -112,9 +113,9 @@ export const DeleteMediaModal = ({
                                 {selectedMediaData.filePath.split("/").pop()}
                               </Text>
                             </Td>
-                            <Td w="7rem">
+                            <Td w="7.5rem">
                               <Text textStyle="caption-2">
-                                {selectedMediaData.size}
+                                {getReadableFileSize(selectedMediaData.size)}
                               </Text>
                             </Td>
                           </Tr>

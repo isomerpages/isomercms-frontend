@@ -15,12 +15,13 @@ import { useCallback, useMemo } from "react"
 import { DropzoneProps, FileRejection, useDropzone } from "react-dropzone"
 import type { Promisable } from "type-fest"
 
+import { getReadableFileSize } from "utils"
+
 import { AttachmentStylesProvider } from "./AttachmentContext"
 import { AttachmentDropzone } from "./AttachmentDropzone"
 import { AttachmentError } from "./AttachmentError"
 import { AttachmentFileInfo } from "./AttachmentFileInfo"
 import { MAX_NUM_UPLOADS } from "./constants"
-import { getReadableFileSize } from "./utils"
 
 export interface AttachmentProps extends UseFormControlProps<HTMLElement> {
   /**
