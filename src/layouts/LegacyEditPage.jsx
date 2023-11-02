@@ -92,7 +92,10 @@ const EditPage = ({ match }) => {
   }, [mediaData, editorValue, csp, mediaSrcs, onXSSWarningModalOpen])
 
   return (
-    <EditPageLayout getEditorContent={() => editorValue}>
+    <EditPageLayout
+      getEditorContent={() => editorValue}
+      setEditorContent={setEditorValue}
+    >
       {/* Editor */}
       <Box w="50%" p="1.25rem" maxH="100%" overflowY="scroll">
         <MarkdownEditor

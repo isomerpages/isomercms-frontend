@@ -16,7 +16,7 @@ import axios from "axios"
 import DOMPurify from "dompurify"
 import _ from "lodash"
 import { marked } from "marked"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
 import MarkdownEditor from "components/pages/MarkdownEditor"
@@ -67,15 +67,15 @@ export const MarkdownEditPage = ({ togglePreview }: MarkdownPageProps) => {
 
   const { data: csp } = useCspHook()
 
-  const updateMediaSrcs = () => {
+  const updateMediaSrcs = useCallback(() => {
     if (!csp || _.isEmpty(csp) || !editorValue) return
     const html = marked.parse(editorValue)
     const { sanitisedHtml: CSPSanitisedHtml } = checkCSP(csp, html)
     const DOMCSPSanitisedHtml = DOMPurify.sanitize(CSPSanitisedHtml)
     setMediaSrcs(getMediaSrcsFromHtml(DOMCSPSanitisedHtml))
-  }
+  }, [csp, editorValue])
 
-  const updateHtmlWithMediaData = () => {
+  const updateHtmlWithMediaData = useCallback(() => {
     if (!csp || _.isEmpty(csp) || !editorValue) return
     const html = marked.parse(editorValue)
     const {
@@ -96,7 +96,7 @@ export const MarkdownEditPage = ({ togglePreview }: MarkdownPageProps) => {
     // setIsXSSViolation(DOMPurify.removed.length > 0)
     // setIsContentViolation(checkedIsCspViolation)
     setHtmlChunk(processedChunk)
-  }
+  }, [csp, editorValue, mediaData])
 
   useEffect(() => {
     if (initialPageData && !hasChanges) {
@@ -112,11 +112,11 @@ export const MarkdownEditPage = ({ togglePreview }: MarkdownPageProps) => {
 
   useEffect(() => {
     updateMediaSrcs()
-  }, [csp, editorValue])
+  }, [csp, editorValue, updateMediaSrcs])
 
   useEffect(() => {
     updateHtmlWithMediaData()
-  }, [mediaData, editorValue])
+  }, [mediaData, editorValue, updateHtmlWithMediaData])
 
   return (
     <EditPageLayout
