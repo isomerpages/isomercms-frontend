@@ -53,9 +53,6 @@ export const ProtectedRoute = ({
       }
       growthbook.setAttributes(gbAttributes)
     }
-    console.log(growthbook?.getFeatures(), "getFeat")
-    console.log(growthbook?.getAttributes(), "getAttri")
-    // console.log( growthbook?.getFeatureValue(), "getFeatvalue" )
   }, [
     userId,
     userType,

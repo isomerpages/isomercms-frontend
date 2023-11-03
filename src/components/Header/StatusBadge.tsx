@@ -80,18 +80,11 @@ const StagingPopoverContent = ({ status }: StagingPopoverContentProps) => {
 }
 
 export const StatusBadge = ({ status }: StatusBadgeProps): JSX.Element => {
-  console.log("StatusBadge")
-  console.log(
-    useFeatureIsOn<FeatureFlags>(
-      FEATURE_FLAGS.IS_SHOW_STAGING_BUILD_STATUS_ENABLED
-    )
-  )
   if (
     useFeatureIsOn<FeatureFlags>(
       FEATURE_FLAGS.IS_SHOW_STAGING_BUILD_STATUS_ENABLED
     ) !== true
   ) {
-    console.log("Feature flag is off")
     return <> </>
   }
   let displayText = ""

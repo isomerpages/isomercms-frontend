@@ -12,12 +12,6 @@ export const getStagingBuildStatus = async ({
 }: {
   siteName: string
 }): Promise<StagingBuildStatus | undefined> => {
-  // const isOn = useFeatureIsOn<FeatureFlags>(
-  //   FEATURE_FLAGS.IS_SHOW_STAGING_BUILD_STATUS_ENABLED
-  // )
-  // if (isOn) {
-  //   return undefined
-  // }
   const endpoint = `/sites/${siteName}/getStagingBuildStatus`
 
   return apiService.get(endpoint).then((res) => res.data)

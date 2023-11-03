@@ -9,19 +9,6 @@ import { getStagingBuildStatus } from "services/StagingBuildService"
 import { FeatureFlags } from "types/featureFlags"
 import { StagingBuildStatus } from "types/stagingBuildStatus"
 
-// export const useGetStagingStatus = (
-//   siteName: string
-// ): UseQueryResult<StagingBuildStatus | undefined> => {
-//   return useQuery<StagingBuildStatus | undefined>(
-//     [GET_STAGING_BUILD_STATUS_KEY, siteName],
-//     () => getStagingBuildStatus({ siteName }),
-//     {
-//       retry: false,
-//       refetchInterval: 1000 * 5, // 5 sec for quicker feedback when user press save
-//     }
-//   )
-// }
-
 export const useGetStagingStatus = (
   siteName: string
 ): UseQueryResult<StagingBuildStatus | undefined> => {
@@ -29,7 +16,6 @@ export const useGetStagingStatus = (
     FEATURE_FLAGS.IS_SHOW_STAGING_BUILD_STATUS_ENABLED
   )
 
-  console.log("isOn", isOn)
   return useQuery<StagingBuildStatus | undefined>(
     [GET_STAGING_BUILD_STATUS_KEY, siteName],
     () => (isOn ? getStagingBuildStatus({ siteName }) : undefined),
