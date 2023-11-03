@@ -6,12 +6,19 @@ import {
   PopoverTrigger,
   Text,
 } from "@chakra-ui/react"
+import { useFeatureIsOn } from "@growthbook/growthbook-react"
 import { Badge } from "@opengovsg/design-system-react"
 import { BiCheckCircle, BiError, BiLoader } from "react-icons/bi"
 import { BsFillQuestionCircleFill } from "react-icons/bs"
 import { GoDotFill } from "react-icons/go"
 import { IconBaseProps } from "react-icons/lib"
+import { useParams } from "react-router-dom"
 
+import { FEATURE_FLAGS } from "constants/featureFlags"
+
+import { useGetStagingStatus } from "hooks/useGetStagingStatus"
+
+import { FeatureFlags } from "types/featureFlags"
 import { BuildStatus } from "types/stagingBuildStatus"
 
 interface StatusBadgeProps {
@@ -75,7 +82,16 @@ const StagingPopoverContent = ({ status }: StagingPopoverContentProps) => {
   )
 }
 
-export const StatusBadge = ({ status }: StatusBadgeProps): JSX.Element => {
+export const StatusBadge = (): JSX.Element => {
+  const { siteName } = useParams<{ siteName: string }>()
+  const {
+    data: getStagingStatusData,
+    isLoading: isGetStagingStatusLoading,
+  } = useGetStagingStatus(siteName)
+  const { status } = getStagingStatusData || {}
+  if (!status || isGetStagingStatusLoading) {
+    return <> </>
+  }
   let displayText = ""
   let colourScheme = ""
   let dotColor = "#505660"
@@ -100,26 +116,26 @@ export const StatusBadge = ({ status }: StatusBadgeProps): JSX.Element => {
   }
 
   return (
-    <Popover trigger="hover">
-      <PopoverTrigger>
-        <Badge
-          colorScheme={colourScheme}
-          variant="subtle"
-          cursor="default"
-          borderRadius="3.125rem"
-        >
-          <GoDotFill size="1rem" color={dotColor} />
-          <Text ml="0.25rem" mr="0.5rem">
-            {displayText}
-          </Text>
-          <BsFillQuestionCircleFill color="#454953" />
-        </Badge>
-      </PopoverTrigger>
-      <Box position="relative">
-        <PopoverContent width="26.25rem" height="auto">
+    <Box position="relative">
+      <Popover trigger="hover" placement="bottom">
+        <PopoverTrigger>
+          <Badge
+            colorScheme={colourScheme}
+            variant="subtle"
+            cursor="default"
+            borderRadius="3.125rem"
+          >
+            <GoDotFill size="1rem" color={dotColor} />
+            <Text ml="0.25rem" mr="0.5rem">
+              {displayText}
+            </Text>
+            <BsFillQuestionCircleFill color="#454953" />
+          </Badge>
+        </PopoverTrigger>
+        <PopoverContent width="26.25rem" height="auto" mt="1.75rem">
           <StagingPopoverContent status={status} />
         </PopoverContent>
-      </Box>
-    </Popover>
+      </Popover>
+    </Box>
   )
 }
