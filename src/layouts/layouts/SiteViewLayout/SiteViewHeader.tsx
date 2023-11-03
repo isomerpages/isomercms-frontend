@@ -8,6 +8,7 @@ import {
   LinkOverlay,
   Skeleton,
 } from "@chakra-ui/react"
+import { useFeatureIsOn } from "@growthbook/growthbook-react"
 import { IconButton } from "@opengovsg/design-system-react"
 import { BiArrowBack } from "react-icons/bi"
 import { Link as RouterLink, useLocation, useParams } from "react-router-dom"
@@ -17,20 +18,21 @@ import { NotificationMenu } from "components/Header/NotificationMenu"
 import { StatusBadge } from "components/Header/StatusBadge"
 
 import { ISOMER_GUIDE_LINK } from "constants/config"
+import { FEATURE_FLAGS } from "constants/featureFlags"
 
 import { useLoginContext } from "contexts/LoginContext"
 
-import { useGetStagingStatus } from "hooks/useGetStagingStatus"
+import { FeatureFlags } from "types/featureFlags"
 
 export const SiteViewHeader = (): JSX.Element => {
   const { displayedName } = useLoginContext()
   const { pathname } = useLocation()
   const isAtSiteDashboard = pathname.endsWith("dashboard")
   const { siteName } = useParams<{ siteName: string }>()
-  const {
-    data: getStagingStatusData,
-    isLoading: isGetStagingStatusLoading,
-  } = useGetStagingStatus(siteName)
+  const isShowStagingBuildStatusEnabled = useFeatureIsOn<FeatureFlags>(
+    FEATURE_FLAGS.IS_SHOW_STAGING_BUILD_STATUS_ENABLED
+  )
+
   return (
     <Flex
       py="0.625rem"
@@ -58,9 +60,7 @@ export const SiteViewHeader = (): JSX.Element => {
       </HStack>
       <Spacer />
       <HStack>
-        <Skeleton isLoaded={!isGetStagingStatusLoading} mr="0.75rem">
-          {getStagingStatusData && <StatusBadge {...getStagingStatusData} />}
-        </Skeleton>
+        ({isShowStagingBuildStatusEnabled && <StatusBadge />})
         <LinkBox position="relative">
           <LinkOverlay href={ISOMER_GUIDE_LINK} isExternal>
             <Text

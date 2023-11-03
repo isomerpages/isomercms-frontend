@@ -5,8 +5,8 @@ import {
   Text,
   HStack,
   useDisclosure,
-  Skeleton,
 } from "@chakra-ui/react"
+import { useFeatureIsOn } from "@growthbook/growthbook-react"
 import { Button, IconButton } from "@opengovsg/design-system-react"
 import { BiArrowBack, BiCheckCircle } from "react-icons/bi"
 import { useParams, useHistory } from "react-router-dom"
@@ -17,15 +17,18 @@ import { StatusBadge } from "components/Header/StatusBadge"
 import { ViewStagingSiteModal } from "components/ViewStagingSiteModal"
 import { WarningModal } from "components/WarningModal"
 
+import { FEATURE_FLAGS } from "constants/featureFlags"
+
 import { useDirtyFieldContext } from "contexts/DirtyFieldContext"
 import { useLoginContext } from "contexts/LoginContext"
 
 import { useGetStagingUrl } from "hooks/siteDashboardHooks"
-import { useGetStagingStatus } from "hooks/useGetStagingStatus"
 
 import { ReviewRequestModal } from "layouts/ReviewRequest"
 
 import { doesOpenReviewRequestExist } from "utils/reviewRequests"
+
+import { FeatureFlags } from "types/featureFlags"
 
 export const SiteEditHeader = (): JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -42,10 +45,9 @@ export const SiteEditHeader = (): JSX.Element => {
   } = useDisclosure()
   const { siteName } = useParams<{ siteName: string }>()
   const { data: stagingUrl, isLoading } = useGetStagingUrl(siteName)
-  const {
-    data: getStagingStatusData,
-    isLoading: isGetStagingStatusLoading,
-  } = useGetStagingStatus(siteName)
+  const isShowStagingBuildStatusEnabled = useFeatureIsOn<FeatureFlags>(
+    FEATURE_FLAGS.IS_SHOW_STAGING_BUILD_STATUS_ENABLED
+  )
 
   const { userId } = useLoginContext()
   // NOTE: Even if we have an unknown user, we assume that it is github
@@ -92,9 +94,7 @@ export const SiteEditHeader = (): JSX.Element => {
         </HStack>
         <Spacer />
         <HStack>
-          <Skeleton isLoaded={!isGetStagingStatusLoading} mr="0.75rem">
-            {getStagingStatusData && <StatusBadge {...getStagingStatusData} />}
-          </Skeleton>
+          ({isShowStagingBuildStatusEnabled && <StatusBadge />})
           <NotificationMenu />
           <Button
             onClick={onOpen}
