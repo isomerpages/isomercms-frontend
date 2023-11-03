@@ -12,8 +12,11 @@ import { BiCheckCircle, BiError, BiLoader } from "react-icons/bi"
 import { BsFillQuestionCircleFill } from "react-icons/bs"
 import { GoDotFill } from "react-icons/go"
 import { IconBaseProps } from "react-icons/lib"
+import { useParams } from "react-router-dom"
 
 import { FEATURE_FLAGS } from "constants/featureFlags"
+
+import { useGetStagingStatus } from "hooks/useGetStagingStatus"
 
 import { FeatureFlags } from "types/featureFlags"
 import { BuildStatus } from "types/stagingBuildStatus"
@@ -79,12 +82,14 @@ const StagingPopoverContent = ({ status }: StagingPopoverContentProps) => {
   )
 }
 
-export const StatusBadge = ({ status }: StatusBadgeProps): JSX.Element => {
-  if (
-    useFeatureIsOn<FeatureFlags>(
-      FEATURE_FLAGS.IS_SHOW_STAGING_BUILD_STATUS_ENABLED
-    ) !== true
-  ) {
+export const StatusBadge = (): JSX.Element => {
+  const { siteName } = useParams<{ siteName: string }>()
+  const {
+    data: getStagingStatusData,
+    isLoading: isGetStagingStatusLoading,
+  } = useGetStagingStatus(siteName)
+  const { status } = getStagingStatusData || {}
+  if (!status || isGetStagingStatusLoading) {
     return <> </>
   }
   let displayText = ""
@@ -118,6 +123,7 @@ export const StatusBadge = ({ status }: StatusBadgeProps): JSX.Element => {
           variant="subtle"
           cursor="default"
           borderRadius="3.125rem"
+          mr="0.75rem"
         >
           <GoDotFill size="1rem" color={dotColor} />
           <Text ml="0.25rem" mr="0.5rem">
