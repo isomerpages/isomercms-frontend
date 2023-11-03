@@ -6,19 +6,14 @@ import { GET_STAGING_BUILD_STATUS_KEY } from "constants/queryKeys"
 
 import { getStagingBuildStatus } from "services/StagingBuildService"
 
-import { FeatureFlags } from "types/featureFlags"
 import { StagingBuildStatus } from "types/stagingBuildStatus"
 
 export const useGetStagingStatus = (
   siteName: string
-): UseQueryResult<StagingBuildStatus | undefined> => {
-  const isOn = useFeatureIsOn<FeatureFlags>(
-    FEATURE_FLAGS.IS_SHOW_STAGING_BUILD_STATUS_ENABLED
-  )
-
-  return useQuery<StagingBuildStatus | undefined>(
+): UseQueryResult<StagingBuildStatus> => {
+  return useQuery<StagingBuildStatus>(
     [GET_STAGING_BUILD_STATUS_KEY, siteName],
-    () => (isOn ? getStagingBuildStatus({ siteName }) : undefined),
+    () => getStagingBuildStatus({ siteName }),
     {
       retry: false,
       refetchInterval: 1000 * 5, // 5 sec for quicker feedback when user press save
