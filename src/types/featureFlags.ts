@@ -10,6 +10,7 @@ export interface FeatureFlags {
   [FEATURE_FLAGS.NPS_FORM]: boolean
   [FEATURE_FLAGS.HOMEPAGE_ENABLED_BLOCKS]: string[]
   [FEATURE_FLAGS.TIPTAP_EDITOR]: boolean
+  [FEATURE_FLAGS.IS_SHOW_STAGING_BUILD_STATUS_ENABLED]: boolean
 }
 
 export type GBAttributes = {

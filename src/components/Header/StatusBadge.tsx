@@ -6,12 +6,16 @@ import {
   PopoverTrigger,
   Text,
 } from "@chakra-ui/react"
+import { useFeatureIsOn } from "@growthbook/growthbook-react"
 import { Badge } from "@opengovsg/design-system-react"
 import { BiCheckCircle, BiError, BiLoader } from "react-icons/bi"
 import { BsFillQuestionCircleFill } from "react-icons/bs"
 import { GoDotFill } from "react-icons/go"
 import { IconBaseProps } from "react-icons/lib"
 
+import { FEATURE_FLAGS } from "constants/featureFlags"
+
+import { FeatureFlags } from "types/featureFlags"
 import { BuildStatus } from "types/stagingBuildStatus"
 
 interface StatusBadgeProps {
@@ -76,6 +80,13 @@ const StagingPopoverContent = ({ status }: StagingPopoverContentProps) => {
 }
 
 export const StatusBadge = ({ status }: StatusBadgeProps): JSX.Element => {
+  if (
+    useFeatureIsOn<FeatureFlags>(
+      FEATURE_FLAGS.IS_SHOW_STAGING_BUILD_STATUS_ENABLED
+    ) !== true
+  ) {
+    return <> </>
+  }
   let displayText = ""
   let colourScheme = ""
   let dotColor = "#505660"

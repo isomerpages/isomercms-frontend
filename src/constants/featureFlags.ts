@@ -4,6 +4,7 @@ export const FEATURE_FLAGS = {
   NPS_FORM: "nps_form",
   HOMEPAGE_ENABLED_BLOCKS: "homepage_enabled_blocks",
   TIPTAP_EDITOR: "is-tiptap-enabled",
+  IS_SHOW_STAGING_BUILD_STATUS_ENABLED: "is-show-staging-build-status-enabled",
 } as const
 
 // NOTE: Only have 4 default blocks:
