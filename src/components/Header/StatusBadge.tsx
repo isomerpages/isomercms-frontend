@@ -116,27 +116,26 @@ export const StatusBadge = (): JSX.Element => {
   }
 
   return (
-    <Popover trigger="hover">
-      <PopoverTrigger>
-        <Badge
-          colorScheme={colourScheme}
-          variant="subtle"
-          cursor="default"
-          borderRadius="3.125rem"
-          mr="0.75rem"
-        >
-          <GoDotFill size="1rem" color={dotColor} />
-          <Text ml="0.25rem" mr="0.5rem">
-            {displayText}
-          </Text>
-          <BsFillQuestionCircleFill color="#454953" />
-        </Badge>
-      </PopoverTrigger>
-      <Box position="relative">
-        <PopoverContent width="26.25rem" height="auto">
+    <Box position="relative">
+      <Popover trigger="hover" placement="bottom">
+        <PopoverTrigger>
+          <Badge
+            colorScheme={colourScheme}
+            variant="subtle"
+            cursor="default"
+            borderRadius="3.125rem"
+          >
+            <GoDotFill size="1rem" color={dotColor} />
+            <Text ml="0.25rem" mr="0.5rem">
+              {displayText}
+            </Text>
+            <BsFillQuestionCircleFill color="#454953" />
+          </Badge>
+        </PopoverTrigger>
+        <PopoverContent width="26.25rem" height="auto" mt="1.75rem">
           <StagingPopoverContent status={status} />
         </PopoverContent>
-      </Box>
-    </Popover>
+      </Popover>
+    </Box>
   )
 }
