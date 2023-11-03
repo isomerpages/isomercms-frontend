@@ -53,7 +53,16 @@ export const ProtectedRoute = ({
       }
       growthbook.setAttributes(gbAttributes)
     }
-  }, [userId, userType, email, displayedName, contactNumber, currPath])
+  }, [
+    userId,
+    userType,
+    email,
+    displayedName,
+    contactNumber,
+    currPath,
+    growthbook,
+    siteNameFromPath,
+  ])
 
   if (isLoading) {
     return (
