@@ -19,19 +19,21 @@ import {
 } from "@opengovsg/design-system-react"
 import _ from "lodash"
 import { useEffect, useState } from "react"
-import { BiFolderOpen, BiFolderPlus, BiTrash } from "react-icons/bi"
+import { BiFolderOpen, BiTrash } from "react-icons/bi"
 import { Link, Switch, useHistory, useRouteMatch } from "react-router-dom"
 
 import { DeleteMediaModal } from "components/DeleteMediaModal"
 import { Greyscale } from "components/Greyscale"
 import { ImagePreviewCard } from "components/ImagePreviewCard"
+import { MoveMediaModal } from "components/MoveMediaModal"
 
-import { MEDIA_PAGINATION_SIZE, MAX_MEDIA_LEVELS } from "constants/media"
+import { MAX_MEDIA_LEVELS, MEDIA_PAGINATION_SIZE } from "constants/media"
 
 import { useGetAllMediaFiles } from "hooks/directoryHooks/useGetAllMediaFiles"
 import { useListMediaFolderFiles } from "hooks/directoryHooks/useListMediaFolderFiles"
 import { useListMediaFolderSubdirectories } from "hooks/directoryHooks/useListMediaFolderSubdirectories"
 import { useDeleteMultipleMediaHook } from "hooks/mediaHooks"
+import { useMoveMultipleMediaHook } from "hooks/moveHooks"
 import { usePaginate } from "hooks/usePaginate"
 
 import { DeleteWarningScreen } from "layouts/screens/DeleteWarningScreen"
@@ -39,7 +41,6 @@ import { DirectoryCreationScreen } from "layouts/screens/DirectoryCreationScreen
 import { DirectorySettingsScreen } from "layouts/screens/DirectorySettingsScreen"
 import { MediaCreationScreen } from "layouts/screens/MediaCreationScreen"
 import { MediaSettingsScreen } from "layouts/screens/MediaSettingsScreen"
-import { MoveScreen } from "layouts/screens/MoveScreen"
 
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
@@ -48,7 +49,7 @@ import { isWriteActionsDisabled } from "utils/reviewRequests"
 
 import { EmptyAlbumImage, EmptyDirectoryImage } from "assets"
 import { MediaData } from "types/directory"
-import { MediaLabels, SelectedMediaDto } from "types/media"
+import { MediaFolderTypes, MediaLabels, SelectedMediaDto } from "types/media"
 import { DEFAULT_RETRY_MSG, useErrorToast, useSuccessToast } from "utils"
 
 import { CreateButton } from "../components"
@@ -147,7 +148,7 @@ export const Media = (): JSX.Element => {
   const [curPage, setCurPage] = usePaginate()
   const { params, path, url } = useRouteMatch<{
     siteName: string
-    mediaRoom: "files" | "images"
+    mediaRoom: MediaFolderTypes
     mediaDirectoryName: string
   }>()
   const { siteName, mediaRoom: mediaType, mediaDirectoryName } = params
@@ -160,6 +161,11 @@ export const Media = (): JSX.Element => {
     setIndividualMedia,
   ] = useState<SelectedMediaDto | null>(null)
 
+  const {
+    isOpen: isMoveModalOpen,
+    onOpen: onMoveModalOpen,
+    onClose: onMoveModalClose,
+  } = useDisclosure()
   const {
     isOpen: isDeleteModalOpen,
     onOpen: onDeleteModalOpen,
@@ -243,6 +249,32 @@ export const Media = (): JSX.Element => {
   )
 
   const {
+    mutate: moveMultipleMedia,
+    isLoading: isMoveMultipleMediaLoading,
+  } = useMoveMultipleMediaHook(params, {
+    onSettled: () => {
+      setSelectedMedia([])
+      onMoveModalClose()
+    },
+    onSuccess: (data, variables, context) => {
+      successToast({
+        id: "move-multiple-media-success",
+        description: `Successfully moved ${
+          variables.items.length === 1 ? singularMediaLabel : pluralMediaLabel
+        }!`,
+      })
+    },
+    onError: (err, variables, context) => {
+      errorToast({
+        id: "move-multiple-media-error",
+        description: `Your ${
+          variables.items.length === 1 ? singularMediaLabel : pluralMediaLabel
+        } could not be moved successfully. ${DEFAULT_RETRY_MSG}`,
+      })
+    },
+  })
+
+  const {
     mutate: deleteMultipleMedia,
     isLoading: isDeleteMultipleMediaLoading,
   } = useDeleteMultipleMediaHook(params, {
@@ -287,6 +319,20 @@ export const Media = (): JSX.Element => {
 
   return (
     <>
+      <MoveMediaModal
+        selectedMedia={(individualMedia && [individualMedia]) || selectedMedia}
+        mediaType={mediaType}
+        mediaLabels={getMediaLabels(mediaType)}
+        isWriteDisabled={isWriteDisabled}
+        isOpen={isMoveModalOpen}
+        isLoading={isMoveMultipleMediaLoading}
+        onClose={() => {
+          setIndividualMedia(null)
+          onMoveModalClose()
+        }}
+        onProceed={moveMultipleMedia}
+      />
+
       <DeleteMediaModal
         selectedMedia={(individualMedia && [individualMedia]) || selectedMedia}
         mediaLabels={getMediaLabels(mediaType)}
@@ -344,6 +390,7 @@ export const Media = (): JSX.Element => {
                       <Menu
                         isStretch={false}
                         onOpen={() => setIndividualMedia(null)}
+                        placement="bottom-end"
                       >
                         <Menu.Button
                           variant="clear"
@@ -371,15 +418,14 @@ export const Media = (): JSX.Element => {
                           </Badge>
                         </Menu.Button>
                         <Menu.List>
-                          {/* FIXME: To add back when flow is available
-                          <Menu.Item>
+                          <Menu.Item onClick={() => onMoveModalOpen()}>
                             <Icon
                               as={BiFolderOpen}
                               mr="1rem"
                               fontSize="1.25rem"
                             />
                             Move images to album
-                          </Menu.Item> */}
+                          </Menu.Item>
                           {/* FIXME: To add back when flow is available
                           <Menu.Item>
                             <Icon
@@ -535,6 +581,7 @@ export const Media = (): JSX.Element => {
                                 setIndividualMedia(getSelectedMediaDto(data))
                               }
                               onDelete={onDeleteModalOpen}
+                              onMove={onMoveModalOpen}
                             />
                           )
                         )}
@@ -583,11 +630,6 @@ export const Media = (): JSX.Element => {
         <ProtectedRouteWithProps
           path={[`${path}/editDirectorySettings/:mediaDirectoryName`]}
           component={DirectorySettingsScreen}
-          onClose={() => history.goBack()}
-        />
-        <ProtectedRouteWithProps
-          path={[`${path}/moveMedia/:fileName`]}
-          component={MoveScreen}
           onClose={() => history.goBack()}
         />
       </Switch>

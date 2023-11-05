@@ -4,15 +4,13 @@ import {
   chakra,
   Grid,
   GridItem,
-  HStack,
-  Icon,
   Image,
   Text,
   useMultiStyleConfig,
   VStack,
 } from "@chakra-ui/react"
 import { Checkbox } from "@opengovsg/design-system-react"
-import { BiChevronRight, BiEditAlt, BiFolder, BiTrash } from "react-icons/bi"
+import { BiEditAlt, BiTrash } from "react-icons/bi"
 import { Link as RouterLink, useRouteMatch } from "react-router-dom"
 
 import { ContextMenu } from "components/ContextMenu"
@@ -171,17 +169,6 @@ export const ImagePreviewCard = ({
               to={`${url}/editMediaSettings/${encodedName}`}
             >
               <Text>Rename image</Text>
-            </ContextMenu.Item>
-            {/* FIXME: Remove once we have the whole flow available */}
-            <ContextMenu.Item
-              icon={<BiFolder />}
-              as={RouterLink}
-              to={`${url}/moveMedia/${encodedName}`}
-            >
-              <HStack spacing="4rem" alignItems="center">
-                <Text>Move to</Text>
-                <Icon as={BiChevronRight} fontSize="1.25rem" />
-              </HStack>
             </ContextMenu.Item>
             <ContextMenu.Item
               icon={<BiTrash />}
