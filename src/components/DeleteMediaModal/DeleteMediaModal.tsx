@@ -49,8 +49,13 @@ export const DeleteMediaModal = ({
   const { singularMediaLabel, pluralMediaLabel } = mediaLabels
   const [isDeleteChecked, setIsDeleteChecked] = useState(false)
 
+  const onModalClose = () => {
+    setIsDeleteChecked(false)
+    onClose()
+  }
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onModalClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
@@ -137,14 +142,17 @@ export const DeleteMediaModal = ({
                 ? singularMediaLabel
                 : `all ${selectedMedia.length} ${pluralMediaLabel}`}
             </Checkbox>
-            <Button variant="clear" colorScheme="neutral" onClick={onClose}>
+            <Button
+              variant="clear"
+              colorScheme="neutral"
+              onClick={onModalClose}
+            >
               Cancel
             </Button>
             <Button
               colorScheme="critical"
               isLoading={isLoading}
               onClick={() => {
-                setIsDeleteChecked(false)
                 onProceed(selectedMedia)
               }}
               isDisabled={isWriteDisabled || !isDeleteChecked}
