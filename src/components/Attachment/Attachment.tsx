@@ -231,9 +231,14 @@ export const Attachment = forwardRef<AttachmentProps, "div">(
             />
           </>
         ))}
-        {rejected?.map((fileRejection) => (
-          <AttachmentError fileRejection={fileRejection} />
-        ))}
+        <Box overflowY="auto" maxH="25vh">
+          {rejected?.map((fileRejection) => (
+            <>
+              <Divider />
+              <AttachmentError fileRejection={fileRejection} />
+            </>
+          ))}
+        </Box>
         {/* NOTE: Add last divider if we have content above */}
         {(value?.length > 0 || rejected.length > 0) && <Divider />}
       </AttachmentStylesProvider>
