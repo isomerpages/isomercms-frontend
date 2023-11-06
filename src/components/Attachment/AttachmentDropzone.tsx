@@ -1,5 +1,5 @@
 import { chakra, Icon, Text } from "@chakra-ui/react"
-import { Button, Link, BxsCloudUpload } from "@opengovsg/design-system-react"
+import { Button, BxsCloudUpload } from "@opengovsg/design-system-react"
 import { DropzoneInputProps, DropzoneState } from "react-dropzone"
 
 import { useAttachmentStyles } from "./AttachmentContext"
