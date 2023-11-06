@@ -13,7 +13,11 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react"
-import { Button, ModalCloseButton } from "@opengovsg/design-system-react"
+import {
+  Button,
+  Infobox,
+  ModalCloseButton,
+} from "@opengovsg/design-system-react"
 import { AxiosError } from "axios"
 import _ from "lodash"
 import { useEffect, useState } from "react"
@@ -114,49 +118,39 @@ export const MoveMediaModal = ({
 
         <ModalBody mt="1rem">
           <VStack spacing="1.5rem">
-            <HStack spacing="0.25rem" alignItems="flex-start">
-              <Box pt="0.0625rem">
-                <Icon as={BxErrorSolid} fontSize="1rem" />
-              </Box>
-              <Text textStyle="body-2">
-                Moving an {singularMediaLabel} to a different folder might lead
-                to broken {pluralMediaLabel} on pages. This confuses site
-                visitors. Ensure that your pages are displaying the correct{" "}
-                {pluralMediaLabel}.
-              </Text>
-            </HStack>
+            <Infobox variant="warning">
+              Moving an {singularMediaLabel} to a different folder might lead to
+              broken {pluralMediaLabel} on pages. This confuses site visitors.
+              Ensure that your pages are displaying the correct{" "}
+              {pluralMediaLabel}.
+            </Infobox>
 
             {selectedMedia.length === 1 && (
-              <>
-                <Divider />
-
-                <Box w="100%">
-                  <Text textStyle="subhead-1">
-                    {_.upperFirst(singularMediaLabel)} is currently located in
-                  </Text>
-                  <Text textStyle="body-2">
-                    <Breadcrumbs
-                      items={[
-                        ...selectedMedia[0].filePath
-                          .split("/")
-                          .slice(0, -1)
-                          .map((item) => ({
-                            title: _.upperFirst(decodeURIComponent(item)),
-                          })),
-                        {
-                          title:
-                            selectedMedia[0].filePath.split("/").pop() || "",
-                        },
-                      ]}
-                      maxBreadcrumbsLength={4}
-                      spacing="0rem"
-                      textStyle="body-2"
-                      isLinked={false}
-                      isLastChildUnderlined
-                    />
-                  </Text>
-                </Box>
-              </>
+              <Box w="100%">
+                <Text textStyle="subhead-1">
+                  {_.upperFirst(singularMediaLabel)} is currently located in
+                </Text>
+                <Text textStyle="body-2">
+                  <Breadcrumbs
+                    items={[
+                      ...selectedMedia[0].filePath
+                        .split("/")
+                        .slice(0, -1)
+                        .map((item) => ({
+                          title: _.upperFirst(decodeURIComponent(item)),
+                        })),
+                      {
+                        title: selectedMedia[0].filePath.split("/").pop() || "",
+                      },
+                    ]}
+                    maxBreadcrumbsLength={4}
+                    spacing="0rem"
+                    textStyle="body-2"
+                    isLinked={false}
+                    isLastChildUnderlined
+                  />
+                </Text>
+              </Box>
             )}
 
             <Box
