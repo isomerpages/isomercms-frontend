@@ -67,7 +67,8 @@ export const Breadcrumbs = ({
           <BreadcrumbItem
             isLastChild={isLastChild}
             isCurrentPage={isLastChild}
-            key={title}
+            // eslint-disable-next-line react/no-array-index-key
+            key={idx}
           >
             {isLinked ? (
               <BreadcrumbLink
@@ -82,6 +83,7 @@ export const Breadcrumbs = ({
                 }
                 as={RouterLink}
                 to={isEllipsis ? "" : url}
+                noOfLines={1}
               >
                 {isEllipsis ? "..." : title}
               </BreadcrumbLink>
@@ -92,6 +94,7 @@ export const Breadcrumbs = ({
                 textDecoration={
                   isLastChild && isLastChildUnderlined ? "underline" : "inherit"
                 }
+                noOfLines={1}
               >
                 {isEllipsis ? "..." : title}
               </Text>

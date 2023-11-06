@@ -185,7 +185,7 @@ export const MoveMediaModal = ({
                       <Icon as={BiArrowBack} fontSize="1.25rem" />
                     </Button>
                   )}
-                  <Text textStyle="subhead-1">
+                  <Text textStyle="subhead-1" noOfLines={1}>
                     {_.upperFirst(
                       decodeURIComponent(moveTo.split("%2F").pop() || mediaType)
                     )}
