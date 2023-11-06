@@ -21,13 +21,13 @@ export interface SelectedMediaDto {
 
 export interface MoveSelectedMediaDto {
   target: {
-    targetDirectoryName: string
+    directoryName: string
   }
   items: SelectedMediaDto[]
 }
 
 export interface MoveMultipleMediaDto {
   source: string
-  target: { targetDirectoryName: string }
-  items: Array<{ name: string }>
+  target: { directoryName: string }
+  items: Array<{ name: string; type: "file" }>
 }

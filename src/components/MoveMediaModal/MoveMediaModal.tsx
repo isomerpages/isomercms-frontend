@@ -93,11 +93,11 @@ export const MoveMediaModal = ({
   }
 
   useEffect(() => {
-    // Note: This useEffect is needed as the modal is shared between different
-    // media types, and the moveTo state needs to be reset when the media type
-    // changes.
+    // Note: This useEffect is needed to reset the state of the modal when it
+    // is closed and reopened. This is because the modal is not unmounted when
+    // it is closed.
     setMoveTo(mediaType)
-  }, [mediaType])
+  }, [mediaType, isOpen])
 
   return (
     <Modal isOpen={isOpen} onClose={onModalClose}>
@@ -306,7 +306,7 @@ export const MoveMediaModal = ({
               isLoading={isLoading}
               onClick={() => {
                 onProceed({
-                  target: { targetDirectoryName: moveTo },
+                  target: { directoryName: decodeURIComponent(moveTo) },
                   items: selectedMedia,
                 })
               }}

@@ -39,12 +39,12 @@ const moveMultipleMedia = async (
       // Combine all files with the same source directory into one object
       const existing = acc.find((item) => item.source === curr.source)
       if (existing) {
-        existing.items.push({ name: curr.name })
+        existing.items.push({ name: curr.name, type: "file" })
       } else {
         acc.push({
           source: curr.source,
           target: curr.target,
-          items: [{ name: curr.name }],
+          items: [{ name: curr.name, type: "file" }],
         })
       }
       return acc
