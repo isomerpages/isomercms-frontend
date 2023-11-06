@@ -1,6 +1,5 @@
 import {
   Box,
-  Divider,
   HStack,
   Icon,
   Modal,
@@ -33,7 +32,6 @@ import {
   useListMediaFolderSubdirectories,
 } from "hooks/directoryHooks"
 
-import { BxErrorSolid } from "assets"
 import { MiddlewareError } from "types/error"
 import {
   MediaFolderTypes,
@@ -111,7 +109,7 @@ export const MoveMediaModal = ({
           <Text as="h4" textStyle="h4">
             Move{" "}
             {selectedMedia.length === 1
-              ? singularMediaLabel
+              ? selectedMedia[0].filePath.split("/").pop()
               : `${selectedMedia.length} ${pluralMediaLabel}`}
           </Text>
         </ModalHeader>
