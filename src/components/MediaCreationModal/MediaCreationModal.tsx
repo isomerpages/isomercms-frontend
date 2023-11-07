@@ -10,6 +10,7 @@ import {
   Text,
   Icon,
   useModalContext,
+  Progress,
 } from "@chakra-ui/react"
 import { Button } from "@opengovsg/design-system-react"
 import { useEffect, useState } from "react"
@@ -104,6 +105,11 @@ const UploadProgressIndicator = ({
       <ModalHeader>Uploading images</ModalHeader>
       <ModalBody>
         <Dropzone>
+          <Progress
+            hasStripe
+            w="100%"
+            value={Math.floor((cur / total) * 100)}
+          />
           <Text
             textStyle="subhead-1"
             mt="1.25rem"
