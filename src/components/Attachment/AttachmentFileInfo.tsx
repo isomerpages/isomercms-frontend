@@ -60,11 +60,15 @@ export const AttachmentFileInfo = forwardRef<AttachmentFileInfoProps, "div">(
         )}
         <Flex sx={styles.fileInfo}>
           <Icon as={BxImage} />
-          <Text ml="2rem">{file.name}</Text>
+          <Text ml="2rem" textStyle="caption-2" noOfLines={1}>
+            {file.name}
+          </Text>
           <Spacer />
           <Text
+            textStyle="caption-2"
             data-disabled={dataAttr(isDisabled)}
             sx={styles.fileInfoDescription}
+            minW="fit-content"
           >
             {readableFileSize}
           </Text>
