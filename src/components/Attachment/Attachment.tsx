@@ -216,10 +216,6 @@ export const Attachment = forwardRef<AttachmentProps, "div">(
             </Text>
           )}
         </Box>
-        <Box mt="1.5rem" mb="0.75rem">
-          <Text textStyle="subhead-1">Selected images</Text>
-          <Text textStyle="caption-2">{`${value.length}/5 images can be uploaded`}</Text>
-        </Box>
         {value?.map((file) => (
           <>
             <Divider />
