@@ -148,6 +148,7 @@ export const ImagePreviewCard = ({
                 textColor="base.content.strong"
                 textAlign="left"
                 noOfLines={1}
+                wordBreak="break-all"
               >
                 {name}
               </Text>

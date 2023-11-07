@@ -351,14 +351,16 @@ export const Media = (): JSX.Element => {
       />
 
       <SiteEditLayout overflow="hidden">
-        <VStack spacing="2rem" w="100%">
+        <VStack spacing={0} w="100%">
           {/* Header section */}
           <HStack w="100%">
             {/* Page title segment */}
             <VStack spacing="0.5rem" align="left" w="40%">
               <MediaBreadcrumbs />
               <Text as="h4" textStyle="h4" mt="0.75rem">
-                All {mediaType}
+                {mediaType === mediaDirectoryName
+                  ? `All ${mediaType}`
+                  : _.upperFirst(mediaDirectoryName.split("%2F").pop())}
               </Text>
               <Text textStyle="subhead-2" color="base.content.medium">
                 {getSubheadText(
@@ -371,62 +373,56 @@ export const Media = (): JSX.Element => {
             </VStack>
 
             {/* Action buttons segment */}
-            {(subDirCount !== 0 || filesCount !== 0) && (
+            {selectedMedia.length > 0 && (
               <>
                 <Spacer />
 
-                {selectedMedia.length > 0 && (
-                  <>
-                    <Box mt="auto">
-                      <Button
-                        variant="clear"
-                        color="base.content.strong"
-                        onClick={() => setSelectedMedia([])}
+                <Box mt="auto">
+                  <Button
+                    variant="clear"
+                    color="base.content.strong"
+                    onClick={() => setSelectedMedia([])}
+                  >
+                    Deselect all
+                  </Button>
+                </Box>
+                <Box mt="auto">
+                  <Menu
+                    isStretch={false}
+                    onOpen={() => setIndividualMedia(null)}
+                    placement="bottom-end"
+                  >
+                    <Menu.Button
+                      variant="clear"
+                      colorScheme="slate"
+                      // This prop is necessary as we are not able to set
+                      // the colors inside the button, it is far too deep
+                      sx={{
+                        color: "base.content.strong",
+                        _hover: {
+                          backgroundColor: "interaction.tinted.main.hover",
+                        },
+                        _active: {
+                          backgroundColor: "interaction.tinted.main.active",
+                        },
+                      }}
+                    >
+                      Edit selected
+                      <Badge
+                        borderRadius="3.125rem"
+                        bgColor="interaction.sub-subtle.default"
+                        color="interaction.sub.default"
+                        ml="0.5rem"
                       >
-                        Deselect all
-                      </Button>
-                    </Box>
-                    <Box mt="auto">
-                      <Menu
-                        isStretch={false}
-                        onOpen={() => setIndividualMedia(null)}
-                        placement="bottom-end"
-                      >
-                        <Menu.Button
-                          variant="clear"
-                          colorScheme="slate"
-                          // This prop is necessary as we are not able to set
-                          // the colors inside the button, it is far too deep
-                          sx={{
-                            color: "base.content.strong",
-                            _hover: {
-                              backgroundColor: "interaction.tinted.main.hover",
-                            },
-                            _active: {
-                              backgroundColor: "interaction.tinted.main.active",
-                            },
-                          }}
-                        >
-                          Edit selected
-                          <Badge
-                            borderRadius="3.125rem"
-                            bgColor="interaction.sub-subtle.default"
-                            color="interaction.sub.default"
-                            ml="0.5rem"
-                          >
-                            {selectedMedia.length}
-                          </Badge>
-                        </Menu.Button>
-                        <Menu.List>
-                          <Menu.Item onClick={() => onMoveModalOpen()}>
-                            <Icon
-                              as={BiFolderOpen}
-                              mr="1rem"
-                              fontSize="1.25rem"
-                            />
-                            Move images to album
-                          </Menu.Item>
-                          {/* FIXME: To add back when flow is available
+                        {selectedMedia.length}
+                      </Badge>
+                    </Menu.Button>
+                    <Menu.List>
+                      <Menu.Item onClick={() => onMoveModalOpen()}>
+                        <Icon as={BiFolderOpen} mr="1rem" fontSize="1.25rem" />
+                        Move images to album
+                      </Menu.Item>
+                      {/* FIXME: To add back when flow is available
                           <Menu.Item>
                             <Icon
                               as={BiFolderPlus}
@@ -435,78 +431,91 @@ export const Media = (): JSX.Element => {
                             />
                             Create new album with images
                           </Menu.Item> */}
-                          <Menu.Item
-                            color="interaction.critical.default"
-                            onClick={() => onDeleteModalOpen()}
-                          >
-                            <Icon as={BiTrash} mr="1rem" fontSize="1.25rem" />
-                            Delete all
-                          </Menu.Item>
-                        </Menu.List>
-                      </Menu>
-                    </Box>
-                  </>
-                )}
+                      <Menu.Item
+                        color="interaction.critical.default"
+                        onClick={() => onDeleteModalOpen()}
+                      >
+                        <Icon as={BiTrash} mr="1rem" fontSize="1.25rem" />
+                        Delete all
+                      </Menu.Item>
+                    </Menu.List>
+                  </Menu>
+                </Box>
+              </>
+            )}
 
-                {selectedMedia.length === 0 && (
-                  <>
-                    <Box mt="auto">
-                      {directoryLevel >= MAX_MEDIA_LEVELS ? (
-                        <Tooltip
-                          label={`You can only add up to ${MAX_MEDIA_LEVELS} levels of ${pluralDirectoryLabel}`}
-                          hasArrow
-                          gutter={16}
-                        >
-                          <CreateDirectoryButton
-                            isWriteDisabled={isWriteDisabled}
-                            directoryLevel={directoryLevel}
-                            singularDirectoryLabel={singularDirectoryLabel}
-                            url={url}
-                          />
-                        </Tooltip>
-                      ) : (
+            {(subDirCount !== 0 || filesCount !== 0) &&
+              selectedMedia.length === 0 && (
+                <>
+                  <Spacer />
+
+                  <Box mt="auto">
+                    {directoryLevel >= MAX_MEDIA_LEVELS ? (
+                      <Tooltip
+                        label={`You can only add up to ${MAX_MEDIA_LEVELS} levels of ${pluralDirectoryLabel}`}
+                        hasArrow
+                        gutter={16}
+                      >
                         <CreateDirectoryButton
                           isWriteDisabled={isWriteDisabled}
                           directoryLevel={directoryLevel}
                           singularDirectoryLabel={singularDirectoryLabel}
                           url={url}
                         />
-                      )}
-                    </Box>
-                    <Box mt="auto">
-                      <Greyscale isActive={isWriteDisabled}>
-                        <Button as={Link} to={`${url}/createMedia`}>
-                          {`Upload ${pluralMediaLabel}`}
-                        </Button>
-                      </Greyscale>
-                    </Box>
-                  </>
-                )}
-              </>
-            )}
+                      </Tooltip>
+                    ) : (
+                      <CreateDirectoryButton
+                        isWriteDisabled={isWriteDisabled}
+                        directoryLevel={directoryLevel}
+                        singularDirectoryLabel={singularDirectoryLabel}
+                        url={url}
+                      />
+                    )}
+                  </Box>
+                  <Box mt="auto">
+                    <Greyscale isActive={isWriteDisabled}>
+                      <Button as={Link} to={`${url}/createMedia`}>
+                        {`Upload ${pluralMediaLabel}`}
+                      </Button>
+                    </Greyscale>
+                  </Box>
+                </>
+              )}
           </HStack>
 
           {/* Subdirectories section */}
-          <Skeleton
-            w="100%"
-            h={
-              isListMediaFolderSubdirectoriesLoading ? "4.5rem" : "fit-content"
-            }
-            isLoaded={!isListMediaFolderSubdirectoriesLoading}
-          >
-            <SimpleGrid w="100%" columns={3} spacing="1.5rem">
-              {mediaFolderSubdirectories?.directories.map(({ name }) => {
-                return <MediaDirectoryCard title={name} />
-              })}
-            </SimpleGrid>
-          </Skeleton>
+          {(isListMediaFolderSubdirectoriesLoading ||
+            (mediaFolderSubdirectories?.directories?.length &&
+              mediaFolderSubdirectories?.directories.length > 0)) && (
+            <Skeleton
+              w="100%"
+              h={
+                isListMediaFolderSubdirectoriesLoading
+                  ? "4.5rem"
+                  : "fit-content"
+              }
+              isLoaded={!isListMediaFolderSubdirectoriesLoading}
+              mt="2rem"
+            >
+              <SimpleGrid w="100%" columns={3} spacing="1.5rem">
+                {mediaFolderSubdirectories?.directories.map(({ name }) => {
+                  return <MediaDirectoryCard title={name} />
+                })}
+              </SimpleGrid>
+            </Skeleton>
+          )}
 
           {/* Media section */}
           <Skeleton
             w="100%"
             h={isListMediaFilesLoading ? "4.5rem" : "fit-content"}
             isLoaded={!isListMediaFilesLoading}
-            mt="0.25rem"
+            mt={
+              mediaFolderSubdirectories?.directories?.length &&
+              mediaFolderSubdirectories?.directories.length > 0
+                ? "2.25rem"
+                : "2rem"
+            }
           >
             {subDirCount === 0 && filesCount === 0 ? (
               <Center mt="5.75rem">

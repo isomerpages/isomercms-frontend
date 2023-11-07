@@ -43,6 +43,7 @@ export const Breadcrumbs = ({
         <Icon
           as={BiChevronRight}
           color="interaction.links.neutral-default"
+          lineHeight="0.5rem"
           textStyle={textStyle}
         />
       }
