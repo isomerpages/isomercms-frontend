@@ -19,7 +19,7 @@ import {
 import { Button, Infobox } from "@opengovsg/design-system-react"
 import { useEffect, useState } from "react"
 import { FileRejection } from "react-dropzone"
-import { BiCheckCircle, BiSolidErrorCircle, BiXCircle } from "react-icons/bi"
+import { BiCheckCircle, BiSolidErrorCircle } from "react-icons/bi"
 import { useParams } from "react-router-dom"
 
 import { Attachment } from "components/Attachment"
