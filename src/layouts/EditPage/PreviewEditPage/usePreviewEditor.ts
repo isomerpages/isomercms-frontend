@@ -27,7 +27,7 @@ export const usePreviewEditor = () => {
       TaskItem,
       CharacterCount,
       Image.configure({ allowBase64: true }),
-      Link.configure({ openOnClick: false }),
+      Link.configure({ openOnClick: false, protocols: ["mailto"] }),
       Iframe,
       Markdown,
       BubbleMenu.configure({
@@ -42,6 +42,7 @@ export const usePreviewEditor = () => {
       TableRow,
       TableHeader,
       TableCell,
+
       Placeholder.configure({
         placeholder: "Drag a block to begin",
       }),

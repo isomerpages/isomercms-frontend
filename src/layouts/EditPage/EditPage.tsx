@@ -37,12 +37,7 @@ import { DEFAULT_BLOCKS } from "./PreviewEditPage/constants"
 import { PreviewEditPage } from "./PreviewEditPage/PreviewEditPage"
 import { TiptapEditPage } from "./TiptapEditPage"
 
-type EditorVariant =
-  | "markdown"
-  | "tiptap"
-  | "blocks"
-  | "preview"
-  | "tiptap-blocks"
+type EditorVariant = "markdown" | "tiptap" | "preview"
 
 export const EditPage = () => {
   const params = useParams<{ siteName: string }>()
@@ -85,6 +80,7 @@ export const EditPage = () => {
       TableRow,
       TableHeader,
       TableCell,
+
       Placeholder,
     ],
     autofocus: "start",
@@ -147,7 +143,7 @@ export const EditPage = () => {
             onClose={onHyperlinkModalClose}
           />
         )}
-        <BlocksContextProvider blocks={[DEFAULT_BLOCKS.text]}>
+        <BlocksContextProvider>
           {isMediaModalOpen && (
             <MediaModal
               showAltTextModal
