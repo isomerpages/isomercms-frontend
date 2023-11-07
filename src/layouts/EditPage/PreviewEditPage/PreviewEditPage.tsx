@@ -162,7 +162,7 @@ export const PreviewEditPage = () => {
           px="0.5rem"
           py="1rem"
           bg="base.canvas.default"
-          h="full"
+          h="100vh"
           borderRight="1px solid"
           borderColor="base.divider.medium"
         >
@@ -203,9 +203,7 @@ export const PreviewEditPage = () => {
         <Box w="100%" h="100%">
           {/* Preview */}
           <Preview title={initialPageData?.content?.frontMatter?.title || ""}>
-            <Box>
-              <Editor w="100%" maxW="100%" />
-            </Box>
+            <Editor w="100%" maxW="100%" />
           </Preview>
         </Box>
       </EditPageLayout>

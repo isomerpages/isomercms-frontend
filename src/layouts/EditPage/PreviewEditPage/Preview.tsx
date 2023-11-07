@@ -30,8 +30,7 @@ export const Preview = ({
   return (
     <Box
       w="100%"
-      h="100%"
-      maxH="100vh"
+      h="100vh"
       bg="white"
       overflowY="auto"
       className={editorStyles.pageEditorMain}
