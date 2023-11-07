@@ -31,12 +31,10 @@ import { Iframe } from "layouts/components/Editor/extensions"
 import { MediaService } from "services"
 import { getDecodedParams, getImageDetails } from "utils"
 
-import { BlocksEditPage } from "./BlocksEditPage"
-import { BlocksContextProvider } from "./BlocksEditPage/BlocksContext"
-import { DEFAULT_BLOCKS } from "./BlocksEditPage/constants"
 import { MarkdownEditPage } from "./MarkdownEditPage"
+import { BlocksContextProvider } from "./PreviewEditPage/BlocksContext"
+import { DEFAULT_BLOCKS } from "./PreviewEditPage/constants"
 import { PreviewEditPage } from "./PreviewEditPage/PreviewEditPage"
-import { TiptapBlocksEditPage } from "./TiptapBlocksEditPage"
 import { TiptapEditPage } from "./TiptapEditPage"
 
 type EditorVariant =
@@ -208,8 +206,6 @@ export const EditPage = () => {
               }
             />
           )}
-          {variant === "blocks" && <BlocksEditPage />}
-          {variant === "tiptap-blocks" && <TiptapBlocksEditPage />}
           {variant === "preview" && <PreviewEditPage />}
         </BlocksContextProvider>
       </EditorModalContextProvider>

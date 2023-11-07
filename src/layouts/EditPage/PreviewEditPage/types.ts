@@ -1,4 +1,4 @@
-import { Editor, Extensions } from "@tiptap/core"
+import { Extensions } from "@tiptap/core"
 import { IconType } from "react-icons"
 
 export interface Block {

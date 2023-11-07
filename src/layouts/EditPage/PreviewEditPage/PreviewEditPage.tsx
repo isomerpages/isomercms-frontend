@@ -37,12 +37,12 @@ import { EditorContextProvider, useEditorContext } from "contexts/EditorContext"
 import { useGetPageHook } from "hooks/pageHooks"
 
 import { Editor } from "../../components/Editor/Editor"
-import { useBlocks } from "../BlocksEditPage/BlocksContext"
-import { BLOCKS_CONTENT } from "../BlocksEditPage/constants"
-import { BlockAddView } from "../BlocksEditPage/types"
 import { EditPageLayout } from "../EditPageLayout"
 
+import { useBlocks } from "./BlocksContext"
+import { BLOCKS_CONTENT } from "./constants"
 import { Preview } from "./Preview"
+import { BlockAddView } from "./types"
 import { usePreviewEditor } from "./usePreviewEditor"
 
 export const AddBlockView = ({ onClose }: { onClose: () => void }) => {
