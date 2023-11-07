@@ -31,7 +31,7 @@ export const AttachmentDropzone = ({
             or drag and drop here
           </Text>
           <Text textStyle="caption-1">
-            Images exceeding 5MB and videos are not supported
+            Only images and PDFs are supported. Files must be smaller than 5MB.
           </Text>
         </>
       )}

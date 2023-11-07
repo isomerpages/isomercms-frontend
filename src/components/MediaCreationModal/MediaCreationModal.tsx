@@ -50,10 +50,11 @@ const MediaDropzone = ({
 
   return (
     <>
-      <ModalHeader>Upload images</ModalHeader>
+      <ModalHeader>Upload files</ModalHeader>
       <ModalBody>
         <Text textStyle="body-1" mb="1.5rem">
-          You can upload more than 1 image at once. We recommend only uploading
+          You can upload more than 1 file at once. Having too many files can
+          slow down the site loading time, so we recommend only uploading
           necessary files to your site.
         </Text>
         <Attachment
@@ -83,7 +84,7 @@ const MediaDropzone = ({
         <Button
           isDisabled={isDisabled}
           onClick={() => onUpload(uploadedFiles)}
-        >{`Upload ${uploadedFiles.length} images`}</Button>
+        >{`Upload ${uploadedFiles.length} files`}</Button>
       </ModalFooter>
     </>
   )
@@ -102,7 +103,7 @@ const UploadProgressIndicator = ({
 
   return (
     <>
-      <ModalHeader>Uploading images</ModalHeader>
+      <ModalHeader>Upload files</ModalHeader>
       <ModalBody>
         <Dropzone>
           <Progress
@@ -113,7 +114,7 @@ const UploadProgressIndicator = ({
           <Text
             textStyle="subhead-1"
             mt="1.25rem"
-          >{`Uploading ${cur} of ${total} images`}</Text>
+          >{`Uploading ${cur} of ${total} files`}</Text>
           <Text textStyle="caption-1">
             Do not close this screen or navigate away
           </Text>
@@ -141,7 +142,7 @@ const ImageUploadSuccessDropzone = ({
 
   return (
     <>
-      <ModalHeader>Success!</ModalHeader>
+      <ModalHeader>Files uploaded!</ModalHeader>
       <ModalBody>
         <Dropzone>
           <Icon
@@ -152,7 +153,7 @@ const ImageUploadSuccessDropzone = ({
           <Text
             textStyle="subhead-1"
             mt="1.25rem"
-          >{`Successfully uploaded ${numImages} images`}</Text>
+          >{`Successfully uploaded ${numImages} files`}</Text>
         </Dropzone>
         <ErrorList errorMessages={errorMessages} />
       </ModalBody>
@@ -182,7 +183,7 @@ const ImageUploadFailedDropzone = ({
             fill="utility.feedback.critical"
           />
           <Text textStyle="subhead-1" mt="1.25rem">
-            Failed to upload images
+            Failed to upload files
           </Text>
         </Dropzone>
         <ErrorList errorMessages={errorMessages} />
