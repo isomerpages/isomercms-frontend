@@ -68,8 +68,8 @@ const MediaDropzone = ({
             "image/bmp": [".bmp"],
           }}
           onChange={(curUploadedFiles, rejections) => {
-            setUploadedFiles(curUploadedFiles)
-            setFileRejections(rejections)
+            setUploadedFiles([...uploadedFiles, ...curUploadedFiles])
+            setFileRejections([...fileRejections, ...rejections])
           }}
           value={uploadedFiles}
           name=""
