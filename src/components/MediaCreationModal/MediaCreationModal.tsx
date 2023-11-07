@@ -148,14 +148,14 @@ const UploadProgressIndicator = ({
   )
 }
 
-interface ImageUploadSuccessDropzoneProps {
-  numImages: number
+interface MediaUploadSuccessDropzoneProps {
+  numMedia: number
   errorMessages: string[]
 }
-const ImageUploadSuccessDropzone = ({
-  numImages,
+const MediaUploadSuccessDropzone = ({
+  numMedia,
   errorMessages,
-}: ImageUploadSuccessDropzoneProps) => {
+}: MediaUploadSuccessDropzoneProps) => {
   const { onClose } = useModalContext()
 
   return (
@@ -171,7 +171,7 @@ const ImageUploadSuccessDropzone = ({
           <Text
             textStyle="subhead-1"
             mt="1.25rem"
-          >{`Successfully uploaded ${numImages} files`}</Text>
+          >{`Successfully uploaded ${numMedia} files`}</Text>
         </Dropzone>
         {errorMessages.length > 0 && (
           <>
@@ -186,7 +186,7 @@ const ImageUploadSuccessDropzone = ({
                 mr="0.5rem"
               />
               <Text textColor="utility.feedback.critical">
-                {`${errorMessages.length} images failed to upload`}
+                {`${errorMessages.length} files failed to upload`}
               </Text>
             </Flex>
             <UnorderedList>
@@ -208,12 +208,12 @@ const ImageUploadSuccessDropzone = ({
   )
 }
 
-interface ImageUploadFailedDropzoneProps {
+interface MediaUploadFailedDropzoneProps {
   errorMessages: string[]
 }
-const ImageUploadFailedDropzone = ({
+const MediaUploadFailedDropzone = ({
   errorMessages,
-}: ImageUploadFailedDropzoneProps) => {
+}: MediaUploadFailedDropzoneProps) => {
   const { onClose } = useModalContext()
 
   return (
@@ -279,7 +279,7 @@ export const MediaCreationModal = ({
     numCreated,
     numFailed,
     errorMessages,
-  } = useCreateMultipleMedia(siteName, mediaDirectoryName ?? "images")
+  } = useCreateMultipleMedia(siteName, mediaDirectoryName ?? variant)
 
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
   const [fileRejections, setFileRejections] = useState<FileRejection[]>([])
@@ -336,13 +336,13 @@ export const MediaCreationModal = ({
           />
         )}
         {curStep === "success" && (
-          <ImageUploadSuccessDropzone
-            numImages={numCreated}
+          <MediaUploadSuccessDropzone
+            numMedia={numCreated}
             errorMessages={errorMessages}
           />
         )}
         {curStep === "failed" && (
-          <ImageUploadFailedDropzone errorMessages={errorMessages} />
+          <MediaUploadFailedDropzone errorMessages={errorMessages} />
         )}
       </ModalContent>
     </Modal>
