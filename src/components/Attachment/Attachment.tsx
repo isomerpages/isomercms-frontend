@@ -216,26 +216,48 @@ export const Attachment = forwardRef<AttachmentProps, "div">(
             </Text>
           )}
         </Box>
-        {value?.map((file) => (
+        {value?.length > 0 && (
           <>
-            <Divider />
-            <AttachmentFileInfo
-              file={file}
-              imagePreview={imagePreview}
-              isDisabled={inputProps.disabled}
-            />
+            <Box mt="1.5rem" mb="0.75rem">
+              <Text textStyle="subhead-1">Files to be uploaded</Text>
+              <Text textStyle="caption-2">{`${value.length}/${
+                value.length + rejected.length
+              } files can be uploaded`}</Text>
+            </Box>
+            {value?.map((file) => (
+              <>
+                <Divider />
+                <AttachmentFileInfo
+                  file={file}
+                  imagePreview={imagePreview}
+                  isDisabled={inputProps.disabled}
+                />
+              </>
+            ))}
+            {/* NOTE: Add last divider if we have content above */}
+            {value?.length > 0 && <Divider />}
           </>
-        ))}
-        <Box overflowY="auto" maxH="25vh">
-          {rejected?.map((fileRejection) => (
-            <>
-              <Divider />
-              <AttachmentError fileRejection={fileRejection} />
-            </>
-          ))}
-        </Box>
-        {/* NOTE: Add last divider if we have content above */}
-        {(value?.length > 0 || rejected.length > 0) && <Divider />}
+        )}
+        {rejected?.length > 0 && (
+          <>
+            <Box mt="1.5rem" mb="0.75rem">
+              <Text textStyle="subhead-1">Unable to upload</Text>
+              <Text textStyle="caption-2">{`${rejected.length}/${
+                value.length + rejected.length
+              } files cannot be uploaded`}</Text>
+            </Box>
+            <Box overflowY="auto" maxH="25vh">
+              {rejected?.map((fileRejection) => (
+                <>
+                  <Divider />
+                  <AttachmentError fileRejection={fileRejection} />
+                </>
+              ))}
+              {/* NOTE: Add last divider if we have content above */}
+              {rejected.length > 0 && <Divider />}
+            </Box>
+          </>
+        )}
       </AttachmentStylesProvider>
     )
   }
