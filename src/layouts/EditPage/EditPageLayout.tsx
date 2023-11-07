@@ -211,10 +211,7 @@ export const EditPageLayout = ({
                 if (isXSSViolation) onXSSWarningModalOpen()
                 else onSave()
               }}
-              // TODO: Add an alert/modal
-              // to warn the user when they violate our csp
-              // so they know why + can take action to remedy
-              isDisabled
+              isDisabled={isContentViolation}
               isLoading={isSavingPage}
             >
               Save
