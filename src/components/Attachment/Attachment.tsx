@@ -21,7 +21,6 @@ import { AttachmentStylesProvider } from "./AttachmentContext"
 import { AttachmentDropzone } from "./AttachmentDropzone"
 import { AttachmentError } from "./AttachmentError"
 import { AttachmentFileInfo } from "./AttachmentFileInfo"
-import { MAX_NUM_UPLOADS } from "./constants"
 
 export interface AttachmentProps extends UseFormControlProps<HTMLElement> {
   /**
@@ -158,7 +157,7 @@ export const Attachment = forwardRef<AttachmentProps, "div">(
       disabled: inputProps.disabled,
       validator: fileValidator,
       onDrop: handleFileDrop,
-      maxFiles: MAX_NUM_UPLOADS,
+      multiple: true,
     })
 
     const mergedRefs = useMergeRefs(rootRef, ref)
