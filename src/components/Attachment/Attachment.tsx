@@ -144,7 +144,7 @@ export const Attachment = forwardRef<AttachmentProps, "div">(
         if (maxSize && file.size > maxSize) {
           return {
             code: "file-too-large",
-            message: `Upload too big (${getReadableFileSize(file.size)})`,
+            message: `File is too big (${getReadableFileSize(file.size)})`,
           }
         }
         return null
