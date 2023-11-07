@@ -31,6 +31,20 @@ import { MediaDirectoryParams } from "types/folders"
 import { Dropzone } from "./components/Dropzone"
 
 type MediaSteps = "upload" | "progressing" | "success" | "failed"
+type UploadVariant = "files" | "images"
+
+const IMAGE_UPLOAD_ACCEPTED_MIME_TYPES = {
+  "image/jpeg": [".jpg", ".jpeg"],
+  "image/png": [".png"],
+  "image/gif": [".gif"],
+  "image/svg+xml": [".svg"],
+  "image/tiff": [".tiff", ".tif"],
+  "image/bmp": [".bmp"],
+}
+
+const FILE_UPLOAD_ACCEPTED_MIME_TYPES = {
+  "application/pdf": [".pdf"],
+}
 
 interface MediaDropzoneProps {
   fileRejections: FileRejection[]
@@ -39,6 +53,7 @@ interface MediaDropzoneProps {
   setFileRejections: (rejections: FileRejection[]) => void
   isDisabled?: boolean
   onUpload: (files: File[]) => Promise<void>
+  variant: UploadVariant
 }
 
 const MediaDropzone = ({
@@ -48,6 +63,7 @@ const MediaDropzone = ({
   setFileRejections,
   isDisabled,
   onUpload,
+  variant,
 }: MediaDropzoneProps) => {
   const { onClose } = useModalContext()
 
@@ -62,14 +78,11 @@ const MediaDropzone = ({
         </Text>
         <Attachment
           rejected={fileRejections}
-          accept={{
-            "image/jpeg": [".jpg", ".jpeg"],
-            "image/png": [".png"],
-            "image/gif": [".gif"],
-            "image/svg+xml": [".svg"],
-            "image/tiff": [".tiff", ".tif"],
-            "image/bmp": [".bmp"],
-          }}
+          accept={
+            variant === "files"
+              ? FILE_UPLOAD_ACCEPTED_MIME_TYPES
+              : IMAGE_UPLOAD_ACCEPTED_MIME_TYPES
+          }
           onChange={(curUploadedFiles, rejections) => {
             setUploadedFiles([...uploadedFiles, ...curUploadedFiles])
             setFileRejections([...fileRejections, ...rejections])
@@ -241,6 +254,7 @@ const ImageUploadFailedDropzone = ({
 
 interface MediaCreationModalProps {
   onClose: () => void
+  variant: UploadVariant
 }
 
 interface MediaCreationRouteParams
@@ -252,7 +266,10 @@ interface MediaCreationRouteParams
   mediaDirectoryName?: string
 }
 
-export const MediaCreationModal = ({ onClose }: MediaCreationModalProps) => {
+export const MediaCreationModal = ({
+  onClose,
+  variant,
+}: MediaCreationModalProps) => {
   const { onClose: onModalClose } = useDisclosure()
   const params = useParams<MediaCreationRouteParams>()
   const { siteName, mediaDirectoryName } = params
@@ -300,6 +317,7 @@ export const MediaCreationModal = ({ onClose }: MediaCreationModalProps) => {
         <ModalCloseButton />
         {curStep === "upload" && (
           <MediaDropzone
+            variant={variant}
             onUpload={async (mediaUploadedFiles) => {
               uploadFiles(mediaUploadedFiles)
               setCurStep("progressing")
