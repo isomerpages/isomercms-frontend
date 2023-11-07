@@ -11,11 +11,15 @@ import {
   Icon,
   useModalContext,
   Progress,
+  ListItem,
+  UnorderedList,
+  VStack,
+  Flex,
 } from "@chakra-ui/react"
-import { Button } from "@opengovsg/design-system-react"
+import { Button, Infobox } from "@opengovsg/design-system-react"
 import { useEffect, useState } from "react"
 import { FileRejection } from "react-dropzone"
-import { BiCheckCircle, BiXCircle } from "react-icons/bi"
+import { BiCheckCircle, BiSolidErrorCircle, BiXCircle } from "react-icons/bi"
 import { useParams } from "react-router-dom"
 
 import { Attachment } from "components/Attachment"
@@ -25,7 +29,6 @@ import { useCreateMultipleMedia } from "hooks/mediaHooks/useCreateMultipleMedia"
 import { MediaDirectoryParams } from "types/folders"
 
 import { Dropzone } from "./components/Dropzone"
-import { ErrorList } from "./components/ErrorList"
 
 type MediaSteps = "upload" | "progressing" | "success" | "failed"
 
@@ -84,7 +87,9 @@ const MediaDropzone = ({
         <Button
           isDisabled={isDisabled}
           onClick={() => onUpload(uploadedFiles)}
-        >{`Upload ${uploadedFiles.length} files`}</Button>
+        >{`Upload ${uploadedFiles.length} ${
+          uploadedFiles.length > 1 ? "files" : "file"
+        }`}</Button>
       </ModalFooter>
     </>
   )
@@ -155,7 +160,33 @@ const ImageUploadSuccessDropzone = ({
             mt="1.25rem"
           >{`Successfully uploaded ${numImages} files`}</Text>
         </Dropzone>
-        <ErrorList errorMessages={errorMessages} />
+        {errorMessages.length > 0 && (
+          <>
+            <Flex
+              alignItems="center"
+              my="1rem"
+              color="utility.feedback.critical"
+            >
+              <Icon
+                as={BiSolidErrorCircle}
+                fill="utility.feedback.critical"
+                mr="0.5rem"
+              />
+              <Text textColor="utility.feedback.critical">
+                {`${errorMessages.length} images failed to upload`}
+              </Text>
+            </Flex>
+            <UnorderedList>
+              {errorMessages.map((message) => {
+                return (
+                  <ListItem>
+                    <Text textColor="utility.feedback.critical">{message}</Text>
+                  </ListItem>
+                )
+              })}
+            </UnorderedList>
+          </>
+        )}
       </ModalBody>
       <ModalFooter>
         <Button onClick={onClose}>Return to album</Button>
@@ -176,17 +207,30 @@ const ImageUploadFailedDropzone = ({
     <>
       <ModalHeader>Upload failed</ModalHeader>
       <ModalBody>
-        <Dropzone>
-          <Icon
-            fontSize="1.5rem"
-            as={BiXCircle}
-            fill="utility.feedback.critical"
-          />
-          <Text textStyle="subhead-1" mt="1.25rem">
-            Failed to upload files
-          </Text>
-        </Dropzone>
-        <ErrorList errorMessages={errorMessages} />
+        <Infobox variant="error">
+          <VStack alignItems="flex-start" maxW="100%">
+            <Text textStyle="body-1">
+              {`${errorMessages.length} ${
+                errorMessages.length > 1 ? "files" : "file"
+              } failed to upload`}
+            </Text>
+            <UnorderedList maxW="100%">
+              {errorMessages.map((message) => {
+                return (
+                  <ListItem>
+                    <Text
+                      maxW="100%"
+                      overflowWrap="anywhere"
+                      textStyle="body-1"
+                    >
+                      {message}
+                    </Text>
+                  </ListItem>
+                )
+              })}
+            </UnorderedList>
+          </VStack>
+        </Infobox>
       </ModalBody>
       <ModalFooter>
         <Button onClick={onClose}>Return to album</Button>
