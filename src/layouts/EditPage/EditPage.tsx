@@ -31,13 +31,12 @@ import { Iframe } from "layouts/components/Editor/extensions"
 import { MediaService } from "services"
 import { getDecodedParams, getImageDetails } from "utils"
 
+import { BlocksContextProvider } from "./BlocksEditPage/BlocksContext"
+import { BlocksEditPage } from "./BlocksEditPage/BlocksEditPage"
 import { MarkdownEditPage } from "./MarkdownEditPage"
-import { BlocksContextProvider } from "./PreviewEditPage/BlocksContext"
-import { DEFAULT_BLOCKS } from "./PreviewEditPage/constants"
-import { PreviewEditPage } from "./PreviewEditPage/PreviewEditPage"
 import { TiptapEditPage } from "./TiptapEditPage"
 
-type EditorVariant = "markdown" | "tiptap" | "preview"
+type EditorVariant = "markdown" | "tiptap" | "preview" | "blocks"
 
 export const EditPage = () => {
   const params = useParams<{ siteName: string }>()
@@ -202,7 +201,7 @@ export const EditPage = () => {
               }
             />
           )}
-          {variant === "preview" && <PreviewEditPage />}
+          {variant === "blocks" && <BlocksEditPage />}
         </BlocksContextProvider>
       </EditorModalContextProvider>
     </EditorContextProvider>

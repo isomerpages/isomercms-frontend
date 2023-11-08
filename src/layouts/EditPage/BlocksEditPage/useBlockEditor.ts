@@ -49,11 +49,5 @@ export const usePreviewEditor = () => {
       DraggableItem,
     ],
     autofocus: "start",
-    onBlur: ({ editor }) => {
-      editor.setEditable(false)
-    },
-    onFocus: ({ editor }) => {
-      editor.setEditable(true)
-    },
   })
 }

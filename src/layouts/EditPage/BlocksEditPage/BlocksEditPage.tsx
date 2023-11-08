@@ -8,15 +8,9 @@ import {
   CardBody,
   CardFooter,
   Icon,
+  Grid,
+  GridItem,
   ButtonGroup,
-  Drawer,
-  DrawerBody,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-  useDisclosure,
-  Box,
 } from "@chakra-ui/react"
 import {
   IconButton,
@@ -30,7 +24,8 @@ import { useForm } from "react-hook-form"
 import { BiGridAlt, BiPlus } from "react-icons/bi"
 import { useParams } from "react-router-dom"
 
-import { SidebarHeader } from "components/Editable"
+import { Editable } from "components/Editable"
+import PagePreview from "components/pages/PagePreview"
 
 import { EditorContextProvider, useEditorContext } from "contexts/EditorContext"
 
@@ -43,9 +38,9 @@ import { useBlocks } from "./BlocksContext"
 import { BLOCKS_CONTENT } from "./constants"
 import { Preview } from "./Preview"
 import { BlockAddView } from "./types"
-import { usePreviewEditor } from "./usePreviewEditor"
+import { usePreviewEditor } from "./useBlockEditor"
 
-export const AddBlockView = ({ onClose }: { onClose: () => void }) => {
+export const AddBlockView = () => {
   const { curTab } = useBlocks()
 
   if (curTab !== "add") return null
@@ -55,7 +50,7 @@ export const AddBlockView = ({ onClose }: { onClose: () => void }) => {
       <Text textStyle="subhead-3">Content Blocks</Text>
       <SimpleGrid columns={2} spacing="1.25rem">
         {_.map(BLOCKS_CONTENT, (block) => (
-          <BlockContentCard {...block} onClose={onClose} />
+          <BlockContentCard {...block} />
         ))}
       </SimpleGrid>
       <Infobox>
@@ -72,17 +67,12 @@ export const BlockContentCard = ({
   icon,
   variant,
   getContent,
-  onClose,
-}: BlockAddView & {
-  getContent: (val: string) => string
-  onClose: () => void
-}) => {
+}: BlockAddView & { getContent: (val: string) => string }) => {
   const { showContentView } = useBlocks()
   const { editor } = useEditorContext()
   const [isEditable, setIsEditable] = useState(false)
   const { register, handleSubmit } = useForm()
   const onSave = handleSubmit((data) => {
-    onClose()
     showContentView()
     const { size } = editor.view.state.doc.content
     editor?.commands.insertContentAt(
@@ -136,13 +126,12 @@ export const BlockContentCard = ({
   )
 }
 
-export const PreviewEditPage = () => {
+export const BlocksEditPage = () => {
   const params = useParams<{ siteName: string }>()
   const { data: initialPageData, isLoading: isLoadingPage } = useGetPageHook(
     params
   )
   const { curTab, showAddView, showContentView } = useBlocks()
-  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const editor = usePreviewEditor()
 
@@ -155,7 +144,7 @@ export const PreviewEditPage = () => {
           editor.commands.setContent(content)
         }}
         getEditorContent={() => editor.getHTML()}
-        variant="tiptap"
+        variant="blocks"
       >
         {/* TODO: Add in icons at bottom for guide + settings etc */}
         <VStack
@@ -178,34 +167,29 @@ export const PreviewEditPage = () => {
             variant="clear"
             aria-label="Show blocks"
             isActive={curTab === "add"}
-            onClick={() => {
-              showAddView()
-              onOpen()
-            }}
+            onClick={showAddView}
           >
             <BiPlus />
           </IconButton>
         </VStack>
-        <VStack h="100%">
-          <Drawer size="lg" isOpen={isOpen} placement="left" onClose={onClose}>
-            <DrawerOverlay />
-            <DrawerContent>
-              <DrawerCloseButton />
-              <DrawerHeader>
-                <SidebarHeader title="Add blocks" />
-              </DrawerHeader>
-              <DrawerBody>
-                <AddBlockView onClose={onClose} />
-              </DrawerBody>
-            </DrawerContent>
-          </Drawer>
-        </VStack>
-        <Box w="100%" h="100%">
+        <Grid templateColumns="36rem 1fr" w="100%" h="100%">
+          <GridItem>
+            <VStack h="100%">
+              <Editable.Sidebar title="Edit Content" w="36rem" h="100%" pb={0}>
+                {curTab !== "add" && (
+                  <Editor editor={editor} maxW="100%" maxH="100vh" />
+                )}
+                <AddBlockView />
+              </Editable.Sidebar>
+            </VStack>
+          </GridItem>
           {/* Preview */}
-          <Preview title={initialPageData?.content?.frontMatter?.title || ""}>
-            <Editor w="100%" maxW="100%" />
-          </Preview>
-        </Box>
+          <GridItem>
+            <Preview
+              title={initialPageData?.content?.frontMatter?.title || ""}
+            />
+          </GridItem>
+        </Grid>
       </EditPageLayout>
     </EditorContextProvider>
   )

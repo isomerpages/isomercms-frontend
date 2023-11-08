@@ -7,4 +7,4 @@ export interface UnlinkedPageDto {
   }
 }
 
-export type PageVariant = "tiptap" | "markdown"
+export type PageVariant = "tiptap" | "markdown" | "blocks"
