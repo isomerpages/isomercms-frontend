@@ -29,7 +29,6 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
         !!(params.resourceRoomName && params.fileName)
       )
 
-  console.log(`match`, match)
   const isWriteDisabled = isWriteActionsDisabled(siteName)
 
   if (fileName) {
