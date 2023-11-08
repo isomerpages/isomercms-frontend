@@ -3,9 +3,9 @@ import {
   HStack,
   Icon,
   Popover,
+  PopoverBody,
   PopoverContent,
   PopoverTrigger,
-  Portal,
   Text,
 } from "@chakra-ui/react"
 import { Badge } from "@opengovsg/design-system-react"
@@ -106,28 +106,29 @@ export const StatusBadgeComponent = (
     return <> </>
   }
   return (
-    <Popover placement="end" trigger="hover">
+    <Popover placement="bottom-start" trigger="hover">
       <PopoverTrigger>
-        <Badge
-          colorScheme={colourScheme}
-          variant="subtle"
-          cursor="default"
-          borderRadius="3.125rem"
-        >
-          <Icon as={GoDotFill} size="1rem" />
+        <Box>
+          <Badge
+            colorScheme={colourScheme}
+            variant="subtle"
+            cursor="default"
+            borderRadius="3.125rem"
+          >
+            <Icon as={GoDotFill} size="1rem" />
 
-          <Text ml="0.25rem" mr="0.5rem">
-            {displayText}
-          </Text>
-        </Badge>
-      </PopoverTrigger>
-      <Portal>
-        <Box position="absolute" top="5.25rem" right="36.5rem">
-          <PopoverContent width="26.25rem" height="auto">
-            <StagingPopoverContent status={status} />
-          </PopoverContent>
+            <Text ml="0.25rem" mr="0.5rem">
+              {displayText}
+            </Text>
+          </Badge>
         </Box>
-      </Portal>
+      </PopoverTrigger>
+
+      <PopoverContent width="26.25rem" height="auto">
+        <PopoverBody>
+          <StagingPopoverContent status={status} />
+        </PopoverBody>
+      </PopoverContent>
     </Popover>
   )
 }
