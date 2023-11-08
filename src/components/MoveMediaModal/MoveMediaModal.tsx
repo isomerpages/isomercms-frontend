@@ -56,6 +56,18 @@ interface MoveMediaModalProps {
   >
 }
 
+const getPathTokens = (filePath: string) => {
+  return decodeURIComponent(filePath).split("/")
+}
+
+const getLastChildOfPath = (filePath: string) => {
+  return getPathTokens(filePath).pop() || ""
+}
+
+const getAllParentsOfPath = (filePath: string) => {
+  return getPathTokens(filePath).slice(0, -1) || []
+}
+
 export const MoveMediaModal = ({
   selectedMedia,
   mediaType,
@@ -76,7 +88,7 @@ export const MoveMediaModal = ({
     isLoading: isSubdirectoriesLoading,
   } = useListMediaFolderSubdirectories({
     siteName,
-    mediaDirectoryName: moveTo,
+    mediaDirectoryName: encodeURIComponent(moveTo),
   })
 
   const {
@@ -84,7 +96,7 @@ export const MoveMediaModal = ({
     isLoading: isMediaFilesLoading,
   } = useListMediaFolderFiles({
     siteName,
-    mediaDirectoryName: moveTo,
+    mediaDirectoryName: encodeURIComponent(moveTo),
   })
 
   const onModalClose = () => {
@@ -109,7 +121,7 @@ export const MoveMediaModal = ({
           <Text as="h4" textStyle="h4">
             Move{" "}
             {selectedMedia.length === 1
-              ? selectedMedia[0].filePath.split("/").pop()
+              ? getLastChildOfPath(selectedMedia[0].filePath)
               : `${selectedMedia.length} ${pluralMediaLabel}`}
           </Text>
         </ModalHeader>
@@ -131,14 +143,13 @@ export const MoveMediaModal = ({
                 <Text textStyle="body-2">
                   <Breadcrumbs
                     items={[
-                      ...selectedMedia[0].filePath
-                        .split("/")
-                        .slice(0, -1)
-                        .map((item) => ({
-                          title: _.upperFirst(decodeURIComponent(item)),
-                        })),
+                      ...getAllParentsOfPath(selectedMedia[0].filePath).map(
+                        (item) => ({
+                          title: _.upperFirst(item),
+                        })
+                      ),
                       {
-                        title: selectedMedia[0].filePath.split("/").pop() || "",
+                        title: getLastChildOfPath(selectedMedia[0].filePath),
                       },
                     ]}
                     maxBreadcrumbsLength={4}
@@ -179,16 +190,14 @@ export const MoveMediaModal = ({
                       minH="1.25rem"
                       minW="1.25rem"
                       onClick={() =>
-                        setMoveTo(moveTo.split("%2F").slice(0, -1).join("%2F"))
+                        setMoveTo(getAllParentsOfPath(moveTo).join("/"))
                       }
                     >
                       <Icon as={BiArrowBack} fontSize="1.25rem" />
                     </Button>
                   )}
                   <Text textStyle="subhead-1" noOfLines={1}>
-                    {_.upperFirst(
-                      decodeURIComponent(moveTo.split("%2F").pop() || mediaType)
-                    )}
+                    {_.upperFirst(getLastChildOfPath(moveTo) || mediaType)}
                   </Text>
                 </HStack>
               </Box>
@@ -206,12 +215,7 @@ export const MoveMediaModal = ({
                         name={subdirectory.name}
                         id={itemIndex}
                         onClick={() => {
-                          setMoveTo(
-                            [
-                              moveTo,
-                              encodeURIComponent(subdirectory.name),
-                            ].join("%2F")
-                          )
+                          setMoveTo([moveTo, subdirectory.name].join("/"))
                         }}
                       />
                     )
@@ -258,11 +262,11 @@ export const MoveMediaModal = ({
                 {selectedMedia.length === 1 && (
                   <Breadcrumbs
                     items={[
-                      ...moveTo.split("%2F").map((item) => ({
+                      ...getPathTokens(moveTo).map((item) => ({
                         title: _.upperFirst(decodeURIComponent(item)),
                       })),
                       {
-                        title: selectedMedia[0].filePath.split("/").pop() || "",
+                        title: getLastChildOfPath(selectedMedia[0].filePath),
                       },
                     ]}
                     maxBreadcrumbsLength={4}
@@ -277,7 +281,7 @@ export const MoveMediaModal = ({
                 {selectedMedia.length > 1 && (
                   <Breadcrumbs
                     items={[
-                      ...moveTo.split("%2F").map((item) => ({
+                      ...getPathTokens(moveTo).map((item) => ({
                         title: _.upperFirst(decodeURIComponent(item)),
                       })),
                     ]}
@@ -306,7 +310,7 @@ export const MoveMediaModal = ({
               isLoading={isLoading}
               onClick={() => {
                 onProceed({
-                  target: { directoryName: decodeURIComponent(moveTo) },
+                  target: { directoryName: moveTo },
                   items: selectedMedia,
                 })
               }}

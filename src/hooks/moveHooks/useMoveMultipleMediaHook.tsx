@@ -68,6 +68,7 @@ const moveMultipleMedia = async (
               return error
             }) as Promise<void>
           })
+          // This wait is necessary to avoid the repo lock
           .then(() => new Promise((resolve) => setTimeout(resolve, 500))),
       Promise.resolve()
     )
