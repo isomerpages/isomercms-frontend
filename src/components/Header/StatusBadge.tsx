@@ -1,29 +1,23 @@
 import {
   Box,
   HStack,
+  Icon,
   Popover,
   PopoverContent,
   PopoverTrigger,
+  Portal,
   Text,
 } from "@chakra-ui/react"
-import { useFeatureIsOn } from "@growthbook/growthbook-react"
 import { Badge } from "@opengovsg/design-system-react"
+import { useMemo } from "react"
 import { BiCheckCircle, BiError, BiLoader } from "react-icons/bi"
-import { BsFillQuestionCircleFill } from "react-icons/bs"
 import { GoDotFill } from "react-icons/go"
 import { IconBaseProps } from "react-icons/lib"
 import { useParams } from "react-router-dom"
 
-import { FEATURE_FLAGS } from "constants/featureFlags"
-
 import { useGetStagingStatus } from "hooks/useGetStagingStatus"
 
-import { FeatureFlags } from "types/featureFlags"
 import { BuildStatus } from "types/stagingBuildStatus"
-
-interface StatusBadgeProps {
-  status: BuildStatus
-}
 
 interface StagingPopoverContentProps {
   status: BuildStatus
@@ -33,14 +27,14 @@ const StagingPopoverContent = ({ status }: StagingPopoverContentProps) => {
   let headingText = ""
   let bodyText = ""
 
-  let Icon = (props: IconBaseProps) => <BiLoader {...props} />
+  let biLoaderIcon = (props: IconBaseProps) => <BiLoader {...props} />
 
   switch (status) {
     case "READY":
       headingText = `All saved edits are on staging`
       bodyText = "Click on 'Open staging' to take a look."
 
-      Icon = (props: IconBaseProps) => (
+      biLoaderIcon = (props: IconBaseProps) => (
         <BiCheckCircle {...props} color="#0F796F" />
       )
 
@@ -49,7 +43,7 @@ const StagingPopoverContent = ({ status }: StagingPopoverContentProps) => {
       headingText = `Staging site is building`
       bodyText =
         "We detected a change in your site. We'll let you know when the staging site is ready."
-      Icon = (props: IconBaseProps) => (
+      biLoaderIcon = (props: IconBaseProps) => (
         <BiLoader {...props} style={{ animation: "spin 2s linear infinite" }} />
       )
       break
@@ -59,7 +53,7 @@ const StagingPopoverContent = ({ status }: StagingPopoverContentProps) => {
       bodyText =
         "Don't worry, your production site isn't affected. Try saving your page again. If the issue persists, please contact support@isomer.gov.sg."
 
-      Icon = (props: IconBaseProps) => <BiError {...props} />
+      biLoaderIcon = (props: IconBaseProps) => <BiError {...props} />
       break
     default:
       break
@@ -68,7 +62,7 @@ const StagingPopoverContent = ({ status }: StagingPopoverContentProps) => {
   return (
     <HStack align="start" spacing="0.75rem" m="0.75rem">
       <Box width="1.6rem" height="1.6rem" p="0.05rem">
-        <Icon size="1.5rem" />
+        <Icon as={biLoaderIcon} size="1.5rem" />
       </Box>
 
       <Box alignItems="left">
@@ -82,60 +76,69 @@ const StagingPopoverContent = ({ status }: StagingPopoverContentProps) => {
   )
 }
 
-export const StatusBadge = (): JSX.Element => {
-  const { siteName } = useParams<{ siteName: string }>()
-  const {
-    data: getStagingStatusData,
-    isLoading: isGetStagingStatusLoading,
-  } = useGetStagingStatus(siteName)
-  const { status } = getStagingStatusData || {}
-  if (!status || isGetStagingStatusLoading) {
-    return <> </>
-  }
+export const StatusBadgeComponent = (
+  status: BuildStatus | undefined
+): JSX.Element => {
   let displayText = ""
   let colourScheme = ""
-  let dotColor = "#505660"
+
   switch (status) {
     case "PENDING":
       displayText = "Updating staging site"
       colourScheme = "grey"
-      dotColor = "#505660"
+
       break
     case "READY":
       displayText = "Staging site is ready"
       colourScheme = "success"
-      dotColor = "#0F796F"
+
       break
     case "ERROR":
       displayText = "Staging site is out of date"
       colourScheme = "warning"
-      dotColor = "#FFDA68"
+
       break
     default:
       break
   }
 
+  if (!status) {
+    return <> </>
+  }
   return (
-    <Box position="relative">
-      <Popover trigger="hover" placement="bottom">
-        <PopoverTrigger>
-          <Badge
-            colorScheme={colourScheme}
-            variant="subtle"
-            cursor="default"
-            borderRadius="3.125rem"
-          >
-            <GoDotFill size="1rem" color={dotColor} />
-            <Text ml="0.25rem" mr="0.5rem">
-              {displayText}
-            </Text>
-            <BsFillQuestionCircleFill color="#454953" />
-          </Badge>
-        </PopoverTrigger>
-        <PopoverContent width="26.25rem" height="auto" mt="1.75rem">
-          <StagingPopoverContent status={status} />
-        </PopoverContent>
-      </Popover>
-    </Box>
+    <Popover placement="end" trigger="hover">
+      <PopoverTrigger>
+        <Badge
+          colorScheme={colourScheme}
+          variant="subtle"
+          cursor="default"
+          borderRadius="3.125rem"
+        >
+          <Icon as={GoDotFill} size="1rem" />
+
+          <Text ml="0.25rem" mr="0.5rem">
+            {displayText}
+          </Text>
+        </Badge>
+      </PopoverTrigger>
+      <Portal>
+        <Box position="absolute" top="5.25rem" right="36.5rem">
+          <PopoverContent width="26.25rem" height="auto">
+            <StagingPopoverContent status={status} />
+          </PopoverContent>
+        </Box>
+      </Portal>
+    </Popover>
   )
+}
+export const StatusBadge = (): JSX.Element => {
+  const { siteName } = useParams<{ siteName: string }>()
+  const { data: getStagingStatusData } = useGetStagingStatus(siteName)
+  const status = getStagingStatusData?.status
+
+  const badge = useMemo(() => {
+    return StatusBadgeComponent(status)
+  }, [status])
+
+  return badge
 }
