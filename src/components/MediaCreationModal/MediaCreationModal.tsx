@@ -27,6 +27,7 @@ import { Attachment } from "components/Attachment"
 import { useCreateMultipleMedia } from "hooks/mediaHooks/useCreateMultipleMedia"
 
 import { MediaDirectoryParams } from "types/folders"
+import { MEDIA_FILE_MAX_SIZE } from "utils"
 
 import { Dropzone } from "./components/Dropzone"
 
@@ -53,7 +54,7 @@ interface MediaDropzoneProps {
   setFileRejections: (rejections: FileRejection[]) => void
   isDisabled?: boolean
   onUpload: (files: File[]) => Promise<void>
-  variant: UploadVariant
+  mediaType: UploadVariant
 }
 
 const MediaDropzone = ({
@@ -63,7 +64,7 @@ const MediaDropzone = ({
   setFileRejections,
   isDisabled,
   onUpload,
-  variant,
+  mediaType,
 }: MediaDropzoneProps) => {
   const { onClose } = useModalContext()
 
@@ -79,7 +80,7 @@ const MediaDropzone = ({
         <Attachment
           rejected={fileRejections}
           accept={
-            variant === "files"
+            mediaType === "files"
               ? FILE_UPLOAD_ACCEPTED_MIME_TYPES
               : IMAGE_UPLOAD_ACCEPTED_MIME_TYPES
           }
@@ -90,7 +91,7 @@ const MediaDropzone = ({
           value={uploadedFiles}
           name=""
           // NOTE: 5MB - maxSize is in bytes
-          maxSize={5 * 10 ** 6}
+          maxSize={MEDIA_FILE_MAX_SIZE}
         />
       </ModalBody>
       <ModalFooter>
@@ -317,7 +318,7 @@ export const MediaCreationModal = ({
         <ModalCloseButton />
         {curStep === "upload" && (
           <MediaDropzone
-            variant={variant}
+            mediaType={variant}
             onUpload={async (mediaUploadedFiles) => {
               uploadFiles(mediaUploadedFiles)
               setCurStep("progressing")
