@@ -127,6 +127,11 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
       title: "Redo",
       action: () => editor.chain().focus().redo().run(),
     },
+    {
+      icon: "code-box-line",
+      title: "Insert embed",
+      action: () => showModal("embed"),
+    },
   ]
 
   return (

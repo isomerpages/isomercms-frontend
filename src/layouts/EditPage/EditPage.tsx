@@ -17,6 +17,7 @@ import { Context, useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { Markdown } from "tiptap-markdown"
 
+import { EditorEmbedModal } from "components/EditorEmbedModal"
 import HyperlinkModal from "components/HyperlinkModal"
 import MediaModal from "components/media/MediaModal"
 
@@ -92,6 +93,12 @@ export const EditPage = () => {
     onClose: onHyperlinkModalClose,
   } = useDisclosure()
 
+  const {
+    isOpen: isEmbedModalOpen,
+    onOpen: onEmbedModalOpen,
+    onClose: onEmbedModalClose,
+  } = useDisclosure()
+
   const { siteName } = decodedParams
 
   const { mediaService } = useContext<{ mediaService: MediaService }>(
@@ -115,6 +122,8 @@ export const EditPage = () => {
         showModal={(modalType) => {
           if (modalType === "hyperlink") {
             onHyperlinkModalOpen()
+          } else if (modalType === "embed") {
+            onEmbedModalOpen()
           } else {
             setMediaType(modalType)
             onMediaModalOpen()
@@ -170,6 +179,16 @@ export const EditPage = () => {
                   .run()
               }
               onMediaModalClose()
+            }}
+          />
+        )}
+        {isEmbedModalOpen && (
+          <EditorEmbedModal
+            isOpen={isEmbedModalOpen}
+            onClose={onEmbedModalClose}
+            onProceed={(embedCode) => {
+              editor.chain().focus().insertContent(embedCode).run()
+              onEmbedModalClose()
             }}
           />
         )}
