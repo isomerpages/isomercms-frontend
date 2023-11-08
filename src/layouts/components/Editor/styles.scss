@@ -1,3 +1,5 @@
+@use "styles/isomer-cms/pages/Editor.module.scss";
+
 .tiptap:focus {
   outline: none;
 }
@@ -9,6 +11,8 @@
 
 /* Basic editor styles */
 .tiptap {
+  @extend .previewTextStyles;
+
   > * + * {
     margin-top: 0.75em;
   }
@@ -67,7 +71,7 @@
   h4,
   h5,
   h6 {
-    line-height: 1.1;
+    color: #4372d6;
   }
 
   code {
