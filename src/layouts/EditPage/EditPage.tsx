@@ -70,7 +70,7 @@ export const EditPage = () => {
         pluginKey: "tableBubble",
       }),
       Table.configure({
-        resizable: true,
+        resizable: false,
       }),
       TableRow,
       TableHeader,
