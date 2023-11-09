@@ -1,7 +1,5 @@
-import { Divider, HStack, Text } from "@chakra-ui/react"
+import { Divider, HStack } from "@chakra-ui/react"
 import { Editor } from "@tiptap/react"
-import { Fragment } from "react"
-import { v4 as uuid } from "uuid"
 
 import { useEditorModal } from "contexts/EditorModalContext"
 
@@ -11,13 +9,6 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
   const { showModal } = useEditorModal()
 
   const items = [
-    {
-      icon: "lock-unlock-line",
-      title: "Unlocked",
-    },
-    {
-      type: "divider",
-    },
     {
       icon: "bold",
       title: "Bold",
