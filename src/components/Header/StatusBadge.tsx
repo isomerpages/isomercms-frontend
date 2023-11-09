@@ -60,9 +60,9 @@ const StagingPopoverContent = ({ status }: StagingPopoverContentProps) => {
   }
 
   return (
-    <HStack align="start" spacing="0.75rem" m="0.75rem">
+    <HStack align="start">
       <Box width="1.6rem" height="1.6rem" p="0.05rem">
-        <Icon as={biLoaderIcon} size="1.5rem" />
+        <Icon as={biLoaderIcon} w="1.5rem" h="1.5rem" />
       </Box>
 
       <Box alignItems="left">
@@ -108,7 +108,7 @@ export const StatusBadgeComponent = (
   return (
     <Popover placement="bottom-start" trigger="hover">
       <PopoverTrigger>
-        <Box>
+        <Box mr="1rem">
           <Badge
             colorScheme={colourScheme}
             variant="subtle"
