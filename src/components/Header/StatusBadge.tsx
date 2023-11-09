@@ -76,9 +76,11 @@ const StagingPopoverContent = ({ status }: StagingPopoverContentProps) => {
   )
 }
 
-export const StatusBadgeComponent = (
+export const StatusBadgeComponent = ({
+  status,
+}: {
   status: BuildStatus | undefined
-): JSX.Element => {
+}): JSX.Element => {
   let displayText = ""
   let colourScheme = ""
 
@@ -137,9 +139,5 @@ export const StatusBadge = (): JSX.Element => {
   const { data: getStagingStatusData } = useGetStagingStatus(siteName)
   const status = getStagingStatusData?.status
 
-  const badge = useMemo(() => {
-    return StatusBadgeComponent(status)
-  }, [status])
-
-  return badge
+  return <StatusBadgeComponent status={status} />
 }
