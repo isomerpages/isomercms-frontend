@@ -1,4 +1,4 @@
-import { MediaService } from "services"
+export type MediaFolderTypes = "files" | "images"
 
 export interface MultipleMediaParams {
   siteName: string
@@ -17,4 +17,17 @@ export interface SelectedMediaDto {
   filePath: string
   size: number
   sha: string
+}
+
+export interface MoveSelectedMediaDto {
+  target: {
+    directoryName: string
+  }
+  items: SelectedMediaDto[]
+}
+
+export interface MoveMultipleMediaDto {
+  source: string
+  target: { directoryName: string }
+  items: Array<{ name: string; type: "file" }>
 }

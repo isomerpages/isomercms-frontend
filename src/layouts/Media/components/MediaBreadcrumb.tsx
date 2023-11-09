@@ -1,6 +1,6 @@
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink } from "@chakra-ui/react"
-import { BiChevronRight } from "react-icons/bi"
-import { useRouteMatch, Link as RouterLink } from "react-router-dom"
+import { useRouteMatch } from "react-router-dom"
+
+import { BreadcrumbItem, Breadcrumbs } from "components/Breadcrumbs"
 
 import { MAX_MEDIA_BREADCRUMBS_LENGTH } from "constants/media"
 
@@ -19,73 +19,33 @@ export const MediaBreadcrumbs = (): JSX.Element => {
   }>()
   const directories = mediaDirectoryName.split("%2F")
   const firstItem = directories[0]
+  const breadcrumbItems = directories.slice(1).reduce<BreadcrumbItem[]>(
+    (mediaDirectoriesInfo, currentMediaDirectoryInfo) => {
+      const prev = mediaDirectoriesInfo[mediaDirectoriesInfo.length - 1]
+      const directoryUrl = `${prev.url}%2F${currentMediaDirectoryInfo}`
+      const displayedDirectoryName = deslugifyDirectory(
+        currentMediaDirectoryInfo
+      )
+      return [
+        ...mediaDirectoriesInfo,
+        {
+          title: displayedDirectoryName,
+          url: directoryUrl,
+        },
+      ]
+    },
+    [
+      {
+        title: deslugifyDirectory(firstItem),
+        url: `/sites/${siteName}/media/${mediaType}/mediaDirectory/${firstItem}`,
+      },
+    ]
+  )
 
   return (
-    <Breadcrumb
-      spacing="0.5rem"
-      separator={<BiChevronRight color="text.body" />}
-    >
-      {directories
-        .slice(1)
-        .reduce(
-          (mediaDirectoriesInfo, currentMediaDirectoryInfo) => {
-            const prev = mediaDirectoriesInfo[mediaDirectoriesInfo.length - 1]
-            const directoryUrl = `${prev.url}%2F${currentMediaDirectoryInfo}`
-            const displayedDirectoryName = deslugifyDirectory(
-              currentMediaDirectoryInfo
-            )
-            return [
-              ...mediaDirectoriesInfo,
-              {
-                name: displayedDirectoryName,
-                url: directoryUrl,
-              },
-            ]
-          },
-          [
-            {
-              name: deslugifyDirectory(firstItem),
-              url: `/sites/${siteName}/media/${mediaType}/mediaDirectory/${firstItem}`,
-            },
-          ]
-        )
-        .map(({ name, url }, idx) => {
-          // Note: Intermediate albums/directories are not shown in the breadcrumbs
-          // but it only affects users that are nesting more than
-          // MAX_MEDIA_BREADCRUMBS_LENGTH levels deep
-          if (
-            directories.length > MAX_MEDIA_BREADCRUMBS_LENGTH &&
-            idx > 1 &&
-            idx < directories.length - (MAX_MEDIA_BREADCRUMBS_LENGTH - 1)
-          ) {
-            return <></>
-          }
-
-          const isEllipsis =
-            directories.length > MAX_MEDIA_BREADCRUMBS_LENGTH && idx === 1
-          const hasModifier = idx === directories.length - 1 || isEllipsis
-
-          return (
-            <BreadcrumbItem
-              isLastChild={hasModifier}
-              isCurrentPage={hasModifier}
-            >
-              <BreadcrumbLink
-                textStyle="caption-2"
-                color={
-                  hasModifier
-                    ? "base.content.default"
-                    : "interaction.links.default"
-                }
-                as={RouterLink}
-                to={isEllipsis ? "#" : url}
-                noOfLines={1}
-              >
-                {isEllipsis ? "..." : name}
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-          )
-        })}
-    </Breadcrumb>
+    <Breadcrumbs
+      items={breadcrumbItems}
+      maxBreadcrumbsLength={MAX_MEDIA_BREADCRUMBS_LENGTH}
+    />
   )
 }

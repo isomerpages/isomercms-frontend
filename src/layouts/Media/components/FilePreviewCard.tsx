@@ -19,12 +19,14 @@ interface FilePreviewCardProps {
   name: string
   onOpen?: () => void
   onDelete?: () => void
+  onMove?: () => void
 }
 
 export const FilePreviewCard = ({
   name,
   onOpen,
   onDelete,
+  onMove,
 }: FilePreviewCardProps): JSX.Element => {
   const { url } = useRouteMatch()
   const encodedName = encodeURIComponent(name)
@@ -56,11 +58,7 @@ export const FilePreviewCard = ({
           >
             <Text>Edit details</Text>
           </ContextMenu.Item>
-          <ContextMenu.Item
-            icon={<BiFolder />}
-            as={RouterLink}
-            to={`${url}/moveMedia/${encodedName}`}
-          >
+          <ContextMenu.Item icon={<BiFolder />} onClick={onMove}>
             <HStack spacing="4rem" alignItems="center">
               <Text>Move to</Text>
               <Icon as={BiChevronRight} fontSize="1.25rem" />
