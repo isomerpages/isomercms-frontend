@@ -21,7 +21,6 @@ import { AttachmentStylesProvider } from "./AttachmentContext"
 import { AttachmentDropzone } from "./AttachmentDropzone"
 import { AttachmentError } from "./AttachmentError"
 import { AttachmentFileInfo } from "./AttachmentFileInfo"
-import { MAX_NUM_UPLOADS } from "./constants"
 
 export interface AttachmentProps extends UseFormControlProps<HTMLElement> {
   /**
@@ -145,7 +144,7 @@ export const Attachment = forwardRef<AttachmentProps, "div">(
         if (maxSize && file.size > maxSize) {
           return {
             code: "file-too-large",
-            message: `Upload too big (${getReadableFileSize(file.size)})`,
+            message: `File is too big (${getReadableFileSize(file.size)})`,
           }
         }
         return null
@@ -158,7 +157,7 @@ export const Attachment = forwardRef<AttachmentProps, "div">(
       disabled: inputProps.disabled,
       validator: fileValidator,
       onDrop: handleFileDrop,
-      maxFiles: MAX_NUM_UPLOADS,
+      multiple: true,
     })
 
     const mergedRefs = useMergeRefs(rootRef, ref)
@@ -213,29 +212,52 @@ export const Attachment = forwardRef<AttachmentProps, "div">(
               mt="0.5rem"
               textStyle="body-2"
             >
-              Maximum size per image: {readableMaxSize}
+              Maximum size per file: {readableMaxSize}
             </Text>
           )}
         </Box>
-        <Box mt="1.5rem" mb="0.75rem">
-          <Text textStyle="subhead-1">Selected images</Text>
-          <Text textStyle="caption-2">{`${value.length}/5 images can be uploaded`}</Text>
-        </Box>
-        {value?.map((file) => (
+        {value?.length > 0 && (
           <>
-            <Divider />
-            <AttachmentFileInfo
-              file={file}
-              imagePreview={imagePreview}
-              isDisabled={inputProps.disabled}
-            />
+            <Box mt="1.5rem" mb="0.75rem">
+              <Text textStyle="subhead-1">Files to be uploaded</Text>
+              <Text textStyle="caption-2">{`${value.length}/${
+                value.length + rejected.length
+              } files can be uploaded`}</Text>
+            </Box>
+            {value?.map((file) => (
+              <>
+                <Divider />
+                <AttachmentFileInfo
+                  file={file}
+                  imagePreview={imagePreview}
+                  isDisabled={inputProps.disabled}
+                />
+              </>
+            ))}
+            {/* NOTE: Add last divider if we have content above */}
+            {value?.length > 0 && <Divider />}
           </>
-        ))}
-        {rejected?.map((fileRejection) => (
-          <AttachmentError fileRejection={fileRejection} />
-        ))}
-        {/* NOTE: Add last divider if we have content above */}
-        {(value?.length > 0 || rejected.length > 0) && <Divider />}
+        )}
+        {rejected?.length > 0 && (
+          <>
+            <Box mt="1.5rem" mb="0.75rem">
+              <Text textStyle="subhead-1">Unable to upload</Text>
+              <Text textStyle="caption-2">{`${rejected.length}/${
+                value.length + rejected.length
+              } files cannot be uploaded`}</Text>
+            </Box>
+            <Box overflowY="auto" maxH="25vh">
+              {rejected?.map((fileRejection) => (
+                <>
+                  <Divider />
+                  <AttachmentError fileRejection={fileRejection} />
+                </>
+              ))}
+              {/* NOTE: Add last divider if we have content above */}
+              {rejected.length > 0 && <Divider />}
+            </Box>
+          </>
+        )}
       </AttachmentStylesProvider>
     )
   }

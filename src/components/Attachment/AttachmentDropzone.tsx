@@ -1,5 +1,5 @@
 import { chakra, Icon, Text } from "@chakra-ui/react"
-import { Button, Link, BxsCloudUpload } from "@opengovsg/design-system-react"
+import { Button, BxsCloudUpload } from "@opengovsg/design-system-react"
 import { DropzoneInputProps, DropzoneState } from "react-dropzone"
 
 import { useAttachmentStyles } from "./AttachmentContext"
@@ -31,7 +31,7 @@ export const AttachmentDropzone = ({
             or drag and drop here
           </Text>
           <Text textStyle="caption-1">
-            Images exceeding 5MB and videos are not supported
+            Only images and PDFs are supported. Files must be smaller than 5MB.
           </Text>
         </>
       )}

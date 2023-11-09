@@ -19,6 +19,11 @@ export interface SelectedMediaDto {
   sha: string
 }
 
+export interface MediaCreationInfo {
+  content: string
+  newFileName: string
+}
+
 export interface MoveSelectedMediaDto {
   target: {
     directoryName: string
