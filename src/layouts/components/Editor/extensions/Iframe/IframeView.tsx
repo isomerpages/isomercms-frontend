@@ -1,12 +1,8 @@
 import { Box, Text } from "@chakra-ui/react"
 import { NodeViewProps, NodeViewWrapper } from "@tiptap/react"
 
-import { useEditorContext } from "contexts/EditorContext"
-
 export const IframeView = ({ node }: NodeViewProps) => {
-  const { editor } = useEditorContext()
-
-  return editor.isEditable ? (
+  return (
     <Box
       as={NodeViewWrapper}
       bg="#FAF594"
@@ -34,16 +30,5 @@ export const IframeView = ({ node }: NodeViewProps) => {
         <Text>{node.attrs.src}</Text>
       </Box>
     </Box>
-  ) : (
-    <NodeViewWrapper>
-      <div>
-        <iframe
-          width={node.attrs.width}
-          height={node.attrs.height}
-          title="Inline iframe"
-          src={node.attrs.src}
-        />
-      </div>
-    </NodeViewWrapper>
   )
 }
