@@ -176,7 +176,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
       borderTopRadius="0.25rem"
     >
       {items.map((item) => (
-        <Fragment key={uuid()}>
+        <>
           {item.type === "divider" ? (
             <Divider
               orientation="vertical"
@@ -187,7 +187,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
           ) : (
             <MenuItem {...item} />
           )}
-        </Fragment>
+        </>
       ))}
     </HStack>
   )
