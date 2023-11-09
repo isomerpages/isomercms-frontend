@@ -19,12 +19,10 @@ export const MenuItem = ({
   isRound,
   isActive = null,
 }: MenuItemProps) => {
-  const { editor } = useEditorContext()
   return (
     <IconButton
       _hover={{ bg: "gray.100" }}
       _active={{ bg: "gray.200" }}
-      onFocus={() => editor.setEditable(true)}
       onClick={action}
       title={title}
       bgColor={isActive && isActive() ? "gray.200" : "transparent"}
