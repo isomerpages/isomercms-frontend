@@ -19,6 +19,7 @@ import {
 import {
   Button,
   Checkbox,
+  Infobox,
   ModalCloseButton,
 } from "@opengovsg/design-system-react"
 import { useState } from "react"
@@ -49,8 +50,13 @@ export const DeleteMediaModal = ({
   const { singularMediaLabel, pluralMediaLabel } = mediaLabels
   const [isDeleteChecked, setIsDeleteChecked] = useState(false)
 
+  const onModalClose = () => {
+    setIsDeleteChecked(false)
+    onClose()
+  }
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onModalClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />
@@ -64,9 +70,16 @@ export const DeleteMediaModal = ({
             </ModalHeader>
 
             <ModalBody mt="1rem">
-              Are you sure you want to delete this {singularMediaLabel}? If you
-              used this {singularMediaLabel} on any page, site visitors may see
-              a broken {singularMediaLabel}. This cannot be undone.
+              <Text as="p" textStyle="body-1">
+                Are you sure you want to delete this {singularMediaLabel}? This
+                cannot be undone.
+              </Text>
+              <Infobox variant="warning" mt="1.5rem">
+                Deleting {pluralMediaLabel} might lead to broken{" "}
+                {pluralMediaLabel} on pages. This confuses site visitors. We
+                recommend double-checking that you are not using this{" "}
+                {singularMediaLabel} on your site.
+              </Infobox>
             </ModalBody>
           </>
         )}
@@ -80,15 +93,10 @@ export const DeleteMediaModal = ({
             </ModalHeader>
 
             <ModalBody mt="1rem">
-              <VStack spacing="1.5rem">
+              <VStack spacing="1.5rem" alignItems="flex-start">
                 <Text as="p" textStyle="body-1">
-                  Are you sure you want to delete {selectedMedia.length}{" "}
-                  {pluralMediaLabel}?
-                  <br />
-                  <br />
-                  If you used any of these {pluralMediaLabel} on a page, your
-                  site visitors may see broken {pluralMediaLabel}. This cannot
-                  be undone.
+                  Are you sure you want to delete these {selectedMedia.length}{" "}
+                  {pluralMediaLabel}? This cannot be undone.
                 </Text>
 
                 <Box w="100%">
@@ -124,6 +132,13 @@ export const DeleteMediaModal = ({
                     </Table>
                   </TableContainer>
                 </Box>
+
+                <Infobox variant="warning">
+                  Deleting {pluralMediaLabel} might lead to broken{" "}
+                  {pluralMediaLabel} on pages. This confuses site visitors. We
+                  recommend double-checking that you are not using any of these{" "}
+                  {singularMediaLabel} on your site.
+                </Infobox>
               </VStack>
             </ModalBody>
           </>
@@ -137,14 +152,17 @@ export const DeleteMediaModal = ({
                 ? singularMediaLabel
                 : `all ${selectedMedia.length} ${pluralMediaLabel}`}
             </Checkbox>
-            <Button variant="clear" colorScheme="neutral" onClick={onClose}>
+            <Button
+              variant="clear"
+              colorScheme="neutral"
+              onClick={onModalClose}
+            >
               Cancel
             </Button>
             <Button
               colorScheme="critical"
               isLoading={isLoading}
               onClick={() => {
-                setIsDeleteChecked(false)
                 onProceed(selectedMedia)
               }}
               isDisabled={isWriteDisabled || !isDeleteChecked}

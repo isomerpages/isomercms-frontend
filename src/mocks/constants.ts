@@ -114,7 +114,7 @@ export const MOCK_USER: LoggedInUser = {
 }
 
 export const MOCK_MEDIA_ITEM_ONE: MediaData = {
-  mediaPath: "/some/thing",
+  mediaPath: "images/some/thing",
   mediaUrl:
     "https://www.thebrandingjournal.com/wp-content/uploads/2014/06/20-Funny-Shocked-Cat-Memes-3.jpg",
   name: "shocked cat",
@@ -125,7 +125,7 @@ export const MOCK_MEDIA_ITEM_ONE: MediaData = {
 }
 
 export const MOCK_MEDIA_ITEM_TWO: MediaData = {
-  mediaPath: "/some/thing",
+  mediaPath: "images/some/thing",
   mediaUrl: "https://uploads.dailydot.com/2018/10/olli-the-polite-cat.jpg",
   name: "polite cat",
   sha: "sha",
@@ -135,7 +135,7 @@ export const MOCK_MEDIA_ITEM_TWO: MediaData = {
 }
 
 export const MOCK_MEDIA_ITEM_THREE: MediaData = {
-  mediaPath: "/some/thing",
+  mediaPath: "images/some/thing",
   mediaUrl: "https://img-9gag-fun.9cache.com/photo/a2W12m9_700bwp.webp",
   name: "screaming cat",
   sha: "sha",
@@ -145,7 +145,7 @@ export const MOCK_MEDIA_ITEM_THREE: MediaData = {
 }
 
 export const MOCK_MEDIA_ITEM_FOUR: MediaData = {
-  mediaPath: "/some/thing",
+  mediaPath: "images/some/thing",
   mediaUrl:
     "https://cdn.pixabay.com/photo/2012/08/27/14/19/mountains-55067__340.png",
   name: "some mountain",
@@ -156,7 +156,7 @@ export const MOCK_MEDIA_ITEM_FOUR: MediaData = {
 }
 
 export const MOCK_MEDIA_ITEM_FIVE: MediaData = {
-  mediaPath: "/some/thing",
+  mediaPath: "images/some/thing",
   mediaUrl:
     "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8cG9ydHJhaXR8ZW58MHx8MHx8&w=1000&q=80.png",
   name: "pearly",
@@ -169,19 +169,19 @@ export const MOCK_MEDIA_ITEM_FIVE: MediaData = {
 export const MOCK_MEDIA_ITEM_DATA: GetMediaFilesDto = {
   files: [
     Object.assign(_.omit(MOCK_MEDIA_ITEM_ONE, "mediaPath"), {
-      path: "/some/thing",
+      path: "images/some/thing",
     }),
     Object.assign(_.omit(MOCK_MEDIA_ITEM_TWO, "mediaPath"), {
-      path: "/some/thing",
+      path: "images/some/thing",
     }),
     Object.assign(_.omit(MOCK_MEDIA_ITEM_THREE, "mediaPath"), {
-      path: "/some/thing",
+      path: "images/some/thing",
     }),
     Object.assign(_.omit(MOCK_MEDIA_ITEM_FOUR, "mediaPath"), {
-      path: "/some/thing",
+      path: "images/some/thing",
     }),
     Object.assign(_.omit(MOCK_MEDIA_ITEM_FIVE, "mediaPath"), {
-      path: "/some/thing",
+      path: "images/some/thing",
     }),
   ],
   total: 5,

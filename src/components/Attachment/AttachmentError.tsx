@@ -75,6 +75,7 @@ export const AttachmentError = forwardRef<AttachmentErrorProps, "div">(
         ref={ref}
         tabIndex={0}
         sx={styles.fileInfoContainer}
+        w="100%"
       >
         <VisuallyHidden>
           File attached: {file.name} with file size of {readableFileSize}
@@ -86,13 +87,25 @@ export const AttachmentError = forwardRef<AttachmentErrorProps, "div">(
             src={previewSrc}
           />
         )}
-        <Flex sx={styles.fileInfo}>
-          <Icon as={BiError} />
-          <Text ml="2rem">{file.name}</Text>
+        <Flex sx={styles.fileInfo} w="100%">
+          <Icon as={BiError} fill="utility.feedback.critical" />
+          <Text
+            ml="2rem"
+            textStyle="caption-2"
+            noOfLines={1}
+            textColor="utility.feedback.critical"
+          >
+            {file.name}
+          </Text>
           <Spacer />
           <Text
             data-disabled={dataAttr(isDisabled)}
-            sx={styles.fileInfoDescription}
+            sx={{
+              ...styles.fileInfoDescription,
+              textColor: "utility.feedback.critical",
+            }}
+            textStyle="caption-2"
+            minW="fit-content"
           >
             {getErrorMessage(fileRejection)}
           </Text>

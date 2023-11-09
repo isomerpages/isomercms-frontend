@@ -1,1 +1,0 @@
-export { useMoveHook } from "./useMoveHook"

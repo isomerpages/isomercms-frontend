@@ -63,6 +63,7 @@ const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
       return (
         <MediaCreationModal
           params={queryParams}
+          variant={queryParams.mediaRoom}
           onProceed={async ({ data }) => {
             await createHandler({ data })
             onMediaSelect({ ...data, mediaUrl: data.content })

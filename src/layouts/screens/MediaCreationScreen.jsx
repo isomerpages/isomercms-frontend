@@ -14,6 +14,7 @@ export const MediaCreationScreen = ({ match, onClose }) => {
   return (
     <MediaCreationModal
       params={decodedParams}
+      variant={decodedParams.mediaRoom}
       onClose={onClose}
       onProceed={createHandler}
     />

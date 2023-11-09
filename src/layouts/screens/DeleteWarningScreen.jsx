@@ -1,6 +1,7 @@
 import { Text } from "@chakra-ui/react"
-import { Button } from "@opengovsg/design-system-react"
+import { Button, Checkbox } from "@opengovsg/design-system-react"
 import PropTypes from "prop-types"
+import { useState } from "react"
 
 import { LoadingButton } from "components/LoadingButton"
 import { WarningModal } from "components/WarningModal"
@@ -18,6 +19,7 @@ import {
 } from "utils"
 
 export const DeleteWarningScreen = ({ match, onClose }) => {
+  const [isDeleteChecked, setIsDeleteChecked] = useState(false)
   const { params, decodedParams } = match
   const { siteName, fileName, mediaRoom } = params
   const deleteItemName = params.mediaDirectoryName
@@ -26,6 +28,7 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
         decodedParams[getLastItemType(decodedParams)],
         !!(params.resourceRoomName && params.fileName)
       )
+
   const isWriteDisabled = isWriteActionsDisabled(siteName)
 
   if (fileName) {
@@ -40,22 +43,33 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
           onSuccess: () => onClose(),
         })
 
+    const mediaType = mediaRoom === "images" ? "image" : "file"
+
     return (
       <WarningModal
         isOpen={!!fileData}
         onClose={onClose}
-        displayTitle={`Delete ${fileName}`}
-        displayText={<Text>Are you sure you want to delete {fileName}?</Text>}
+        displayTitle={`Delete ${fileName}?`}
+        displayText={
+          <Text>
+            Are you sure you want to delete this {mediaType}? If you used this{" "}
+            {mediaType} on any page, site visitors may see a broken {mediaType}.
+            This cannot be undone.
+          </Text>
+        }
       >
+        <Checkbox onChange={(e) => setIsDeleteChecked(e.target.checked)}>
+          Yes, delete {mediaType}
+        </Checkbox>
         <Button variant="clear" colorScheme="secondary" onClick={onClose}>
           Cancel
         </Button>
         <LoadingButton
           colorScheme="critical"
           onClick={() => deleteHandler({ sha: fileData.sha })}
-          isDisabled={isWriteDisabled}
+          isDisabled={isWriteDisabled || !isDeleteChecked}
         >
-          Yes, delete
+          Delete {mediaType}
         </LoadingButton>
       </WarningModal>
     )
@@ -65,24 +79,37 @@ export const DeleteWarningScreen = ({ match, onClose }) => {
     onSuccess: () => onClose(),
   })
 
+  const mediaType =
+    mediaRoom === "images"
+      ? { dirType: "album", resourceType: "image" }
+      : { dirType: "folder", resourceType: "file" }
+
   return (
     <WarningModal
       isOpen={!!deleteItemName} // Modal is always present for delete screens
       onClose={onClose}
-      displayTitle={`Delete ${deleteItemName}`}
+      displayTitle={`Delete ${deleteItemName}?`}
       displayText={
-        <Text>Are you sure you want to delete {deleteItemName}?</Text>
+        <Text>
+          Are you sure you want to delete this {mediaType.dirType} and all its
+          child {mediaType.dirType}s and {mediaType.resourceType}s? If you used
+          its child contents on any page, site visitors may see a broken{" "}
+          {mediaType.resourceType}. This cannot be undone.
+        </Text>
       }
     >
+      <Checkbox onChange={(e) => setIsDeleteChecked(e.target.checked)}>
+        Yes, delete this {mediaType.dirType} and all its contents
+      </Checkbox>
       <Button variant="clear" colorScheme="secondary" onClick={onClose}>
         Cancel
       </Button>
       <LoadingButton
         colorScheme="critical"
         onClick={deleteHandler}
-        isDisabled={isWriteDisabled}
+        isDisabled={isWriteDisabled || !isDeleteChecked}
       >
-        Yes, delete
+        Delete {mediaType.dirType}
       </LoadingButton>
     </WarningModal>
   )

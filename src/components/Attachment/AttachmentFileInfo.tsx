@@ -47,6 +47,7 @@ export const AttachmentFileInfo = forwardRef<AttachmentFileInfoProps, "div">(
         ref={ref}
         tabIndex={0}
         sx={styles.fileInfoContainer}
+        w="100%"
       >
         <VisuallyHidden>
           File attached: {file.name} with file size of {readableFileSize}
@@ -58,13 +59,18 @@ export const AttachmentFileInfo = forwardRef<AttachmentFileInfoProps, "div">(
             src={previewSrc}
           />
         )}
-        <Flex sx={styles.fileInfo}>
+        <Flex sx={styles.fileInfo} w="100%">
           <Icon as={BxImage} />
-          <Text ml="2rem">{file.name}</Text>
+          <Text ml="2rem" textStyle="caption-2" noOfLines={1}>
+            {file.name}
+          </Text>
           <Spacer />
           <Text
+            textStyle="caption-2"
             data-disabled={dataAttr(isDisabled)}
             sx={styles.fileInfoDescription}
+            minW="fit-content"
+            textOverflow="ellipsis"
           >
             {readableFileSize}
           </Text>
