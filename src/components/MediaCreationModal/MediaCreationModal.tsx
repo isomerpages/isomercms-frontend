@@ -27,12 +27,12 @@ import { Attachment } from "components/Attachment"
 import { useCreateMultipleMedia } from "hooks/mediaHooks/useCreateMultipleMedia"
 
 import { MediaDirectoryParams } from "types/folders"
+import { MediaFolderTypes } from "types/media"
 import { MEDIA_FILE_MAX_SIZE } from "utils"
 
 import { Dropzone } from "./components/Dropzone"
 
 type MediaSteps = "upload" | "progressing" | "success" | "failed"
-type UploadVariant = "files" | "images"
 
 const IMAGE_UPLOAD_ACCEPTED_MIME_TYPES = {
   "image/jpeg": [".jpg", ".jpeg"],
@@ -54,7 +54,7 @@ interface MediaDropzoneProps {
   setFileRejections: (rejections: FileRejection[]) => void
   isDisabled?: boolean
   onUpload: (files: File[]) => Promise<void>
-  mediaType: UploadVariant
+  mediaType: MediaFolderTypes
 }
 
 const MediaDropzone = ({
@@ -255,7 +255,7 @@ const MediaUploadFailedDropzone = ({
 
 interface MediaCreationModalProps {
   onClose: () => void
-  variant: UploadVariant
+  variant: MediaFolderTypes
 }
 
 interface MediaCreationRouteParams
