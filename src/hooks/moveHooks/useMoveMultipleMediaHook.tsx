@@ -19,7 +19,7 @@ import { MiddlewareError } from "types/error"
 import { MediaDirectoryParams } from "types/folders"
 import { MoveMultipleMediaDto, MoveSelectedMediaDto } from "types/media"
 
-const moveMultipleMedia = async (
+export const moveMultipleMedia = async (
   { siteName }: MediaDirectoryParams,
   { target, items }: MoveSelectedMediaDto
 ) => {

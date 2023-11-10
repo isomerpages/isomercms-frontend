@@ -36,3 +36,8 @@ export interface MoveMultipleMediaDto {
   target: { directoryName: string }
   items: Array<{ name: string; type: "file" }>
 }
+
+export interface MediaFolderCreationInfo {
+  newDirectoryName: string
+  selectedPages: SelectedMediaDto[]
+}
