@@ -12654,7 +12654,7 @@ html.has-navbar-fixed-top-widescreen {
 }
 
 .remove-after:after {
-  content: "" !important
+  content: "" !important;
 }
 
 .bg-primary {
@@ -13074,7 +13074,7 @@ a.navbar-item {
 }
 
 .CodeMirror {
-  height: 100% !important;
+  height: calc(100% - 6rem) !important;
   overflow-y: scroll;
 }
 
