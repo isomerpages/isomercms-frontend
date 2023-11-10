@@ -44,7 +44,7 @@ import { MediaSettingsScreen } from "layouts/screens/MediaSettingsScreen"
 
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
-import { getMediaLabels } from "utils/media"
+import { getMediaLabels, getSelectedMediaDto } from "utils/media"
 import { isWriteActionsDisabled } from "utils/reviewRequests"
 
 import { EmptyAlbumImage, EmptyDirectoryImage } from "assets"
@@ -113,17 +113,6 @@ const getPlaceholderText = (
   results.push("you add will appear here.")
 
   return results.join(" ")
-}
-
-// Utility method to construct a SelectedMediaDto from MediaData
-const getSelectedMediaDto = (fileData: MediaData) => {
-  const selectedData: SelectedMediaDto = {
-    filePath: fileData.mediaPath,
-    sha: fileData.sha,
-    size: fileData.size || 0,
-  }
-
-  return selectedData
 }
 
 const CreateDirectoryButton = ({
