@@ -68,6 +68,7 @@ const MediasSelectModal = ({
     { initialData: { directories: [] } }
   )
 
+  const [searchValue, setSearchedValue] = useState("")
   const {
     data: { files: mediaFolderFiles, total },
     isLoading: isListMediaFilesLoading,
@@ -78,6 +79,7 @@ const MediasSelectModal = ({
       // returns an index with 1 offset
       curPage: curPage - 1,
       limit: MEDIA_PAGINATION_SIZE,
+      search: searchValue,
     },
     { initialData: { files: [] } }
   )
@@ -88,7 +90,6 @@ const MediasSelectModal = ({
     mediaDirectoryName
   )
 
-  const [searchValue, setSearchedValue] = useState("")
   const filteredDirectories = filterMediaByFileName(
     mediaFolderSubdirectories,
     searchValue
