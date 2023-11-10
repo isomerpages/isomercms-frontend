@@ -28,12 +28,15 @@ import { UseMutateAsyncFunction } from "react-query"
 import { DirectorySettingsSchema } from "components/DirectorySettingsModal"
 import { ImagePreviewCard } from "components/ImagePreviewCard"
 
+import { FilePreviewCard } from "layouts/Media/components"
+
 import { getSelectedMediaDto } from "utils/media"
 
 import { GetMediaSubdirectoriesDto, MediaData } from "types/directory"
 import { MiddlewareError } from "types/error"
 import {
   MediaFolderCreationInfo,
+  MediaFolderTypes,
   MediaLabels,
   SelectedMediaDto,
 } from "types/media"
@@ -41,6 +44,7 @@ import {
 interface CreateMediaFolderModalProps {
   originalSelectedMedia: SelectedMediaDto[]
   mediaLabels: MediaLabels
+  mediaType: MediaFolderTypes
   subDirectories: GetMediaSubdirectoriesDto | undefined
   mediaData: (MediaData | undefined)[]
   isWriteDisabled: boolean | undefined
@@ -84,6 +88,7 @@ const getButtonLabel = (
 export const CreateMediaFolderModal = ({
   originalSelectedMedia,
   mediaLabels,
+  mediaType,
   subDirectories,
   mediaData,
   isWriteDisabled,
@@ -96,7 +101,6 @@ export const CreateMediaFolderModal = ({
     singularMediaLabel,
     pluralMediaLabel,
     singularDirectoryLabel,
-    pluralDirectoryLabel,
   } = mediaLabels
 
   const existingTitles = subDirectories?.directories.map(
@@ -158,39 +162,33 @@ export const CreateMediaFolderModal = ({
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>
           <ModalContent my="4rem">
-            <ModalCloseButton />
+            <ModalCloseButton top="1.5rem" insetEnd="2rem" />
 
             <ModalHeader pt="2rem" pb={0} px="2rem">
-              Create a new {singularDirectoryLabel}
-              {originalSelectedMedia.length > 0
-                ? ` with ${originalSelectedMedia.length} ${
-                    originalSelectedMedia.length === 1
-                      ? singularMediaLabel
-                      : pluralMediaLabel
-                  }`
-                : ""}
+              <Text as="h4" textStyle="h4" mr="2.5rem">
+                Create a new {singularDirectoryLabel}
+                {originalSelectedMedia.length > 0
+                  ? ` with ${originalSelectedMedia.length} ${
+                      originalSelectedMedia.length === 1
+                        ? singularMediaLabel
+                        : pluralMediaLabel
+                    }`
+                  : ""}
+              </Text>
             </ModalHeader>
 
-            <ModalBody px="2rem" pt="1rem" pb={0}>
-              {originalSelectedMedia.length === 0 && (
-                <Text as="p" textStyle="subhead-2">
-                  Use {pluralDirectoryLabel} to organise your {pluralMediaLabel}
-                  . You can always add {pluralMediaLabel} to your{" "}
-                  {singularDirectoryLabel} later.
-                </Text>
-              )}
-
+            <ModalBody px="2rem" pt="0.5rem" pb={0}>
               <FormControl
                 isRequired
                 isInvalid={!!methods.formState.errors.newDirectoryName}
-                mt={originalSelectedMedia.length === 0 ? "1.5rem" : "1rem"}
+                mt="1.5rem"
               >
                 <FormLabel>
                   {_.upperFirst(singularDirectoryLabel)} name
                 </FormLabel>
                 <Input
                   type="text"
-                  placeholder={`Give a name for your ${singularDirectoryLabel}`}
+                  placeholder={`Give your ${singularDirectoryLabel} a name`}
                   {...methods.register("newDirectoryName", { required: true })}
                 />
                 <FormErrorMessage>
@@ -200,8 +198,15 @@ export const CreateMediaFolderModal = ({
 
               {originalSelectedMedia.length === 0 && (
                 <>
-                  <Text as="p" textStyle="subhead-1" mt="2rem">
-                    Add {pluralMediaLabel} to this {singularDirectoryLabel}
+                  <Text as="h5" textStyle="h5" mt="2rem">
+                    Select {pluralMediaLabel} to add to this{" "}
+                    {singularDirectoryLabel}
+                  </Text>
+
+                  <Text textStyle="body-1" my="0.5rem">
+                    Click ‘Skip, I’ll add {pluralMediaLabel} later’ to create an
+                    empty {singularDirectoryLabel}. You can add{" "}
+                    {pluralMediaLabel} to the {singularDirectoryLabel} later.
                   </Text>
 
                   {mediaData.length > 0 && (
@@ -213,15 +218,28 @@ export const CreateMediaFolderModal = ({
                       py="1rem"
                     >
                       <SimpleGrid columns={3} spacing="1.5rem" w="100%">
-                        {mediaData.map(
-                          (data) =>
+                        {mediaData.map((data) =>
+                          data && mediaType === "images" ? (
+                            <ImagePreviewCard
+                              key={data.name}
+                              name={data.name}
+                              addedTime={data.addedTime}
+                              mediaUrl={data.mediaUrl}
+                              imageHeight="10.5rem"
+                              isSelected={methods
+                                .watch("selectedPages")
+                                .some(
+                                  (selectedData) =>
+                                    selectedData.filePath === data.mediaPath
+                                )}
+                              isMenuNeeded={false}
+                              onClick={() => handleSelect(data)}
+                              onCheck={() => handleSelect(data)}
+                            />
+                          ) : (
                             data && (
-                              <ImagePreviewCard
-                                key={data.name}
+                              <FilePreviewCard
                                 name={data.name}
-                                addedTime={data.addedTime}
-                                mediaUrl={data.mediaUrl}
-                                imageHeight="10.5rem"
                                 isSelected={methods
                                   .watch("selectedPages")
                                   .some(
@@ -233,6 +251,7 @@ export const CreateMediaFolderModal = ({
                                 onCheck={() => handleSelect(data)}
                               />
                             )
+                          )
                         )}
                       </SimpleGrid>
                     </Box>
@@ -270,7 +289,7 @@ export const CreateMediaFolderModal = ({
                       onSubmit(data)
                     })}
                   >
-                    Skip, I&apos;ll add {pluralMediaLabel} later
+                    Skip, I’ll add {pluralMediaLabel} later
                   </Button>
                 )}
                 <Button

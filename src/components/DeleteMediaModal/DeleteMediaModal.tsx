@@ -64,7 +64,7 @@ export const DeleteMediaModal = ({
         {selectedMedia.length === 1 && (
           <>
             <ModalHeader>
-              <Text as="h4" textStyle="h4">
+              <Text as="h4" textStyle="h4" mr="2.5rem">
                 Delete {selectedMedia[0].filePath.split("/").pop()}?
               </Text>
             </ModalHeader>

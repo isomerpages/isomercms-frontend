@@ -11,7 +11,7 @@ import {
   VStack,
 } from "@chakra-ui/react"
 import { Checkbox } from "@opengovsg/design-system-react"
-import { BiEditAlt, BiTrash } from "react-icons/bi"
+import { BiEditAlt, BiFolder, BiTrash } from "react-icons/bi"
 import { Link as RouterLink, useRouteMatch } from "react-router-dom"
 
 import { ContextMenu } from "components/ContextMenu"
@@ -33,6 +33,7 @@ export interface ImagePreviewCardProps {
   onClick?: () => void
   onCheck?: () => void
   onDelete?: () => void
+  onMove?: () => void
 }
 
 // Note: This is written as a separate component as the current Card API is not
@@ -48,6 +49,7 @@ export const ImagePreviewCard = ({
   onClick,
   onCheck,
   onDelete,
+  onMove,
 }: ImagePreviewCardProps): JSX.Element => {
   const { url } = useRouteMatch()
   const { setRedirectToPage } = useRedirectHook()
@@ -184,6 +186,9 @@ export const ImagePreviewCard = ({
               to={`${url}/editMediaSettings/${encodedName}`}
             >
               <Text>Rename image</Text>
+            </ContextMenu.Item>
+            <ContextMenu.Item icon={<BiFolder />} onClick={onMove}>
+              <Text>Move to</Text>
             </ContextMenu.Item>
             <ContextMenu.Item
               icon={<BiTrash />}

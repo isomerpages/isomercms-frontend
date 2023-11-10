@@ -56,6 +56,7 @@ const createMediaFolderModalTemplate: StoryFn<
       <CreateMediaFolderModal
         originalSelectedMedia={originalSelectedMedia}
         mediaLabels={getMediaLabels("images")}
+        mediaType="images"
         subDirectories={{ directories: [] }}
         mediaData={[
           MOCK_MEDIA_ITEM_ONE,

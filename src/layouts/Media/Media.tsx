@@ -357,6 +357,7 @@ export const Media = (): JSX.Element => {
       <CreateMediaFolderModal
         originalSelectedMedia={selectedMedia}
         mediaLabels={getMediaLabels(mediaType)}
+        mediaType={mediaType}
         subDirectories={mediaFolderSubdirectories}
         mediaData={files.map(({ data }) => data) || []}
         isWriteDisabled={isWriteDisabled}
@@ -467,7 +468,11 @@ export const Media = (): JSX.Element => {
                     <Menu.List>
                       <Menu.Item onClick={() => onMoveModalOpen()}>
                         <Icon as={BiFolderOpen} mr="1rem" fontSize="1.25rem" />
-                        Move images to album
+                        Move{" "}
+                        {selectedMedia.length === 1
+                          ? singularMediaLabel
+                          : pluralMediaLabel}{" "}
+                        to {singularDirectoryLabel}
                       </Menu.Item>
 
                       {directoryLevel < MAX_MEDIA_LEVELS && (
@@ -479,7 +484,10 @@ export const Media = (): JSX.Element => {
                             mr="1rem"
                             fontSize="1.25rem"
                           />
-                          Create new album with images
+                          Create new {singularDirectoryLabel} with{" "}
+                          {selectedMedia.length === 1
+                            ? singularMediaLabel
+                            : pluralMediaLabel}
                         </Menu.Item>
                       )}
 
@@ -633,14 +641,20 @@ export const Media = (): JSX.Element => {
                             }
                             onCheck={() => handleSelect(data)}
                             onDelete={onDeleteModalOpen}
+                            onMove={onMoveModalOpen}
                           />
                         ) : (
                           data && (
                             <FilePreviewCard
                               name={data.name}
+                              isSelected={selectedMedia.some(
+                                (selectedData) =>
+                                  selectedData.filePath === data.mediaPath
+                              )}
                               onOpen={() =>
                                 setIndividualMedia(getSelectedMediaDto(data))
                               }
+                              onCheck={() => handleSelect(data)}
                               onDelete={onDeleteModalOpen}
                               onMove={onMoveModalOpen}
                             />
