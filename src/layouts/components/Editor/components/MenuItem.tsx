@@ -19,7 +19,7 @@ export const MenuItem = ({
   isActive = null,
 }: MenuItemProps) => (
   // NOTE: Delay opening by 500ms
-  <Tooltip label={title || "divider"} openDelay={500}>
+  <Tooltip label={title || "divider"} hasArrow openDelay={500}>
     <IconButton
       _hover={{ bg: "gray.100" }}
       _active={{ bg: "gray.200" }}
