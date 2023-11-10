@@ -64,10 +64,12 @@ export const OtpForm = ({
         </FormLabel>
         <HStack spacing="0.5rem">
           <Input
+            id="otp"
             type="text"
             maxLength={6}
             inputMode="numeric"
             autoComplete="one-time-code"
+            autoFocus
             {...register("otp", {
               pattern: {
                 value: /^[0-9\b]+$/, // \b is a word boundary - link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Assertions
