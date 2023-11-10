@@ -126,6 +126,21 @@ const createPageStyleSheet = (repoName, primaryColor, secondaryColor) => {
     `.content h5 { color: ${secondaryColor} !important;}`,
     0
   )
+
+  // EditPage: Blockquotes
+  customStyleSheet.insertRule(
+    `.content blockquote { border-left-color: ${secondaryColor} !important;}`,
+    0
+  )
+  customStyleSheet.insertRule(
+    `.content blockquote > p { color: ${secondaryColor} !important;}`,
+    0
+  )
+  customStyleSheet.insertRule(
+    `.content blockquote > ul { color: ${secondaryColor} !important;}`,
+    0
+  )
+
   customStyleSheet.insertRule(
     `.has-text-secondary { color: ${secondaryColor} !important;}`,
     0
