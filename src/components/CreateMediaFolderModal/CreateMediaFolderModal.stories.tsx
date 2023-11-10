@@ -58,13 +58,8 @@ const createMediaFolderModalTemplate: StoryFn<
         mediaLabels={getMediaLabels("images")}
         mediaType="images"
         subDirectories={{ directories: [] }}
-        mediaData={[
-          MOCK_MEDIA_ITEM_ONE,
-          MOCK_MEDIA_ITEM_TWO,
-          MOCK_MEDIA_ITEM_THREE,
-          MOCK_MEDIA_ITEM_FOUR,
-          MOCK_MEDIA_ITEM_FIVE,
-        ]}
+        siteName="storybook"
+        mediaDirectoryName="images"
         isWriteDisabled={false}
         isOpen={isOpen}
         isLoading={false}

@@ -359,7 +359,8 @@ export const Media = (): JSX.Element => {
         mediaLabels={getMediaLabels(mediaType)}
         mediaType={mediaType}
         subDirectories={mediaFolderSubdirectories}
-        mediaData={files.map(({ data }) => data) || []}
+        siteName={siteName}
+        mediaDirectoryName={mediaDirectoryName}
         isWriteDisabled={isWriteDisabled}
         isOpen={isCreateMediaFolderModalOpen}
         isLoading={isCreateDirectoryAndMoveFilesLoading}
