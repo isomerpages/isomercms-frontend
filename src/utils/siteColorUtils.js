@@ -107,6 +107,26 @@ const createPageStyleSheet = (repoName, primaryColor, secondaryColor) => {
     0
   )
   customStyleSheet.insertRule(
+    `.content h1 { color: ${secondaryColor} !important;}`,
+    0
+  )
+  customStyleSheet.insertRule(
+    `.content h2 { color: ${secondaryColor} !important;}`,
+    0
+  )
+  customStyleSheet.insertRule(
+    `.content h3 { color: ${secondaryColor} !important;}`,
+    0
+  )
+  customStyleSheet.insertRule(
+    `.content h4 { color: ${secondaryColor} !important;}`,
+    0
+  )
+  customStyleSheet.insertRule(
+    `.content h5 { color: ${secondaryColor} !important;}`,
+    0
+  )
+  customStyleSheet.insertRule(
     `.has-text-secondary { color: ${secondaryColor} !important;}`,
     0
   )
