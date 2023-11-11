@@ -1,12 +1,5 @@
-import {
-  Box,
-  Flex,
-  Icon,
-  Text,
-  HStack,
-  useDisclosure,
-  Skeleton,
-} from "@chakra-ui/react"
+import { Box, Flex, Icon, Text, HStack, useDisclosure } from "@chakra-ui/react"
+import { useFeatureIsOn } from "@growthbook/growthbook-react"
 import { Button, IconButton } from "@opengovsg/design-system-react"
 import axios from "axios"
 import PropTypes from "prop-types"
@@ -19,13 +12,14 @@ import { StatusBadge } from "components/Header/StatusBadge"
 import { ViewStagingSiteModal } from "components/ViewStagingSiteModal"
 import { WarningModal } from "components/WarningModal"
 
+import { FEATURE_FLAGS } from "constants/featureFlags"
+
 import { useLoginContext } from "contexts/LoginContext"
 
 import {
   useGetReviewRequests,
   useGetStagingUrl,
 } from "hooks/siteDashboardHooks"
-import { useGetStagingStatus } from "hooks/useGetStagingStatus"
 import useRedirectHook from "hooks/useRedirectHook"
 
 import { ReviewRequestModal } from "layouts/ReviewRequest"
@@ -88,10 +82,9 @@ const Header = ({
     if (isEditPage && !shouldAllowEditPageBackNav) onWarningModalOpen()
     else toggleBackNav()
   }
-  const {
-    data: getStagingStatusData,
-    isLoading: isGetStagingStatusLoading,
-  } = useGetStagingStatus(siteName)
+  const isShowStagingBuildStatusEnabled = useFeatureIsOn(
+    FEATURE_FLAGS.IS_SHOW_STAGING_BUILD_STATUS_ENABLED
+  )
 
   return (
     <>
@@ -139,9 +132,7 @@ const Header = ({
           </Flex>
         ) : null}
         <HStack flex={1} justifyContent="flex-end">
-          <Skeleton isLoaded={!isGetStagingStatusLoading} mr="0.75rem">
-            {getStagingStatusData && <StatusBadge {...getStagingStatusData} />}
-          </Skeleton>
+          ({isShowStagingBuildStatusEnabled && <StatusBadge />})
           <NotificationMenu />
           <Button
             onClick={onOpen}
