@@ -6,7 +6,6 @@ import {
   HStack,
   useDisclosure,
 } from "@chakra-ui/react"
-import { useFeatureIsOn } from "@growthbook/growthbook-react"
 import { Button, IconButton } from "@opengovsg/design-system-react"
 import { BiArrowBack, BiCheckCircle } from "react-icons/bi"
 import { useParams, useHistory } from "react-router-dom"
@@ -26,9 +25,8 @@ import { useGetStagingUrl } from "hooks/siteDashboardHooks"
 
 import { ReviewRequestModal } from "layouts/ReviewRequest"
 
+import { useIsIsomerFeatureOn } from "utils/growthbook"
 import { doesOpenReviewRequestExist } from "utils/reviewRequests"
-
-import { FeatureFlags } from "types/featureFlags"
 
 export const SiteEditHeader = (): JSX.Element => {
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -45,7 +43,7 @@ export const SiteEditHeader = (): JSX.Element => {
   } = useDisclosure()
   const { siteName } = useParams<{ siteName: string }>()
   const { data: stagingUrl, isLoading } = useGetStagingUrl(siteName)
-  const isShowStagingBuildStatusEnabled = useFeatureIsOn<FeatureFlags>(
+  const isShowStagingBuildStatusEnabled = useIsIsomerFeatureOn(
     FEATURE_FLAGS.IS_SHOW_STAGING_BUILD_STATUS_ENABLED
   )
 

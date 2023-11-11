@@ -1,5 +1,4 @@
 import { Box, Flex, Icon, Text, HStack, useDisclosure } from "@chakra-ui/react"
-import { useFeatureIsOn } from "@growthbook/growthbook-react"
 import { Button, IconButton } from "@opengovsg/design-system-react"
 import axios from "axios"
 import PropTypes from "prop-types"
@@ -23,6 +22,8 @@ import {
 import useRedirectHook from "hooks/useRedirectHook"
 
 import { ReviewRequestModal } from "layouts/ReviewRequest"
+
+import { useIsIsomerFeatureOn } from "utils/growthbook"
 
 import { getBackButton } from "utils"
 
@@ -82,7 +83,7 @@ const Header = ({
     if (isEditPage && !shouldAllowEditPageBackNav) onWarningModalOpen()
     else toggleBackNav()
   }
-  const isShowStagingBuildStatusEnabled = useFeatureIsOn(
+  const isShowStagingBuildStatusEnabled = useIsIsomerFeatureOn(
     FEATURE_FLAGS.IS_SHOW_STAGING_BUILD_STATUS_ENABLED
   )
 

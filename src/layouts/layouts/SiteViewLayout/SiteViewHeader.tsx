@@ -22,14 +22,14 @@ import { FEATURE_FLAGS } from "constants/featureFlags"
 
 import { useLoginContext } from "contexts/LoginContext"
 
-import { FeatureFlags } from "types/featureFlags"
+import { useIsIsomerFeatureOn } from "utils/growthbook"
 
 export const SiteViewHeader = (): JSX.Element => {
   const { displayedName } = useLoginContext()
   const { pathname } = useLocation()
   const isAtSiteDashboard = pathname.endsWith("dashboard")
   const { siteName } = useParams<{ siteName: string }>()
-  const isShowStagingBuildStatusEnabled = useFeatureIsOn<FeatureFlags>(
+  const isShowStagingBuildStatusEnabled = useIsIsomerFeatureOn(
     FEATURE_FLAGS.IS_SHOW_STAGING_BUILD_STATUS_ENABLED
   )
 

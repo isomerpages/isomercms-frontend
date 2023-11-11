@@ -9,7 +9,6 @@ import {
   Text,
 } from "@chakra-ui/react"
 import { Badge } from "@opengovsg/design-system-react"
-import { useMemo } from "react"
 import { BiCheckCircle, BiError, BiLoader } from "react-icons/bi"
 import { GoDotFill } from "react-icons/go"
 import { IconBaseProps } from "react-icons/lib"
