@@ -133,7 +133,13 @@ const Header = ({
           </Flex>
         ) : null}
         <HStack flex={1} justifyContent="flex-end">
-          ({isShowStagingBuildStatusEnabled && <StatusBadge />})
+          (
+          {isShowStagingBuildStatusEnabled && (
+            <Box mr="-0.25rem">
+              <StatusBadge />
+            </Box>
+          )}
+          )
           <NotificationMenu />
           <Button
             onClick={onOpen}

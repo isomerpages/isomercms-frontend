@@ -32,7 +32,7 @@ const StagingPopoverContent = ({ status }: StagingPopoverContentProps) => {
   switch (status) {
     case "READY":
       headingText = `All saved edits are on staging`
-      bodyText = "Click on 'Open staging' to take a look."
+      bodyText = "Click 'Open staging' to see a preview of your site."
 
       biLoaderIcon = (props: IconBaseProps) => (
         <BiCheckCircle {...props} color="#0F796F" />
@@ -40,18 +40,16 @@ const StagingPopoverContent = ({ status }: StagingPopoverContentProps) => {
 
       break
     case "PENDING":
-      headingText = `Staging site is building`
-      bodyText =
-        "We detected a change in your site. We'll let you know when the staging site is ready."
+      headingText = `Your staging site is being built`
+      bodyText = "This status indicator will change once it's ready."
       biLoaderIcon = (props: IconBaseProps) => (
         <BiLoader {...props} style={{ animation: "spin 2s linear infinite" }} />
       )
       break
     case "ERROR":
-      headingText =
-        "We had some trouble updating the staging site since the latest save. "
+      headingText = "Your staging site may not show the latest changes"
       bodyText =
-        "Don't worry, your production site isn't affected. Try saving your page again. If the issue persists, please contact support@isomer.gov.sg."
+        "Your live site isn't affected. Please save the page again before clicking 'Open Staging'. If changes still don't show, email support@isomer.gov.sg"
 
       biLoaderIcon = (props: IconBaseProps) => <BiError {...props} />
       break
@@ -110,7 +108,7 @@ export const StatusBadgeComponent = ({
   return (
     <Popover placement="bottom-start" trigger="hover">
       <PopoverTrigger>
-        <Box mr="1rem">
+        <Box>
           <Badge
             colorScheme={colourScheme}
             variant="subtle"
