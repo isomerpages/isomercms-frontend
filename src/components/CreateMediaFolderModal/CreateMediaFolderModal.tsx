@@ -250,7 +250,7 @@ export const CreateMediaFolderModal = ({
                     isLoaded={!isListMediaFilesLoading}
                   >
                     {files.length > 0 && (
-                      <Box w="100%" h="25.25rem" overflow="scroll">
+                      <Box w="100%" h="25.25rem" overflow="scroll" p="2px">
                         <SimpleGrid columns={3} spacing="1.5rem" w="100%">
                           {files.map(({ data }) => {
                             return data && mediaType === "images" ? (
