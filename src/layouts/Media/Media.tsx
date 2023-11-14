@@ -19,9 +19,10 @@ import {
 } from "@opengovsg/design-system-react"
 import _ from "lodash"
 import { useEffect, useState } from "react"
-import { BiFolderOpen, BiTrash } from "react-icons/bi"
+import { BiFolderOpen, BiFolderPlus, BiTrash } from "react-icons/bi"
 import { Link, Switch, useHistory, useRouteMatch } from "react-router-dom"
 
+import { CreateMediaFolderModal } from "components/CreateMediaFolderModal"
 import { DeleteMediaModal } from "components/DeleteMediaModal"
 import { Greyscale } from "components/Greyscale"
 import { ImagePreviewCard } from "components/ImagePreviewCard"
@@ -29,12 +30,14 @@ import { MoveMediaModal } from "components/MoveMediaModal"
 
 import { MAX_MEDIA_LEVELS, MEDIA_PAGINATION_SIZE } from "constants/media"
 
+import { useCreateDirectoryAndMoveFilesHook } from "hooks/directoryHooks/useCreateDirectoryAndMoveFilesHook"
 import { useGetAllMediaFiles } from "hooks/directoryHooks/useGetAllMediaFiles"
 import { useListMediaFolderFiles } from "hooks/directoryHooks/useListMediaFolderFiles"
 import { useListMediaFolderSubdirectories } from "hooks/directoryHooks/useListMediaFolderSubdirectories"
 import { useDeleteMultipleMediaHook } from "hooks/mediaHooks"
 import { useMoveMultipleMediaHook } from "hooks/moveHooks"
 import { usePaginate } from "hooks/usePaginate"
+import useRedirectHook from "hooks/useRedirectHook"
 
 import { DeleteWarningScreen } from "layouts/screens/DeleteWarningScreen"
 import { DirectoryCreationScreen } from "layouts/screens/DirectoryCreationScreen"
@@ -44,7 +47,7 @@ import { MediaSettingsScreen } from "layouts/screens/MediaSettingsScreen"
 
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 
-import { getMediaLabels } from "utils/media"
+import { getMediaLabels, getSelectedMediaDto } from "utils/media"
 import { isWriteActionsDisabled } from "utils/reviewRequests"
 
 import { EmptyAlbumImage, EmptyDirectoryImage } from "assets"
@@ -65,7 +68,7 @@ interface CreateDirectoryButtonProps {
   isWriteDisabled: boolean | undefined
   directoryLevel: number
   singularDirectoryLabel: string
-  url: string
+  onOpen: () => void
 }
 
 // Utility method for getting the text under the page title in the header
@@ -115,27 +118,15 @@ const getPlaceholderText = (
   return results.join(" ")
 }
 
-// Utility method to construct a SelectedMediaDto from MediaData
-const getSelectedMediaDto = (fileData: MediaData) => {
-  const selectedData: SelectedMediaDto = {
-    filePath: fileData.mediaPath,
-    sha: fileData.sha,
-    size: fileData.size || 0,
-  }
-
-  return selectedData
-}
-
 const CreateDirectoryButton = ({
   isWriteDisabled,
   directoryLevel,
   singularDirectoryLabel,
-  url,
+  onOpen,
 }: CreateDirectoryButtonProps) => (
   <Greyscale isActive={isWriteDisabled}>
     <CreateButton
-      as={Link}
-      to={directoryLevel < MAX_MEDIA_LEVELS ? `${url}/createDirectory` : "#"}
+      onClick={onOpen}
       isDisabled={directoryLevel >= MAX_MEDIA_LEVELS}
     >
       {`Create ${singularDirectoryLabel}`}
@@ -151,6 +142,7 @@ export const Media = (): JSX.Element => {
     mediaRoom: MediaFolderTypes
     mediaDirectoryName: string
   }>()
+  const { setRedirectToPage } = useRedirectHook()
   const { siteName, mediaRoom: mediaType, mediaDirectoryName } = params
   const [selectedMedia, setSelectedMedia] = useState<SelectedMediaDto[]>([])
   // Note: We need a separate variable here so that we do not lose the selection
@@ -160,6 +152,12 @@ export const Media = (): JSX.Element => {
     individualMedia,
     setIndividualMedia,
   ] = useState<SelectedMediaDto | null>(null)
+
+  const {
+    isOpen: isCreateMediaFolderModalOpen,
+    onOpen: onCreateMediaFolderModalOpen,
+    onClose: onCreateMediaFolderModalClose,
+  } = useDisclosure()
 
   const {
     isOpen: isMoveModalOpen,
@@ -249,6 +247,43 @@ export const Media = (): JSX.Element => {
   )
 
   const {
+    mutateAsync: createDirectoryAndMoveFiles,
+    isLoading: isCreateDirectoryAndMoveFilesLoading,
+  } = useCreateDirectoryAndMoveFilesHook(params, {
+    onSettled: () => {
+      setSelectedMedia([])
+      onCreateMediaFolderModalClose()
+    },
+    onSuccess: (data, variables, context) => {
+      if (variables.selectedPages.length === 0) {
+        successToast({
+          id: "create-directory-success",
+          description: `Successfully created ${singularDirectoryLabel}!`,
+        })
+      } else {
+        successToast({
+          id: "create-directory-and-move-files-success",
+          description: `Successfully created ${singularDirectoryLabel} and moved ${
+            variables.selectedPages.length === 1
+              ? singularMediaLabel
+              : pluralMediaLabel
+          }!`,
+        })
+      }
+
+      setRedirectToPage(
+        `${url}%2F${encodeURIComponent(variables.newDirectoryName)}`
+      )
+    },
+    onError: (err, variables, context) => {
+      errorToast({
+        id: "create-directory-error",
+        description: `Your ${singularDirectoryLabel} could not be created successfully. ${DEFAULT_RETRY_MSG}`,
+      })
+    },
+  })
+
+  const {
     mutate: moveMultipleMedia,
     isLoading: isMoveMultipleMediaLoading,
   } = useMoveMultipleMediaHook(params, {
@@ -319,6 +354,18 @@ export const Media = (): JSX.Element => {
 
   return (
     <>
+      <CreateMediaFolderModal
+        originalSelectedMedia={selectedMedia}
+        mediaLabels={getMediaLabels(mediaType)}
+        mediaType={mediaType}
+        subDirectories={mediaFolderSubdirectories}
+        mediaDirectoryName={mediaDirectoryName}
+        isOpen={isCreateMediaFolderModalOpen}
+        isLoading={isCreateDirectoryAndMoveFilesLoading}
+        onClose={onCreateMediaFolderModalClose}
+        onProceed={createDirectoryAndMoveFiles}
+      />
+
       <MoveMediaModal
         selectedMedia={(individualMedia && [individualMedia]) || selectedMedia}
         mediaType={mediaType}
@@ -420,17 +467,29 @@ export const Media = (): JSX.Element => {
                     <Menu.List>
                       <Menu.Item onClick={() => onMoveModalOpen()}>
                         <Icon as={BiFolderOpen} mr="1rem" fontSize="1.25rem" />
-                        Move images to album
+                        Move{" "}
+                        {selectedMedia.length === 1
+                          ? singularMediaLabel
+                          : pluralMediaLabel}{" "}
+                        to {singularDirectoryLabel}
                       </Menu.Item>
-                      {/* FIXME: To add back when flow is available
-                          <Menu.Item>
-                            <Icon
-                              as={BiFolderPlus}
-                              mr="1rem"
-                              fontSize="1.25rem"
-                            />
-                            Create new album with images
-                          </Menu.Item> */}
+
+                      {directoryLevel < MAX_MEDIA_LEVELS && (
+                        <Menu.Item
+                          onClick={() => onCreateMediaFolderModalOpen()}
+                        >
+                          <Icon
+                            as={BiFolderPlus}
+                            mr="1rem"
+                            fontSize="1.25rem"
+                          />
+                          Create new {singularDirectoryLabel} with{" "}
+                          {selectedMedia.length === 1
+                            ? singularMediaLabel
+                            : pluralMediaLabel}
+                        </Menu.Item>
+                      )}
+
                       <Menu.Item
                         color="interaction.critical.default"
                         onClick={() => onDeleteModalOpen()}
@@ -460,7 +519,7 @@ export const Media = (): JSX.Element => {
                           isWriteDisabled={isWriteDisabled}
                           directoryLevel={directoryLevel}
                           singularDirectoryLabel={singularDirectoryLabel}
-                          url={url}
+                          onOpen={onCreateMediaFolderModalOpen}
                         />
                       </Tooltip>
                     ) : (
@@ -468,7 +527,7 @@ export const Media = (): JSX.Element => {
                         isWriteDisabled={isWriteDisabled}
                         directoryLevel={directoryLevel}
                         singularDirectoryLabel={singularDirectoryLabel}
-                        url={url}
+                        onOpen={onCreateMediaFolderModalOpen}
                       />
                     )}
                   </Box>
@@ -581,14 +640,20 @@ export const Media = (): JSX.Element => {
                             }
                             onCheck={() => handleSelect(data)}
                             onDelete={onDeleteModalOpen}
+                            onMove={onMoveModalOpen}
                           />
                         ) : (
                           data && (
                             <FilePreviewCard
                               name={data.name}
+                              isSelected={selectedMedia.some(
+                                (selectedData) =>
+                                  selectedData.filePath === data.mediaPath
+                              )}
                               onOpen={() =>
                                 setIndividualMedia(getSelectedMediaDto(data))
                               }
+                              onCheck={() => handleSelect(data)}
                               onDelete={onDeleteModalOpen}
                               onMove={onMoveModalOpen}
                             />
@@ -624,11 +689,6 @@ export const Media = (): JSX.Element => {
         <ProtectedRouteWithProps
           path={[`${path}/editMediaSettings/:fileName`]}
           component={MediaSettingsScreen}
-          onClose={() => history.goBack()}
-        />
-        <ProtectedRouteWithProps
-          path={[`${path}/createDirectory`]}
-          component={DirectoryCreationScreen}
           onClose={() => history.goBack()}
         />
         <ProtectedRouteWithProps

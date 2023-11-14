@@ -78,4 +78,5 @@ export const DirectorySettingsSchema = (existingTitlesArray = []) =>
           () => false
         )
       }),
+    selectedPages: Yup.array().ensure(),
   })

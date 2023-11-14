@@ -118,7 +118,7 @@ export const MoveMediaModal = ({
         <ModalCloseButton />
 
         <ModalHeader>
-          <Text as="h4" textStyle="h4">
+          <Text as="h4" textStyle="h4" mr="2.5rem">
             Move{" "}
             {selectedMedia.length === 1
               ? getLastChildOfPath(selectedMedia[0].filePath)
