@@ -174,7 +174,7 @@ export const CreateMediaFolderModal = ({
 
   useEffect(() => {
     methods.setValue("selectedPages", originalSelectedMedia)
-  }, [originalSelectedMedia])
+  }, [methods, originalSelectedMedia])
 
   const onModalClose = () => {
     methods.reset()
