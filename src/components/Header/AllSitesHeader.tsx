@@ -10,7 +10,7 @@ import {
 
 import { AvatarMenu } from "components/Header/AvatarMenu"
 
-import { ISOMER_GUIDE_LINK } from "constants/config"
+import { ISOMER_GUIDE_LINK, ISOMER_REPORT_ISSUE_LINK } from "constants/config"
 
 import { useLoginContext } from "contexts/LoginContext"
 
@@ -42,6 +42,18 @@ export const AllSitesHeader = (): JSX.Element => {
               fontSize="1rem"
             >
               Get help
+            </Text>
+          </LinkOverlay>
+        </LinkBox>
+        <LinkBox position="relative">
+          <LinkOverlay href={ISOMER_REPORT_ISSUE_LINK} isExternal>
+            <Text
+              color="text.link.dark"
+              noOfLines={1}
+              textStyle="subhead-1"
+              fontSize="1rem"
+            >
+              Report issue
             </Text>
           </LinkOverlay>
         </LinkBox>
