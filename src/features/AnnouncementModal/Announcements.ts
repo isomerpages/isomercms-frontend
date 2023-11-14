@@ -1,5 +1,9 @@
-import { HomepageNewFeatures, IsomerThumbsUp, IsomerWaitingLine } from "assets"
-import { BulkUploadAnnouncementImage } from "assets/images/BulkUploadAnnouncementImage"
+import {
+  HomepageNewFeatures,
+  IsomerThumbsUp,
+  IsomerWaitingLine,
+  BulkUploadAnnouncementImage,
+} from "assets"
 import { AnnouncementBatch } from "types/announcements"
 
 import { AnnouncementDescription } from "./components/AnnouncementDescription"
