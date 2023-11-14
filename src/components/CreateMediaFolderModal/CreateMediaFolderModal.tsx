@@ -27,6 +27,7 @@ import _ from "lodash"
 import { useEffect } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { UseMutateAsyncFunction } from "react-query"
+import { useRouteMatch } from "react-router-dom"
 
 import { DirectorySettingsSchema } from "components/DirectorySettingsModal"
 import { ImagePreviewCard } from "components/ImagePreviewCard"
@@ -40,6 +41,7 @@ import { usePaginate } from "hooks/usePaginate"
 import { FilePreviewCard } from "layouts/Media/components"
 
 import { getSelectedMediaDto } from "utils/media"
+import { isWriteActionsDisabled } from "utils/reviewRequests"
 
 import { GetMediaSubdirectoriesDto, MediaData } from "types/directory"
 import { MiddlewareError } from "types/error"
@@ -55,9 +57,7 @@ interface CreateMediaFolderModalProps {
   mediaLabels: MediaLabels
   mediaType: MediaFolderTypes
   subDirectories: GetMediaSubdirectoriesDto | undefined
-  siteName: string
   mediaDirectoryName: string
-  isWriteDisabled: boolean | undefined
   isOpen: boolean
   isLoading: boolean
   onClose: () => void
@@ -100,15 +100,18 @@ export const CreateMediaFolderModal = ({
   mediaLabels,
   mediaType,
   subDirectories,
-  siteName,
   mediaDirectoryName,
-  isWriteDisabled,
   isOpen,
   isLoading,
   onClose,
   onProceed,
 }: CreateMediaFolderModalProps): JSX.Element => {
+  const { params } = useRouteMatch<{
+    siteName: string
+  }>()
+  const { siteName } = params
   const [curPage, setCurPage] = usePaginate()
+  const isWriteDisabled = isWriteActionsDisabled(siteName)
   const {
     singularMediaLabel,
     pluralMediaLabel,

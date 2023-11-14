@@ -5,13 +5,9 @@ import { MemoryRouter, Route } from "react-router-dom"
 
 import { getMediaLabels } from "utils/media"
 
-import {
-  MOCK_MEDIA_ITEM_FIVE,
-  MOCK_MEDIA_ITEM_FOUR,
-  MOCK_MEDIA_ITEM_ONE,
-  MOCK_MEDIA_ITEM_THREE,
-  MOCK_MEDIA_ITEM_TWO,
-} from "mocks/constants"
+import { MOCK_MEDIA_ITEM_DATA, MOCK_MEDIA_ITEM_ONE } from "mocks/constants"
+import { handlers } from "mocks/handlers"
+import { buildMediaFileData, buildMediaFolderFilesData } from "mocks/utils"
 import { useSuccessToast } from "utils"
 
 import { CreateMediaFolderModal } from "./CreateMediaFolderModal"
@@ -58,9 +54,7 @@ const createMediaFolderModalTemplate: StoryFn<
         mediaLabels={getMediaLabels("images")}
         mediaType="images"
         subDirectories={{ directories: [] }}
-        siteName="storybook"
         mediaDirectoryName="images"
-        isWriteDisabled={false}
         isOpen={isOpen}
         isLoading={false}
         onClose={onClose}
@@ -73,6 +67,15 @@ const createMediaFolderModalTemplate: StoryFn<
 export const Default = createMediaFolderModalTemplate.bind({})
 Default.args = {
   originalSelectedMedia: [],
+}
+Default.parameters = {
+  msw: {
+    handlers: [
+      ...handlers,
+      buildMediaFolderFilesData(MOCK_MEDIA_ITEM_DATA),
+      buildMediaFileData(MOCK_MEDIA_ITEM_ONE),
+    ],
+  },
 }
 
 export const OneSelected = createMediaFolderModalTemplate.bind({})
