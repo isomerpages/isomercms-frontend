@@ -330,7 +330,11 @@ export const CreateMediaFolderModal = ({
                     isDisabled={isWriteDisabled}
                     onClick={methods.handleSubmit((data) => {
                       methods.setValue("selectedPages", [])
-                      onSubmit(data)
+                      const dataWithoutSelectedPages = {
+                        ...data,
+                        selectedPages: [],
+                      }
+                      onSubmit(dataWithoutSelectedPages)
                     })}
                   >
                     Skip, I’ll add {pluralMediaLabel} later
