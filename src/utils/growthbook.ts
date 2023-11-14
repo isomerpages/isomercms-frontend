@@ -1,4 +1,9 @@
-import { GrowthBook } from "@growthbook/growthbook-react"
+import { GrowthBook, useFeatureIsOn } from "@growthbook/growthbook-react"
+import { useParams } from "react-router-dom"
+
+import { FeatureFlagsType } from "constants/featureFlags"
+
+import { FeatureFlags } from "types/featureFlags"
 
 const GROWTHBOOK_API_HOST = "https://cdn.growthbook.io"
 
@@ -19,4 +24,14 @@ export const getSiteNameAttributeFromPath = (path: string) => {
     return pathnames[2]
   }
   return ""
+}
+
+export const useIsIsomerFeatureOn = (
+  featureName: FeatureFlagsType
+): boolean => {
+  const { siteName } = useParams<{ siteName: string }>()
+  if (siteName === "storybook") return true
+
+  const isFeatureEnabled = useFeatureIsOn<FeatureFlags>(featureName)
+  return isFeatureEnabled
 }
