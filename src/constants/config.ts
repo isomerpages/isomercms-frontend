@@ -6,3 +6,4 @@ export const PRIVACY_POLICY_LINK =
   "https://guide.isomer.gov.sg/terms-and-privacy/privacy-statement"
 export const ISOMER_GUIDE_LINK = "https://guide.isomer.gov.sg/"
 export const IDENTITY_GUIDE_LINK = "https://go.gov.sg/isomer-identity"
+export const ISOMER_REPORT_ISSUE_LINK = "https://go.gov.sg/isomer-issue"
