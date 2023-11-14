@@ -138,7 +138,7 @@ export const CreateMediaFolderModal = ({
   )
 
   const methods = useForm<MediaFolderCreationInfo>({
-    mode: "onChange",
+    mode: "onTouched",
     resolver: yupResolver(DirectorySettingsSchema(existingTitles)),
     context: {
       type: "mediaDirectoryName",
