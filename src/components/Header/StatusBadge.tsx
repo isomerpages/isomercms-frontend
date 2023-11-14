@@ -10,6 +10,7 @@ import {
 } from "@chakra-ui/react"
 import { Badge } from "@opengovsg/design-system-react"
 import { BiCheckCircle, BiError, BiLoader } from "react-icons/bi"
+import { BsFillQuestionCircleFill } from "react-icons/bs"
 import { GoDotFill } from "react-icons/go"
 import { IconBaseProps } from "react-icons/lib"
 import { useParams } from "react-router-dom"
@@ -121,6 +122,10 @@ export const StatusBadgeComponent = ({
             <Text ml="0.25rem" mr="0.5rem">
               {displayText}
             </Text>
+            <Icon
+              as={BsFillQuestionCircleFill}
+              color="interaction.neutral.active"
+            />
           </Badge>
         </Box>
       </PopoverTrigger>
