@@ -17,19 +17,19 @@ import { AvatarMenu } from "components/Header/AvatarMenu"
 import { NotificationMenu } from "components/Header/NotificationMenu"
 import { StatusBadge } from "components/Header/StatusBadge"
 
-import { ISOMER_GUIDE_LINK } from "constants/config"
+import { ISOMER_GUIDE_LINK, ISOMER_REPORT_ISSUE_LINK } from "constants/config"
 import { FEATURE_FLAGS } from "constants/featureFlags"
 
 import { useLoginContext } from "contexts/LoginContext"
 
-import { FeatureFlags } from "types/featureFlags"
+import { useIsIsomerFeatureOn } from "utils/growthbook"
 
 export const SiteViewHeader = (): JSX.Element => {
   const { displayedName } = useLoginContext()
   const { pathname } = useLocation()
   const isAtSiteDashboard = pathname.endsWith("dashboard")
   const { siteName } = useParams<{ siteName: string }>()
-  const isShowStagingBuildStatusEnabled = useFeatureIsOn<FeatureFlags>(
+  const isShowStagingBuildStatusEnabled = useIsIsomerFeatureOn(
     FEATURE_FLAGS.IS_SHOW_STAGING_BUILD_STATUS_ENABLED
   )
 
@@ -59,7 +59,7 @@ export const SiteViewHeader = (): JSX.Element => {
         </Text>
       </HStack>
       <Spacer />
-      <HStack>
+      <HStack spacing="1rem">
         ({isShowStagingBuildStatusEnabled && <StatusBadge />})
         <LinkBox position="relative">
           <LinkOverlay href={ISOMER_GUIDE_LINK} isExternal>
@@ -70,6 +70,18 @@ export const SiteViewHeader = (): JSX.Element => {
               fontSize="1rem"
             >
               Get help
+            </Text>
+          </LinkOverlay>
+        </LinkBox>
+        <LinkBox position="relative">
+          <LinkOverlay href={ISOMER_REPORT_ISSUE_LINK} isExternal>
+            <Text
+              color="text.link.dark"
+              noOfLines={1}
+              textStyle="subhead-1"
+              fontSize="1rem"
+            >
+              Report issue
             </Text>
           </LinkOverlay>
         </LinkBox>

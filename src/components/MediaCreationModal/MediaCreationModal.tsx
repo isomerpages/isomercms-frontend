@@ -17,6 +17,7 @@ import {
   Flex,
 } from "@chakra-ui/react"
 import { Button, Infobox } from "@opengovsg/design-system-react"
+import _ from "lodash"
 import { useEffect, useState } from "react"
 import { FileRejection } from "react-dropzone"
 import { BiCheckCircle, BiSolidErrorCircle } from "react-icons/bi"
@@ -25,6 +26,8 @@ import { useParams } from "react-router-dom"
 import { Attachment } from "components/Attachment"
 
 import { useCreateMultipleMedia } from "hooks/mediaHooks/useCreateMultipleMedia"
+
+import { getMediaLabels } from "utils/media"
 
 import { MediaDirectoryParams } from "types/folders"
 import { MediaFolderTypes } from "types/media"
@@ -67,15 +70,16 @@ const MediaDropzone = ({
   mediaType,
 }: MediaDropzoneProps) => {
   const { onClose } = useModalContext()
+  const { singularMediaLabel, pluralMediaLabel } = getMediaLabels(mediaType)
 
   return (
     <>
-      <ModalHeader>Upload files</ModalHeader>
+      <ModalHeader>Upload {pluralMediaLabel}</ModalHeader>
       <ModalBody>
         <Text textStyle="body-1" mb="1.5rem">
-          You can upload more than 1 file at once. Having too many files can
-          slow down the site loading time, so we recommend only uploading
-          necessary files to your site.
+          You can upload more than 1 {singularMediaLabel} at once. Having too
+          many {pluralMediaLabel} can slow down the site loading time, so we
+          recommend only uploading necessary {pluralMediaLabel} to your site.
         </Text>
         <Attachment
           rejected={fileRejections}
@@ -98,12 +102,11 @@ const MediaDropzone = ({
         <Button variant="clear" mr={3} onClick={onClose}>
           Cancel
         </Button>
-        <Button
-          isDisabled={isDisabled}
-          onClick={() => onUpload(uploadedFiles)}
-        >{`Upload ${uploadedFiles.length} ${
-          uploadedFiles.length > 1 ? "files" : "file"
-        }`}</Button>
+        <Button isDisabled={isDisabled} onClick={() => onUpload(uploadedFiles)}>
+          {`Upload ${uploadedFiles.length} ${
+            uploadedFiles.length === 1 ? singularMediaLabel : pluralMediaLabel
+          }`}
+        </Button>
       </ModalFooter>
     </>
   )
@@ -112,17 +115,20 @@ const MediaDropzone = ({
 interface UploadProgressIndicatorProps {
   cur: number
   total: number
+  mediaType: MediaFolderTypes
 }
 
 const UploadProgressIndicator = ({
   cur,
   total,
+  mediaType,
 }: UploadProgressIndicatorProps) => {
   const { onClose } = useModalContext()
+  const { pluralMediaLabel } = getMediaLabels(mediaType)
 
   return (
     <>
-      <ModalHeader>Upload files</ModalHeader>
+      <ModalHeader>Upload {pluralMediaLabel}</ModalHeader>
       <ModalBody>
         <Dropzone>
           <Progress
@@ -133,7 +139,7 @@ const UploadProgressIndicator = ({
           <Text
             textStyle="subhead-1"
             mt="1.25rem"
-          >{`Uploading ${cur} of ${total} files`}</Text>
+          >{`Uploading ${cur} of ${total} ${pluralMediaLabel}`}</Text>
           <Text textStyle="caption-1">
             Do not close this screen or navigate away
           </Text>
@@ -152,16 +158,26 @@ const UploadProgressIndicator = ({
 interface MediaUploadSuccessDropzoneProps {
   numMedia: number
   errorMessages: string[]
+  mediaType: MediaFolderTypes
 }
 const MediaUploadSuccessDropzone = ({
   numMedia,
   errorMessages,
+  mediaType,
 }: MediaUploadSuccessDropzoneProps) => {
   const { onClose } = useModalContext()
+  const {
+    singularMediaLabel,
+    pluralMediaLabel,
+    singularDirectoryLabel,
+  } = getMediaLabels(mediaType)
 
   return (
     <>
-      <ModalHeader>Files uploaded!</ModalHeader>
+      <ModalHeader>
+        {_.upperFirst(numMedia === 1 ? singularMediaLabel : pluralMediaLabel)}{" "}
+        uploaded!
+      </ModalHeader>
       <ModalBody>
         <Dropzone>
           <Icon
@@ -169,10 +185,11 @@ const MediaUploadSuccessDropzone = ({
             as={BiCheckCircle}
             fill="utility.feedback.success"
           />
-          <Text
-            textStyle="subhead-1"
-            mt="1.25rem"
-          >{`Successfully uploaded ${numMedia} files`}</Text>
+          <Text textStyle="subhead-1" mt="1.25rem">
+            {`Successfully uploaded ${numMedia} ${
+              numMedia === 1 ? singularMediaLabel : pluralMediaLabel
+            }`}
+          </Text>
         </Dropzone>
         {errorMessages.length > 0 && (
           <>
@@ -187,7 +204,7 @@ const MediaUploadSuccessDropzone = ({
                 mr="0.5rem"
               />
               <Text textColor="utility.feedback.critical">
-                {`${errorMessages.length} files failed to upload`}
+                {`${errorMessages.length} ${pluralMediaLabel} failed to upload`}
               </Text>
             </Flex>
             <UnorderedList>
@@ -203,7 +220,7 @@ const MediaUploadSuccessDropzone = ({
         )}
       </ModalBody>
       <ModalFooter>
-        <Button onClick={onClose}>Return to album</Button>
+        <Button onClick={onClose}>Return to {singularDirectoryLabel}</Button>
       </ModalFooter>
     </>
   )
@@ -211,11 +228,18 @@ const MediaUploadSuccessDropzone = ({
 
 interface MediaUploadFailedDropzoneProps {
   errorMessages: string[]
+  mediaType: MediaFolderTypes
 }
 const MediaUploadFailedDropzone = ({
   errorMessages,
+  mediaType,
 }: MediaUploadFailedDropzoneProps) => {
   const { onClose } = useModalContext()
+  const {
+    singularMediaLabel,
+    pluralMediaLabel,
+    singularDirectoryLabel,
+  } = getMediaLabels(mediaType)
 
   return (
     <>
@@ -225,7 +249,9 @@ const MediaUploadFailedDropzone = ({
           <VStack alignItems="flex-start" maxW="100%">
             <Text textStyle="body-1">
               {`${errorMessages.length} ${
-                errorMessages.length > 1 ? "files" : "file"
+                errorMessages.length === 1
+                  ? singularMediaLabel
+                  : pluralMediaLabel
               } failed to upload`}
             </Text>
             <UnorderedList maxW="100%">
@@ -247,7 +273,7 @@ const MediaUploadFailedDropzone = ({
         </Infobox>
       </ModalBody>
       <ModalFooter>
-        <Button onClick={onClose}>Return to album</Button>
+        <Button onClick={onClose}>Return to {singularDirectoryLabel}</Button>
       </ModalFooter>
     </>
   )
@@ -334,16 +360,21 @@ export const MediaCreationModal = ({
           <UploadProgressIndicator
             cur={numCreated + numFailed}
             total={uploadedFiles.length}
+            mediaType={variant}
           />
         )}
         {curStep === "success" && (
           <MediaUploadSuccessDropzone
             numMedia={numCreated}
             errorMessages={errorMessages}
+            mediaType={variant}
           />
         )}
         {curStep === "failed" && (
-          <MediaUploadFailedDropzone errorMessages={errorMessages} />
+          <MediaUploadFailedDropzone
+            errorMessages={errorMessages}
+            mediaType={variant}
+          />
         )}
       </ModalContent>
     </Modal>

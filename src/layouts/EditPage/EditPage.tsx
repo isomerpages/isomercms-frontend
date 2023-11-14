@@ -139,6 +139,7 @@ export const EditPage = () => {
         )}
         {isMediaModalOpen && (
           <MediaModal
+            showAltTextModal
             onClose={onMediaModalClose}
             type={mediaType}
             onProceed={async ({ selectedMediaPath, altText }) => {

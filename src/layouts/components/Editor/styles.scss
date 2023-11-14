@@ -18,6 +18,8 @@
     margin-top: 0.75em;
   }
 
+  height: 100%;
+
   p.is-empty::before {
     color: #adb5bd;
     content: attr(data-placeholder);

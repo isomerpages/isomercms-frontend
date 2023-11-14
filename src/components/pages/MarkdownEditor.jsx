@@ -7,6 +7,7 @@ import EditorModals from "components/pages/EditorModals"
 import { useMarkdown } from "hooks/useMarkdown"
 
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
+import "./editor.scss"
 
 import {
   boldButton,
@@ -137,6 +138,7 @@ const MarkdownEditor = ({ siteName, onChange, value, isLoading }) => {
       >
         <StatusIcon />
         <SimpleMDE
+          className={editorStyles.cm}
           id="simplemde-editor"
           onChange={onChange}
           value={value}

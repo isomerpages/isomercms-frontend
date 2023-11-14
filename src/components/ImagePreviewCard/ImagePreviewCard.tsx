@@ -5,12 +5,13 @@ import {
   Grid,
   GridItem,
   Image,
+  ImageProps,
   Text,
   useMultiStyleConfig,
   VStack,
 } from "@chakra-ui/react"
 import { Checkbox } from "@opengovsg/design-system-react"
-import { BiEditAlt, BiTrash } from "react-icons/bi"
+import { BiEditAlt, BiFolder, BiTrash } from "react-icons/bi"
 import { Link as RouterLink, useRouteMatch } from "react-router-dom"
 
 import { ContextMenu } from "components/ContextMenu"
@@ -25,11 +26,14 @@ export interface ImagePreviewCardProps {
   name: string
   addedTime: number
   mediaUrl: string
+  imageHeight?: ImageProps["height"]
   isSelected: boolean
   isMenuNeeded?: boolean
   onOpen?: () => void
+  onClick?: () => void
   onCheck?: () => void
   onDelete?: () => void
+  onMove?: () => void
 }
 
 // Note: This is written as a separate component as the current Card API is not
@@ -38,11 +42,14 @@ export const ImagePreviewCard = ({
   name,
   addedTime,
   mediaUrl,
+  imageHeight = "15rem",
   isSelected,
   isMenuNeeded = true,
   onOpen,
+  onClick,
   onCheck,
   onDelete,
+  onMove,
 }: ImagePreviewCardProps): JSX.Element => {
   const { url } = useRouteMatch()
   const { setRedirectToPage } = useRedirectHook()
@@ -91,9 +98,18 @@ export const ImagePreviewCard = ({
         // Note: Outline is required to avoid the card from shifting when selected
         outline={isSelected ? "solid 2px" : "solid 1px"}
         outlineColor={isSelected ? "base.divider.brand" : "base.divider.medium"}
-        onClick={() =>
-          setRedirectToPage(`${url}/editMediaSettings/${encodedName}`)
-        }
+        onClick={(e) => {
+          // For some weird reason, the onClick event is treated as a submit event
+          // We can safely disable the default behaviour here since we define the
+          // onClick behaviour ourselves
+          e.preventDefault()
+
+          if (onClick) {
+            onClick()
+          } else {
+            setRedirectToPage(`${url}/editMediaSettings/${encodedName}`)
+          }
+        }}
       >
         <GridItem gridArea="image">
           <Box position="relative" backgroundColor="base.canvas.overlay">
@@ -113,7 +129,7 @@ export const ImagePreviewCard = ({
             <Center>
               <Image
                 align="center"
-                height="15rem"
+                height={imageHeight}
                 src={mediaUrl}
                 fallbackSrc="/placeholder_no_image.png"
                 pointerEvents="all"
@@ -170,6 +186,9 @@ export const ImagePreviewCard = ({
               to={`${url}/editMediaSettings/${encodedName}`}
             >
               <Text>Rename image</Text>
+            </ContextMenu.Item>
+            <ContextMenu.Item icon={<BiFolder />} onClick={onMove}>
+              <Text>Move to</Text>
             </ContextMenu.Item>
             <ContextMenu.Item
               icon={<BiTrash />}

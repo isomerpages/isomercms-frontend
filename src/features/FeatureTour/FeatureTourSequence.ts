@@ -31,6 +31,34 @@ export const DASHBOARD_FEATURE_STEPS: Array<Step> = [
   },
 ]
 
+export const MEDIA_FEATURE_STEPS: Array<Step> = [
+  {
+    target: "#isomer-media-feature-tour-step-1",
+    title: "Upload more than 1 image at a time",
+    content: "Click ‘Upload images’ to add multiple images to your albums.",
+    floaterProps: { placement: "bottom-end" },
+    placement: "bottom-end",
+  },
+  {
+    target: "#isomer-media-feature-tour-step-2",
+    title: "Select multiple images and organise them",
+    content: "Now, you can select multiple images by clicking on them.",
+    floaterProps: { placement: "top-end" },
+    placement: "top-end",
+  },
+]
+
+export const MEDIA_ONSELECT_FEATURE_STEPS: Array<Step> = [
+  {
+    target: "#isomer-media-onselect-feature-tour-step-1",
+    title: "Bulk actions can be found here",
+    content:
+      "You can create a new folder with your selected images or move them to a different folder! Be careful when you’re deleting multiple images though.",
+    floaterProps: { placement: "bottom-end" },
+    placement: "bottom-end",
+  },
+]
+
 export const WORKSPACE_FEATURE_STEPS: Array<Step> = [
   {
     target: "#isomer-workspace-feature-tour-step-1",

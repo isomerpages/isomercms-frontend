@@ -101,11 +101,12 @@ export const getMediaFolderFiles = ({
   mediaDirectoryName,
   curPage = 0,
   limit = 1000,
+  search = "",
 }: MediaDirectoryParams): Promise<GetMediaFilesDto> => {
   const endpoint = `/sites/${siteName}/media/${mediaDirectoryName}/files`
   return apiService
     .get<GetMediaFilesDto>(endpoint, {
-      params: { page: curPage, limit },
+      params: { page: curPage, limit, search },
     })
     .then(({ data }) => data)
 }

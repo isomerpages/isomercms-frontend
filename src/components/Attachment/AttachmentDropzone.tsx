@@ -27,7 +27,7 @@ export const AttachmentDropzone = ({
           <Text>
             <Button variant="link" isDisabled={inputProps.disabled}>
               Choose files
-            </Button>
+            </Button>{" "}
             or drag and drop here
           </Text>
           <Text textStyle="caption-1">

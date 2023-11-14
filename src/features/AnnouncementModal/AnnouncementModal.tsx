@@ -89,7 +89,12 @@ export const AnnouncementModal = ({
           bg="base.canvas.brandLight"
           borderRadius="4px"
         />
-        <Image bg="base.canvas.brandLight" as={image} />
+        <Image
+          bg="base.canvas.brandLight"
+          alignSelf="center"
+          w="100%"
+          as={image}
+        />
         <ModalHeader>
           {tags.map((tagVariant) => {
             switch (tagVariant) {
