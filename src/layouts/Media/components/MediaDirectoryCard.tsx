@@ -9,10 +9,14 @@ import { prettifyPageFileName } from "utils"
 
 interface MediaDirectoryCardProps {
   title: string
+  onClick?: () => void
+  isMenuNeeded?: boolean
 }
 
 export const MediaDirectoryCard = ({
   title,
+  onClick,
+  isMenuNeeded = true,
 }: MediaDirectoryCardProps): JSX.Element => {
   const {
     params: { siteName, mediaRoom: mediaType, mediaDirectoryName },
@@ -27,42 +31,61 @@ export const MediaDirectoryCard = ({
   )}`
 
   return (
-    <Card variant="single">
-      <LinkBox position="relative">
-        <LinkOverlay
-          as={RouterLink}
-          to={`/sites/${siteName}/media/${mediaType}/mediaDirectory/${encodedDirectoryPath}`}
-        >
-          <CardBody>
-            <Icon as={BiFolder} fontSize="1.5rem" fill="icon.alt" />
-            <Text textStyle="subhead-1" color="text.label" noOfLines={1}>
-              {prettifyPageFileName(title)}
-            </Text>
-          </CardBody>
-        </LinkOverlay>
-      </LinkBox>
-      <ContextMenu>
-        <ContextMenu.Button pos="absolute" />
-        <ContextMenu.List>
-          <ContextMenu.Item
-            icon={<BiEdit />}
+    <Card
+      variant="single"
+      onClick={(e) => {
+        if (onClick) {
+          e.preventDefault()
+          onClick()
+        }
+      }}
+    >
+      {onClick ? (
+        <CardBody>
+          <Icon as={BiFolder} fontSize="1.5rem" fill="icon.alt" />
+          <Text textStyle="subhead-1" color="text.label" noOfLines={1}>
+            {prettifyPageFileName(title)}
+          </Text>
+        </CardBody>
+      ) : (
+        <LinkBox position="relative">
+          <LinkOverlay
             as={RouterLink}
-            to={`${url}/editDirectorySettings/${encodedDirectoryPath}`}
+            to={`/sites/${siteName}/media/${mediaType}/mediaDirectory/${encodedDirectoryPath}`}
           >
-            Rename {mediaType === "images" ? "album" : "directory"}
-          </ContextMenu.Item>
-          <>
+            <CardBody>
+              <Icon as={BiFolder} fontSize="1.5rem" fill="icon.alt" />
+              <Text textStyle="subhead-1" color="text.label" noOfLines={1}>
+                {prettifyPageFileName(title)}
+              </Text>
+            </CardBody>
+          </LinkOverlay>
+        </LinkBox>
+      )}
+      {isMenuNeeded && (
+        <ContextMenu>
+          <ContextMenu.Button pos="absolute" />
+          <ContextMenu.List>
             <ContextMenu.Item
-              icon={<BiTrash />}
+              icon={<BiEdit />}
               as={RouterLink}
-              to={`${url}/deleteDirectory/${encodedDirectoryPath}`}
-              color="text.danger"
+              to={`${url}/editDirectorySettings/${encodedDirectoryPath}`}
             >
-              Delete {mediaType === "images" ? "album" : "directory"}
+              Rename {mediaType === "images" ? "album" : "directory"}
             </ContextMenu.Item>
-          </>
-        </ContextMenu.List>
-      </ContextMenu>
+            <>
+              <ContextMenu.Item
+                icon={<BiTrash />}
+                as={RouterLink}
+                to={`${url}/deleteDirectory/${encodedDirectoryPath}`}
+                color="text.danger"
+              >
+                Delete {mediaType === "images" ? "album" : "directory"}
+              </ContextMenu.Item>
+            </>
+          </ContextMenu.List>
+        </ContextMenu>
+      )}
     </Card>
   )
 }
