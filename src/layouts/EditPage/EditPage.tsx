@@ -69,6 +69,7 @@ export const EditPage = () => {
       Image.configure({ allowBase64: true }),
       Link.configure({ openOnClick: false, protocols: ["mailto"] }),
       Iframe,
+      Instagram,
       Markdown,
       BubbleMenu.configure({
         pluginKey: "linkBubble",
