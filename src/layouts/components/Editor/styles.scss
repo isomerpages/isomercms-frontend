@@ -66,47 +66,13 @@
   }
 
   h1,
-  h1 center {
-    font-family: "Lato", sans-serif;
-    font-size: 3.375rem;
-    line-height: 3.75rem;
-    letter-spacing: -1.5px;
-    word-wrap: normal;
-  }
-
   h2,
-  h2 center {
-    font-family: "Lato", sans-serif;
-    font-size: 2.75rem;
-    line-height: 3.75rem;
-  }
-
   h3,
-  h3 center {
-    font-family: "Lato", sans-serif;
-    font-size: 2rem;
-    line-height: 2.8125rem;
-  }
-
   h4,
-  h4 center {
-    font-family: "Lato", sans-serif;
-    font-size: 1.625rem;
-    line-height: 1.875rem;
-  }
-
   h5,
-  h5 center {
-    font-family: "Lato", sans-serif;
-    font-size: 1.375rem;
-    line-height: 1.875rem;
-  }
-
-  h6,
-  h6 center {
-    font-family: "Lato", sans-serif;
-    font-size: 1rem;
-    line-height: 1.25rem;
+  h6 {
+    margin-top: 3.75rem; // taken from .content in blueprint.scss
+    margin-bottom: 0.75rem; // taken from .content in blueprint.scss
   }
 
   h1,
@@ -114,8 +80,6 @@
   h3,
   h4,
   h5 {
-    margin-top: 3.75rem; // taken from .content in blueprint.scss
-    margin-bottom: 0.75rem; // taken from .content in blueprint.scss
     color: var(--site-secondary-color);
   }
 
