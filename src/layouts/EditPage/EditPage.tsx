@@ -11,7 +11,7 @@ import TableHeader from "@tiptap/extension-table-header"
 import TableRow from "@tiptap/extension-table-row"
 import TaskItem from "@tiptap/extension-task-item"
 import TaskList from "@tiptap/extension-task-list"
-import { useEditor } from "@tiptap/react"
+import { getHTMLFromFragment, useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import { Context, useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
@@ -26,10 +26,15 @@ import { EditorModalContextProvider } from "contexts/EditorModalContext"
 import { ServicesContext } from "contexts/ServicesContext"
 
 import { useGetPageHook } from "hooks/pageHooks"
+import { useCspHook } from "hooks/settingsHooks"
 
 import { Iframe } from "layouts/components/Editor/extensions"
+import { Instagram } from "layouts/components/Editor/extensions/Instagram"
+
+import { isEmbedCodeValid } from "utils/allowedHTML"
 
 import { MediaService } from "services"
+import { EditorEmbedContents } from "types/editPage"
 import { getDecodedParams, getImageDetails } from "utils"
 
 import { MarkdownEditPage } from "./MarkdownEditPage"
@@ -41,6 +46,7 @@ export const EditPage = () => {
   const { data: initialPageData, isLoading: isLoadingPage } = useGetPageHook(
     params
   )
+  const { data: csp } = useCspHook()
   const [variant, setVariant] = useState(
     initialPageData?.content?.frontMatter?.variant || "markdown"
   )
@@ -105,6 +111,8 @@ export const EditPage = () => {
     (ServicesContext as unknown) as Context<{ mediaService: MediaService }>
   )
 
+  if (!editor) return null
+
   const getImageSrc = async (src: string) => {
     const { fileName, imageDirectory } = getImageDetails(src)
     return mediaService.get({
@@ -114,7 +122,13 @@ export const EditPage = () => {
     })
   }
 
-  if (!editor) return null
+  const handleEmbedInsert = ({ value }: EditorEmbedContents) => {
+    if (isEmbedCodeValid(csp, value)) {
+      editor.chain().focus().insertContent(value).run()
+    }
+
+    onEmbedModalClose()
+  }
 
   return (
     <EditorContextProvider editor={editor}>
@@ -186,10 +200,15 @@ export const EditPage = () => {
           <EditorEmbedModal
             isOpen={isEmbedModalOpen}
             onClose={onEmbedModalClose}
-            onProceed={(embedCode) => {
-              editor.chain().focus().insertContent(embedCode).run()
-              onEmbedModalClose()
-            }}
+            onProceed={handleEmbedInsert}
+            cursorValue={
+              editor.state.selection.empty
+                ? ""
+                : getHTMLFromFragment(
+                    editor.state.selection.content().content,
+                    editor.schema
+                  )
+            }
           />
         )}
 

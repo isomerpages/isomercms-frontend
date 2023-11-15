@@ -29,6 +29,7 @@ const editorEmbedModalTemplate: StoryFn<typeof EditorEmbedModal> = () => {
         isOpen={isOpen}
         onClose={onClose}
         onProceed={onProceed}
+        cursorValue=""
       />
     </>
   )
