@@ -91,6 +91,7 @@ const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
           }
           onMediaSelect={onMediaSelect}
           onClose={onClose}
+          mediaType={type}
         />
       )
     }
