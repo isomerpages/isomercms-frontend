@@ -2,7 +2,6 @@ import DOMPurify from "dompurify"
 
 import * as CspService from "services/CspService"
 
-// eslint-disable-next-line import/no-cycle
 import checkCSP from "./cspUtils"
 
 /**

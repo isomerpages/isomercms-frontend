@@ -1,6 +1,7 @@
 import _ from "lodash"
 import moment from "moment-timezone"
 
+// eslint-disable-next-line import/no-cycle
 import { getLengthWithoutTags } from "./allowedHTML"
 import { deslugifyDirectory } from "./deslugify"
 import {
