@@ -18,6 +18,7 @@ import {
   Link,
   ModalCloseButton,
 } from "@opengovsg/design-system-react"
+import * as Cheerio from "cheerio"
 import { useEffect } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import * as Yup from "yup"
@@ -43,6 +44,21 @@ export const EditorEmbedModal = ({
 }: EditorEmbedModalProps): JSX.Element => {
   const { data: csp } = useCspHook()
 
+  const handleSubmit = (embedCode: EditorEmbedContents) => {
+    const { value } = embedCode
+    const $ = Cheerio.load(value)
+
+    if ($("blockquote").hasClass("instagram-media")) {
+      const postUrl = $(".instagram-media").attr("data-instgrm-permalink")
+      const url = document.createElement("a")
+      url.href = postUrl || ""
+      const code = `<iframe src="https://${url.host}${url.pathname}embed/" frameborder="0" allowfullscreen="true" width="320" height="440"></iframe>`
+      onProceed({ value: code })
+    } else {
+      onProceed(embedCode)
+    }
+  }
+
   const methods = useForm<EditorEmbedContents>({
     mode: "onTouched",
     resolver: yupResolver(
@@ -53,7 +69,7 @@ export const EditorEmbedModal = ({
           )
           .matches(
             // Blockquote is to allow for Instagram embeds
-            /^(<iframe|<blockquote)(.*)$/,
+            /^(<iframe |<blockquote )(.*)$/s,
             "Please enter a valid embed code"
           )
           .test({
@@ -87,7 +103,7 @@ export const EditorEmbedModal = ({
       <ModalOverlay />
 
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(onProceed)}>
+        <form onSubmit={methods.handleSubmit(handleSubmit)}>
           <ModalContent>
             <ModalCloseButton />
             <ModalHeader>
