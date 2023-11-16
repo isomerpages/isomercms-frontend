@@ -1,9 +1,11 @@
-import { LinkOverlay, LinkBox, Divider, Text, Icon } from "@chakra-ui/react"
-import { BiEdit, BiFolder, BiTrash, BiWrench } from "react-icons/bi"
+import { LinkOverlay, LinkBox, Text, Icon } from "@chakra-ui/react"
+import { BiEdit, BiFolder, BiTrash } from "react-icons/bi"
 import { Link as RouterLink, useRouteMatch } from "react-router-dom"
 
 import { Card, CardBody } from "components/Card"
 import { ContextMenu } from "components/ContextMenu"
+
+import { getMediaLabels } from "utils/media"
 
 import { prettifyPageFileName } from "utils"
 
@@ -29,6 +31,7 @@ export const MediaDirectoryCard = ({
   const encodedDirectoryPath = `${mediaDirectoryName}%2F${encodeURIComponent(
     title
   )}`
+  const { singularDirectoryLabel } = getMediaLabels(mediaType)
 
   return (
     <Card
@@ -71,7 +74,7 @@ export const MediaDirectoryCard = ({
               as={RouterLink}
               to={`${url}/editDirectorySettings/${encodedDirectoryPath}`}
             >
-              Rename {mediaType === "images" ? "album" : "directory"}
+              Rename {singularDirectoryLabel}
             </ContextMenu.Item>
             <>
               <ContextMenu.Item
@@ -80,7 +83,7 @@ export const MediaDirectoryCard = ({
                 to={`${url}/deleteDirectory/${encodedDirectoryPath}`}
                 color="text.danger"
               >
-                Delete {mediaType === "images" ? "album" : "directory"}
+                Delete {singularDirectoryLabel}
               </ContextMenu.Item>
             </>
           </ContextMenu.List>

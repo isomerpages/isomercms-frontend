@@ -247,7 +247,7 @@ const MediasSelectModal = ({
                         isLoaded={!isLoading}
                         key={data.name}
                       >
-                        {pluralMediaLabel === "images" ? (
+                        {mediaType === "images" ? (
                           <ImagePreviewCard
                             name={data.name}
                             addedTime={data.addedTime}
