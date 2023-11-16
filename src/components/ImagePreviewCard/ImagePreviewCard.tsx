@@ -60,29 +60,29 @@ export const ImagePreviewCard = ({
   return (
     <Box position="relative" h="100%" data-group>
       {/* Checkbox overlay over image */}
-      <Checkbox
-        position="absolute"
-        left="0"
-        top="0"
-        h="3.25rem"
-        w="3.25rem"
-        size="md"
-        p="1rem"
-        variant="transparent"
-        display={isSelected ? "inline-block" : "none"}
-        _groupHover={{
-          bg: "transparent",
-          display: "inline-block",
-        }}
-        _focusWithin={{
-          outline: "none",
-        }}
-        zIndex={1}
-        isChecked={isSelected}
-        onChange={() => {
-          if (onCheck) onCheck()
-        }}
-      />
+      {onCheck && (
+        <Checkbox
+          position="absolute"
+          left="0"
+          top="0"
+          h="3.25rem"
+          w="3.25rem"
+          size="md"
+          p="1rem"
+          variant="transparent"
+          display={isSelected ? "inline-block" : "none"}
+          _groupHover={{
+            bg: "transparent",
+            display: "inline-block",
+          }}
+          _focusWithin={{
+            outline: "none",
+          }}
+          zIndex={1}
+          isChecked={isSelected}
+          onChange={onCheck}
+        />
+      )}
 
       <Grid
         as={chakra.button}

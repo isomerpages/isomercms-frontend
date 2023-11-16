@@ -11,12 +11,13 @@ import TableHeader from "@tiptap/extension-table-header"
 import TableRow from "@tiptap/extension-table-row"
 import TaskItem from "@tiptap/extension-task-item"
 import TaskList from "@tiptap/extension-task-list"
-import { useEditor } from "@tiptap/react"
+import { getHTMLFromFragment, useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 import { Context, useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { Markdown } from "tiptap-markdown"
 
+import { EditorEmbedModal } from "components/EditorEmbedModal"
 import HyperlinkModal from "components/HyperlinkModal"
 import MediaModal from "components/media/MediaModal"
 
@@ -25,10 +26,14 @@ import { EditorModalContextProvider } from "contexts/EditorModalContext"
 import { ServicesContext } from "contexts/ServicesContext"
 
 import { useGetPageHook } from "hooks/pageHooks"
+import { useCspHook } from "hooks/settingsHooks"
 
 import { Iframe } from "layouts/components/Editor/extensions"
 
+import { isEmbedCodeValid } from "utils/allowedHTML"
+
 import { MediaService } from "services"
+import { EditorEmbedContents } from "types/editPage"
 import { getDecodedParams, getImageDetails } from "utils"
 
 import { MarkdownEditPage } from "./MarkdownEditPage"
@@ -40,6 +45,7 @@ export const EditPage = () => {
   const { data: initialPageData, isLoading: isLoadingPage } = useGetPageHook(
     params
   )
+  const { data: csp } = useCspHook()
   const [variant, setVariant] = useState(
     initialPageData?.content?.frontMatter?.variant || "markdown"
   )
@@ -70,7 +76,7 @@ export const EditPage = () => {
         pluginKey: "tableBubble",
       }),
       Table.configure({
-        resizable: true,
+        resizable: false,
       }),
       TableRow,
       TableHeader,
@@ -92,11 +98,19 @@ export const EditPage = () => {
     onClose: onHyperlinkModalClose,
   } = useDisclosure()
 
+  const {
+    isOpen: isEmbedModalOpen,
+    onOpen: onEmbedModalOpen,
+    onClose: onEmbedModalClose,
+  } = useDisclosure()
+
   const { siteName } = decodedParams
 
   const { mediaService } = useContext<{ mediaService: MediaService }>(
     (ServicesContext as unknown) as Context<{ mediaService: MediaService }>
   )
+
+  if (!editor) return null
 
   const getImageSrc = async (src: string) => {
     const { fileName, imageDirectory } = getImageDetails(src)
@@ -107,7 +121,13 @@ export const EditPage = () => {
     })
   }
 
-  if (!editor) return null
+  const handleEmbedInsert = ({ value }: EditorEmbedContents) => {
+    if (isEmbedCodeValid(csp, value)) {
+      editor.chain().focus().insertContent(value.replaceAll("\n", "")).run()
+    }
+
+    onEmbedModalClose()
+  }
 
   return (
     <EditorContextProvider editor={editor}>
@@ -115,6 +135,8 @@ export const EditPage = () => {
         showModal={(modalType) => {
           if (modalType === "hyperlink") {
             onHyperlinkModalOpen()
+          } else if (modalType === "embed") {
+            onEmbedModalOpen()
           } else {
             setMediaType(modalType)
             onMediaModalOpen()
@@ -171,6 +193,21 @@ export const EditPage = () => {
               }
               onMediaModalClose()
             }}
+          />
+        )}
+        {isEmbedModalOpen && (
+          <EditorEmbedModal
+            isOpen={isEmbedModalOpen}
+            onClose={onEmbedModalClose}
+            onProceed={handleEmbedInsert}
+            cursorValue={
+              editor.state.selection.empty
+                ? ""
+                : getHTMLFromFragment(
+                    editor.state.selection.content().content,
+                    editor.schema
+                  )
+            }
           />
         )}
 
