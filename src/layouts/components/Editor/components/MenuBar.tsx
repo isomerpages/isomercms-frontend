@@ -58,6 +58,12 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
     {
       type: "divider",
     },
+    {
+      icon: "list-ordered",
+      title: "Ordered List",
+      action: () => editor.chain().focus().toggleOrderedList().run(),
+      isActive: () => editor.isActive("orderedList"),
+    },
 
     {
       icon: "list-unordered",
@@ -65,18 +71,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
       action: () => editor.chain().focus().toggleBulletList().run(),
       isActive: () => editor.isActive("bulletList"),
     },
-    {
-      icon: "list-ordered",
-      title: "Ordered List",
-      action: () => editor.chain().focus().toggleOrderedList().run(),
-      isActive: () => editor.isActive("orderedList"),
-    },
-    {
-      icon: "list-check-2",
-      title: "Task List",
-      action: () => editor.chain().focus().toggleTaskList().run(),
-      isActive: () => editor.isActive("taskList"),
-    },
+
     {
       type: "divider",
     },
