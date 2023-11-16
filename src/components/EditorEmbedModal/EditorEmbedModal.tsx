@@ -54,6 +54,9 @@ export const EditorEmbedModal = ({
       url.href = postUrl || ""
       const code = `<iframe src="https://${url.host}${url.pathname}embed/" frameborder="0" allowfullscreen="true" width="320" height="440"></iframe>`
       onProceed({ value: code })
+    } else if ($('iframe[src^="https://form.gov.sg"]').length > 0) {
+      // We only want to keep the <iframe> part, the rest is filled in by Tiptap
+      onProceed({ value: $('iframe[src^="https://form.gov.sg"]').toString() })
     } else {
       onProceed(embedCode)
     }
@@ -69,7 +72,7 @@ export const EditorEmbedModal = ({
           )
           .matches(
             // Blockquote is to allow for Instagram embeds
-            /^(<iframe |<blockquote )(.*)$/s,
+            /^(<iframe |<blockquote |<div)(.*)$/s,
             "Please enter a valid embed code"
           )
           .test({
@@ -91,7 +94,9 @@ export const EditorEmbedModal = ({
         "value",
         cursorValue
           .replace('<div class="iframe-wrapper">', "")
-          .replace("</div>", "")
+          .replace('<div class="formsg-wrapper">', "")
+          // Remove the closing div tag
+          .slice(0, -6)
       )
     } else {
       methods.reset()

@@ -2,10 +2,9 @@ import { Node, nodePasteRule } from "@tiptap/core"
 import { ReactNodeViewRenderer } from "@tiptap/react"
 import _ from "lodash"
 
-import { IframeView } from "./IframeView"
+import { FormSGView } from "./FormSGView"
 
-export interface IframeOptions {
-  allowFullscreen: boolean
+export interface FormSGOptions {
   HTMLAttributes: {
     [key: string]: string
   }
@@ -13,30 +12,26 @@ export interface IframeOptions {
 
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
-    iframe: {
-      /**
-       * Add an iframe
-       */
-      setIframe: (options: { src: string }) => ReturnType
+    formsg: {
+      setFormsg: (options: { src: string }) => ReturnType
     }
   }
 }
 
-export const Iframe = Node.create<IframeOptions>({
-  name: "iframe",
+export const FormSG = Node.create<FormSGOptions>({
+  name: "formsg",
+  priority: 200,
 
   group: "block",
   atom: true,
-
   draggable: true,
 
   defining: true,
 
   addOptions() {
     return {
-      allowFullscreen: true,
       HTMLAttributes: {
-        class: "iframe-wrapper",
+        class: "formsg-wrapper",
       },
     }
   },
@@ -46,40 +41,60 @@ export const Iframe = Node.create<IframeOptions>({
       src: {
         default: null,
       },
-      frameborder: {
-        default: 0,
-      },
-      allowfullscreen: {
-        default: this.options.allowFullscreen,
-        parseHTML: () => this.options.allowFullscreen,
-      },
-      width: {
-        default: null,
-      },
-      height: {
-        default: null,
-      },
-      style: {
-        default: null,
-      },
     }
   },
 
   parseHTML() {
     return [
       {
-        tag: 'iframe:not([src^="https://form.gov.sg/"])',
+        tag: 'iframe[src^="https://form.gov.sg/"]',
       },
     ]
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ["div", this.options.HTMLAttributes, ["iframe", HTMLAttributes]]
+    return [
+      "div",
+      this.options.HTMLAttributes,
+      [
+        "div",
+        {
+          style:
+            "font-family: Sans-Serif; color: #000; opacity: 0.9; padding-top: 5px; padding-bottom: 8px;",
+        },
+        "If the form below is not loaded, you can also fill it in at ",
+        ["a", { href: HTMLAttributes.src }, "here"],
+      ],
+      [
+        "iframe",
+        {
+          id: "iframe",
+          style: "width: 100%; height: 500px",
+          src: HTMLAttributes.src,
+        },
+      ],
+      [
+        "div",
+        {
+          style:
+            "font-family: Sans-Serif; font-size: 12px; color: #999; opacity: 0.5; padding-top: 5px;",
+        },
+        "Powered by ",
+        [
+          "a",
+          {
+            href: "https://form.gov.sg",
+            style: "color: #999",
+          },
+          "Form",
+        ],
+      ],
+    ]
   },
 
   addCommands() {
     return {
-      setIframe: (options: { src: string }) => ({ tr, dispatch }) => {
+      setFormsg: (options: { src: string }) => ({ tr, dispatch }) => {
         const { selection } = tr
         const node = this.type.create(options)
 
@@ -95,7 +110,7 @@ export const Iframe = Node.create<IframeOptions>({
   addPasteRules() {
     return [
       nodePasteRule({
-        find: /<iframe (.*)><\/iframe>/g,
+        find: /<div.*>.*href="https:\/\/form.gov.sg\/.*<iframe.*<\/div>/g,
         type: this.type,
         getAttributes: (match) => {
           const srcIndex = match.input?.search("src=")
@@ -115,6 +130,6 @@ export const Iframe = Node.create<IframeOptions>({
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(IframeView)
+    return ReactNodeViewRenderer(FormSGView)
   },
 })
