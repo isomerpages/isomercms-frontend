@@ -1,7 +1,7 @@
 import { PropsWithChildren, createContext, useContext } from "react"
 
 interface EditorModalContextProps {
-  showModal: (modalVariant: "images" | "files" | "hyperlink") => void
+  showModal: (modalVariant: "images" | "files" | "hyperlink" | "embed") => void
 }
 
 const EditorModalContext = createContext<null | EditorModalContextProps>(null)

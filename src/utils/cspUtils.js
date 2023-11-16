@@ -5,7 +5,7 @@ import cheerio from "cheerio"
 import escapeStringRegexp from "escape-string-regexp"
 import _ from "lodash"
 
-import { isLinkInternal } from "utils"
+import { isLinkInternal } from "utils/misc"
 
 function toRegExp(string) {
   const strippedString = string.replace(/\/$/, "") // removes ending '/' from domains eg 'abc.com/'
