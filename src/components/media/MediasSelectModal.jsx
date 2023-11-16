@@ -27,9 +27,8 @@ import { useState, useEffect } from "react"
 import { useFormContext } from "react-hook-form"
 import { useRouteMatch } from "react-router-dom"
 
-import { FolderCard } from "components/FolderCard"
+import { ImagePreviewCard } from "components/ImagePreviewCard"
 import { LoadingButton } from "components/LoadingButton"
-import MediaCard from "components/media/MediaCard"
 
 import { MEDIA_PAGINATION_SIZE } from "constants/media"
 
@@ -38,8 +37,11 @@ import { useListMediaFolderFiles } from "hooks/directoryHooks/useListMediaFolder
 import { useListMediaFolderSubdirectories } from "hooks/directoryHooks/useListMediaFolderSubdirectories"
 import { usePaginate } from "hooks/usePaginate"
 
-import contentStyles from "styles/isomer-cms/pages/Content.module.scss"
+import { FilePreviewCard, MediaDirectoryCard } from "layouts/Media/components"
+
 import mediaStyles from "styles/isomer-cms/pages/Media.module.scss"
+
+import { getMediaLabels } from "utils/media"
 
 import { deslugifyDirectory, getMediaDirectoryName } from "utils"
 
@@ -48,6 +50,10 @@ const filterMediaByFileName = (medias, filterTerm) =>
     media.name.toLowerCase().includes(filterTerm.toLowerCase())
   )
 
+const titleCase = (str) => {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
+}
+
 const MediasSelectModal = ({
   onProceed,
   onClose,
@@ -55,9 +61,12 @@ const MediasSelectModal = ({
   onUpload,
   queryParams,
   setQueryParams,
+  mediaType,
 }) => {
   const { params } = useRouteMatch()
-  const { siteName, fileName } = params
+  const { fileName } = params
+
+  const { singularMediaLabel, pluralMediaLabel } = getMediaLabels(mediaType)
 
   const { mediaRoom, mediaDirectoryName } = queryParams
 
@@ -138,8 +147,9 @@ const MediasSelectModal = ({
               <ModalCloseButton onClick={onClose} position="static" />
             </HStack>
             <Text textStyle="body-1">
-              Choose from your images or upload a new image. You can organise
-              your images in Workspace &gt; Images.
+              Choose from your {pluralMediaLabel} or upload a new{" "}
+              {singularMediaLabel}. You can organise your {pluralMediaLabel} in
+              Workspace &gt; {titleCase(pluralMediaLabel)}.
             </Text>
             <Flex w="100%" justifyContent="space-between">
               {/* Search medias */}
@@ -156,7 +166,7 @@ const MediasSelectModal = ({
                 color="interaction.main.default"
                 onClick={onUpload}
               >
-                Upload new image
+                Upload new {singularMediaLabel}
               </Button>
             </Flex>
           </VStack>
@@ -200,28 +210,26 @@ const MediasSelectModal = ({
                   : "fit-content"
               }
               isLoaded={!isListMediaFolderSubdirectoriesLoading}
+              pb="2.25rem"
             >
-              <div className={contentStyles.folderContainerBoxes}>
-                <div className={contentStyles.boxesContainer}>
-                  {/* Directories */}
-                  {filteredDirectories.map((dir) => (
-                    <FolderCard
-                      displayText={dir.name}
-                      siteName={siteName}
-                      onClick={() =>
-                        setQueryParams((prevState) => {
-                          return {
-                            ...prevState,
-                            mediaDirectoryName: `${prevState.mediaDirectoryName}%2F${dir.name}`,
-                          }
-                        })
-                      }
-                      key={dir.path}
-                      hideSettings
-                    />
-                  ))}
-                </div>
-              </div>
+              <SimpleGrid w="100%" columns={3} spacing="1.5rem">
+                {/* Directories */}
+                {filteredDirectories.map((dir) => (
+                  <MediaDirectoryCard
+                    title={dir.name}
+                    onClick={() => {
+                      onMediaSelect("")
+                      setQueryParams((prevState) => {
+                        return {
+                          ...prevState,
+                          mediaDirectoryName: `${prevState.mediaDirectoryName}%2F${dir.name}`,
+                        }
+                      })
+                    }}
+                    isMenuNeeded={false}
+                  />
+                ))}
+              </SimpleGrid>
             </Skeleton>
 
             <Skeleton
@@ -233,23 +241,36 @@ const MediasSelectModal = ({
                 {files &&
                   files
                     .filter(({ data }) => filteredMedias.includes(data?.name))
-                    .map(({ data, isLoading }, mediaItemIndex) => (
+                    .map(({ data, isLoading }) => (
                       <Skeleton
                         w="100%"
                         h={isLoading ? "4.5rem" : "fit-content"}
                         isLoaded={!isLoading}
                         key={data.name}
                       >
-                        <MediaCard
-                          type={mediaRoom}
-                          media={data}
-                          mediaItemIndex={mediaItemIndex}
-                          onClick={() => onMediaSelect(data)}
-                          isSelected={
-                            data.name === watch("selectedMedia")?.name
-                          }
-                          showSettings={false}
-                        />
+                        {mediaType === "images" ? (
+                          <ImagePreviewCard
+                            name={data.name}
+                            addedTime={data.addedTime}
+                            mediaUrl={data.mediaUrl}
+                            isSelected={
+                              data.name === watch("selectedMedia")?.name
+                            }
+                            onClick={() => onMediaSelect(data)}
+                            isMenuNeeded={false}
+                          />
+                        ) : (
+                          <FilePreviewCard
+                            name={data.name}
+                            addedTime={data.addedTime}
+                            mediaUrl={data.mediaUrl}
+                            isSelected={
+                              data.name === watch("selectedMedia")?.name
+                            }
+                            onClick={() => onMediaSelect(data)}
+                            isMenuNeeded={false}
+                          />
+                        )}
                       </Skeleton>
                     ))}
               </SimpleGrid>

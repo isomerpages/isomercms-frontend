@@ -36,31 +36,40 @@ export const FilePreviewCard = ({
   const encodedName = encodeURIComponent(name)
 
   return (
-    <Box position="relative" h="100%" data-group>
+    <Box
+      position="relative"
+      h="100%"
+      borderRadius="0.25rem"
+      borderWidth="0px"
+      // Note: Outline is required to avoid the card from shifting when selected
+      outline={isSelected ? "solid 2px" : "solid 1px"}
+      outlineColor={isSelected ? "base.divider.brand" : "base.divider.medium"}
+      data-group
+    >
       {/* Checkbox overlay */}
-      <Checkbox
-        position="absolute"
-        left="1rem"
-        top="0.5rem"
-        h="3.25rem"
-        w="3.25rem"
-        size="md"
-        p="1rem"
-        variant="transparent"
-        display={isSelected ? "inline-block" : "none"}
-        _groupHover={{
-          bg: "transparent",
-          display: "inline-block",
-        }}
-        _focusWithin={{
-          outline: "none",
-        }}
-        zIndex={1}
-        isChecked={isSelected}
-        onChange={() => {
-          if (onCheck) onCheck()
-        }}
-      />
+      {onCheck && (
+        <Checkbox
+          position="absolute"
+          left="1rem"
+          top="0.5rem"
+          h="3.25rem"
+          w="3.25rem"
+          size="md"
+          p="1rem"
+          variant="transparent"
+          display={isSelected ? "inline-block" : "none"}
+          _groupHover={{
+            bg: "transparent",
+            display: "inline-block",
+          }}
+          _focusWithin={{
+            outline: "none",
+          }}
+          zIndex={1}
+          isChecked={isSelected}
+          onChange={onCheck}
+        />
+      )}
 
       <Box
         position="relative"
@@ -80,13 +89,14 @@ export const FilePreviewCard = ({
       >
         <Card variant="multi" _hover={{ bg: undefined }}>
           <CardBody>
-            {!isSelected && (
+            {!(isSelected && onCheck) && (
+              // Icon is hidden only if checkbox exists
               <Icon
                 as={BxFileArchiveSolid}
                 fontSize="1.5rem"
                 fill="icon.alt"
                 _groupHover={{
-                  display: "none",
+                  display: `${onCheck && "none"}`,
                 }}
               />
             )}
@@ -94,8 +104,8 @@ export const FilePreviewCard = ({
               textStyle="body-1"
               color="text.label"
               noOfLines={3}
-              ml={isSelected ? "2.5rem" : 0}
-              _groupHover={{ marginLeft: "2.5rem" }}
+              ml={isSelected && onCheck ? "2.5rem" : 0}
+              _groupHover={{ marginLeft: `${onCheck && "2.5rem"}` }}
             >
               {name}
             </Text>
