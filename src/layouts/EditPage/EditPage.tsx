@@ -28,7 +28,7 @@ import { ServicesContext } from "contexts/ServicesContext"
 import { useGetPageHook } from "hooks/pageHooks"
 import { useCspHook } from "hooks/settingsHooks"
 
-import { Iframe, FormSG } from "layouts/components/Editor/extensions"
+import { Iframe } from "layouts/components/Editor/extensions"
 
 import { isEmbedCodeValid } from "utils/allowedHTML"
 
@@ -67,7 +67,6 @@ export const EditPage = () => {
       CharacterCount,
       Image.configure({ allowBase64: true }),
       Link.configure({ openOnClick: false, protocols: ["mailto"] }),
-      FormSG,
       Iframe,
       Markdown,
       BubbleMenu.configure({

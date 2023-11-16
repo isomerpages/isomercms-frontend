@@ -94,7 +94,6 @@ export const EditorEmbedModal = ({
         "value",
         cursorValue
           .replace('<div class="iframe-wrapper">', "")
-          .replace('<div class="formsg-wrapper">', "")
           // Remove the closing div tag
           .slice(0, -6)
       )
