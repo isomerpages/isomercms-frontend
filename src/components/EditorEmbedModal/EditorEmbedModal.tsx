@@ -78,7 +78,7 @@ export const EditorEmbedModal = ({
           .test({
             name: "isEmbedCodeValid",
             message:
-              "We detected unauthorised JavaScript in the code. Please remove the JavaScript content and try again.",
+              "This content is not supported yet, or there is unauthorised Javascript in your code. Ensure that you have valid HTML code and try again.",
             test: (value) => isEmbedCodeValid(csp, value),
           }),
       })
