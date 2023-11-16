@@ -96,6 +96,11 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
       action: () => editor.chain().focus().unsetLink().run(),
     },
     {
+      icon: "code-s-slash-line",
+      title: "Insert embed",
+      action: () => showModal("embed"),
+    },
+    {
       type: "divider",
     },
     {
@@ -126,11 +131,6 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
       icon: "arrow-go-forward-line",
       title: "Redo",
       action: () => editor.chain().focus().redo().run(),
-    },
-    {
-      icon: "code-box-line",
-      title: "Insert embed",
-      action: () => showModal("embed"),
     },
   ]
 
