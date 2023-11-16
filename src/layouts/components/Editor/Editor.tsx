@@ -11,7 +11,7 @@ export const Editor = (props: BoxProps) => {
   const { editor } = useEditorContext()
 
   return (
-    <Box p="1.25rem" h="100%" maxW="50%" {...props}>
+    <Box p="1.25rem" h="100%" maxW="50%" minW="40%" {...props}>
       <Flex
         bg="white"
         border="1px solid"
