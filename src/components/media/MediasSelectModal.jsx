@@ -217,14 +217,15 @@ const MediasSelectModal = ({
                 {filteredDirectories.map((dir) => (
                   <MediaDirectoryCard
                     title={dir.name}
-                    onClick={() =>
+                    onClick={() => {
+                      onMediaSelect("")
                       setQueryParams((prevState) => {
                         return {
                           ...prevState,
                           mediaDirectoryName: `${prevState.mediaDirectoryName}%2F${dir.name}`,
                         }
                       })
-                    }
+                    }}
                     isMenuNeeded={false}
                   />
                 ))}
