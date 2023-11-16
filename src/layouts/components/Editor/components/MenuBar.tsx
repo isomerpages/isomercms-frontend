@@ -1,7 +1,5 @@
 import { Divider, HStack } from "@chakra-ui/react"
 import { Editor } from "@tiptap/react"
-import { Fragment } from "react"
-import { v4 as uuid } from "uuid"
 
 import { useEditorModal } from "contexts/EditorModalContext"
 

@@ -61,8 +61,9 @@ export const TiptapEditPage = ({
       <Editor h="80vh" w="45vw" />
       {/* Preview */}
       <PagePreview
+        // NOTE: Reserve 45vw for editor
+        w="calc(100% - 45vw)"
         h="calc(100vh - 160px - 1rem)"
-        w="100%"
         chunk={editor.getHTML()}
         title={initialPageData?.content?.frontMatter?.title || ""}
       />
