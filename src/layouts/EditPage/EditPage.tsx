@@ -28,12 +28,12 @@ import { ServicesContext } from "contexts/ServicesContext"
 import { useGetPageHook } from "hooks/pageHooks"
 import { useCspHook } from "hooks/settingsHooks"
 
-import { Iframe } from "layouts/components/Editor/extensions"
 import {
   FormSG,
   FormSGDiv,
   FormSGIframe,
-} from "layouts/components/Editor/extensions/FormSG"
+  Iframe,
+} from "layouts/components/Editor/extensions"
 
 import { isEmbedCodeValid } from "utils/allowedHTML"
 
