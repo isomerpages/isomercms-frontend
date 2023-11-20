@@ -127,7 +127,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
             <Divider
               orientation="vertical"
               border="1px solid"
-              borderColor="var(--site-secondary-color)"
+              borderColor="chakra-body-text"
               h="1.625rem"
               mr="0.75rem"
             />
@@ -276,6 +276,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
       borderBottom="1px solid"
       borderColor="base.divider.strong"
       borderTopRadius="0.25rem"
+      spacing="0.125rem"
     >
       {items.map((item) => (
         <>
@@ -315,11 +316,10 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
                           {subItem.title && !subItem.icon && (
                             <Text
                               textStyle={subItem.textStyle}
-                              color={
-                                subItem.useSecondaryColor
-                                  ? "var(--site-secondary-color)"
-                                  : undefined
+                              fontWeight={
+                                subItem.textStyle !== "body-1" ? 400 : undefined
                               }
+                              color="chakra-body-text"
                             >
                               {subItem.title}
                             </Text>
