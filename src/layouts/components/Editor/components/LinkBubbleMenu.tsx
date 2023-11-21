@@ -26,7 +26,7 @@ const LinkButton = () => {
     watch,
     formState: { errors, isValid },
   } = useForm({
-    mode: "onChange",
+    mode: "onTouched",
     defaultValues: {
       href: (editor.getAttributes("link").href as string) || "",
     },
