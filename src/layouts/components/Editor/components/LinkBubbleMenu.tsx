@@ -39,21 +39,12 @@ const LinkButton = () => {
           // using the link modal.
           const { href: _linkHref } = editor.getAttributes("link")
           const linkHref = _linkHref as string
-          // NOTE: We only allow `mailto` and `http` protocols for our absolute links
-          // otherwise, they are relative links.
-          if (
-            linkHref.startsWith("http") ||
-            linkHref.startsWith("mailto") ||
-            // NOTE: Files are always guaranteed to be inside `/files`.
-            // If users use a relative link (from inside a page), it will be situated outside
-            // of the `files` folder, so this invariant still holds.
-            (linkHref.startsWith("/") && linkHref.split("/").at(1) !== "files")
-          ) {
-            onOpen()
-          } else {
-            // Otherwise, show the file modal
-            // and let the user select a file to link to.
+          const isLinkRelativeFilePath =
+            linkHref.startsWith("/") && linkHref.split("/").at(1) === "files"
+          if (isLinkRelativeFilePath) {
             showModal("files")
+          } else {
+            onOpen()
           }
         }}
       >
