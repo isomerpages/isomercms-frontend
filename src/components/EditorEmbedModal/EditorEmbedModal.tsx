@@ -18,7 +18,6 @@ import {
   Link,
   ModalCloseButton,
 } from "@opengovsg/design-system-react"
-import * as Cheerio from "cheerio"
 import { useEffect } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import * as Yup from "yup"
@@ -45,18 +44,7 @@ export const EditorEmbedModal = ({
   const { data: csp } = useCspHook()
 
   const handleSubmit = (embedCode: EditorEmbedContents) => {
-    const { value } = embedCode
-    const $ = Cheerio.load(value)
-
-    if ($("blockquote").hasClass("instagram-media")) {
-      const postUrl = $(".instagram-media").attr("data-instgrm-permalink")
-      const url = document.createElement("a")
-      url.href = postUrl || ""
-      const code = `<iframe src="https://${url.host}${url.pathname}embed/" frameborder="0" allowfullscreen="true" width="320" height="440"></iframe>`
-      onProceed({ value: code })
-    } else {
-      onProceed(embedCode)
-    }
+    onProceed(embedCode)
   }
 
   const methods = useForm<EditorEmbedContents>({
@@ -92,6 +80,7 @@ export const EditorEmbedModal = ({
         cursorValue
           .replace('<div class="iframe-wrapper">', "")
           .replace('<div class="formsg-wrapper">', "")
+          .replace('<div class="instagram-wrapper">', "")
           // Remove the closing div tag
           .slice(0, -6)
       )
