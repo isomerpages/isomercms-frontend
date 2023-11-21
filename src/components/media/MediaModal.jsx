@@ -9,8 +9,6 @@ import { MediaAltText } from "components/media/MediaAltText"
 import MediasSelectModal from "components/media/MediasSelectModal"
 import { MediaCreationModal } from "components/MediaCreationModal/MediaCreationModal"
 
-import { useCreateMediaHook } from "hooks/mediaHooks/useCreateMediaHook"
-
 import { getMediaDirectoryName } from "utils"
 
 const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
@@ -35,8 +33,6 @@ const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
     mediaRoom: type,
     mediaDirectoryName: type,
   })
-
-  const { mutateAsync: createHandler } = useCreateMediaHook(queryParams)
 
   const retrieveMediaDirectoryParams = () =>
     `/${getMediaDirectoryName(queryParams.mediaDirectoryName, {
@@ -64,18 +60,8 @@ const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
         <MediaCreationModal
           params={queryParams}
           variant={queryParams.mediaRoom}
-          onProceed={async ({ data }) => {
-            await createHandler({ data })
-            onMediaSelect({ ...data, mediaUrl: data.content })
-            if (showAltTextModal) setMediaMode("details")
-            else
-              onProceed({
-                selectedMediaPath: `${retrieveMediaDirectoryParams()}/${
-                  data.name
-                }`,
-              })
-          }}
-          onClose={onClose}
+          onProceed={() => setMediaMode("select")}
+          onClose={() => setMediaMode("select")}
         />
       )
     }
