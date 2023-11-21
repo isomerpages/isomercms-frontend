@@ -157,7 +157,7 @@ export const MarkdownEditPage = ({ togglePreview }: MarkdownPageProps) => {
 
       {/* Preview */}
       <PagePreview
-        h="calc(100vh - 160px - 1rem)"
+        h="calc(100vh - 0.5rem)"
         w="62.5rem"
         title={initialPageData?.content?.frontMatter?.title || ""}
         chunk={htmlChunk}
@@ -187,26 +187,39 @@ const PreviewModal = ({
   togglePreview,
 }: PreviewModalProps) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xl">
+    <Modal isOpen={isOpen} onClose={onClose} size="4xl" scrollBehavior="inside">
       <ModalOverlay />
       <ModalContent p="1rem">
         <ModalHeader>
-          <Text textStyle="h3">New editing preview</Text>
+          <Text textStyle="h3">Preview Isomer’s new editor</Text>
         </ModalHeader>
-        <ModalCloseButton />
+        <ModalCloseButton top="1.5rem" insetEnd="2rem" />
         <ModalBody>
-          <Editor maxW="100%" p="0" />
-          <Infobox mt="1rem" variant="warning">
-            Changes you make here will reflect on the new editor if you use the
-            new one!
+          <Text mb="1.5rem">
+            We’re introducing a new editor on IsomerCMS. Using this editor, you
+            can edit pages without using any Markdown or HTML. Explore what your
+            content looks like on the new editor.
+          </Text>
+          <Text>
+            You can toggle to use the new editor anytime on Page Settings.
+          </Text>
+          <Infobox my="1.5rem" variant="warning">
+            <Text>
+              The current editor will be phased out by{" "}
+              <Text as="span" fontWeight="bold">
+                Q2 2024
+              </Text>
+              .
+            </Text>
           </Infobox>
+          <Editor maxW="100%" p="0" />
         </ModalBody>
         <ModalFooter>
-          <Button colorScheme="red" mr={3} onClick={onClose}>
-            Close
+          <Button variant="clear" mr={3} onClick={onClose}>
+            I&apos;ll explore later
           </Button>
           <Button colorScheme="blue" onClick={togglePreview}>
-            I&apos;m in!
+            Use new editor on this page
           </Button>
         </ModalFooter>
       </ModalContent>

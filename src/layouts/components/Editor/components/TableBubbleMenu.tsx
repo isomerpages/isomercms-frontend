@@ -3,6 +3,15 @@ import { BubbleMenu } from "@tiptap/react"
 
 import { useEditorContext } from "contexts/EditorContext"
 
+import {
+  BxAddColLeft,
+  BxAddColRight,
+  BxAddRowAbove,
+  BxAddRowBelow,
+  BxDelCol,
+  BxDelRow,
+} from "assets"
+
 import { MenuItem } from "./MenuItem"
 
 export const TableBubbleMenu = () => {
@@ -24,37 +33,37 @@ export const TableBubbleMenu = () => {
         }}
       >
         <MenuItem
-          icon="insert-column-left"
+          icon={BxAddColLeft}
           action={() => editor.chain().focus().addColumnBefore().run()}
           title="Add column before"
           isRound
         />
         <MenuItem
-          icon="insert-column-right"
+          icon={BxAddColRight}
           action={() => editor.chain().focus().addColumnAfter().run()}
           title="Add column after"
           isRound
         />
         <MenuItem
-          icon="delete-column"
+          icon={BxDelCol}
           action={() => editor.chain().focus().deleteColumn().run()}
           title="Delete column"
           isRound
         />
         <MenuItem
-          icon="insert-row-top"
+          icon={BxAddRowAbove}
           action={() => editor.chain().focus().addRowBefore().run()}
           title="Add row before"
           isRound
         />
         <MenuItem
-          icon="insert-row-bottom"
+          icon={BxAddRowBelow}
           action={() => editor.chain().focus().addRowAfter().run()}
           title="Add row after"
           isRound
         />
         <MenuItem
-          icon="delete-row"
+          icon={BxDelRow}
           action={() => editor.chain().focus().deleteRow().run()}
           title="Delete row"
           isRound

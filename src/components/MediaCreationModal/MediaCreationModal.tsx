@@ -159,13 +159,14 @@ interface MediaUploadSuccessDropzoneProps {
   numMedia: number
   errorMessages: string[]
   mediaType: MediaFolderTypes
+  onProceed: () => void
 }
 const MediaUploadSuccessDropzone = ({
   numMedia,
   errorMessages,
   mediaType,
+  onProceed,
 }: MediaUploadSuccessDropzoneProps) => {
-  const { onClose } = useModalContext()
   const {
     singularMediaLabel,
     pluralMediaLabel,
@@ -220,7 +221,7 @@ const MediaUploadSuccessDropzone = ({
         )}
       </ModalBody>
       <ModalFooter>
-        <Button onClick={onClose}>Return to {singularDirectoryLabel}</Button>
+        <Button onClick={onProceed}>Return to {singularDirectoryLabel}</Button>
       </ModalFooter>
     </>
   )
@@ -281,6 +282,7 @@ const MediaUploadFailedDropzone = ({
 
 interface MediaCreationModalProps {
   onClose: () => void
+  onProceed: () => void
   variant: MediaFolderTypes
 }
 
@@ -295,6 +297,7 @@ interface MediaCreationRouteParams
 
 export const MediaCreationModal = ({
   onClose,
+  onProceed,
   variant,
 }: MediaCreationModalProps) => {
   const { onClose: onModalClose } = useDisclosure()
@@ -368,6 +371,7 @@ export const MediaCreationModal = ({
             numMedia={numCreated}
             errorMessages={errorMessages}
             mediaType={variant}
+            onProceed={onProceed}
           />
         )}
         {curStep === "failed" && (

@@ -130,7 +130,7 @@
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
   position: relative;
-  height: calc(100vh - #{$header-height} - #{$footer-height} - 1rem);
+  height: calc(100vh - #{$header-height} - #{$footer-height} - 2.5rem);
 }
 
 .pageEditorSidebarLoading {
