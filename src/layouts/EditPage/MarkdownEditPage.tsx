@@ -193,7 +193,7 @@ const PreviewModal = ({
         <ModalHeader>
           <Text textStyle="h3">Preview Isomer’s new editor</Text>
         </ModalHeader>
-        <ModalCloseButton />
+        <ModalCloseButton top="1.5rem" insetEnd="2rem" />
         <ModalBody>
           <Text mb="1.5rem">
             We’re introducing a new editor on IsomerCMS. Using this editor, you
@@ -204,7 +204,13 @@ const PreviewModal = ({
             You can toggle to use the new editor anytime on Page Settings.
           </Text>
           <Infobox my="1.5rem" variant="warning">
-            The current editor will be phased out by Q2 2024.
+            <Text>
+              The current editor will be phased out by{" "}
+              <Text as="span" fontWeight="bold">
+                Q2 2024
+              </Text>
+              .
+            </Text>
           </Infobox>
           <Editor maxW="100%" p="0" />
         </ModalBody>
