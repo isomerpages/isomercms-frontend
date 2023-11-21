@@ -1,10 +1,10 @@
-import { Tooltip } from "@chakra-ui/react"
+import { Icon, Tooltip } from "@chakra-ui/react"
 import { IconButton } from "@opengovsg/design-system-react"
 import { MouseEventHandler } from "react"
-import remixiconUrl from "remixicon/fonts/remixicon.symbol.svg"
+import { IconType } from "react-icons/lib"
 
 interface MenuItemProps {
-  icon?: string
+  icon?: IconType
   title?: string
   action?: MouseEventHandler<HTMLButtonElement>
   isActive?: null | (() => boolean)
@@ -32,9 +32,7 @@ export const MenuItem = ({
       aria-label={title || "divider"}
       isRound={isRound}
     >
-      <svg className="remix" height="1.25rem" width="1.25rem">
-        <use xlinkHref={`${remixiconUrl}#ri-${icon}`} />
-      </svg>
+      <Icon as={icon} fontSize="1.25rem" color="base.content.medium" />
     </IconButton>
   </Tooltip>
 )
