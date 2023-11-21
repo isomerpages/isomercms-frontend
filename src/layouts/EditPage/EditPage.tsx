@@ -34,6 +34,7 @@ import {
   FormSGDiv,
   FormSGIframe,
   Iframe,
+  IsomerImage,
 } from "layouts/components/Editor/extensions"
 
 import { isEmbedCodeValid } from "utils/allowedHTML"
@@ -71,7 +72,7 @@ export const EditPage = () => {
       TaskList,
       TaskItem,
       CharacterCount,
-      Image.configure({ allowBase64: true }),
+      IsomerImage,
       Link.configure({ openOnClick: false, protocols: ["mailto"] }),
       Iframe,
       FormSG,
@@ -124,11 +125,15 @@ export const EditPage = () => {
 
   const getImageSrc = async (src: string) => {
     const { fileName, imageDirectory } = getImageDetails(src)
-    return mediaService.get({
+    const { mediaPath, mediaUrl } = await mediaService.get({
       siteName,
       mediaDirectoryName: imageDirectory || "images",
       fileName,
     })
+    const nomalisedMediaPath = mediaPath.startsWith("images/")
+      ? `/${mediaPath}`
+      : mediaPath
+    return { mediaPath: nomalisedMediaPath, mediaUrl }
   }
 
   const handleEmbedInsert = ({ value }: EditorEmbedContents) => {
@@ -176,25 +181,27 @@ export const EditPage = () => {
             type={mediaType}
             onProceed={async ({ selectedMediaPath, altText }) => {
               if (mediaType === "images") {
-                const { mediaUrl } = await getImageSrc(selectedMediaPath)
+                const { mediaPath } = await getImageSrc(selectedMediaPath)
                 editor
                   .chain()
                   .focus()
                   .setImage({
-                    src: mediaUrl,
+                    src: mediaPath,
                     alt: altText,
                   })
                   .run()
                 // NOTE: If it's a file and there's no selection made, just add a link with default text
-              } else if (editor.state.selection.empty)
+              } else if (editor.state.selection.empty) {
                 editor
                   .chain()
                   .focus()
                   .insertContent(
-                    `<a target="_blank" rel="noopener noreferrer nofollow" href="${selectedMediaPath}">file</a>`
+                    `<a target="_blank" rel="noopener noreferrer nofollow" href="${selectedMediaPath}">${
+                      altText ?? "file"
+                    }</a>`
                   )
                   .run()
-              else {
+              } else {
                 editor
                   .chain()
                   .focus()

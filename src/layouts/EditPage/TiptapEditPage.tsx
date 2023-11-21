@@ -1,17 +1,26 @@
 import axios from "axios"
-import { useEffect } from "react"
+import DOMPurify from "dompurify"
+import _ from "lodash"
+import { marked } from "marked"
+import { useCallback, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
 import PagePreview from "components/pages/PagePreview"
 
 import { useEditorContext } from "contexts/EditorContext"
 
+import { useGetMultipleMediaHook } from "hooks/mediaHooks"
 import { useGetPageHook } from "hooks/pageHooks"
+import { useCspHook } from "hooks/settingsHooks"
+
+import checkCSP from "utils/cspUtils"
+import { getMediaSrcsFromHtml } from "utils/images"
 
 import { Editor } from "../components/Editor/Editor"
 
 import { DEFAULT_BODY } from "./constants"
 import { EditPageLayout } from "./EditPageLayout"
+import { sanitiseRawHtml, updateHtmlWithMediaData } from "./utils"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -49,6 +58,41 @@ export const TiptapEditPage = ({
     shouldUseFetchedData,
   ])
 
+  const [htmlChunk, setHtmlChunk] = useState("")
+  const [mediaSrcs, setMediaSrcs] = useState<Set<string>>(new Set<string>(""))
+  const editorHtmlValue = editor.getHTML()
+  const { data: csp } = useCspHook()
+  const { siteName } = useParams<{ siteName: string }>()
+  const { data: mediaData } = useGetMultipleMediaHook({
+    siteName,
+    mediaSrcs,
+  })
+
+  const updateMediaSrcs = useCallback(() => {
+    if (!csp || _.isEmpty(csp) || !editorHtmlValue) return
+    const html = marked.parse(editorHtmlValue)
+    const { sanitisedHtml: CSPSanitisedHtml } = checkCSP(csp, html)
+    const DOMCSPSanitisedHtml = DOMPurify.sanitize(CSPSanitisedHtml)
+    setMediaSrcs(getMediaSrcsFromHtml(DOMCSPSanitisedHtml))
+  }, [csp, editorHtmlValue])
+
+  useEffect(() => {
+    updateMediaSrcs()
+  }, [updateMediaSrcs])
+
+  useEffect(() => {
+    if (!csp || _.isEmpty(csp) || !editorHtmlValue) return
+    const html = marked.parse(editorHtmlValue)
+    const { sanitisedHtml } = sanitiseRawHtml(csp, html)
+
+    const { html: processedChunk } = updateHtmlWithMediaData(
+      mediaSrcs,
+      sanitisedHtml,
+      mediaData
+    )
+    setHtmlChunk(processedChunk)
+  }, [mediaData, editorHtmlValue, csp, mediaSrcs])
+
   return (
     <EditPageLayout
       setEditorContent={(content) => {
@@ -64,7 +108,7 @@ export const TiptapEditPage = ({
         // NOTE: Reserve 45vw for editor
         w="calc(100% - 45vw)"
         h="calc(100vh - 160px - 1rem)"
-        chunk={editor.getHTML()}
+        chunk={htmlChunk}
         title={initialPageData?.content?.frontMatter?.title || ""}
       />
     </EditPageLayout>
