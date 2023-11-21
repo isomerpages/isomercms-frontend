@@ -13,7 +13,13 @@ export const IsomerImage = Image.extend({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ["div", this.options.HTMLAttributes, ["img", HTMLAttributes]]
+    return [
+      "div",
+      {
+        class: "isomer-image-wrapper",
+      },
+      ["img", HTMLAttributes],
+    ]
   },
 
   addNodeView() {
