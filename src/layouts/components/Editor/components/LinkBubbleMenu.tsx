@@ -7,11 +7,11 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  InputGroup,
+  FormControl,
 } from "@chakra-ui/react"
-import { Button, Input } from "@opengovsg/design-system-react"
+import { Button, FormErrorMessage, Input } from "@opengovsg/design-system-react"
 import { BubbleMenu } from "@tiptap/react"
-import { useState } from "react"
+import { useForm } from "react-hook-form"
 
 import { useEditorContext } from "contexts/EditorContext"
 import { useEditorModal } from "contexts/EditorModalContext"
@@ -20,8 +20,31 @@ const LinkButton = () => {
   const { editor } = useEditorContext()
   const { onClose, onOpen, isOpen } = useDisclosure()
   const { showModal } = useEditorModal()
-  const [href, setHref] = useState("")
 
+  const {
+    register,
+    watch,
+    formState: { errors, isValid },
+  } = useForm({
+    mode: "onTouched",
+    defaultValues: {
+      href: (editor.getAttributes("link").href as string) || "",
+    },
+  })
+  const href = watch("href")
+  const onSubmit = () => {
+    if (href) {
+      editor
+        .chain()
+        .focus()
+        // NOTE: Force `https` by default
+        .setLink({ href })
+        .run()
+    } else {
+      editor.chain().focus().unsetLink().run()
+    }
+    onClose()
+  }
   return (
     <>
       <button
@@ -50,45 +73,34 @@ const LinkButton = () => {
       >
         Change link
       </button>
-      <Modal isOpen={isOpen} onClose={onClose} size="sm">
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Update link</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <InputGroup size="sm">
+      <FormControl isRequired isInvalid={!!errors.href?.message}>
+        <Modal isOpen={isOpen} onClose={onClose} size="sm">
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Update link</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
               <Input
-                defaultValue={
-                  (editor.getAttributes("link").href as string) || ""
-                }
-                onChange={(event) => setHref(event.target.value)}
+                id="href"
+                {...register("href", { required: "Link is required" })}
               />
-            </InputGroup>
-          </ModalBody>
+              <FormErrorMessage>{errors.href?.message || ""}</FormErrorMessage>
+            </ModalBody>
 
-          <ModalFooter>
-            <Button
-              colorScheme="blue"
-              mr={3}
-              onClick={() => {
-                if (href) {
-                  editor
-                    .chain()
-                    .focus()
-                    // NOTE: Force `https` by default
-                    .setLink({ href })
-                    .run()
-                } else {
-                  editor.chain().focus().unsetLink().run()
-                }
-                onClose()
-              }}
-            >
-              Save
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+            <ModalFooter>
+              <Button
+                colorScheme="blue"
+                mr={3}
+                type="submit"
+                onClick={onSubmit}
+                isDisabled={!isValid}
+              >
+                Save
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </FormControl>
     </>
   )
 }

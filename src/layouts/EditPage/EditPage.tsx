@@ -197,7 +197,7 @@ export const EditPage = () => {
                   .focus()
                   .insertContent(
                     `<a target="_blank" rel="noopener noreferrer nofollow" href="${selectedMediaPath}">${
-                      altText ?? "file"
+                      altText || "file"
                     }</a>`
                   )
                   .run()
