@@ -158,7 +158,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
     {
       type: "item",
       icon: BiItalic,
-      title: "Italic",
+      title: "Italicise",
       action: () => editor.chain().focus().toggleItalic().run(),
       isActive: () => editor.isActive("italic"),
     },
@@ -172,7 +172,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
     {
       type: "item",
       icon: BiStrikethrough,
-      title: "Strike",
+      title: "Strikethrough",
       action: () => editor.chain().focus().toggleStrike().run(),
       isActive: () => editor.isActive("strike"),
     },
@@ -188,7 +188,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
         {
           type: "item",
           icon: BiListOl,
-          title: "Ordered List",
+          title: "Ordered list",
           action: () => editor.chain().focus().toggleOrderedList().run(),
           isActive: () => editor.isActive("orderedList"),
         },
@@ -196,7 +196,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
         {
           type: "item",
           icon: BiListUl,
-          title: "Bullet List",
+          title: "Bullet list",
           action: () => editor.chain().focus().toggleBulletList().run(),
           isActive: () => editor.isActive("bulletList"),
         },
@@ -247,7 +247,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
     {
       type: "item",
       icon: BiMinus,
-      title: "Horizontal Rule",
+      title: "Divider",
       action: () => editor.chain().focus().setHorizontalRule().run(),
     },
     {
