@@ -68,7 +68,7 @@ export const Iframe = Node.create<IframeOptions>({
   parseHTML() {
     return [
       {
-        tag: "iframe",
+        tag: 'iframe:not([src^="https://form.gov.sg/"])',
       },
     ]
   },

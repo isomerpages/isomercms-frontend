@@ -29,7 +29,12 @@ import { ServicesContext } from "contexts/ServicesContext"
 import { useGetPageHook } from "hooks/pageHooks"
 import { useCspHook } from "hooks/settingsHooks"
 
-import { Iframe } from "layouts/components/Editor/extensions"
+import {
+  FormSG,
+  FormSGDiv,
+  FormSGIframe,
+  Iframe,
+} from "layouts/components/Editor/extensions"
 
 import { isEmbedCodeValid } from "utils/allowedHTML"
 
@@ -69,6 +74,9 @@ export const EditPage = () => {
       Image.configure({ allowBase64: true }),
       Link.configure({ openOnClick: false, protocols: ["mailto"] }),
       Iframe,
+      FormSG,
+      FormSGDiv,
+      FormSGIframe,
       Markdown,
       BubbleMenu.configure({
         pluginKey: "linkBubble",

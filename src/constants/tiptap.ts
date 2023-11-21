@@ -1,0 +1,1 @@
+export const TIPTAP_FORMSG_NODE_PRIORITY = 300
