@@ -157,7 +157,7 @@ export const MarkdownEditPage = ({ togglePreview }: MarkdownPageProps) => {
 
       {/* Preview */}
       <PagePreview
-        h="calc(100vh - 160px - 1rem)"
+        h="100%"
         w="62.5rem"
         title={initialPageData?.content?.frontMatter?.title || ""}
         chunk={htmlChunk}
