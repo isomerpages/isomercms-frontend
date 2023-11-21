@@ -2,6 +2,8 @@ import { Node } from "@tiptap/core"
 import { ReactNodeViewRenderer } from "@tiptap/react"
 import _ from "lodash"
 
+import { TIPTAP_FORMSG_NODE_PRIORITY } from "constants/tiptap"
+
 import { FormSGView } from "./FormSGView"
 
 export interface FormSGOptions {
@@ -88,7 +90,7 @@ export const FormSGIframe = Node.create({
 
 export const FormSG = Node.create<FormSGOptions>({
   name: "formsg",
-  priority: 300,
+  priority: TIPTAP_FORMSG_NODE_PRIORITY,
   group: "block",
   content: "formsgdiv formsgiframe formsgdiv",
   atom: true,
