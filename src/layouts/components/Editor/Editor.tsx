@@ -6,6 +6,7 @@ import { EditorContent } from "@tiptap/react"
 import { useEditorContext } from "contexts/EditorContext"
 
 import { LinkBubbleMenu, MenuBar, TableBubbleMenu } from "./components"
+import { ImageBubbleMenu } from "./components/ImageBubbleMenu"
 
 export const Editor = (props: BoxProps) => {
   const { editor } = useEditorContext()
@@ -22,6 +23,7 @@ export const Editor = (props: BoxProps) => {
       >
         <MenuBar editor={editor} />
         <LinkBubbleMenu />
+        <ImageBubbleMenu />
         <TableBubbleMenu />
         <Box
           as={EditorContent}

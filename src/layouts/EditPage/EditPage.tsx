@@ -85,6 +85,9 @@ export const EditPage = () => {
       BubbleMenu.configure({
         pluginKey: "tableBubble",
       }),
+      BubbleMenu.configure({
+        pluginKey: "imageBubble",
+      }),
       Table.configure({
         resizable: false,
       }),
