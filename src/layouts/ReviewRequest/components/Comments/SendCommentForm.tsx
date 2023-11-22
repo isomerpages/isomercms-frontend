@@ -44,7 +44,12 @@ export const SendCommentForm = ({
   const queryClient = useQueryClient()
 
   const handleUpdateNotifications = async ({ comment }: CommentFormProps) => {
-    await updateNotifications({ siteName, requestId, message: comment })
+    try {
+      await updateNotifications({ siteName, requestId, message: comment })
+    } catch (e) {
+      // Needed for react-hook-form to reset isSubmitting
+      return
+    }
     resetField("comment")
     queryClient.invalidateQueries([COMMENTS_KEY, siteName])
   }

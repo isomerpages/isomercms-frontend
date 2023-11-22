@@ -105,7 +105,12 @@ const LoginContent = (): JSX.Element => {
 
   const handleSendOtp = async ({ email: emailInput }: LoginProps) => {
     const trimmedEmail = emailInput.trim()
-    await sendLoginOtp({ email: trimmedEmail }) // Non-2xx responses will be caught by axios and thrown as error
+    try {
+      await sendLoginOtp({ email: trimmedEmail }) // Non-2xx responses will be caught by axios and thrown as error
+    } catch (e) {
+      // Needed for react-hook-form to reset isSubmitting
+      return
+    }
     successToast({
       id: "send-otp-success",
       description: `OTP sent to ${trimmedEmail}`,
@@ -114,7 +119,12 @@ const LoginContent = (): JSX.Element => {
   }
 
   const handleVerifyOtp = async ({ otp }: OtpProps) => {
-    await verifyLoginOtp({ email, otp })
+    try {
+      await verifyLoginOtp({ email, otp })
+    } catch (e) {
+      // Needed for react-hook-form to reset isSubmitting
+      return
+    }
     history.replace("/sites")
   }
 
