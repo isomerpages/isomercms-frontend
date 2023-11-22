@@ -14,13 +14,10 @@ import { LoadingButton } from "components/LoadingButton"
 import elementStyles from "styles/isomer-cms/Elements.module.scss"
 
 import { getDirectorySettingsType } from "utils/directoryUtils"
+import { getMediaDirectoryName } from "utils/media"
 import { isWriteActionsDisabled } from "utils/reviewRequests"
 
-import {
-  deslugifyDirectory,
-  getLastItemType,
-  getMediaDirectoryName,
-} from "utils"
+import { deslugifyDirectory, getLastItemType } from "utils"
 
 import { DirectorySettingsSchema } from "./DirectorySettingsSchema"
 

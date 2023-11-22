@@ -1,4 +1,6 @@
-import { getLastItemType, getMediaDirectoryName } from "../utils"
+import { getMediaDirectoryName } from "utils/media"
+
+import { getLastItemType } from "../utils"
 
 export class DirectoryService {
   constructor({ apiClient }) {

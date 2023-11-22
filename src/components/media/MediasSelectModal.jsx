@@ -41,9 +41,9 @@ import { FilePreviewCard, MediaDirectoryCard } from "layouts/Media/components"
 
 import mediaStyles from "styles/isomer-cms/pages/Media.module.scss"
 
-import { getMediaLabels } from "utils/media"
+import { getMediaDirectoryName, getMediaLabels } from "utils/media"
 
-import { deslugifyDirectory, getMediaDirectoryName } from "utils"
+import { deslugifyDirectory } from "utils"
 
 const filterMediaByFileName = (medias, filterTerm) =>
   medias.filter((media) =>

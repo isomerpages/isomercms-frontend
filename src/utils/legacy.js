@@ -289,21 +289,6 @@ export const getLastItemType = (params) => {
   return lastItemType
 }
 
-export const getMediaDirectoryName = (
-  mediaDirectoryName,
-  { start = 0, end, splitOn = "%2F", joinOn = "%2F", decode = false }
-) => {
-  const mediaDirectoryArray = mediaDirectoryName.split(splitOn)
-  const selectedMediaDirectoryArray = mediaDirectoryArray.slice(start, end)
-  if (decode) {
-    const decodedSelectedMediaDirectoryArray = selectedMediaDirectoryArray.map(
-      (v) => decodeURIComponent(v)
-    )
-    return decodedSelectedMediaDirectoryArray.join(joinOn)
-  }
-  return selectedMediaDirectoryArray.join(joinOn)
-}
-
 export const getNextItemType = (params) => {
   const lastItemType = getLastItemType(params)
   if (lastItemType === "siteName") {

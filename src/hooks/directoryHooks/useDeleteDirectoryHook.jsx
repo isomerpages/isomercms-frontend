@@ -11,9 +11,10 @@ import {
 
 import { ServicesContext } from "contexts/ServicesContext"
 
+import { getMediaDirectoryName } from "utils/media"
 import { useSuccessToast, useErrorToast } from "utils/toasts"
 
-import { DEFAULT_RETRY_MSG, getMediaDirectoryName } from "utils"
+import { DEFAULT_RETRY_MSG } from "utils"
 
 // eslint-disable-next-line import/prefer-default-export
 export function useDeleteDirectoryHook(params, queryParams) {

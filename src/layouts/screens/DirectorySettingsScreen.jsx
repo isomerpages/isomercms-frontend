@@ -9,7 +9,9 @@ import {
   useUpdateDirectoryHook,
 } from "hooks/directoryHooks"
 
-import { getLastItemType, getMediaDirectoryName } from "utils"
+import { getMediaDirectoryName } from "utils/media"
+
+import { getLastItemType } from "utils"
 
 // axios settings
 axios.defaults.withCredentials = true
