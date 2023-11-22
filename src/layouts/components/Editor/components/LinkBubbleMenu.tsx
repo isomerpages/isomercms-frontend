@@ -11,6 +11,7 @@ import {
 } from "@chakra-ui/react"
 import { Button, FormErrorMessage, Input } from "@opengovsg/design-system-react"
 import { BubbleMenu } from "@tiptap/react"
+import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 
 import { useEditorContext } from "contexts/EditorContext"
@@ -20,28 +21,36 @@ const LinkButton = () => {
   const { editor } = useEditorContext()
   const { onClose, onOpen, isOpen } = useDisclosure()
   const { showModal } = useEditorModal()
-
   const {
     register,
     watch,
     formState: { errors, isValid },
+    setValue,
   } = useForm({
     mode: "onTouched",
     defaultValues: {
-      href: (editor.getAttributes("link").href as string) || "",
+      href: "", // we don't set default values here since this does not change on component re-open
     },
   })
+
+  useEffect(() => {
+    // set default values here instead
+    const { href } = editor.getAttributes("link")
+    setValue("href", href)
+    // only done once per every time the modal is opened
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen])
+
   const href = watch("href")
+
   const onSubmit = () => {
     if (href) {
       editor
         .chain()
-        .focus()
+        .extendMarkRange("link")
         // NOTE: Force `https` by default
         .setLink({ href })
         .run()
-    } else {
-      editor.chain().focus().unsetLink().run()
     }
     onClose()
   }
