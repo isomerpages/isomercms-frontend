@@ -135,9 +135,10 @@ const MediasSelectModal = ({
       size="6xl"
       scrollBehavior="inside"
       closeOnOverlayClick={false}
+      isCentered
     >
       <ModalOverlay />
-      <ModalContent padding="0.5rem" paddingTop="1rem">
+      <ModalContent padding="0.5rem" paddingTop="1rem" maxHeight="90%">
         <ModalHeader>
           <VStack alignItems="right" gap="1rem">
             <HStack justifyContent="space-between">
