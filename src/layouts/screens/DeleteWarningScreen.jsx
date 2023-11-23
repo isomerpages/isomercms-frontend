@@ -10,13 +10,10 @@ import { useDeleteDirectoryHook } from "hooks/directoryHooks"
 import { useGetMediaHook, useDeleteMediaHook } from "hooks/mediaHooks"
 import { useGetPageHook, useDeletePageHook } from "hooks/pageHooks"
 
+import { getMediaDirectoryName } from "utils/media"
 import { isWriteActionsDisabled } from "utils/reviewRequests"
 
-import {
-  getLastItemType,
-  getMediaDirectoryName,
-  pageFileNameToTitle,
-} from "utils"
+import { getLastItemType, pageFileNameToTitle } from "utils"
 
 export const DeleteWarningScreen = ({ match, onClose }) => {
   const [isDeleteChecked, setIsDeleteChecked] = useState(false)

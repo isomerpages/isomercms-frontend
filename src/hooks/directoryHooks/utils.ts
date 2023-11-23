@@ -1,5 +1,6 @@
+import { getMediaDirectoryName } from "utils/media"
+
 import { DirectoryInfoProps, DirectoryInfoReturn } from "types/directory"
-import { getMediaDirectoryName } from "utils"
 
 export function extractCreateDirectoryInfo({
   data,

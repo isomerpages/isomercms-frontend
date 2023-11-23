@@ -2,21 +2,15 @@ import PropTypes from "prop-types"
 
 import { MediaCreationModal } from "components/MediaCreationModal"
 
-import { useCreateMediaHook } from "hooks/mediaHooks"
-
 export const MediaCreationScreen = ({ match, onClose }) => {
-  const { params, decodedParams } = match
-
-  const { mutateAsync: createHandler } = useCreateMediaHook(params, {
-    onSuccess: () => onClose(),
-  })
+  const { decodedParams } = match
 
   return (
     <MediaCreationModal
       params={decodedParams}
       variant={decodedParams.mediaRoom}
       onClose={onClose}
-      onProceed={createHandler}
+      onProceed={onClose}
     />
   )
 }
