@@ -27,7 +27,14 @@ const getStyleSheet = (uniqueTitle) => {
 
 const createPageStyleSheet = (repoName, primaryColor, secondaryColor) => {
   const styleElement = document.createElement("style")
-  const styleTitle = `${repoName}-style`
+  const styleTitle = `custom-style`
+  const existingStyleElement = document.getElementById(styleTitle)
+
+  // Remove existing stylesheet if it exists
+  if (existingStyleElement) {
+    existingStyleElement.parentNode.removeChild(existingStyleElement)
+  }
+
   styleElement.setAttribute("id", styleTitle)
   styleElement.setAttribute("title", styleTitle)
   document.head.appendChild(styleElement)

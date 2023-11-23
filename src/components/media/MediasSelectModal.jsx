@@ -41,9 +41,9 @@ import { FilePreviewCard, MediaDirectoryCard } from "layouts/Media/components"
 
 import mediaStyles from "styles/isomer-cms/pages/Media.module.scss"
 
-import { getMediaLabels } from "utils/media"
+import { getMediaDirectoryName, getMediaLabels } from "utils/media"
 
-import { deslugifyDirectory, getMediaDirectoryName } from "utils"
+import { deslugifyDirectory } from "utils"
 
 const filterMediaByFileName = (medias, filterTerm) =>
   medias.filter((media) =>
@@ -135,9 +135,10 @@ const MediasSelectModal = ({
       size="6xl"
       scrollBehavior="inside"
       closeOnOverlayClick={false}
+      isCentered
     >
       <ModalOverlay />
-      <ModalContent padding="0.5rem" paddingTop="1rem">
+      <ModalContent padding="0.5rem" paddingTop="1rem" maxHeight="90%">
         <ModalHeader>
           <VStack alignItems="right" gap="1rem">
             <HStack justifyContent="space-between">

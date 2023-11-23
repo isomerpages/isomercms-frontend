@@ -9,7 +9,7 @@ import { MediaAltText } from "components/media/MediaAltText"
 import MediasSelectModal from "components/media/MediasSelectModal"
 import { MediaCreationModal } from "components/MediaCreationModal/MediaCreationModal"
 
-import { getMediaDirectoryName } from "utils"
+import { getMediaDirectoryName } from "utils/media"
 
 const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
   const {

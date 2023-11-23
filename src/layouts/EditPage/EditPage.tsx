@@ -35,6 +35,7 @@ import {
   FormSGIframe,
   Iframe,
   IsomerImage,
+  Instagram,
 } from "layouts/components/Editor/extensions"
 
 import { isEmbedCodeValid } from "utils/allowedHTML"
@@ -78,12 +79,16 @@ export const EditPage = () => {
       FormSG,
       FormSGDiv,
       FormSGIframe,
+      Instagram,
       Markdown,
       BubbleMenu.configure({
         pluginKey: "linkBubble",
       }),
       BubbleMenu.configure({
         pluginKey: "tableBubble",
+      }),
+      BubbleMenu.configure({
+        pluginKey: "imageBubble",
       }),
       Table.configure({
         resizable: false,

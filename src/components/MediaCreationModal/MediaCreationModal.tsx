@@ -21,13 +21,12 @@ import _ from "lodash"
 import { useEffect, useState } from "react"
 import { FileRejection } from "react-dropzone"
 import { BiCheckCircle, BiSolidErrorCircle } from "react-icons/bi"
-import { useParams } from "react-router-dom"
 
 import { Attachment } from "components/Attachment"
 
 import { useCreateMultipleMedia } from "hooks/mediaHooks/useCreateMultipleMedia"
 
-import { getMediaLabels } from "utils/media"
+import { getMediaDirectoryName, getMediaLabels } from "utils/media"
 
 import { MediaDirectoryParams } from "types/folders"
 import { MediaFolderTypes } from "types/media"
@@ -280,12 +279,6 @@ const MediaUploadFailedDropzone = ({
   )
 }
 
-interface MediaCreationModalProps {
-  onClose: () => void
-  onProceed: () => void
-  variant: MediaFolderTypes
-}
-
 interface MediaCreationRouteParams
   extends Omit<
     MediaDirectoryParams,
@@ -295,14 +288,25 @@ interface MediaCreationRouteParams
   mediaDirectoryName?: string
 }
 
+interface MediaCreationModalProps {
+  params: MediaCreationRouteParams
+  onClose: () => void
+  onProceed: () => void
+  variant: MediaFolderTypes
+}
+
 export const MediaCreationModal = ({
+  params,
   onClose,
   onProceed,
   variant,
 }: MediaCreationModalProps) => {
   const { onClose: onModalClose } = useDisclosure()
-  const params = useParams<MediaCreationRouteParams>()
-  const { siteName, mediaDirectoryName } = params
+  const { siteName, mediaDirectoryName: rawMediaDirectoryName } = params
+  const mediaDirectoryName = `${getMediaDirectoryName(
+    rawMediaDirectoryName || "",
+    { splitOn: "/" }
+  )}`
 
   const {
     mutateAsync: uploadFiles,
