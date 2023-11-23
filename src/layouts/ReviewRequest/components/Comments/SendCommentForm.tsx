@@ -39,6 +39,7 @@ export const SendCommentForm = ({
   const {
     mutateAsync: updateNotifications,
     error: updateNotificationsError,
+    isLoading: isUpddatingComments,
   } = useUpdateComments()
 
   const queryClient = useQueryClient()
@@ -62,7 +63,7 @@ export const SendCommentForm = ({
     <form onSubmit={handleSubmit(handleUpdateNotifications)}>
       <FormControl
         isInvalid={!!formState.errors.comment}
-        isReadOnly={formState.isSubmitting}
+        isReadOnly={isUpddatingComments}
         pb="1.5rem"
       >
         <HStack>
@@ -80,7 +81,7 @@ export const SendCommentForm = ({
             variant="clear"
             aria-label="link to send comment"
             type="submit"
-            isLoading={formState.isSubmitting}
+            isLoading={isUpddatingComments}
             isDisabled={!formState.isValid}
           />
         </HStack>
