@@ -34,15 +34,15 @@ import {
   FormSGIframe,
   Iframe,
   Instagram,
-  IsomerCard,
-  IsomerCardBody,
-  IsomerCardDescription,
-  IsomerCardImage,
-  IsomerCardLink,
-  IsomerCards,
-  IsomerCardTitle,
-  IsomerClickableCard,
   IsomerImage,
+  IsomerCards,
+  IsomerCard,
+  IsomerClickableCard,
+  IsomerCardImage,
+  IsomerCardBody,
+  IsomerCardTitle,
+  IsomerCardDescription,
+  IsomerCardLink,
 } from "layouts/components/Editor/extensions"
 
 import { isEmbedCodeValid } from "utils/allowedHTML"

@@ -1,4 +1,4 @@
-import { HStack, Icon } from "@chakra-ui/react"
+import { HStack, Icon, useDisclosure } from "@chakra-ui/react"
 import { IconButton } from "@opengovsg/design-system-react"
 import { BubbleMenu } from "@tiptap/react"
 import { BiPencil, BiTrash } from "react-icons/bi"
