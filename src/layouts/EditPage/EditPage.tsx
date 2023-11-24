@@ -35,6 +35,14 @@ import {
   Iframe,
   IsomerImage,
   Instagram,
+  IsomerCards,
+  IsomerCard,
+  IsomerClickableCard,
+  IsomerCardImage,
+  IsomerCardBody,
+  IsomerCardTitle,
+  IsomerCardDescription,
+  IsomerCardLink,
 } from "layouts/components/Editor/extensions"
 
 import { isEmbedCodeValid } from "utils/allowedHTML"
@@ -79,6 +87,14 @@ export const EditPage = () => {
       FormSGDiv,
       FormSGIframe,
       Instagram,
+      IsomerCards,
+      IsomerCard,
+      IsomerClickableCard,
+      IsomerCardImage,
+      IsomerCardBody,
+      IsomerCardTitle,
+      IsomerCardDescription,
+      IsomerCardLink,
       Markdown,
       BubbleMenu.configure({
         pluginKey: "linkBubble",
