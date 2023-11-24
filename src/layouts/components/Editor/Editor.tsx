@@ -31,7 +31,8 @@ export const Editor = (props: BoxProps) => {
           flex="1 1 auto"
           overflowX="hidden"
           overflowY="auto"
-          p="1.25rem 1rem"
+          px="1.25rem"
+          py="2.5rem"
           h="100%"
         />
         <Divider borderColor="base.divider.strong" />
