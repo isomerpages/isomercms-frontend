@@ -10,8 +10,8 @@ export const CardsView = ({ node, selected }: NodeViewProps) => {
         {selected && (
           <Box
             position="absolute"
-            top="calc(-2.25rem - 2px)"
-            left="calc(-0.75rem - 2px)"
+            top="calc(-1.5rem - 2px)"
+            left="-2px"
             zIndex="1"
             backgroundColor="#055AFF"
             textColor="white"
@@ -22,7 +22,7 @@ export const CardsView = ({ node, selected }: NodeViewProps) => {
         )}
         <Box
           outline={selected ? "2px solid #055AFF" : undefined}
-          outlineOffset="0.75rem"
+          py="0.75rem"
           w="fit-content"
         >
           <EditorCardsPlaceholderImage />
