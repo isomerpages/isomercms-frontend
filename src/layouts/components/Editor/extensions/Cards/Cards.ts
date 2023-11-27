@@ -154,9 +154,13 @@ export const IsomerCards = Node.create<CardOptions>({
         if (dispatch) {
           const offset = tr.selection.anchor + 1
 
-          tr.replaceSelectionWith(node)
+          tr.insert(tr.selection.anchor, node)
             .scrollIntoView()
-            .setSelection(Selection.near(tr.doc.resolve(offset)))
+            .setSelection(
+              Selection.near(
+                tr.doc.resolve(tr.doc.resolve(offset).parentOffset)
+              )
+            )
         }
 
         return true
