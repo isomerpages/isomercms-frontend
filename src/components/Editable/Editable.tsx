@@ -177,10 +177,13 @@ type ContactUsDroppableZone =
 
 type NavDroppableZone = "link" | `sublink-${number}`
 
+type NormalPageDroppableZone = "cards"
+
 type DroppableZone =
   | HomepageDroppableZone
   | ContactUsDroppableZone
   | NavDroppableZone
+  | NormalPageDroppableZone
 
 type DropInfo = {
   droppableId: DroppableZone
