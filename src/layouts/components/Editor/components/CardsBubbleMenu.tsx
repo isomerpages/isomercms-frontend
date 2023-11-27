@@ -4,9 +4,10 @@ import { BubbleMenu } from "@tiptap/react"
 import { BiPencil, BiTrash } from "react-icons/bi"
 
 import { useEditorContext } from "contexts/EditorContext"
+import { useEditorDrawerContext } from "contexts/EditorDrawerContext"
 
 const CardsButton = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { onDrawerOpen } = useEditorDrawerContext()
   const { editor } = useEditorContext()
 
   return (
@@ -16,13 +17,14 @@ const CardsButton = () => {
         borderRadius="0.25rem"
         border="1px solid"
         borderColor="base.divider.medium"
+        boxShadow="0px 8px 12px 0px rgba(187, 187, 187, 0.50)"
         px="0.5rem"
         py="0.25rem"
       >
         <IconButton
           _hover={{ bg: "gray.100" }}
           _active={{ bg: "gray.200" }}
-          onClick={onOpen}
+          onClick={onDrawerOpen("cards")}
           bgColor="transparent"
           border="none"
           h="1.75rem"

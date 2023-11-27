@@ -20,6 +20,8 @@ import Header from "components/Header"
 import { OverwriteChangesModal } from "components/OverwriteChangesModal"
 import { WarningModal } from "components/WarningModal"
 
+import { useEditorDrawerContext } from "contexts/EditorDrawerContext"
+
 import { useGetMultipleMediaHook } from "hooks/mediaHooks"
 import { useGetPageHook, useUpdatePageHook } from "hooks/pageHooks"
 import { useCspHook, useGetSiteColorsHook } from "hooks/settingsHooks"
@@ -44,6 +46,7 @@ export const EditPageLayout = ({
   variant = "markdown",
   children,
 }: PropsWithChildren<EditPageLayoutProps>) => {
+  const { isAnyDrawerOpen } = useEditorDrawerContext()
   const params = useParams<{ siteName: string }>()
   const decodedParams = getDecodedParams(params)
   const [mediaSrcs, setMediaSrcs] = useState(new Set(""))
@@ -200,7 +203,13 @@ export const EditPageLayout = ({
             isEditPage
             params={decodedParams}
           />
-          <Flex flexDir="row" w="100%" h="100%" alignItems="flex-start">
+          <Flex
+            flexDir="row"
+            w="100%"
+            h="100%"
+            alignItems="flex-start"
+            position="relative"
+          >
             {/* Editor */}
             {children}
           </Flex>
@@ -214,7 +223,7 @@ export const EditPageLayout = ({
               // TODO: Add an alert/modal
               // to warn the user when they violate our csp
               // so they know why + can take action to remedy
-              isDisabled={isContentViolation}
+              isDisabled={isContentViolation || isAnyDrawerOpen}
               isLoading={isSavingPage}
             >
               Save
