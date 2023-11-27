@@ -25,7 +25,6 @@ import {
   BiLink,
   BiListOl,
   BiListUl,
-  BiMinus,
   BiPlus,
   BiRedo,
   BiStrikethrough,

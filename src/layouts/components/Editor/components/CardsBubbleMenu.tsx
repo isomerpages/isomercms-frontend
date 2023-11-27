@@ -1,11 +1,4 @@
-import {
-  Box,
-  Drawer,
-  HStack,
-  Icon,
-  SlideFade,
-  useDisclosure,
-} from "@chakra-ui/react"
+import { HStack, Icon } from "@chakra-ui/react"
 import { IconButton } from "@opengovsg/design-system-react"
 import { BubbleMenu } from "@tiptap/react"
 import { BiPencil, BiTrash } from "react-icons/bi"
@@ -14,6 +7,7 @@ import { useEditorContext } from "contexts/EditorContext"
 
 const CardsButton = () => {
   const { isOpen, onOpen, onClose } = useDisclosure()
+  const { editor } = useEditorContext()
 
   return (
     <>
@@ -43,7 +37,7 @@ const CardsButton = () => {
         <IconButton
           _hover={{ bg: "gray.100" }}
           _active={{ bg: "gray.200" }}
-          onClick={() => console.log("clicked")}
+          onClick={() => editor.chain().focus().deleteCards().run()}
           bgColor="transparent"
           border="none"
           h="1.75rem"
@@ -73,8 +67,9 @@ export const CardsBubbleMenu = () => {
       editor={editor}
       tippyOptions={{
         duration: 100,
-        placement: "top-end",
-        offset: [0, -16],
+        placement: "top-start",
+        offset: [511, -16],
+        zIndex: 0,
       }}
     >
       <CardsButton />
