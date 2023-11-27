@@ -14,7 +14,7 @@ import { Button, FormLabel, Toggle } from "@opengovsg/design-system-react"
 import { Editor } from "@tiptap/core"
 import _ from "lodash"
 import { useEffect, useState } from "react"
-import { FormProvider, useForm } from "react-hook-form"
+import { FormProvider, useFieldArray, useForm } from "react-hook-form"
 import { BiPlus } from "react-icons/bi"
 import * as Yup from "yup"
 
@@ -110,6 +110,10 @@ export const EditorCardsDrawer = ({
       cards: [],
     },
   })
+  const cardsArray = useFieldArray({
+    control: methods.control,
+    name: "cards",
+  })
 
   const onDrawerClose = () => {
     const currentFormState: EditorCardsInfo = {
@@ -140,15 +144,7 @@ export const EditorCardsDrawer = ({
 
   const onDragEnd: OnDragEndResponder = ({ source, destination }) => {
     if (!destination) return
-
-    const cards = methods.getValues("cards")
-
-    // Swap cards in source and destination
-    const temp = cards[source.index]
-    cards[source.index] = cards[destination.index]
-    cards[destination.index] = temp
-
-    methods.setValue("cards", cards)
+    cardsArray.move(source.index, destination.index)
   }
 
   const onChange = () => {
@@ -156,30 +152,21 @@ export const EditorCardsDrawer = ({
   }
 
   const onCreate = () => {
-    const newCards = [
-      ...methods.getValues("cards"),
-      {
-        image: "https://placehold.co/600x400",
-        altText: "",
-        title: "This is a title for your card",
-        description: "This is body text for your card. Describe your card.",
-        linkUrl: "https://www.isomer.gov.sg",
-        linkText: "This is a link for your card",
-      },
-    ]
-
-    methods.setValue("cards", newCards)
+    cardsArray.append({
+      image: "https://placehold.co/600x400",
+      altText: "",
+      title: "This is a title for your card",
+      description: "This is body text for your card. Describe your card.",
+      linkUrl: "https://www.isomer.gov.sg",
+      linkText: "This is a link for your card",
+    })
   }
 
   const onDelete = (id: string, type: string) => {
     if (type !== "cards") return
 
     const index = parseInt(id.split("-")[1], 10)
-
-    methods.setValue(
-      "cards",
-      methods.getValues("cards").filter((card, i) => i !== index)
-    )
+    cardsArray.remove(index)
   }
 
   const displayHandler = () => {
@@ -325,12 +312,13 @@ export const EditorCardsDrawer = ({
                         mb="1.25rem"
                         {...methods.register("cards")}
                       >
-                        {!!methods.watch("cards") &&
-                          methods
-                            .watch("cards")
-                            .map((card, index) => (
-                              <EditorCardItem index={index} methods={methods} />
-                            ))}
+                        {cardsArray.fields.map((card, index) => (
+                          <EditorCardItem
+                            key={card.id}
+                            index={index}
+                            methods={methods}
+                          />
+                        ))}
                       </VStack>
                     </Editable.Droppable>
                   </DragDropContext>
