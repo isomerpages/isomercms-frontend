@@ -22,6 +22,8 @@ declare module "@tiptap/core" {
       deleteCards: () => ReturnType
       // Set the content of the current card grid block
       setCardsContent: (cardContent: EditorCard[]) => ReturnType
+      // Set the content of the current card grid block without updating history
+      setCardsContentWithoutHistory: (cardContent: EditorCard[]) => ReturnType
     }
   }
 }
@@ -177,6 +179,26 @@ export const IsomerCards = Node.create<CardOptions>({
             )
         }
 
+        return true
+      },
+      setCardsContentWithoutHistory: (content) => ({
+        tr,
+        dispatch,
+        editor,
+      }) => {
+        if (dispatch) {
+          const offset = tr.selection.anchor
+          const node = createCardGridWithContent(editor.schema, content)
+
+          tr.setMeta("addToHistory", false)
+            .replaceSelectionWith(node)
+            .scrollIntoView()
+            .setSelection(
+              Selection.near(
+                tr.doc.resolve(tr.doc.resolve(offset).parentOffset)
+              )
+            )
+        }
         return true
       },
     }

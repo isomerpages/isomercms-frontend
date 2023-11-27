@@ -5,6 +5,7 @@ import {
   HStack,
   Icon,
   Text,
+  useDisclosure,
   VStack,
 } from "@chakra-ui/react"
 import { DragDropContext, OnDragEndResponder } from "@hello-pangea/dnd"
@@ -19,6 +20,7 @@ import * as Yup from "yup"
 
 import { Editable } from "components/Editable"
 import { EditorDrawer } from "components/EditorDrawer"
+import { EditorDrawerCloseWarningModal } from "components/EditorDrawerCloseWarningModal"
 
 import {
   TIPTAP_CARDS_DESCRIPTION_CHAR_LIMIT,
@@ -95,6 +97,11 @@ export const EditorCardsDrawer = ({
 }: EditorCardsDrawerProps): JSX.Element => {
   const [previewState, setPreviewState] = useState<EditorCard[]>([])
   const [initialEditorState, setInitialEditorState] = useState<EditorCard[]>([])
+  const {
+    isOpen: isCloseWarningModalOpen,
+    onOpen: onCloseWarningModalOpen,
+    onClose: onCloseWarningModalClose,
+  } = useDisclosure()
   const methods = useForm<EditorCardsInfo>({
     mode: "onChange",
     resolver: yupResolver(editorCardsInfoSchema),
@@ -104,13 +111,30 @@ export const EditorCardsDrawer = ({
     },
   })
 
+  const onDrawerClose = () => {
+    const currentFormState: EditorCardsInfo = {
+      isDisplayImage: methods.getValues("isDisplayImage"),
+      cards: methods.getValues("cards"),
+    }
+
+    if (
+      _.isEqual(getEditorCardsContent(currentFormState), initialEditorState)
+    ) {
+      onClose()
+      return
+    }
+
+    onCloseWarningModalOpen()
+  }
+
   const handleSubmit = (data: EditorCardsInfo) => {
     editor.commands.setCardsContent(getEditorCardsContent(data))
     onProceed()
   }
 
-  const handleClose = () => {
-    editor.commands.setCardsContent(initialEditorState)
+  const handleForceClose = () => {
+    editor.commands.setCardsContentWithoutHistory(initialEditorState)
+    onCloseWarningModalClose()
     onClose()
   }
 
@@ -240,97 +264,106 @@ export const EditorCardsDrawer = ({
     if (_.isEqual(previewState, newState)) return
 
     setPreviewState(newState)
-    editor.commands.setCardsContent(newState)
+    editor.commands.setCardsContentWithoutHistory(newState)
   }, [editor.commands, isOpen, methods.formState, previewState])
 
   return (
-    <form onSubmit={methods.handleSubmit(handleSubmit)}>
-      <FormProvider {...methods}>
-        <EditableContextProvider
-          onDragEnd={onDragEnd}
-          onChange={onChange}
-          onCreate={onCreate}
-          onDelete={onDelete}
-          onDisplay={displayHandler}
-        >
-          <EditorDrawer isOpen={isOpen}>
-            <EditorDrawer.Header onClose={handleClose}>
-              <Text as="h5" textStyle="h5">
-                Editing card grid
-              </Text>
-            </EditorDrawer.Header>
+    <>
+      <EditorDrawerCloseWarningModal
+        name="card grid"
+        isOpen={isCloseWarningModalOpen}
+        onClose={onCloseWarningModalClose}
+        onProceed={handleForceClose}
+      />
 
-            <EditorDrawer.Content>
-              {/* Display images setting */}
-              <FormControl isRequired>
-                <Flex justifyContent="space-between" w="100%">
-                  <Box>
-                    <FormLabel mb={0}>Display image</FormLabel>
-                    <FormLabel.Description>
-                      Applies to all cards in the grid
-                    </FormLabel.Description>
-                  </Box>
-                  <Toggle
-                    isRequired={false}
-                    label=""
-                    {...methods.register("isDisplayImage", {
-                      onChange: () => methods.trigger(),
-                    })}
-                  />
-                </Flex>
-              </FormControl>
+      <form onSubmit={methods.handleSubmit(handleSubmit)}>
+        <FormProvider {...methods}>
+          <EditableContextProvider
+            onDragEnd={onDragEnd}
+            onChange={onChange}
+            onCreate={onCreate}
+            onDelete={onDelete}
+            onDisplay={displayHandler}
+          >
+            <EditorDrawer isOpen={isOpen}>
+              <EditorDrawer.Header onClose={onDrawerClose}>
+                <Text as="h5" textStyle="h5">
+                  Editing card grid
+                </Text>
+              </EditorDrawer.Header>
 
-              {/* Cards editing section */}
-              <Text as="h6" textStyle="h6" mt="1.5rem">
-                Edit content
-              </Text>
-              <Editable.Accordion onChange={displayHandler}>
-                <DragDropContext onDragEnd={onDragEnd}>
-                  <Editable.Droppable width="100%" editableId="cards">
-                    <VStack
-                      spacing="0.75rem"
-                      mt="1rem"
-                      mb="1.25rem"
-                      {...methods.register("cards")}
-                    >
-                      {!!methods.watch("cards") &&
-                        methods
-                          .watch("cards")
-                          .map((card, index) => (
-                            <EditorCardItem index={index} methods={methods} />
-                          ))}
-                    </VStack>
-                  </Editable.Droppable>
-                </DragDropContext>
-              </Editable.Accordion>
+              <EditorDrawer.Content>
+                {/* Display images setting */}
+                <FormControl isRequired>
+                  <Flex justifyContent="space-between" w="100%">
+                    <Box>
+                      <FormLabel mb={0}>Display image</FormLabel>
+                      <FormLabel.Description>
+                        Applies to all cards in the grid
+                      </FormLabel.Description>
+                    </Box>
+                    <Toggle
+                      isRequired={false}
+                      label=""
+                      {...methods.register("isDisplayImage", {
+                        onChange: () => methods.trigger(),
+                      })}
+                    />
+                  </Flex>
+                </FormControl>
 
-              {/* Add card button */}
-              <Button
-                variant="clear"
-                onClick={onCreate}
-                ml="-0.5rem"
-                isDisabled={
-                  methods.getValues("cards").length >= TIPTAP_CARDS_MAXIMUM
-                }
-              >
-                <HStack spacing="0.5rem">
-                  <Icon as={BiPlus} fontSize="1.5rem" />
-                  <Text>Add card</Text>
-                </HStack>
-              </Button>
-            </EditorDrawer.Content>
+                {/* Cards editing section */}
+                <Text as="h6" textStyle="h6" mt="1.5rem">
+                  Edit content
+                </Text>
+                <Editable.Accordion onChange={displayHandler}>
+                  <DragDropContext onDragEnd={onDragEnd}>
+                    <Editable.Droppable width="100%" editableId="cards">
+                      <VStack
+                        spacing="0.75rem"
+                        mt="1rem"
+                        mb="1.25rem"
+                        {...methods.register("cards")}
+                      >
+                        {!!methods.watch("cards") &&
+                          methods
+                            .watch("cards")
+                            .map((card, index) => (
+                              <EditorCardItem index={index} methods={methods} />
+                            ))}
+                      </VStack>
+                    </Editable.Droppable>
+                  </DragDropContext>
+                </Editable.Accordion>
 
-            <EditorDrawer.Footer>
-              <Button
-                type="submit"
-                isDisabled={_.some(methods.formState.errors)}
-              >
-                Save card grid
-              </Button>
-            </EditorDrawer.Footer>
-          </EditorDrawer>
-        </EditableContextProvider>
-      </FormProvider>
-    </form>
+                {/* Add card button */}
+                <Button
+                  variant="clear"
+                  onClick={onCreate}
+                  ml="-0.5rem"
+                  isDisabled={
+                    methods.getValues("cards").length >= TIPTAP_CARDS_MAXIMUM
+                  }
+                >
+                  <HStack spacing="0.5rem">
+                    <Icon as={BiPlus} fontSize="1.5rem" />
+                    <Text>Add card</Text>
+                  </HStack>
+                </Button>
+              </EditorDrawer.Content>
+
+              <EditorDrawer.Footer>
+                <Button
+                  type="submit"
+                  isDisabled={_.some(methods.formState.errors)}
+                >
+                  Save card grid
+                </Button>
+              </EditorDrawer.Footer>
+            </EditorDrawer>
+          </EditableContextProvider>
+        </FormProvider>
+      </form>
+    </>
   )
 }
