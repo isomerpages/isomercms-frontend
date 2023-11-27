@@ -1,14 +1,9 @@
-import {
-  CommandManager,
-  createChainableState,
-  isAtEndOfNode,
-  isNodeActive,
-  mergeAttributes,
-  Node,
-} from "@tiptap/core"
-import { Schema, Node as ProseMirrorNode } from "@tiptap/pm/model"
-import { Plugin, PluginKey, Selection } from "@tiptap/pm/state"
+import { Node } from "@tiptap/core"
+import { Node as ProseMirrorNode, Schema } from "@tiptap/pm/model"
+import { Selection } from "@tiptap/pm/state"
 import { ReactNodeViewRenderer } from "@tiptap/react"
+
+import { EditorCard } from "types/editPage"
 
 import { CardsView } from "./CardsView"
 
@@ -21,55 +16,70 @@ export interface CardOptions {
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     cards: {
-      /**
-       * Add a new card grid block
-       */
+      // Add a new card grid block
       addCards: () => ReturnType
+      // Delete the current card grid block
       deleteCards: () => ReturnType
     }
   }
 }
 
-const createCard = (
-  schema: Schema,
-  title?: string,
-  description?: string,
-  footer?: string,
-  link?: string,
+interface CreateCardProps {
+  schema: Schema
+  title?: string
+  description?: string
+  footer?: string
+  link?: string
   image?: string
-): ProseMirrorNode => {
+  altText?: string
+}
+
+const createCard = ({
+  schema,
+  title,
+  description,
+  footer,
+  link,
+  image,
+  altText,
+}: CreateCardProps): ProseMirrorNode => {
   const { nodes } = schema
+  const templateCardBody = []
+  const templateCard = []
 
-  const cardBodyNode = nodes.isomercardbody.create({}, [
-    nodes.isomercardtitle.create(
-      {},
-      schema.text(title ?? "This is a title for your card")
-    ),
-    nodes.isomercarddescription.create(
-      {},
-      schema.text(
-        description ?? "This is body text for your card. Describe your card."
-      )
-    ),
-    nodes.isomercardlink.create(
-      {},
-      schema.text(footer ?? "This is a link for your card")
-    ),
-  ])
-
-  const cardImageNode = nodes.isomercardimage.create(
-    {},
-    nodes.image.create({ src: image ?? "https://placehold.co/600x400" })
-  )
-
-  if (link) {
-    return nodes.isomerclickablecard.create({ href: link }, [
-      cardImageNode,
-      cardBodyNode,
-    ])
+  if (title && title !== "") {
+    templateCardBody.push(nodes.isomercardtitle.create({}, schema.text(title)))
   }
 
-  return nodes.isomercard.create({}, [cardImageNode, cardBodyNode])
+  if (description && description !== "") {
+    templateCardBody.push(
+      nodes.isomercarddescription.create({}, schema.text(description))
+    )
+  }
+
+  if (link && link !== "" && footer && footer !== "") {
+    templateCardBody.push(nodes.isomercardlink.create({}, schema.text(footer)))
+  }
+
+  if (image && image !== "") {
+    templateCard.push(
+      nodes.isomercardimage.create(
+        {},
+        nodes.image.create({
+          src: image,
+          alt: altText ?? "Placeholder image",
+        })
+      )
+    )
+  }
+
+  templateCard.push(nodes.isomercardbody.create({}, templateCardBody))
+
+  if (link) {
+    return nodes.isomerclickablecard.create({ href: link }, templateCard)
+  }
+
+  return nodes.isomercard.create({}, templateCard)
 }
 
 const createCardGrid = (
@@ -78,7 +88,38 @@ const createCardGrid = (
 ): ProseMirrorNode => {
   const { nodes } = schema
 
-  const cards = Array(numberOfCards).fill(createCard(schema))
+  const cards = Array(numberOfCards).fill(
+    createCard({
+      schema,
+      title: "This is a title for your card",
+      description: "This is body text for your card. Describe your card.",
+      footer: "This is a link for your card",
+      link: "https://www.isomer.gov.sg",
+      image: "https://placehold.co/600x400",
+      altText: "Placeholder image",
+    })
+  )
+
+  return nodes.isomercards.create({}, cards)
+}
+
+const createCardGridWithContent = (
+  schema: Schema,
+  content: EditorCard[]
+): ProseMirrorNode => {
+  const { nodes } = schema
+
+  const cards = content.map((card) =>
+    createCard({
+      schema,
+      title: card.title,
+      description: card.description,
+      footer: card.linkText,
+      link: card.linkUrl,
+      image: card.image,
+      altText: card.altText,
+    })
+  )
 
   return nodes.isomercards.create({}, cards)
 }
@@ -90,7 +131,6 @@ export const IsomerCards = Node.create<CardOptions>({
   draggable: true,
   defining: true,
   selectable: true,
-  priority: 1100,
 
   content: "(isomercard | isomerclickablecard)+",
 
@@ -117,13 +157,17 @@ export const IsomerCards = Node.create<CardOptions>({
 
         return true
       },
+      deleteCards: () => ({ tr, editor }) => {
+        editor.state.selection.replace(tr)
+        return true
+      },
     }
   },
 
   parseHTML() {
     return [
       {
-        tag: "div.isomer-card-grid",
+        tag: "div.isomer-card-grid:has(> div.isomer-card)",
       },
     ]
   },
@@ -143,7 +187,6 @@ export const IsomerCard = Node.create<CardOptions>({
   draggable: false,
   selectable: false,
   defining: false,
-  priority: 1100,
 
   content:
     "(isomercardimage isomercardbody?) | (isomercardimage? isomercardbody)",
@@ -174,7 +217,6 @@ export const IsomerClickableCard = Node.create<CardOptions>({
   group: "isomercardblock",
   draggable: false,
   selectable: false,
-  priority: 1100,
 
   content:
     "(isomercardimage isomercardbody?) | (isomercardimage? isomercardbody)",
@@ -186,6 +228,9 @@ export const IsomerClickableCard = Node.create<CardOptions>({
       },
       href: {
         default: null,
+      },
+      rel: {
+        default: "noopener noreferrer nofollow",
       },
     }
   },
@@ -208,7 +253,6 @@ export const IsomerCardImage = Node.create<CardOptions>({
   group: "isomercardblock",
   draggable: false,
   selectable: false,
-  priority: 1100,
 
   content: "image",
 
@@ -241,12 +285,10 @@ export const IsomerCardBody = Node.create<CardOptions>({
   group: "isomercardblock",
   draggable: false,
   selectable: false,
-  priority: 1100,
 
   content: `(isomercardtitle isomercarddescription? isomercardlink?) |
   (isomercardtitle? isomercarddescription isomercardlink?) |
   (isomercardtitle? isomercarddescription? isomercardlink)`,
-  // content: "isomercardtitle isomercarddescription isomercardlink",
 
   addAttributes() {
     return {
@@ -277,7 +319,6 @@ export const IsomerCardTitle = Node.create<CardOptions>({
   group: "isomercardblock",
   draggable: false,
   selectable: false,
-  priority: 1100,
   marks: "",
 
   content: "text?",
@@ -313,7 +354,6 @@ export const IsomerCardDescription = Node.create<CardOptions>({
   group: "isomercardblock",
   draggable: false,
   selectable: false,
-  priority: 1100,
   marks: "",
 
   content: "text?",
@@ -349,7 +389,6 @@ export const IsomerCardLink = Node.create<CardOptions>({
   group: "isomercardblock",
   draggable: false,
   selectable: false,
-  priority: 1100,
   marks: "",
 
   content: "text?",

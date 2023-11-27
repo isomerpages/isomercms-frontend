@@ -12,7 +12,6 @@ export const CardsView = ({ node, selected }: NodeViewProps) => {
             position="absolute"
             top="calc(-1.5rem - 2px)"
             left="-2px"
-            zIndex="1"
             backgroundColor="#055AFF"
             textColor="white"
             p="0.25rem"
