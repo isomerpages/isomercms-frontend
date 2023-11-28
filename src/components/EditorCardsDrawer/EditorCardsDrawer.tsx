@@ -292,6 +292,7 @@ export const EditorCardsDrawer = ({
                     <Toggle
                       isRequired={false}
                       label=""
+                      isChecked={methods.watch("isDisplayImage")}
                       {...methods.register("isDisplayImage", {
                         onChange: () => methods.trigger(),
                       })}
