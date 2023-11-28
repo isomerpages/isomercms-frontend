@@ -29,7 +29,7 @@ export const EditorCardItem = ({
   index,
   methods,
 }: EditorCardItemProps): JSX.Element => {
-  const { onDelete } = useEditableContext()
+  const { onChange, onDelete } = useEditableContext()
   const { errors } = methods.formState
 
   return (
@@ -47,9 +47,10 @@ export const EditorCardItem = ({
             <Box w="100%">
               <FormContext
                 hasError={!!errors.cards?.[index]?.image}
-                onFieldChange={(e) =>
+                onFieldChange={(e) => {
                   methods.setValue(`cards.${index}.image`, e.target.value)
-                }
+                  onChange(e)
+                }}
               >
                 <FormLabel mt="0.25rem" mb="0.5rem" isRequired>
                   Image
@@ -79,7 +80,7 @@ export const EditorCardItem = ({
                 mt="0.75rem"
                 type="text"
                 placeholder="Add a descriptive text about the image"
-                {...methods.register(`cards.${index}.altText`)}
+                {...methods.register(`cards.${index}.altText`, { onChange })}
               />
               <FormErrorMessage>
                 {errors.cards?.[index]?.altText?.message}
@@ -94,7 +95,7 @@ export const EditorCardItem = ({
           <Input
             type="text"
             placeholder="This is the title of the card"
-            {...methods.register(`cards.${index}.title`)}
+            {...methods.register(`cards.${index}.title`, { onChange })}
           />
           <FormErrorMessage>
             {errors.cards?.[index]?.title?.message}
@@ -107,7 +108,7 @@ export const EditorCardItem = ({
           <Textarea
             mb={!errors.cards?.[index]?.description ? "0.5rem" : undefined}
             placeholder="This is a description for the card"
-            {...methods.register(`cards.${index}.description`)}
+            {...methods.register(`cards.${index}.description`, { onChange })}
           />
           {!errors.cards?.[index]?.description ? (
             <FormHelperText>
@@ -136,7 +137,7 @@ export const EditorCardItem = ({
           <Input
             type="text"
             placeholder="Insert /page-url or https://"
-            {...methods.register(`cards.${index}.linkUrl`)}
+            {...methods.register(`cards.${index}.linkUrl`, { onChange })}
           />
           <FormErrorMessage>
             {errors.cards?.[index]?.linkUrl?.message}
@@ -149,7 +150,7 @@ export const EditorCardItem = ({
           <Input
             type="text"
             placeholder="Enter text to be displayed for the link"
-            {...methods.register(`cards.${index}.linkText`)}
+            {...methods.register(`cards.${index}.linkText`, { onChange })}
           />
           <FormErrorMessage>
             {errors.cards?.[index]?.linkText?.message}

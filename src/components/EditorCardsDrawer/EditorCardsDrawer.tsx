@@ -148,7 +148,11 @@ export const EditorCardsDrawer = ({
   }
 
   const onChange = () => {
-    // Not needed because we are using react-hook-form
+    const cards = methods.getValues("cards")
+    const isDisplayImage = methods.getValues("isDisplayImage")
+
+    const newState = getEditorCardsContent({ isDisplayImage, cards })
+    editor.commands.setCardsContentWithoutHistory(newState)
   }
 
   const onCreate = () => {
@@ -240,20 +244,6 @@ export const EditorCardsDrawer = ({
     }
   }, [isOpen])
 
-  useEffect(() => {
-    if (!isOpen) return
-
-    const cards = methods.getValues("cards")
-    const isDisplayImage = methods.getValues("isDisplayImage")
-
-    const newState = getEditorCardsContent({ isDisplayImage, cards })
-
-    if (_.isEqual(previewState, newState)) return
-
-    setPreviewState(newState)
-    editor.commands.setCardsContentWithoutHistory(newState)
-  }, [editor.commands, isOpen, methods.formState, previewState])
-
   return (
     <>
       <EditorDrawerCloseWarningModal
@@ -311,7 +301,9 @@ export const EditorCardsDrawer = ({
                         spacing="0.75rem"
                         mt="1rem"
                         mb="1.25rem"
-                        {...methods.register("cards")}
+                        {...methods.register("cards", {
+                          onChange,
+                        })}
                       >
                         {cardsArray.fields.map((card, index) => (
                           <EditorCardItem
