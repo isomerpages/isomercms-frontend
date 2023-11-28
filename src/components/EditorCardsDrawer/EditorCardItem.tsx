@@ -68,7 +68,7 @@ export const EditorCardItem = ({
           </ModalHeader>
 
           <ModalBody>
-            <Text as="p" textStyle="body-2">
+            <Text as="p" textStyle="body-2" mt="0.5rem">
               This cannot be undone.
             </Text>
           </ModalBody>
@@ -223,7 +223,6 @@ export const EditorCardItem = ({
           {/* Delete card button */}
           <Button
             variant="clear"
-            w="100%"
             id={`cards-${index}`}
             onClick={onDeleteWarningModalOpen}
             alignSelf="center"
