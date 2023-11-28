@@ -140,14 +140,23 @@ export const EditPage = () => {
           return ""
         },
       }),
-      Details.configure({
+      IsomerDetail.configure({
         HTMLAttributes: {
           class: "isomer-details",
         },
       }),
       DetailsSummary,
+<<<<<<< HEAD
       DetailsContent,
       // IsomerDetailsGroup,
+=======
+      DetailsContent.configure({
+        HTMLAttributes: {
+          class: "isomer-details-content",
+        },
+      }),
+      IsomerDetailsGroup,
+>>>>>>> 3a1c48a2 (feat_background_toggling)
     ],
     autofocus: "start",
   })
@@ -174,6 +183,12 @@ export const EditPage = () => {
     isOpen: isCardsDrawerOpen,
     onOpen: onCardsDrawerOpen,
     onClose: onCardsDrawerClose,
+  } = useDisclosure()
+
+  const {
+    isOpen: isAccordionDrawerOpen,
+    onOpen: onAccordionDrawerOpen,
+    onClose: onAccordionDrawerClose,
   } = useDisclosure()
 
   const { siteName } = decodedParams
@@ -213,12 +228,18 @@ export const EditPage = () => {
     if (drawerType === "cards") {
       return isCardsDrawerOpen
     }
+    if (drawerType === "accordion") {
+      return isAccordionDrawerOpen
+    }
     return false
   }
 
   const onDrawerOpen = (drawerType: DrawerVariant) => {
     if (drawerType === "cards") {
       return onCardsDrawerOpen
+    }
+    if (drawerType === "accordion") {
+      return onAccordionDrawerOpen
     }
 
     return () => undefined
@@ -228,6 +249,9 @@ export const EditPage = () => {
     if (drawerType === "cards") {
       return onCardsDrawerClose
     }
+    if (drawerType === "accordion") {
+      return onAccordionDrawerClose
+    }
 
     return () => undefined
   }
@@ -235,6 +259,9 @@ export const EditPage = () => {
   const onDrawerProceed = (drawerType: DrawerVariant) => {
     if (drawerType === "cards") {
       return onCardsDrawerClose
+    }
+    if (drawerType === "accordion") {
+      return onAccordionDrawerClose
     }
 
     return () => undefined
@@ -255,7 +282,7 @@ export const EditPage = () => {
         }}
       >
         <EditorDrawerContextProvider
-          isAnyDrawerOpen={isCardsDrawerOpen}
+          isAnyDrawerOpen={isCardsDrawerOpen || isAccordionDrawerOpen}
           isDrawerOpen={isDrawerOpen}
           onDrawerOpen={onDrawerOpen}
           onDrawerClose={onDrawerClose}

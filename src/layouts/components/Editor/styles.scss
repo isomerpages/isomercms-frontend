@@ -169,7 +169,7 @@
       width: 1.5em;
       color: black;
 
-      &::before {
+      &::after {
         content: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M16.293%209.29297L12%2013.586L7.70697%209.29297L6.29297%2010.707L12%2016.414L17.707%2010.707L16.293%209.29297Z%22%20fill%3D%22%23484848%22%2F%3E%3C%2Fsvg%3E");
         justify-content: center;
         align-items: center;
@@ -186,7 +186,7 @@
       list-style: none;
     }
 
-    &.is-open > button::before {
+    &.is-open > button::after {
       content: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M6.29297%2013.2932L7.70697%2014.7072L12%2010.4142L16.293%2014.7072L17.707%2013.2932L12%207.58618L6.29297%2013.2932Z%22%20fill%3D%22%234372D6%22%2F%3E%3C%2Fsvg%3E");
     }
 

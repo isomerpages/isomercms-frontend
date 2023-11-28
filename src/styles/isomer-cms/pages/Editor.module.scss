@@ -177,6 +177,7 @@ details summary {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 1rem;
 }
 
 details summary::marker {
@@ -211,26 +212,19 @@ details[open] > *:not(summary) {
   height: 0;
 }
 
-details {
+details.isomer-details {
   display: flex;
   border-top: 1px solid #d4d4d4;
-  border-bottom: 1px solid #d4d4d4;
-  padding: 0.5rem;
 
   > div {
     flex: 1 1 auto;
   }
 
-  * summary {
-    list-style: none;
-  }
-
-  :last-child {
-    margin-bottom: 0;
-  }
-
-  p {
+  div.isomer-details-content > p {
     color: var(--site-secondary-color);
+    margin-left: 1rem;
+    margin-right: 1.25rem;
+    margin-bottom: 1rem;
   }
 }
 
@@ -240,8 +234,22 @@ details ~ details {
   border-top: 0;
 }
 
-.detailGroup:last-child {
+.isomer-details:last-of-type {
   margin-bottom: 0;
-  margin-top: 1em;
-  border-top: 1px solid #d4d4d4;
+  border-bottom: 1px solid #d4d4d4;
+}
+
+.isomer-accordion-white > details.isomer-details > summary {
+  background-color: #fff;
+  color: #4372d6;
+}
+
+.isomer-accordion-gray > details.isomer-details > summary {
+  background-color: #f4f4f4;
+  color: #4372d6;
+}
+
+.isomer-accordion-gray > details.isomer-details > summary:hover {
+  color: #fff;
+  background-color: #4372d6;
 }

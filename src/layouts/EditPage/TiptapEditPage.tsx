@@ -15,6 +15,9 @@ import { useGetMultipleMediaHook } from "hooks/mediaHooks"
 import { useGetPageHook } from "hooks/pageHooks"
 import { useCspHook } from "hooks/settingsHooks"
 
+import { EditorAccordionDrawer } from "layouts/components/EditorAccordionDrawer/EditorAccordionDrawer"
+import { EditorCardsDrawer } from "layouts/components/EditorCardsDrawer/EditorCardsDrawer"
+
 import checkCSP from "utils/cspUtils"
 import { getMediaSrcsFromHtml } from "utils/images"
 
@@ -115,7 +118,12 @@ export const TiptapEditPage = ({
         onClose={onDrawerClose("cards")}
         onProceed={onDrawerProceed("cards")}
       />
-
+      <EditorAccordionDrawer
+        editor={editor}
+        isOpen={isDrawerOpen("accordion")}
+        onClose={onDrawerClose("accordion")}
+        onProceed={onDrawerProceed("accordion")}
+      />
       {/* Editor */}
       <Editor h="80vh" w="45vw" />
 

@@ -2,6 +2,8 @@ import { Node } from "@tiptap/core"
 import { NodeRange, Slice } from "@tiptap/pm/model"
 import { mergeAttributes, ReactNodeViewRenderer } from "@tiptap/react"
 
+import { AccordionBackgroundType } from "types/editPage"
+
 import { IsomerDetailGroupView } from "./IsomerDetailGroupView"
 
 export interface IsomerDetailGroupOptions {
@@ -16,6 +18,9 @@ declare module "@tiptap/core" {
     detailGroup: {
       setDetailsGroup: () => ReturnType
       appendDetail: (startPos: number, endPos: number) => ReturnType
+      changeDetailGroupBackground: (
+        backgroundColor: AccordionBackgroundType
+      ) => ReturnType
     }
   }
 }
@@ -26,7 +31,6 @@ export const IsomerDetailsGroup = Node.create<IsomerDetailGroupOptions>({
   atom: true,
   draggable: true,
   defining: true,
-
   content: "details+",
 
   addCommands() {
@@ -135,11 +139,57 @@ export const IsomerDetailsGroup = Node.create<IsomerDetailGroupOptions>({
           )
           .run()
       },
+      changeDetailGroupBackground: (
+        backgroundColor: AccordionBackgroundType
+      ) => ({ chain, state }) => {
+        const { schema, selection } = state
+        const { $from: start, $to: end } = selection
+
+        // get block range from start to end pos
+        const blockRange: NodeRange | null = start.blockRange(end)
+
+        // If there's no block range, return false
+        if (!blockRange) return false
+
+        const docSlice: Slice = state.doc.slice(
+          blockRange.start,
+          blockRange.end
+        )
+
+        // If the content doesn't match the schema, return false
+        if (
+          !schema.nodes.detailsContent.contentMatch.matchFragment(
+            docSlice.content
+          )
+        ) {
+          return false
+        }
+        const jsonContent = docSlice.toJSON()
+        const existingContent = jsonContent?.content ?? []
+        const { content } = existingContent[0]
+        // Insert new content and set the text selection
+        if (!content) {
+          return false
+        }
+        return chain()
+          .insertContentAt(
+            { from: blockRange.start, to: blockRange.end },
+            {
+              type: this.name,
+              attrs: { backgroundColor },
+              content: [...content],
+            }
+          )
+          .run()
+      },
     }
   },
 
   addAttributes() {
     return {
+      backgroundColor: {
+        default: "white",
+      },
       class: {
         default: "isomer-accordion",
       },
@@ -153,12 +203,16 @@ export const IsomerDetailsGroup = Node.create<IsomerDetailGroupOptions>({
     return [{ tag: `div.isomer-accordion` }]
   },
 
-  renderHTML({ HTMLAttributes }) {
+  renderHTML({ HTMLAttributes, node }) {
+    const variant =
+      node.attrs.backgroundColor === "gray"
+        ? "isomer-accordion-gray"
+        : "isomer-accordion-white"
     return [
       "div",
       mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
         "data-type": this.name,
-        class: "isomer-accordion",
+        class: `isomer-accordion ${variant}`,
       }),
       0,
     ]
