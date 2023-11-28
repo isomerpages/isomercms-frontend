@@ -355,6 +355,7 @@ export const CreateMediaFolderModal = ({
                     !methods.formState.isDirty ||
                     _.some(methods.formState.errors) ||
                     (originalSelectedMedia.length === 0 &&
+                      files.length !== 0 &&
                       methods.watch("selectedPages").length === 0)
                   }
                 >
