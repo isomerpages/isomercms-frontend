@@ -39,6 +39,14 @@ const DATE_REGEX_Y_M_D = "^([0-9]{4}-[0-9]{2}-[0-9]{2})$"
 const DATE_REGEX_D_M_Y = "^([0-9]{2}/[0-9]{2}/[0-9]{4})$"
 const ALPHABETS_ONLY_REGEX = '^[a-zA-Z" "\\._-]+$'
 const ALPHANUMERICS_ONLY_REGEX = '^[a-zA-Z0-9" "\\._\\-:]+$'
+// Matches either a local permalink or an external URL over HTTPS
+export const LINK_URL_REGEX = `^((${PERMALINK_REGEX.slice(
+  1,
+  -1
+)})|(https://(${DOMAIN_NAME_REGEX.slice(1, -1)}${URL_REGEX_SUFFIX.slice(
+  5,
+  -1
+)}))$`
 
 export const permalinkRegexTest = RegExp(PERMALINK_REGEX)
 export const phoneRegexTest = RegExp(PHONE_REGEX)

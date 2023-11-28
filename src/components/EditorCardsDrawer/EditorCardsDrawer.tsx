@@ -30,6 +30,7 @@ import {
 import { EditableContextProvider } from "contexts/EditableContext"
 
 import { EditorCard, EditorCardsInfo } from "types/editPage"
+import { LINK_URL_REGEX } from "utils"
 
 import { EditorCardItem } from "./EditorCardItem"
 
@@ -47,7 +48,12 @@ const editorCardsInfoSchema = Yup.object().shape({
             TIPTAP_CARDS_DESCRIPTION_CHAR_LIMIT,
             `Description cannot exceed ${TIPTAP_CARDS_DESCRIPTION_CHAR_LIMIT} characters`
           ),
-          linkUrl: Yup.string().required("Link URL is required"),
+          linkUrl: Yup.string()
+            .required("Link URL is required")
+            .matches(
+              new RegExp(LINK_URL_REGEX),
+              "Please enter a valid link URL"
+            ),
           linkText: Yup.string().required("Link text is required"),
         })
       ),
@@ -58,7 +64,12 @@ const editorCardsInfoSchema = Yup.object().shape({
             TIPTAP_CARDS_DESCRIPTION_CHAR_LIMIT,
             `Description cannot exceed ${TIPTAP_CARDS_DESCRIPTION_CHAR_LIMIT} characters`
           ),
-          linkUrl: Yup.string().required("Link URL is required"),
+          linkUrl: Yup.string()
+            .required("Link URL is required")
+            .matches(
+              new RegExp(LINK_URL_REGEX),
+              "Please enter a valid link URL"
+            ),
           linkText: Yup.string().required("Link text is required"),
         })
       ),
@@ -95,7 +106,6 @@ export const EditorCardsDrawer = ({
   onClose,
   onProceed,
 }: EditorCardsDrawerProps): JSX.Element => {
-  const [previewState, setPreviewState] = useState<EditorCard[]>([])
   const [initialEditorState, setInitialEditorState] = useState<EditorCard[]>([])
   const {
     isOpen: isCloseWarningModalOpen,
@@ -142,17 +152,18 @@ export const EditorCardsDrawer = ({
     onClose()
   }
 
-  const onDragEnd: OnDragEndResponder = ({ source, destination }) => {
-    if (!destination) return
-    cardsArray.move(source.index, destination.index)
-  }
-
   const onChange = () => {
     const cards = methods.getValues("cards")
     const isDisplayImage = methods.getValues("isDisplayImage")
 
     const newState = getEditorCardsContent({ isDisplayImage, cards })
     editor.commands.setCardsContentWithoutHistory(newState)
+  }
+
+  const onDragEnd: OnDragEndResponder = ({ source, destination }) => {
+    if (!destination) return
+    cardsArray.move(source.index, destination.index)
+    onChange()
   }
 
   const onCreate = () => {
@@ -164,6 +175,7 @@ export const EditorCardsDrawer = ({
       linkUrl: "https://www.isomer.gov.sg",
       linkText: "This is a link for your card",
     })
+    onChange()
   }
 
   const onDelete = (id: string, type: string) => {
@@ -171,6 +183,7 @@ export const EditorCardsDrawer = ({
 
     const index = parseInt(id.split("-")[1], 10)
     cardsArray.remove(index)
+    onChange()
   }
 
   const displayHandler = () => {
