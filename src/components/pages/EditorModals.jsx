@@ -59,6 +59,27 @@ const EditorModals = ({
     onClose()
   }
 
+  const onExternalMediaSave = (data) => {
+    const { selectedMediaPath, altText } = data
+    const cm = simpleMde.codemirror
+
+    cm.setCursor(linePos)
+    cm.setSelection(linePos)
+
+    if (mediaType === "files")
+      cm.replaceSelection(
+        `[${altText}](${selectedMediaPath.replaceAll(" ", "%20")})`
+      )
+    if (mediaType === "images") {
+      cm.replaceSelection(
+        `![${altText}](${selectedMediaPath.replaceAll(" ", "%20")})`
+      )
+    }
+    // set state so that rerender is triggered and image is shown
+    onSave(simpleMde.codemirror.getValue())
+    onClose()
+  }
+
   return (
     <>
       {modalType === "media" && mediaType && (
@@ -67,6 +88,7 @@ const EditorModals = ({
           type={mediaType}
           onProceed={onMediaSave}
           showAltTextModal
+          onExternalProceed={onExternalMediaSave}
         />
       )}
       {modalType === "hyperlink" && (

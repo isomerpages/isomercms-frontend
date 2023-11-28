@@ -11,7 +11,13 @@ import { MediaCreationModal } from "components/MediaCreationModal/MediaCreationM
 
 import { getMediaDirectoryName } from "utils/media"
 
-const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
+const MediaModal = ({
+  onClose,
+  onProceed,
+  type,
+  showAltTextModal = false,
+  onExternalProceed,
+}) => {
   const {
     params: { siteName },
   } = useRouteMatch()
@@ -39,15 +45,24 @@ const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
       joinOn: "/",
     })}`
 
-  const onMediaSelect = (media) => {
+  const onMediaSelect = (media, isExternal) => {
+    if (!media) {
+      methods.setValue("selectedMedia", undefined)
+      methods.setValue("selectedMediaPath", "")
+      return
+    }
     if (methods.watch("selectedMedia")?.name === media.name) {
       methods.setValue("selectedMedia", undefined)
       methods.setValue("selectedMediaPath", "")
     } else {
-      methods.setValue(
-        "selectedMediaPath",
-        `${retrieveMediaDirectoryParams()}/${media.name}`
-      )
+      if (isExternal) {
+        methods.setValue("selectedMediaPath", media.name)
+      } else {
+        methods.setValue(
+          "selectedMediaPath",
+          `${retrieveMediaDirectoryParams()}/${media.name}`
+        )
+      }
       methods.setValue("selectedMedia", media)
     }
   }
@@ -75,6 +90,7 @@ const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
           onProceed={
             showAltTextModal ? () => setMediaMode("details") : onProceed
           }
+          onExternalProceed={onExternalProceed}
           onMediaSelect={onMediaSelect}
           onClose={onClose}
           mediaType={type}
@@ -96,4 +112,5 @@ MediaModal.propTypes = {
   onProceed: PropTypes.func.isRequired,
   type: PropTypes.oneOf(["files", "images"]).isRequired,
   showAltTextModal: PropTypes.bool,
+  onExternalProceed: PropTypes.func,
 }

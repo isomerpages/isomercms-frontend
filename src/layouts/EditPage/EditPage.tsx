@@ -286,6 +286,19 @@ export const EditPage = () => {
                 }
                 onMediaModalClose()
               }}
+              onExternalProceed={async ({ selectedMediaPath, altText }) => {
+                if (mediaType === "images") {
+                  editor
+                    .chain()
+                    .focus()
+                    .setImage({
+                      src: selectedMediaPath,
+                      alt: altText,
+                    })
+                    .run()
+                }
+                onMediaModalClose()
+              }}
             />
           )}
           {isEmbedModalOpen && (
