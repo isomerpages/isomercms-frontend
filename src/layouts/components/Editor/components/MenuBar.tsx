@@ -25,6 +25,7 @@ import {
   BiLink,
   BiListOl,
   BiListUl,
+  BiMinus,
   BiPlus,
   BiRedo,
   BiStrikethrough,
@@ -276,7 +277,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
           name: "Accordion",
           description: "Let users hide or show content.",
           icon: EditorAccordionImage,
-          action: () => editor.chain().focus().setHorizontalRule().run(),
+          action: () => editor.chain().focus().setDetailsGroup().run(),
         },
         {
           name: "Card grid",
