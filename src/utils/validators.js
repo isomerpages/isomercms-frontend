@@ -18,6 +18,8 @@ export const URL_REGEX_SUFFIX = ".com/)([a-zA-Z0-9_-]+([/.])?)+$"
 export const YOUTUBE_REGEX = ".com/(@)?)([a-zA-Z0-9_-]+([/.])?)+$"
 export const TELEGRAM_REGEX = "telegram|t).me/([a-zA-Z0-9_-]+([/.])?)+$"
 export const TIKTOK_REGEX = ".com/@)([a-zA-Z0-9_-]+([/.])?)+$"
+// Linkedin doesn't seem to restrict special characters
+export const LINKEDIN_REGEX = ".com/).+$"
 // Domain name regex (source: https://regexr.com/3au3g and https://stackoverflow.com/a/30007882)
 // 1. The first group (up till the "+") matches each segment of the domain (split by ".")
 //    a. Each segment of the domain must start and end with an alphanumeric character

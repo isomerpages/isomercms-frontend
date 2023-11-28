@@ -632,8 +632,7 @@ export const Media = (): JSX.Element => {
                   {directoryLevel < MAX_MEDIA_LEVELS && (
                     <Greyscale isActive={isWriteDisabled}>
                       <Button
-                        as={Link}
-                        to={`${url}/createDirectory`}
+                        onClick={onCreateMediaFolderModalOpen}
                         mt="1rem"
                         variant="clear"
                       >
