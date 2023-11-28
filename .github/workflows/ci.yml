@@ -10,6 +10,8 @@ jobs:
     # NOTE: Netlify uses ubuntu 16.08 but Github Actions does not offer it by default.
     # Hence, we default to the latest version.
     runs-on: ubuntu-latest
+    env:
+      TIPTAP_PRO_TOKEN: ${{secrets.TIPTAP_PRO_TOKEN}}
     steps:
       - uses: actions/checkout@v3
       - name: Setup Node.js
@@ -58,6 +60,7 @@ jobs:
     needs: lint
     runs-on: ubuntu-latest
     env:
+      TIPTAP_PRO_TOKEN: ${{secrets.TIPTAP_PRO_TOKEN}}
       CI: false
     steps:
       - uses: actions/checkout@v3
@@ -90,6 +93,7 @@ jobs:
       USERNAME: ${{secrets.USERNAME}}
       PERSONAL_ACCESS_TOKEN: ${{secrets.PERSONAL_ACCESS_TOKEN}}
       E2E_COMMIT_HASH: ${{secrets.E2E_COMMIT_HASH}}
+      TIPTAP_PRO_TOKEN: ${{secrets.TIPTAP_PRO_TOKEN}}
     steps:
       - uses: actions/checkout@v3
       - name: Setup Node.js
