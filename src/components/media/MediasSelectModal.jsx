@@ -179,6 +179,8 @@ const MediasSelectModal = ({
           {queryParams.mediaDirectoryName &&
             queryParams.mediaDirectoryName !== mediaType && (
               <Button
+                w="100%"
+                justifyContent="start"
                 variant="clear"
                 alignSelf="start"
                 leftIcon={<Icon as={BiLeftArrowAlt} fontSize="1.25rem" />}
@@ -200,7 +202,7 @@ const MediasSelectModal = ({
                   })
                 }}
               >
-                <Text textStyle="subhead-2">
+                <Text textStyle="subhead-2" fontSize="1rem">
                   {deslugifyDirectory(
                     getMediaDirectoryName(queryParams.mediaDirectoryName, {
                       start: -2,
@@ -233,7 +235,7 @@ const MediasSelectModal = ({
                     })
                   }}
                 >
-                  {dir.name}
+                  <Text fontSize="1rem">{dir.name}</Text>
                 </SidebarItem>
               ))}
             </SidebarContainer>
@@ -265,11 +267,7 @@ const MediasSelectModal = ({
                 Upload new {singularMediaLabel}
               </Button>
             </Flex>
-            <Skeleton
-              w="100%"
-              h={isListMediaFilesLoading ? "4.5rem" : "fit-content"}
-              isLoaded={!isListMediaFilesLoading}
-            >
+            <Skeleton w="100%" isLoaded={!isListMediaFilesLoading}>
               {files &&
                 !isListMediaFilesLoading &&
                 (searchValue
@@ -306,7 +304,7 @@ const MediasSelectModal = ({
                       </Text>
                     ))}
 
-              <SimpleGrid w="100%" columns={3} spacing="2.5%">
+              <SimpleGrid w="100%" columns={3} spacing="1.5rem">
                 {files &&
                   files
                     .filter(({ data }) => filteredMedias.includes(data?.name))
@@ -345,10 +343,7 @@ const MediasSelectModal = ({
               </SimpleGrid>
             </Skeleton>
             {files && mediaFolderFiles && total > 0 && (
-              <Center
-                w="100%"
-                pt={mediaType === "images" ? "12.5rem" : "6.25rem"}
-              >
+              <Center w="100%" pt="1rem">
                 <Pagination
                   totalCount={total}
                   pageSize={MEDIA_PAGINATION_SIZE}
@@ -429,7 +424,7 @@ const MediasSelectModal = ({
                 </Text>
                 <Tabs width="100%" index={activeTab} onChange={handleTabChange}>
                   <TabList>
-                    <Tab>Choose from {pluralMediaLabel}</Tab>
+                    <Tab>Add from {pluralMediaLabel}</Tab>
                     <Tab>Add by url</Tab>
                   </TabList>
                 </Tabs>
@@ -597,7 +592,8 @@ const MediasSelectModal = ({
                     onExternalProceed(data)
                   })}
                 >
-                  Select
+                  Add {singularMediaLabel}
+                  {fileName ? ` to page` : ""}
                 </LoadingButton>
               </Flex>
             </ModalFooter>
@@ -633,7 +629,8 @@ const MediasSelectModal = ({
                     onProceed(data)
                   })}
                 >
-                  Select
+                  Add {singularMediaLabel}
+                  {fileName ? ` to ${decodeURIComponent(fileName)}` : ""}
                 </LoadingButton>
               </Flex>
             </ModalFooter>
