@@ -38,6 +38,7 @@ import {
   SidebarItem,
   FormErrorMessage,
 } from "@opengovsg/design-system-react"
+import _ from "lodash"
 import { useState, useEffect } from "react"
 import { useFormContext } from "react-hook-form"
 import { BiLeftArrowAlt, BiFolder } from "react-icons/bi"
@@ -166,6 +167,11 @@ const MediasSelectModal = ({
     setActiveTab(index)
   }
 
+  const debouncedHandleSearch = _.debounce((value) => {
+    setSearchedValue(value)
+    // Perform any other actions you want with the input value
+  }, 1000)
+
   const internalMediaSelect = (
     <Grid h="100%" templateColumns="15.25rem 1fr">
       <GridItem borderColor="base.divider.medium" overflowY="auto" h="50vh">
@@ -244,7 +250,9 @@ const MediasSelectModal = ({
               <Box>
                 <Searchbar
                   isExpanded
-                  onSearch={(val) => setSearchedValue(val)}
+                  onChange={({ target }) => {
+                    debouncedHandleSearch(target.value)
+                  }}
                   placeholder="Press enter to search"
                 />
               </Box>
