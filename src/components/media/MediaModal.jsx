@@ -1,9 +1,7 @@
-import { yupResolver } from "@hookform/resolvers/yup"
 import PropTypes from "prop-types"
 import { useState } from "react"
 import { useForm, FormProvider } from "react-hook-form"
 import { useRouteMatch } from "react-router-dom"
-import * as Yup from "yup"
 
 import { MediaAltText } from "components/media/MediaAltText"
 import MediasSelectModal from "components/media/MediasSelectModal"
@@ -24,13 +22,6 @@ const MediaModal = ({
 
   const methods = useForm({
     mode: "onTouched",
-    resolver: yupResolver(
-      Yup.object({
-        altText: Yup.string()
-          // .required("Alt text is required")
-          .max(100, "Alt text should be less than 100 characters"),
-      })
-    ),
   })
 
   const [mediaMode, setMediaMode] = useState("select")
@@ -45,7 +36,7 @@ const MediaModal = ({
       joinOn: "/",
     })}`
 
-  const onMediaSelect = (media, isExternal) => {
+  const onMediaSelect = (media) => {
     if (!media) {
       methods.setValue("selectedMedia", undefined)
       methods.setValue("selectedMediaPath", "")
@@ -55,14 +46,10 @@ const MediaModal = ({
       methods.setValue("selectedMedia", undefined)
       methods.setValue("selectedMediaPath", "")
     } else {
-      if (isExternal) {
-        methods.setValue("selectedMediaPath", media.name)
-      } else {
-        methods.setValue(
-          "selectedMediaPath",
-          `${retrieveMediaDirectoryParams()}/${media.name}`
-        )
-      }
+      methods.setValue(
+        "selectedMediaPath",
+        `${retrieveMediaDirectoryParams()}/${media.name}`
+      )
       methods.setValue("selectedMedia", media)
     }
   }
@@ -90,6 +77,7 @@ const MediaModal = ({
           onProceed={
             showAltTextModal ? () => setMediaMode("details") : onProceed
           }
+          allowExternal={showAltTextModal}
           onExternalProceed={onExternalProceed}
           onMediaSelect={onMediaSelect}
           onClose={onClose}

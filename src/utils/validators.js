@@ -66,7 +66,8 @@ export const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX)
 export const specialCharactersRegexTest = /[~%^*_+\-./\\`;~{}[\]"<>]/
 export const jekyllFirstCharacterRegexTest = /^[._#~]/
 export const mediaSpecialCharactersRegexTest = /[~%^?*+#./\\`;~{}[\]"<>]/
-export const imagesSuffixRegexTest = /^.+\.(svg|jpg|jpeg|png|gif|tif|tiff|bmp|ico)$/
+export const externalMediaRegexTest = /^https:\/\/.+/
+export const imagesSuffixRegexTest = /.+\.(svg|jpg|jpeg|png|gif|tif|tiff|bmp|ico)$/
 export const filesSuffixRegexTest = /^.+\.(pdf)$/
 
 const ISOMER_TEMPLATE_PROTECTED_DIRS = [
@@ -1272,6 +1273,14 @@ const validateSubfolderName = (value, existingNames) => {
   return errorMessage
 }
 
+const validateExternalImagePermalink = (value) => {
+  let errorMessage = ""
+  if (!externalMediaRegexTest.test(value)) {
+    errorMessage = `Enter a valid URL. A URL must start with "https://"`
+  }
+  return errorMessage
+}
+
 export {
   validateContactType,
   validateLocationType,
@@ -1289,4 +1298,5 @@ export {
   validateFileName,
   validateResourceRoomName,
   validateSubfolderName,
+  validateExternalImagePermalink,
 }

@@ -58,9 +58,7 @@ import { TiptapEditPage } from "./TiptapEditPage"
 export const EditPage = () => {
   const params = useParams<{ siteName: string }>()
   const decodedParams = getDecodedParams(params)
-  const { data: initialPageData, isLoading: isLoadingPage } = useGetPageHook(
-    params
-  )
+  const { data: initialPageData } = useGetPageHook(params)
   const { data: csp } = useCspHook()
   const [variant, setVariant] = useState(
     initialPageData?.content?.frontMatter?.variant || "markdown"
@@ -160,6 +158,26 @@ export const EditPage = () => {
   )
 
   if (!editor) return null
+
+  const onExternalMediaSave = async ({
+    selectedMediaPath,
+    altText,
+  }: {
+    selectedMediaPath: string
+    altText: string
+  }) => {
+    if (mediaType === "images") {
+      editor
+        .chain()
+        .focus()
+        .setImage({
+          src: selectedMediaPath,
+          alt: altText,
+        })
+        .run()
+    }
+    onMediaModalClose()
+  }
 
   const getImageSrc = async (src: string) => {
     const { fileName, imageDirectory } = getImageDetails(src)
@@ -286,19 +304,7 @@ export const EditPage = () => {
                 }
                 onMediaModalClose()
               }}
-              onExternalProceed={async ({ selectedMediaPath, altText }) => {
-                if (mediaType === "images") {
-                  editor
-                    .chain()
-                    .focus()
-                    .setImage({
-                      src: selectedMediaPath,
-                      alt: altText,
-                    })
-                    .run()
-                }
-                onMediaModalClose()
-              }}
+              onExternalProceed={onExternalMediaSave}
             />
           )}
           {isEmbedModalOpen && (

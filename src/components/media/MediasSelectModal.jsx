@@ -36,6 +36,7 @@ import {
   Input,
   SidebarContainer,
   SidebarItem,
+  FormErrorMessage,
 } from "@opengovsg/design-system-react"
 import { useState, useEffect } from "react"
 import { useFormContext } from "react-hook-form"
@@ -58,7 +59,7 @@ import mediaStyles from "styles/isomer-cms/pages/Media.module.scss"
 
 import { getMediaDirectoryName, getMediaLabels } from "utils/media"
 
-import { deslugifyDirectory } from "utils"
+import { deslugifyDirectory, validateExternalImagePermalink } from "utils"
 
 const filterMediaByFileName = (medias, filterTerm) =>
   medias.filter((media) =>
@@ -72,6 +73,7 @@ const titleCase = (str) => {
 const MediasSelectModal = ({
   onProceed,
   onExternalProceed,
+  allowExternal,
   onClose,
   onMediaSelect,
   onUpload,
@@ -81,6 +83,15 @@ const MediasSelectModal = ({
 }) => {
   const { params } = useRouteMatch()
   const { fileName } = params
+
+  const {
+    watch,
+    handleSubmit,
+    register,
+    formState: { errors },
+    setError,
+    clearErrors,
+  } = useFormContext()
 
   const {
     singularMediaLabel,
@@ -148,11 +159,11 @@ const MediasSelectModal = ({
     searchValue
   ).map(({ name }) => name)
 
-  const { watch, handleSubmit, register } = useFormContext()
   const [activeTab, setActiveTab] = useState(0)
 
   const handleTabChange = (index) => {
     onMediaSelect("")
+    clearErrors()
     setActiveTab(index)
   }
 
@@ -392,7 +403,7 @@ const MediasSelectModal = ({
     >
       <ModalOverlay />
       <ModalContent padding="0.5rem" paddingTop="1rem" maxHeight="90%">
-        {mediaType === "images" ? (
+        {mediaType === "images" && allowExternal ? (
           <>
             <ModalHeader>
               <VStack alignItems="right" gap="1rem">
@@ -431,38 +442,73 @@ const MediasSelectModal = ({
                         pr="1.5rem"
                       >
                         {register && (
-                          <FormControl isRequired>
+                          <>
                             <Box mb="1.5rem">
-                              <Box mb="0.75rem">
-                                <FormLabel>URL</FormLabel>
-                              </Box>
-                              <Input
-                                w="100%"
-                                id="selectedMediaPath"
-                                placeholder="Input a /url or https://..."
-                                {...register("selectedMediaPath", {
-                                  required: true,
-                                })}
-                              />
+                              <FormControl
+                                isRequired
+                                isInvalid={!!errors.selectedMediaPath}
+                              >
+                                <Box mb="0.75rem">
+                                  <FormLabel>URL</FormLabel>
+                                </Box>
+                                <Input
+                                  w="100%"
+                                  id="selectedMediaPath"
+                                  type="text"
+                                  placeholder="Add a link of the external image"
+                                  {...register("selectedMediaPath", {
+                                    required: {
+                                      value: true,
+                                      message: "URL is required",
+                                    },
+                                    validate: (value) => {
+                                      if (activeTab === 0) return undefined
+                                      const errorMessage = validateExternalImagePermalink(
+                                        value
+                                      )
+                                      return errorMessage || true
+                                    },
+                                  })}
+                                />
+                                <FormErrorMessage>
+                                  {errors.selectedMediaPath &&
+                                    errors.selectedMediaPath.message}
+                                </FormErrorMessage>
+                              </FormControl>
                             </Box>
+
                             <Box>
-                              <Box mb="0.75rem">
-                                <FormLabel mb="0">Alt text</FormLabel>
-                                <FormLabel.Description color="text.description">
-                                  A brief description of your image to improve
-                                  accessibility and SEO.
-                                </FormLabel.Description>
-                              </Box>
+                              <FormControl
+                                isRequired
+                                isInvalid={!!errors.altText}
+                              >
+                                <Box mb="0.75rem">
+                                  <FormLabel mb="0">Alt text</FormLabel>
+                                  <FormLabel.Description color="text.description">
+                                    A brief description of your image to improve
+                                    accessibility and SEO.
+                                  </FormLabel.Description>
+                                </Box>
+
+                                <Input
+                                  w="100%"
+                                  id="altText"
+                                  type="text"
+                                  placeholder="Describe your image"
+                                  {...register("altText", {
+                                    maxLength: {
+                                      value: 100,
+                                      message:
+                                        "Alt text should be less than 100 characters",
+                                    },
+                                  })}
+                                />
+                                <FormErrorMessage>
+                                  {errors.altText && errors.altText.message}
+                                </FormErrorMessage>
+                              </FormControl>
                             </Box>
-                            <Input
-                              w="100%"
-                              id="altText"
-                              placeholder="Describe your image"
-                              {...register("altText", {
-                                required: true,
-                              })}
-                            />
-                          </FormControl>
+                          </>
                         )}
                       </GridItem>
                       <GridItem pl="1.5rem">
@@ -493,6 +539,24 @@ const MediasSelectModal = ({
                               </Text>
                             </Flex>
                           }
+                          onLoad={(event) => {
+                            const { naturalWidth, naturalHeight } = event.target
+                            const maxSize = 5 * 1024 * 1024
+                            if (naturalHeight * naturalWidth > maxSize) {
+                              setError("selectedMediaPath", {
+                                type: "custom",
+                                message: "The image size exceeds 5MB.",
+                              })
+                            }
+                          }}
+                          onError={() => {
+                            if (!errors.selectedMediaPath)
+                              setError("selectedMediaPath", {
+                                type: "custom",
+                                message:
+                                  "The provided URL does not point to a valid image.",
+                              })
+                          }}
                         />
                       </GridItem>
                     </Grid>
@@ -507,11 +571,16 @@ const MediasSelectModal = ({
                   alignSelf="flex-end"
                   id="selectMedia"
                   isDisabled={
-                    !watch("selectedMedia") && !watch("selectedMediaPath")
+                    !watch("selectedMediaPath") ||
+                    !!errors.selectedMediaPath ||
+                    !!errors.altText
                   }
-                  onClick={handleSubmit((data) => {
-                    if (activeTab === 0) onProceed(data)
-                    else onExternalProceed(data)
+                  onClick={handleSubmit(async (data) => {
+                    if (activeTab === 0) {
+                      onProceed(data)
+                      return
+                    }
+                    onExternalProceed(data)
                   })}
                 >
                   Select
@@ -547,7 +616,7 @@ const MediasSelectModal = ({
                 <LoadingButton
                   alignSelf="flex-end"
                   id="selectMedia"
-                  isDisabled={!watch("selectedMedia")}
+                  isDisabled={!watch("selectedMediaPath")}
                   onClick={handleSubmit((data) => {
                     onProceed(data)
                   })}
