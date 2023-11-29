@@ -169,7 +169,7 @@ const MediasSelectModal = ({
   const InternalMediaSelect = () => {
     return (
       <Grid h="100%" templateColumns="15.25rem 1fr">
-        <GridItem borderRight="1px solid" borderColor="base.divider.medium">
+        <GridItem borderColor="base.divider.medium" overflowY="auto" h="50vh">
           <VStack pr="1.25rem">
             {queryParams.mediaDirectoryName &&
               queryParams.mediaDirectoryName !== mediaType && (
@@ -237,11 +237,29 @@ const MediasSelectModal = ({
             </Skeleton>
           </VStack>
         </GridItem>
-        <GridItem>
+        <GridItem overflowY="auto" h="50vh" pr="0.5rem">
           <Box pl="1.25rem">
             <div
               className={`${mediaStyles.mediaCards} justify-content-center pt-3 pl-2`}
             >
+              <Flex w="100%" justifyContent="space-between" pb="1.25rem">
+                {/* Search medias */}
+                <Box>
+                  <Searchbar
+                    isExpanded
+                    onSearch={(val) => setSearchedValue(val)}
+                    placeholder="Press enter to search"
+                  />
+                </Box>
+                {/* Upload medias */}
+                <Button
+                  variant="inverse"
+                  color="interaction.main.default"
+                  onClick={onUpload}
+                >
+                  Upload new {singularMediaLabel}
+                </Button>
+              </Flex>
               <Skeleton
                 w="100%"
                 h={isListMediaFilesLoading ? "4.5rem" : "fit-content"}
@@ -344,7 +362,7 @@ const MediasSelectModal = ({
 
   const FolderBreadcrumb = () => (
     <VStack>
-      <Breadcrumb alignSelf="start" pb="1.25rem">
+      <Breadcrumb alignSelf="start">
         {queryParams.mediaDirectoryName
           ? queryParams.mediaDirectoryName.split("%2F").map((dir, idx) => (
               <BreadcrumbItem
@@ -370,24 +388,6 @@ const MediasSelectModal = ({
             ))
           : null}
       </Breadcrumb>
-      <Flex w="100%" justifyContent="space-between" pb="0.25rem">
-        {/* Search medias */}
-        <Box>
-          <Searchbar
-            isExpanded
-            onSearch={(val) => setSearchedValue(val)}
-            placeholder="Press enter to search"
-          />
-        </Box>
-        {/* Upload medias */}
-        <Button
-          variant="inverse"
-          color="interaction.main.default"
-          onClick={onUpload}
-        >
-          Upload new {singularMediaLabel}
-        </Button>
-      </Flex>
     </VStack>
   )
 
@@ -399,9 +399,15 @@ const MediasSelectModal = ({
       scrollBehavior="inside"
       closeOnOverlayClick={false}
       isCentered
+      overflowY="hidden"
     >
       <ModalOverlay />
-      <ModalContent padding="0.5rem" paddingTop="1rem" maxHeight="90%">
+      <ModalContent
+        padding="0.5rem"
+        paddingTop="1rem"
+        maxHeight="90%"
+        overflowY="hidden"
+      >
         {mediaType === "images" && allowExternal ? (
           <>
             <ModalHeader>
