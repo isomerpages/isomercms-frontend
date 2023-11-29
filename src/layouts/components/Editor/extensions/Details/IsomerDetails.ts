@@ -4,7 +4,7 @@ import Details from "@tiptap-pro/extension-details"
 // NOTE: The reason for not using the default Details extension is because
 // the position of the button is not configurable. We want the button to be
 // on the right side of the summary text, not the left.
-export const IsomerDetail = Details.extend({
+export const IsomerDetails = Details.extend({
   addNodeView() {
     return ({ editor, getPos, node, HTMLAttributes }) => {
       const outerDiv = document.createElement("div")

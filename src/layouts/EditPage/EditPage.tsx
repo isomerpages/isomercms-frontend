@@ -16,8 +16,6 @@ import StarterKit from "@tiptap/starter-kit"
 import { Details } from "@tiptap-pro/extension-details"
 import { DetailsContent } from "@tiptap-pro/extension-details-content"
 import { DetailsSummary } from "@tiptap-pro/extension-details-summary"
-// import { IsomerDetailsGroup } from "layouts/components/Editor/extensions/Details/IsomerDetailGroup"
-// import { IsomerDetail } from "layouts/components/Editor/extensions/Details/IsomerDetails"
 import { Context, useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { Markdown } from "tiptap-markdown"
@@ -51,6 +49,8 @@ import {
   IsomerImage,
   TrailingNode,
 } from "layouts/components/Editor/extensions"
+import { IsomerDetailsGroup } from "layouts/components/Editor/extensions/Details/IsomerDetailGroup"
+import { IsomerDetails } from "layouts/components/Editor/extensions/Details/IsomerDetails"
 
 import { isEmbedCodeValid } from "utils/allowedHTML"
 import { isEmbedActive } from "utils/tiptap"
@@ -140,23 +140,18 @@ export const EditPage = () => {
           return ""
         },
       }),
-      IsomerDetail.configure({
+      IsomerDetails.configure({
         HTMLAttributes: {
           class: "isomer-details",
         },
       }),
       DetailsSummary,
-<<<<<<< HEAD
-      DetailsContent,
-      // IsomerDetailsGroup,
-=======
       DetailsContent.configure({
         HTMLAttributes: {
           class: "isomer-details-content",
         },
       }),
       IsomerDetailsGroup,
->>>>>>> 3a1c48a2 (feat_background_toggling)
     ],
     autofocus: "start",
   })

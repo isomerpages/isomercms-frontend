@@ -129,14 +129,6 @@
     }
   }
 
-  .is-empty::before {
-    content: attr(data-placeholder);
-    float: left;
-    color: #adb5bd;
-    pointer-events: none;
-    height: 0;
-  }
-
   .node-detailGroup * [data-type="details"]:first-child {
     border-top: 1px solid #d4d4d4;
   }

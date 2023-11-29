@@ -38,17 +38,7 @@ export const IsomerDetailGroupView = ({
           <NodeViewContent />
           {selected && (
             <>
-              <IconButton
-                variant="outline"
-                aria-label="Add accordion"
-                icon={<Icon as={BiPlus} w="1.5rem" h="1.5rem" />}
-                onClick={() => {
-                  editor
-                    .chain()
-                    .appendDetail(startPos, endPos)
-
-                    .run()
-                }}
+              <Box
                 position="absolute"
                 bottom="0"
                 left="50%"
@@ -56,32 +46,57 @@ export const IsomerDetailGroupView = ({
                 mb="-1.5rem"
                 zIndex={1}
                 background="white"
-                // todo check with design, causes the border to be shown
-                _hover={{ background: "white" }}
-              />
-              <IconButton
-                variant="outline"
-                aria-label="Edit accordion"
-                icon={<Icon as={BiPencil} w="1.25rem" h="1.25rem" />}
-                onClick={() => {
-                  onDrawerOpen("accordion")()
-                }}
+                h="2.75rem"
+                w="2.75rem"
+              >
+                <IconButton
+                  variant="outline"
+                  aria-label="Add accordion"
+                  icon={<Icon as={BiPlus} w="1.5rem" h="1.5rem" />}
+                  onClick={() => {
+                    editor.chain().appendDetail(startPos, endPos).run()
+                  }}
+                  position="absolute"
+                  bottom="0"
+                  left="50%"
+                  transform="translateX(-50%)"
+                  zIndex={2}
+                  background="white"
+                />
+              </Box>
+              <Box
+                background="white"
+                zIndex={1}
                 right={0}
                 top={0}
                 mt="-1rem"
                 mr="0.5rem"
                 position="absolute"
-                // transform="translateX(-50%)"
-                zIndex={1}
-                background="white"
-                // todo check with design, causes the border to be shown
-                _hover={{ background: "white" }}
                 minH="1.75rem"
                 h="1.75rem"
                 minW="1.75rem"
                 color="base.content.medium"
                 borderColor="base.content.medium"
-              />
+              >
+                <IconButton
+                  variant="outline"
+                  aria-label="Edit accordion"
+                  icon={<Icon as={BiPencil} w="1.25rem" h="1.25rem" />}
+                  onClick={() => {
+                    onDrawerOpen("accordion")()
+                  }}
+                  right={0}
+                  top={0}
+                  position="absolute"
+                  zIndex={2}
+                  background="white"
+                  minH="1.75rem"
+                  h="1.75rem"
+                  minW="1.75rem"
+                  color="base.content.medium"
+                  borderColor="base.content.medium"
+                />
+              </Box>
             </>
           )}
         </Box>
