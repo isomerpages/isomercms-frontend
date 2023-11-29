@@ -92,7 +92,6 @@ const MediasSelectModal = ({
     setError,
     clearErrors,
   } = useFormContext()
-
   const {
     singularMediaLabel,
     pluralMediaLabel,
@@ -446,7 +445,10 @@ const MediasSelectModal = ({
                             <Box mb="1.5rem">
                               <FormControl
                                 isRequired
-                                isInvalid={!!errors.selectedMediaPath}
+                                isInvalid={
+                                  !!errors.selectedMediaPath ||
+                                  !!errors.externalImageValidation
+                                }
                               >
                                 <Box mb="0.75rem">
                                   <FormLabel>URL</FormLabel>
@@ -471,8 +473,10 @@ const MediasSelectModal = ({
                                   })}
                                 />
                                 <FormErrorMessage>
-                                  {errors.selectedMediaPath &&
-                                    errors.selectedMediaPath.message}
+                                  {(errors.selectedMediaPath &&
+                                    errors.selectedMediaPath.message) ||
+                                    (errors.externalImageValidation &&
+                                      errors.externalImageValidation.message)}
                                 </FormErrorMessage>
                               </FormControl>
                             </Box>
@@ -540,10 +544,11 @@ const MediasSelectModal = ({
                             </Flex>
                           }
                           onLoad={(event) => {
+                            clearErrors("externalImageValidation")
                             const { naturalWidth, naturalHeight } = event.target
                             const maxSize = 5 * 1024 * 1024
                             if (naturalHeight * naturalWidth > maxSize) {
-                              setError("selectedMediaPath", {
+                              setError("externalImageValidation", {
                                 type: "custom",
                                 message: "The image size exceeds 5MB.",
                               })
@@ -551,7 +556,7 @@ const MediasSelectModal = ({
                           }}
                           onError={() => {
                             if (!errors.selectedMediaPath)
-                              setError("selectedMediaPath", {
+                              setError("externalImageValidation", {
                                 type: "custom",
                                 message:
                                   "The provided URL does not point to a valid image.",
@@ -573,7 +578,8 @@ const MediasSelectModal = ({
                   isDisabled={
                     !watch("selectedMediaPath") ||
                     !!errors.selectedMediaPath ||
-                    !!errors.altText
+                    !!errors.altText ||
+                    !!errors.externalImageValidation
                   }
                   onClick={handleSubmit(async (data) => {
                     if (activeTab === 0) {
