@@ -111,6 +111,7 @@ export const EditorCardItem = ({
                   hasError={!!errors.cards?.[index]?.image}
                   onFieldChange={(e) => {
                     methods.setValue(`cards.${index}.image`, e.target.value)
+                    methods.trigger()
                     onChange(e)
                   }}
                 >

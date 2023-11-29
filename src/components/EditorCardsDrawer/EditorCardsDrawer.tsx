@@ -297,7 +297,10 @@ export const EditorCardsDrawer = ({
                       label=""
                       isChecked={methods.watch("isDisplayImage")}
                       {...methods.register("isDisplayImage", {
-                        onChange: () => methods.trigger(),
+                        onChange: () => {
+                          onChange()
+                          methods.trigger()
+                        },
                       })}
                     />
                   </Flex>
