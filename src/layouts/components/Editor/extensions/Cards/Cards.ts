@@ -174,6 +174,11 @@ export const IsomerCards = Node.create<CardOptions>({
           const offset = tr.selection.anchor
           const node = createCardGridWithContent(editor.schema, content)
 
+          // Note: The selection anchor refers to the starting position of the
+          // current selection (i.e. the card grid block). The selection is the
+          // entire card grid block, which we replace with the updated node.
+          // After replacing the node, we then set the selection again to the
+          // new node so that users can continue updating the same card grid block.
           tr.replaceSelectionWith(node)
             .scrollIntoView()
             .setSelection(
