@@ -1,10 +1,5 @@
 @charset "UTF-8";
 
-// This import is needed as we want the raw, un-scoped CSS to render the preview
-@import "./isomer-template/theme/breakpoints";
-@import "./isomer-template/theme/colors";
-@import "./isomer-template/components/cards";
-
 .bg-media-color-0 {
   background-color: #4b268e;
 }
