@@ -208,6 +208,8 @@ export const IsomerDetailsGroup = Node.create<IsomerDetailGroupOptions>({
       node.attrs.backgroundColor === "gray"
         ? "isomer-accordion-gray"
         : "isomer-accordion-white"
+
+    delete HTMLAttributes.backgroundColor
     return [
       "div",
       mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
