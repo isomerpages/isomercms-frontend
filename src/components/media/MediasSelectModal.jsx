@@ -555,6 +555,7 @@ const MediasSelectModal = ({
                             }
                           }}
                           onError={() => {
+                            if (activeTab === 0) return
                             if (!errors.selectedMediaPath)
                               setError("externalImageValidation", {
                                 type: "custom",
