@@ -1,5 +1,6 @@
-import { Node } from "@tiptap/core"
+import { ChainedCommands, findParentNode, Node } from "@tiptap/core"
 import { NodeRange, Slice } from "@tiptap/pm/model"
+import { EditorState } from "@tiptap/pm/state"
 import { mergeAttributes, ReactNodeViewRenderer } from "@tiptap/react"
 
 import { AccordionBackgroundType } from "types/editPage"
@@ -30,8 +31,10 @@ export const IsomerDetailsGroup = Node.create<IsomerDetailGroupOptions>({
   group: "block",
   atom: true,
   draggable: true,
-  defining: true,
   content: "details+",
+  defining: true,
+  isolating: true,
+  allowGapCursor: false,
 
   addCommands() {
     return {
@@ -116,6 +119,7 @@ export const IsomerDetailsGroup = Node.create<IsomerDetailGroupOptions>({
         if (!content) {
           return false
         }
+
         return chain()
           .insertContentAt(
             { from: blockRange.start, to: blockRange.end },
@@ -182,8 +186,36 @@ export const IsomerDetailsGroup = Node.create<IsomerDetailGroupOptions>({
           )
           .run()
       },
+      unsetDetailsGroup: () => ({
+        chain,
+        state,
+      }: {
+        state: EditorState
+        chain: ChainedCommands
+      }) => {
+        const { selection } = state
+        const currNode = findParentNode((t) => t.type === this.type)(selection)
+        if (!currNode) return false
+        const startPos = currNode.pos
+        const range = { from: startPos, to: startPos + currNode.node.nodeSize }
+
+        // TODO: check type
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return chain()
+          .insertContentAt(range, [])
+          .setTextSelection(startPos + 1)
+          .run()
+      },
     }
   },
+
+  // TODO: add keyboard shortcuts for backspace
+  // addKeyboardShortcuts() {
+  //   return {
+  //     "Backspace": () => this.editor.commands.detailGroup.setDetailsGroup(),
+  //   }
+  // }
 
   addAttributes() {
     return {
