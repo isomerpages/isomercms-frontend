@@ -166,199 +166,194 @@ const MediasSelectModal = ({
     setActiveTab(index)
   }
 
-  const InternalMediaSelect = () => {
-    return (
-      <Grid h="100%" templateColumns="15.25rem 1fr">
-        <GridItem borderColor="base.divider.medium" overflowY="auto" h="50vh">
-          <VStack pr="1.25rem">
-            {queryParams.mediaDirectoryName &&
-              queryParams.mediaDirectoryName !== mediaType && (
-                <Button
-                  variant="clear"
-                  alignSelf="start"
-                  leftIcon={<Icon as={BiLeftArrowAlt} fontSize="1.25rem" />}
-                  color="base.content.default"
+  const internalMediaSelect = (
+    <Grid h="100%" templateColumns="15.25rem 1fr">
+      <GridItem borderColor="base.divider.medium" overflowY="auto" h="50vh">
+        <VStack pr="1.25rem">
+          {queryParams.mediaDirectoryName &&
+            queryParams.mediaDirectoryName !== mediaType && (
+              <Button
+                variant="clear"
+                alignSelf="start"
+                leftIcon={<Icon as={BiLeftArrowAlt} fontSize="1.25rem" />}
+                color="base.content.default"
+                onClick={() => {
+                  onMediaSelect("")
+                  setQueryParams((prevState) => {
+                    return {
+                      ...prevState,
+                      mediaDirectoryName: getMediaDirectoryName(
+                        queryParams.mediaDirectoryName,
+                        {
+                          end:
+                            queryParams.mediaDirectoryName.split("%2F").length -
+                            1,
+                        }
+                      ),
+                    }
+                  })
+                }}
+              >
+                <Text textStyle="subhead-2">
+                  {deslugifyDirectory(
+                    getMediaDirectoryName(queryParams.mediaDirectoryName, {
+                      start: -2,
+                      end: -1,
+                    })
+                  )}
+                </Text>
+              </Button>
+            )}
+          <Skeleton
+            w="100%"
+            h={
+              isListMediaFolderSubdirectoriesLoading ? "4.5rem" : "fit-content"
+            }
+            isLoaded={!isListMediaFolderSubdirectoriesLoading}
+            pb="2.25rem"
+          >
+            <SidebarContainer>
+              {/* Directories */}
+              {filteredDirectories.map((dir) => (
+                <SidebarItem
+                  icon={BiFolder}
                   onClick={() => {
                     onMediaSelect("")
                     setQueryParams((prevState) => {
                       return {
                         ...prevState,
-                        mediaDirectoryName: getMediaDirectoryName(
-                          queryParams.mediaDirectoryName,
-                          {
-                            end:
-                              queryParams.mediaDirectoryName.split("%2F")
-                                .length - 1,
-                          }
-                        ),
+                        mediaDirectoryName: `${prevState.mediaDirectoryName}%2F${dir.name}`,
                       }
                     })
                   }}
                 >
-                  <Text textStyle="subhead-2">
-                    {deslugifyDirectory(
-                      getMediaDirectoryName(queryParams.mediaDirectoryName, {
-                        start: -2,
-                        end: -1,
-                      })
-                    )}
-                  </Text>
-                </Button>
-              )}
+                  {dir.name}
+                </SidebarItem>
+              ))}
+            </SidebarContainer>
+          </Skeleton>
+        </VStack>
+      </GridItem>
+      <GridItem overflowY="auto" h="50vh" pr="0.5rem">
+        <Box pl="1.25rem">
+          <div
+            className={`${mediaStyles.mediaCards} justify-content-center pt-3 pl-2`}
+          >
+            <Flex w="100%" justifyContent="space-between" pb="1.25rem">
+              {/* Search medias */}
+              <Box>
+                <Searchbar
+                  isExpanded
+                  onSearch={(val) => setSearchedValue(val)}
+                  placeholder="Press enter to search"
+                />
+              </Box>
+              {/* Upload medias */}
+              <Button
+                variant="inverse"
+                color="interaction.main.default"
+                onClick={onUpload}
+              >
+                Upload new {singularMediaLabel}
+              </Button>
+            </Flex>
             <Skeleton
               w="100%"
-              h={
-                isListMediaFolderSubdirectoriesLoading
-                  ? "4.5rem"
-                  : "fit-content"
-              }
-              isLoaded={!isListMediaFolderSubdirectoriesLoading}
-              pb="2.25rem"
+              h={isListMediaFilesLoading ? "4.5rem" : "fit-content"}
+              isLoaded={!isListMediaFilesLoading}
             >
-              <SidebarContainer>
-                {/* Directories */}
-                {filteredDirectories.map((dir) => (
-                  <SidebarItem
-                    icon={BiFolder}
-                    onClick={() => {
-                      onMediaSelect("")
-                      setQueryParams((prevState) => {
-                        return {
-                          ...prevState,
-                          mediaDirectoryName: `${prevState.mediaDirectoryName}%2F${dir.name}`,
-                        }
-                      })
-                    }}
-                  >
-                    {dir.name}
-                  </SidebarItem>
-                ))}
-              </SidebarContainer>
-            </Skeleton>
-          </VStack>
-        </GridItem>
-        <GridItem overflowY="auto" h="50vh" pr="0.5rem">
-          <Box pl="1.25rem">
-            <div
-              className={`${mediaStyles.mediaCards} justify-content-center pt-3 pl-2`}
-            >
-              <Flex w="100%" justifyContent="space-between" pb="1.25rem">
-                {/* Search medias */}
-                <Box>
-                  <Searchbar
-                    isExpanded
-                    onSearch={(val) => setSearchedValue(val)}
-                    placeholder="Press enter to search"
-                  />
-                </Box>
-                {/* Upload medias */}
-                <Button
-                  variant="inverse"
-                  color="interaction.main.default"
-                  onClick={onUpload}
-                >
-                  Upload new {singularMediaLabel}
-                </Button>
-              </Flex>
-              <Skeleton
-                w="100%"
-                h={isListMediaFilesLoading ? "4.5rem" : "fit-content"}
-                isLoaded={!isListMediaFilesLoading}
-              >
-                {files &&
-                  !isListMediaFilesLoading &&
-                  (searchValue
-                    ? filteredMedias.length === 0 && (
-                        <VStack
-                          h="100%"
-                          w="100%"
-                          alignItems="center"
-                          justifyContent="center"
-                        >
-                          <Text>
-                            We couldn’t find any {pluralMediaLabel} with “
-                            {searchValue}”.
-                          </Text>
-                          {queryParams.mediaDirectoryName !==
-                            pluralMediaLabel && (
-                            <Button
-                              variant="clear"
-                              onClick={() => {
-                                setQueryParams((prevState) => ({
-                                  ...prevState,
-                                  mediaDirectoryName: pluralMediaLabel,
-                                }))
-                              }}
-                            >
-                              Search in All {pluralMediaLabel} instead
-                            </Button>
-                          )}
-                        </VStack>
-                      )
-                    : listMediaFilesData.total === 0 && (
+              {files &&
+                !isListMediaFilesLoading &&
+                (searchValue
+                  ? filteredMedias.length === 0 && (
+                      <VStack
+                        h="100%"
+                        w="100%"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
                         <Text>
-                          No {pluralMediaLabel} in this {singularDirectoryLabel}
-                          .
+                          We couldn’t find any {pluralMediaLabel} with “
+                          {searchValue}”.
                         </Text>
-                      ))}
+                        {queryParams.mediaDirectoryName !==
+                          pluralMediaLabel && (
+                          <Button
+                            variant="clear"
+                            onClick={() => {
+                              setQueryParams((prevState) => ({
+                                ...prevState,
+                                mediaDirectoryName: pluralMediaLabel,
+                              }))
+                            }}
+                          >
+                            Search in All {pluralMediaLabel} instead
+                          </Button>
+                        )}
+                      </VStack>
+                    )
+                  : listMediaFilesData.total === 0 && (
+                      <Text>
+                        No {pluralMediaLabel} in this {singularDirectoryLabel}.
+                      </Text>
+                    ))}
 
-                <SimpleGrid w="100%" columns={3} spacing="2.5%">
-                  {files &&
-                    files
-                      .filter(({ data }) => filteredMedias.includes(data?.name))
-                      .map(({ data, isLoading }) => (
-                        <Skeleton
-                          w="100%"
-                          h={isLoading ? "4.5rem" : "fit-content"}
-                          isLoaded={!isLoading}
-                          key={data.name}
-                        >
-                          {mediaType === "images" ? (
-                            <ImagePreviewCard
-                              name={data.name}
-                              addedTime={data.addedTime}
-                              mediaUrl={data.mediaUrl}
-                              isSelected={
-                                data.name === watch("selectedMedia")?.name
-                              }
-                              onClick={() => onMediaSelect(data)}
-                              isMenuNeeded={false}
-                            />
-                          ) : (
-                            <FilePreviewCard
-                              name={data.name}
-                              addedTime={data.addedTime}
-                              mediaUrl={data.mediaUrl}
-                              isSelected={
-                                data.name === watch("selectedMedia")?.name
-                              }
-                              onClick={() => onMediaSelect(data)}
-                              isMenuNeeded={false}
-                            />
-                          )}
-                        </Skeleton>
-                      ))}
-                </SimpleGrid>
-              </Skeleton>
-              {files && mediaFolderFiles && total > 0 && (
-                <Center
-                  w="100%"
-                  pt={mediaType === "images" ? "12.5rem" : "6.25rem"}
-                >
-                  <Pagination
-                    totalCount={total}
-                    pageSize={MEDIA_PAGINATION_SIZE}
-                    currentPage={curPage}
-                    onPageChange={(page) => setCurPage(page)}
-                  />
-                </Center>
-              )}
-            </div>
-          </Box>
-        </GridItem>
-      </Grid>
-    )
-  }
+              <SimpleGrid w="100%" columns={3} spacing="2.5%">
+                {files &&
+                  files
+                    .filter(({ data }) => filteredMedias.includes(data?.name))
+                    .map(({ data, isLoading }) => (
+                      <Skeleton
+                        w="100%"
+                        h={isLoading ? "4.5rem" : "fit-content"}
+                        isLoaded={!isLoading}
+                        key={data.name}
+                      >
+                        {mediaType === "images" ? (
+                          <ImagePreviewCard
+                            name={data.name}
+                            addedTime={data.addedTime}
+                            mediaUrl={data.mediaUrl}
+                            isSelected={
+                              data.name === watch("selectedMedia")?.name
+                            }
+                            onClick={() => onMediaSelect(data)}
+                            isMenuNeeded={false}
+                          />
+                        ) : (
+                          <FilePreviewCard
+                            name={data.name}
+                            addedTime={data.addedTime}
+                            mediaUrl={data.mediaUrl}
+                            isSelected={
+                              data.name === watch("selectedMedia")?.name
+                            }
+                            onClick={() => onMediaSelect(data)}
+                            isMenuNeeded={false}
+                          />
+                        )}
+                      </Skeleton>
+                    ))}
+              </SimpleGrid>
+            </Skeleton>
+            {files && mediaFolderFiles && total > 0 && (
+              <Center
+                w="100%"
+                pt={mediaType === "images" ? "12.5rem" : "6.25rem"}
+              >
+                <Pagination
+                  totalCount={total}
+                  pageSize={MEDIA_PAGINATION_SIZE}
+                  currentPage={curPage}
+                  onPageChange={(page) => setCurPage(page)}
+                />
+              </Center>
+            )}
+          </div>
+        </Box>
+      </GridItem>
+    </Grid>
+  )
 
   const FolderBreadcrumb = () => (
     <VStack>
@@ -436,9 +431,7 @@ const MediasSelectModal = ({
             <ModalBody>
               <Tabs width="100%" index={activeTab} onChange={handleTabChange}>
                 <TabPanels minHeight="16.5rem">
-                  <TabPanel>
-                    <InternalMediaSelect />
-                  </TabPanel>
+                  <TabPanel>{internalMediaSelect}</TabPanel>
                   <TabPanel>
                     <Grid h="100%" templateColumns="1fr 1fr">
                       <GridItem
@@ -621,9 +614,7 @@ const MediasSelectModal = ({
                 <FolderBreadcrumb />
               </VStack>
             </ModalHeader>
-            <ModalBody>
-              <InternalMediaSelect />
-            </ModalBody>
+            <ModalBody>{internalMediaSelect}</ModalBody>
             <ModalFooter>
               <Flex>
                 <LoadingButton
