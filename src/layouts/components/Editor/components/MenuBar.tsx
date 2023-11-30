@@ -1,4 +1,5 @@
 import {
+  Box,
   Divider,
   HStack,
   Icon,
@@ -9,6 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
   Text,
+  VStack,
 } from "@chakra-ui/react"
 import { Button, Menu } from "@opengovsg/design-system-react"
 import { Editor } from "@tiptap/react"
@@ -24,6 +26,7 @@ import {
   BiListOl,
   BiListUl,
   BiMinus,
+  BiPlus,
   BiRedo,
   BiStrikethrough,
   BiTable,
@@ -33,6 +36,12 @@ import {
 import { IconType } from "react-icons/lib"
 
 import { useEditorModal } from "contexts/EditorModalContext"
+
+import {
+  EditorAccordionImage,
+  EditorCardsImage,
+  EditorDividerImage,
+} from "assets"
 
 import { MenuItem } from "./MenuItem"
 
@@ -66,10 +75,25 @@ interface MenuBarHorizontalList {
   items: MenuBarItem[]
 }
 
+interface MenuBarDetailedItem {
+  name: string
+  description: string
+  icon: IconType
+  action: () => void
+}
+
+interface MenuBarDetailedList {
+  type: "detailed-list"
+  label: string
+  icon: IconType
+  items: MenuBarDetailedItem[]
+}
+
 type MenuBarEntry =
   | MenuBarDivider
   | MenuBarVeritcalList
   | MenuBarHorizontalList
+  | MenuBarDetailedList
   | MenuBarItem
 
 export const MenuBar = ({ editor }: { editor: Editor }) => {
@@ -219,6 +243,18 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
     },
     {
       type: "item",
+      icon: BiTable,
+      title: "Add table",
+      action: () =>
+        editor
+          .chain()
+          .focus()
+          // NOTE: Default to smallest multi table
+          .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+          .run(),
+    },
+    {
+      type: "item",
       icon: BiFile,
       title: "Add file",
       action: () => showModal("files"),
@@ -233,22 +269,30 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
       type: "divider",
     },
     {
-      type: "item",
-      icon: BiTable,
-      title: "Add table",
-      action: () =>
-        editor
-          .chain()
-          .focus()
-          // NOTE: Default to smallest multi table
-          .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
-          .run(),
-    },
-    {
-      type: "item",
-      icon: BiMinus,
-      title: "Divider",
-      action: () => editor.chain().focus().setHorizontalRule().run(),
+      type: "detailed-list",
+      label: "Add complex blocks",
+      icon: BiPlus,
+      items: [
+        {
+          name: "Accordion",
+          description: "Let users hide or show content.",
+          icon: EditorAccordionImage,
+          action: () => editor.chain().focus().setHorizontalRule().run(),
+        },
+        {
+          name: "Card grid",
+          description:
+            "Lay out content in a card grid. You can add images, links, and/or text.",
+          icon: EditorCardsImage,
+          action: () => editor.chain().focus().setHorizontalRule().run(),
+        },
+        {
+          name: "Divider",
+          description: "Use a divider to create sections on your page.",
+          icon: EditorDividerImage,
+          action: () => editor.chain().focus().setHorizontalRule().run(),
+        },
+      ],
     },
     {
       type: "divider",
@@ -276,7 +320,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
       borderBottom="1px solid"
       borderColor="base.divider.strong"
       borderTopRadius="0.25rem"
-      spacing="0.125rem"
+      spacing="0.25rem"
     >
       {items.map((item) => (
         <>
@@ -286,6 +330,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
               border="px solid"
               borderColor="base.divider.strong"
               h="1.25rem"
+              mx="0.25rem"
             />
           )}
 
@@ -353,11 +398,11 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
                         bgColor="transparent"
                         border="none"
                         h="1.75rem"
-                        px="0.5rem"
+                        px={0}
                         py="0.25rem"
                         aria-label={item.label}
                       >
-                        <HStack spacing="0.5rem">
+                        <HStack spacing={0}>
                           <Icon
                             as={item.defaultIcon}
                             fontSize="1.25rem"
@@ -372,7 +417,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
                       </Button>
                     </HStack>
                   </PopoverTrigger>
-                  <PopoverContent w="7.75rem">
+                  <PopoverContent w="5.75rem">
                     <PopoverBody>
                       <HStack>
                         {item.items.map((subItem) => (
@@ -388,6 +433,76 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
                   </PopoverContent>
                 </>
               )}
+            </Popover>
+          )}
+
+          {item.type === "detailed-list" && (
+            <Popover placement="bottom" offset={[0, 16]}>
+              <PopoverTrigger>
+                <Button
+                  _hover={{ bg: "gray.100" }}
+                  _active={{ bg: "gray.200" }}
+                  bgColor="transparent"
+                  border="none"
+                  h="1.75rem"
+                  w="1.75rem"
+                  minH="1.75rem"
+                  minW="1.75rem"
+                  p={0}
+                  aria-label={item.label}
+                >
+                  <Icon
+                    as={item.icon}
+                    fontSize="1.25rem"
+                    color="base.content.medium"
+                  />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <PopoverBody px={0} py="0.75rem">
+                  <VStack spacing="0.75rem">
+                    {item.items.map((subItem) => (
+                      <Button
+                        onClick={subItem.action}
+                        variant="clear"
+                        colorScheme="neutral"
+                        border="none"
+                        h="fit-content"
+                        w="100%"
+                        textAlign="left"
+                        px={0}
+                        py="0.25rem"
+                        aria-label={item.label}
+                        borderRadius={0}
+                        _hover={{ bg: "base.canvas.brand-subtle" }}
+                      >
+                        <HStack
+                          w="100%"
+                          px="1rem"
+                          py="0.75rem"
+                          spacing="0.75rem"
+                          alignItems="flex-start"
+                        >
+                          <Icon
+                            as={subItem.icon}
+                            fontSize="3rem"
+                            borderWidth="1px"
+                            borderStyle="solid"
+                          />
+                          <Box>
+                            <Text textStyle="subhead-2" mb="0.25rem">
+                              {subItem.name}
+                            </Text>
+                            <Text textStyle="body-2">
+                              {subItem.description}
+                            </Text>
+                          </Box>
+                        </HStack>
+                      </Button>
+                    ))}
+                  </VStack>
+                </PopoverBody>
+              </PopoverContent>
             </Popover>
           )}
 
