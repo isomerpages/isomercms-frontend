@@ -40,6 +40,15 @@ export const IsomerDetailsGroup = Node.create<IsomerDetailGroupOptions>({
     return {
       setDetailsGroup: () => ({ chain, state }) => {
         const { schema, selection } = state
+
+        const currNode = findParentNode((t) => t.type === this.type)(selection)
+
+        const isInsideDetailGroup = currNode !== undefined
+
+        if (isInsideDetailGroup) {
+          // Do not allow inner accordions
+          return false
+        }
         const { $from: fromPos, $to: toPos } = selection
         const blockRange: NodeRange | null = fromPos.blockRange(toPos)
 
@@ -143,6 +152,7 @@ export const IsomerDetailsGroup = Node.create<IsomerDetailGroupOptions>({
           )
           .run()
       },
+
       changeDetailGroupBackground: (
         backgroundColor: AccordionBackgroundType
       ) => ({ chain, state }) => {
@@ -175,6 +185,7 @@ export const IsomerDetailsGroup = Node.create<IsomerDetailGroupOptions>({
         if (!content) {
           return false
         }
+
         return chain()
           .insertContentAt(
             { from: blockRange.start, to: blockRange.end },
