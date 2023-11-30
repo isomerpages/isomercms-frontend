@@ -9,13 +9,7 @@ import { MediaCreationModal } from "components/MediaCreationModal/MediaCreationM
 
 import { getMediaDirectoryName } from "utils/media"
 
-const MediaModal = ({
-  onClose,
-  onProceed,
-  type,
-  showAltTextModal = false,
-  onExternalProceed,
-}) => {
+const MediaModal = ({ onClose, onProceed, type, showAltTextModal = false }) => {
   const {
     params: { siteName },
   } = useRouteMatch()
@@ -78,7 +72,7 @@ const MediaModal = ({
             showAltTextModal ? () => setMediaMode("details") : onProceed
           }
           allowExternal={showAltTextModal}
-          onExternalProceed={onExternalProceed}
+          onExternalProceed={onProceed}
           onMediaSelect={onMediaSelect}
           onClose={onClose}
           mediaType={type}

@@ -180,8 +180,12 @@ export const EditPage = () => {
   }
 
   const getImageSrc = async (src: string) => {
+    if (src.startsWith("https://")) {
+      // External link, don't modify
+      return { mediaPath: src }
+    }
     const { fileName, imageDirectory } = getImageDetails(src)
-    const { mediaPath, mediaUrl } = await mediaService.get({
+    const { mediaPath } = await mediaService.get({
       siteName,
       mediaDirectoryName: imageDirectory || "images",
       fileName,
@@ -189,7 +193,7 @@ export const EditPage = () => {
     const nomalisedMediaPath = mediaPath.startsWith("images/")
       ? `/${mediaPath}`
       : mediaPath
-    return { mediaPath: nomalisedMediaPath, mediaUrl }
+    return { mediaPath: nomalisedMediaPath }
   }
 
   const handleEmbedInsert = ({ value }: EditorEmbedContents) => {
@@ -304,7 +308,6 @@ export const EditPage = () => {
                 }
                 onMediaModalClose()
               }}
-              onExternalProceed={onExternalMediaSave}
             />
           )}
           {isEmbedModalOpen && (
