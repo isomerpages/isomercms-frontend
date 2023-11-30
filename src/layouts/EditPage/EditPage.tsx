@@ -22,6 +22,7 @@ import HyperlinkModal from "components/HyperlinkModal"
 import MediaModal from "components/media/MediaModal"
 
 import { EditorContextProvider } from "contexts/EditorContext"
+import { EditorDrawerContextProvider } from "contexts/EditorDrawerContext"
 import { EditorModalContextProvider } from "contexts/EditorModalContext"
 import { ServicesContext } from "contexts/ServicesContext"
 
@@ -48,7 +49,7 @@ import {
 import { isEmbedCodeValid } from "utils/allowedHTML"
 
 import { MediaService } from "services"
-import { EditorEmbedContents } from "types/editPage"
+import { DrawerVariant, EditorEmbedContents } from "types/editPage"
 import { getDecodedParams, getImageDetails } from "utils"
 
 import { MarkdownEditPage } from "./MarkdownEditPage"
@@ -146,6 +147,12 @@ export const EditPage = () => {
     onClose: onEmbedModalClose,
   } = useDisclosure()
 
+  const {
+    isOpen: isCardsDrawerOpen,
+    onOpen: onCardsDrawerOpen,
+    onClose: onCardsDrawerClose,
+  } = useDisclosure()
+
   const { siteName } = decodedParams
 
   const { mediaService } = useContext<{ mediaService: MediaService }>(
@@ -175,6 +182,37 @@ export const EditPage = () => {
     onEmbedModalClose()
   }
 
+  const isDrawerOpen = (drawerType: DrawerVariant) => {
+    if (drawerType === "cards") {
+      return isCardsDrawerOpen
+    }
+    return false
+  }
+
+  const onDrawerOpen = (drawerType: DrawerVariant) => {
+    if (drawerType === "cards") {
+      return onCardsDrawerOpen
+    }
+
+    return () => undefined
+  }
+
+  const onDrawerClose = (drawerType: DrawerVariant) => {
+    if (drawerType === "cards") {
+      return onCardsDrawerClose
+    }
+
+    return () => undefined
+  }
+
+  const onDrawerProceed = (drawerType: DrawerVariant) => {
+    if (drawerType === "cards") {
+      return onCardsDrawerClose
+    }
+
+    return () => undefined
+  }
+
   return (
     <EditorContextProvider editor={editor}>
       <EditorModalContextProvider
@@ -189,98 +227,106 @@ export const EditPage = () => {
           }
         }}
       >
-        {isHyperlinkModalOpen && (
-          <HyperlinkModal
-            initialText=""
-            onSave={(text, href) => {
-              editor
-                .chain()
-                .focus()
-                .insertContent(
-                  `<a target="_blank" rel="noopener noreferrer nofollow" href="${href}">${text}</a>`
-                )
-                .run()
-              onHyperlinkModalClose()
-            }}
-            onClose={onHyperlinkModalClose}
-          />
-        )}
-        {isMediaModalOpen && (
-          <MediaModal
-            showAltTextModal
-            onClose={onMediaModalClose}
-            type={mediaType}
-            onProceed={async ({ selectedMediaPath, altText }) => {
-              if (mediaType === "images") {
-                const { mediaPath } = await getImageSrc(selectedMediaPath)
-                editor
-                  .chain()
-                  .focus()
-                  .setImage({
-                    src: mediaPath,
-                    alt: altText,
-                  })
-                  .run()
-                // NOTE: If it's a file and there's no selection made, just add a link with default text
-              } else if (editor.state.selection.empty) {
+        <EditorDrawerContextProvider
+          isAnyDrawerOpen={isCardsDrawerOpen}
+          isDrawerOpen={isDrawerOpen}
+          onDrawerOpen={onDrawerOpen}
+          onDrawerClose={onDrawerClose}
+          onDrawerProceed={onDrawerProceed}
+        >
+          {isHyperlinkModalOpen && (
+            <HyperlinkModal
+              initialText=""
+              onSave={(text, href) => {
                 editor
                   .chain()
                   .focus()
                   .insertContent(
-                    `<a target="_blank" rel="noopener noreferrer nofollow" href="${selectedMediaPath}">${
-                      altText || "file"
-                    }</a>`
+                    `<a target="_blank" rel="noopener noreferrer nofollow" href="${href}">${text}</a>`
                   )
                   .run()
-              } else {
-                editor
-                  .chain()
-                  .focus()
-                  .setLink({ href: selectedMediaPath })
-                  .run()
+                onHyperlinkModalClose()
+              }}
+              onClose={onHyperlinkModalClose}
+            />
+          )}
+          {isMediaModalOpen && (
+            <MediaModal
+              showAltTextModal
+              onClose={onMediaModalClose}
+              type={mediaType}
+              onProceed={async ({ selectedMediaPath, altText }) => {
+                if (mediaType === "images") {
+                  const { mediaPath } = await getImageSrc(selectedMediaPath)
+                  editor
+                    .chain()
+                    .focus()
+                    .setImage({
+                      src: mediaPath,
+                      alt: altText,
+                    })
+                    .run()
+                  // NOTE: If it's a file and there's no selection made, just add a link with default text
+                } else if (editor.state.selection.empty) {
+                  editor
+                    .chain()
+                    .focus()
+                    .insertContent(
+                      `<a target="_blank" rel="noopener noreferrer nofollow" href="${selectedMediaPath}">${
+                        altText || "file"
+                      }</a>`
+                    )
+                    .run()
+                } else {
+                  editor
+                    .chain()
+                    .focus()
+                    .setLink({ href: selectedMediaPath })
+                    .run()
+                }
+                onMediaModalClose()
+              }}
+            />
+          )}
+          {isEmbedModalOpen && (
+            <EditorEmbedModal
+              isOpen={isEmbedModalOpen}
+              onClose={onEmbedModalClose}
+              onProceed={handleEmbedInsert}
+              cursorValue={
+                editor.state.selection.empty
+                  ? ""
+                  : getHTMLFromFragment(
+                      editor.state.selection.content().content,
+                      editor.schema
+                    )
               }
-              onMediaModalClose()
-            }}
-          />
-        )}
-        {isEmbedModalOpen && (
-          <EditorEmbedModal
-            isOpen={isEmbedModalOpen}
-            onClose={onEmbedModalClose}
-            onProceed={handleEmbedInsert}
-            cursorValue={
-              editor.state.selection.empty
-                ? ""
-                : getHTMLFromFragment(
-                    editor.state.selection.content().content,
-                    editor.schema
-                  )
-            }
-          />
-        )}
+            />
+          )}
 
-        {variant === "markdown" ? (
-          <MarkdownEditPage
-            togglePreview={() => {
-              variant === "markdown"
-                ? setVariant("tiptap")
-                : setVariant("markdown")
-            }}
-          />
-        ) : (
-          <TiptapEditPage
-            // NOTE: We should not use the fetched data if the variant
-            // changed from `markdown` -> `tiptap`.
-            // This is because this implies that the user has
-            // changed the variant from markdown to tiptap.
-            // Hence, there might be changes in either markdown editor content
-            // or in the preview editor that should be persisted.
-            shouldUseFetchedData={
-              variant === "tiptap" &&
-              initialPageData?.content?.frontMatter?.variant === "tiptap"
-            }
-          />
-        )}
+          {variant === "markdown" ? (
+            <MarkdownEditPage
+              togglePreview={() => {
+                variant === "markdown"
+                  ? setVariant("tiptap")
+                  : setVariant("markdown")
+              }}
+            />
+          ) : (
+            <TiptapEditPage
+              // NOTE: We should not use the fetched data if the variant
+              // changed from `markdown` -> `tiptap`.
+              // This is because this implies that the user has
+              // changed the variant from markdown to tiptap.
+              // Hence, there might be changes in either markdown editor content
+              // or in the preview editor that should be persisted.
+              shouldUseFetchedData={
+                variant === "tiptap" &&
+                initialPageData?.content?.frontMatter?.variant === "tiptap"
+              }
+            />
+          )}
+        </EditorDrawerContextProvider>
       </EditorModalContextProvider>
     </EditorContextProvider>
   )

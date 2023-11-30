@@ -2,6 +2,8 @@ export interface EditorEmbedContents {
   value: string
 }
 
+export type DrawerVariant = "cards"
+
 export interface EditorCard {
   image: string
   altText: string

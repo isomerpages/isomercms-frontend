@@ -5,9 +5,11 @@ import { marked } from "marked"
 import { useCallback, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
+import { EditorCardsDrawer } from "components/EditorCardsDrawer"
 import PagePreview from "components/pages/PagePreview"
 
 import { useEditorContext } from "contexts/EditorContext"
+import { useEditorDrawerContext } from "contexts/EditorDrawerContext"
 
 import { useGetMultipleMediaHook } from "hooks/mediaHooks"
 import { useGetPageHook } from "hooks/pageHooks"
@@ -31,6 +33,11 @@ interface TiptapEditPageProps {
 export const TiptapEditPage = ({
   shouldUseFetchedData,
 }: TiptapEditPageProps) => {
+  const {
+    isDrawerOpen,
+    onDrawerClose,
+    onDrawerProceed,
+  } = useEditorDrawerContext()
   const params = useParams<{ siteName: string }>()
   const { data: initialPageData, isLoading: isLoadingPage } = useGetPageHook(
     params
@@ -101,8 +108,17 @@ export const TiptapEditPage = ({
       getEditorContent={() => editor.getHTML()}
       variant="tiptap"
     >
+      {/* Editor drawers */}
+      <EditorCardsDrawer
+        editor={editor}
+        isOpen={isDrawerOpen("cards")}
+        onClose={onDrawerClose("cards")}
+        onProceed={onDrawerProceed("cards")}
+      />
+
       {/* Editor */}
       <Editor h="80vh" w="45vw" />
+
       {/* Preview */}
       <PagePreview
         // NOTE: Reserve 45vw for editor
