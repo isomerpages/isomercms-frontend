@@ -20,6 +20,8 @@ declare module "@tiptap/core" {
       addCards: () => ReturnType
       // Delete the current card grid block
       deleteCards: () => ReturnType
+      // Set the content of the current card grid block
+      setCardsContent: (cardContent: EditorCard[]) => ReturnType
     }
   }
 }
@@ -159,6 +161,22 @@ export const IsomerCards = Node.create<CardOptions>({
       },
       deleteCards: () => ({ tr, editor }) => {
         editor.state.selection.replace(tr)
+        return true
+      },
+      setCardsContent: (content) => ({ tr, dispatch, editor }) => {
+        if (dispatch) {
+          const offset = tr.selection.anchor
+          const node = createCardGridWithContent(editor.schema, content)
+
+          tr.replaceSelectionWith(node)
+            .scrollIntoView()
+            .setSelection(
+              Selection.near(
+                tr.doc.resolve(tr.doc.resolve(offset).parentOffset)
+              )
+            )
+        }
+
         return true
       },
     }
