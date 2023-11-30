@@ -432,80 +432,73 @@ const MediasSelectModal = ({
                         borderColor="base.divider.medium"
                         pr="1.5rem"
                       >
-                        {register && (
-                          <>
-                            <Box mb="1.5rem">
-                              <FormControl
-                                isRequired
-                                isInvalid={
-                                  !!errors.selectedMediaPath ||
-                                  !!errors.externalImageValidation
-                                }
-                              >
-                                <Box mb="0.75rem">
-                                  <FormLabel>URL</FormLabel>
-                                </Box>
-                                <Input
-                                  w="100%"
-                                  id="selectedMediaPath"
-                                  type="text"
-                                  placeholder="Add a link of the external image"
-                                  {...register("selectedMediaPath", {
-                                    required: {
-                                      value: true,
-                                      message: "URL is required",
-                                    },
-                                    validate: (value) => {
-                                      if (activeTab === 0) return undefined
-                                      const errorMessage = validateExternalImagePermalink(
-                                        value
-                                      )
-                                      return errorMessage || true
-                                    },
-                                  })}
-                                />
-                                <FormErrorMessage>
-                                  {(errors.selectedMediaPath &&
-                                    errors.selectedMediaPath.message) ||
-                                    (errors.externalImageValidation &&
-                                      errors.externalImageValidation.message)}
-                                </FormErrorMessage>
-                              </FormControl>
+                        <Box mb="1.5rem">
+                          <FormControl
+                            isRequired
+                            isInvalid={
+                              !!errors.selectedMediaPath ||
+                              !!errors.externalImageValidation
+                            }
+                          >
+                            <Box mb="0.75rem">
+                              <FormLabel>URL</FormLabel>
+                            </Box>
+                            <Input
+                              w="100%"
+                              id="selectedMediaPath"
+                              type="text"
+                              placeholder="Add a link of the external image"
+                              {...register("selectedMediaPath", {
+                                required: {
+                                  value: true,
+                                  message: "URL is required",
+                                },
+                                validate: (value) => {
+                                  if (activeTab === 0) return undefined
+                                  const errorMessage = validateExternalImagePermalink(
+                                    value
+                                  )
+                                  return errorMessage || true
+                                },
+                              })}
+                            />
+                            <FormErrorMessage>
+                              {(errors.selectedMediaPath &&
+                                errors.selectedMediaPath.message) ||
+                                (errors.externalImageValidation &&
+                                  errors.externalImageValidation.message)}
+                            </FormErrorMessage>
+                          </FormControl>
+                        </Box>
+
+                        <Box>
+                          <FormControl isRequired isInvalid={!!errors.altText}>
+                            <Box mb="0.75rem">
+                              <FormLabel mb="0">Alt text</FormLabel>
+                              <FormLabel.Description color="text.description">
+                                A brief description of your image to improve
+                                accessibility and SEO.
+                              </FormLabel.Description>
                             </Box>
 
-                            <Box>
-                              <FormControl
-                                isRequired
-                                isInvalid={!!errors.altText}
-                              >
-                                <Box mb="0.75rem">
-                                  <FormLabel mb="0">Alt text</FormLabel>
-                                  <FormLabel.Description color="text.description">
-                                    A brief description of your image to improve
-                                    accessibility and SEO.
-                                  </FormLabel.Description>
-                                </Box>
-
-                                <Input
-                                  w="100%"
-                                  id="altText"
-                                  type="text"
-                                  placeholder="Describe your image"
-                                  {...register("altText", {
-                                    maxLength: {
-                                      value: 100,
-                                      message:
-                                        "Alt text should be less than 100 characters",
-                                    },
-                                  })}
-                                />
-                                <FormErrorMessage>
-                                  {errors.altText && errors.altText.message}
-                                </FormErrorMessage>
-                              </FormControl>
-                            </Box>
-                          </>
-                        )}
+                            <Input
+                              w="100%"
+                              id="altText"
+                              type="text"
+                              placeholder="Describe your image"
+                              {...register("altText", {
+                                maxLength: {
+                                  value: 100,
+                                  message:
+                                    "Alt text should be less than 100 characters",
+                                },
+                              })}
+                            />
+                            <FormErrorMessage>
+                              {errors.altText && errors.altText.message}
+                            </FormErrorMessage>
+                          </FormControl>
+                        </Box>
                       </GridItem>
                       <GridItem pl="1.5rem">
                         <Text textStyle="subhead-3" alignSelf="start">
