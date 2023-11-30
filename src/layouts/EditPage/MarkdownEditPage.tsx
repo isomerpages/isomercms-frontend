@@ -10,6 +10,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Spacer,
 } from "@chakra-ui/react"
 import { Button, Infobox } from "@opengovsg/design-system-react"
 import axios from "axios"
@@ -124,7 +125,7 @@ export const MarkdownEditPage = ({ togglePreview }: MarkdownPageProps) => {
       getEditorContent={() => editorValue}
       setEditorContent={(content: string) => setEditorValue(content)}
     >
-      <Box maxW="50%" p="1.25rem">
+      <Box w="100%" p="1.25rem">
         <Flex flexDir="row" bg="gray.100" p="1.38rem" mb="1.38rem">
           <Flex flexDir="column" alignContent="flex-start" mr="1rem">
             <Text textStyle="subhead-1" mb="0.62rem">
@@ -135,6 +136,7 @@ export const MarkdownEditPage = ({ togglePreview }: MarkdownPageProps) => {
               Preview what your page might look like before making the shift.
             </Text>
           </Flex>
+          <Spacer />
           <Button
             variant="outline"
             alignSelf="center"
@@ -159,6 +161,7 @@ export const MarkdownEditPage = ({ togglePreview }: MarkdownPageProps) => {
       <PagePreview
         h="calc(100vh - 0.5rem)"
         w="62.5rem"
+        minW="62.5rem"
         title={initialPageData?.content?.frontMatter?.title || ""}
         chunk={htmlChunk}
       />
