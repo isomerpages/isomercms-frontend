@@ -43,7 +43,12 @@ export const ContactVerificationModal = ({
   const [mobile, setMobile] = useState<string>("")
 
   const handleSendOtp = async ({ mobile: mobileInput }: ContactProps) => {
-    await sendContactOtp({ mobile: mobileInput }) // Non-2xx responses will be caught by axios and thrown as error
+    try {
+      await sendContactOtp({ mobile: mobileInput }) // Non-2xx responses will be caught by axios and thrown as error
+    } catch (e) {
+      // Needed for react-hook-form to reset isSubmitting
+      return
+    }
     successToast({
       id: "send-otp-success",
       description: `OTP sent to ${mobileInput}`,
@@ -52,7 +57,12 @@ export const ContactVerificationModal = ({
   }
 
   const handleVerifyOtp = async ({ otp }: ContactOtpProps) => {
-    await verifyContactOtp({ mobile, otp })
+    try {
+      await verifyContactOtp({ mobile, otp })
+    } catch (e) {
+      // Needed for react-hook-form to reset isSubmitting
+      return
+    }
     onClose()
     successToast({
       id: "verify-otp-success",

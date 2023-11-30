@@ -16,6 +16,7 @@ import {
   TIKTOK_REGEX,
   TELEGRAM_REGEX,
   YOUTUBE_REGEX,
+  LINKEDIN_REGEX,
 } from "utils/validators"
 
 import { SiteSettings } from "types/settings"
@@ -23,11 +24,16 @@ import { SiteSettings } from "types/settings"
 interface SocialMediaField {
   label: StringKeyOf<SiteSettings["socialMediaContent"]>
   placeholder: string
+  customLabel?: string
 }
 
 const SOCIAL_MEDIA_LABELS: SocialMediaField[] = [
   { label: "facebook", placeholder: "https://www.facebook.com/" },
-  { label: "twitter", placeholder: "https://www.twitter.com/" },
+  {
+    label: "twitter",
+    placeholder: "https://www.twitter.com/",
+    customLabel: "X / Twitter",
+  },
   { label: "youtube", placeholder: "https://www.youtube.com/" },
   { label: "instagram", placeholder: "https://www.instagram.com/" },
   { label: "linkedin", placeholder: "https://sg.linkedin.com/" },
@@ -46,8 +52,9 @@ export const SocialMediaSettings = ({
     <Section id="social-media-fields">
       <SectionHeader label="Social Media" />
       <VStack spacing="1.5rem" align="flex-start" w="50%">
-        {SOCIAL_MEDIA_LABELS.map(({ label, placeholder }) => (
+        {SOCIAL_MEDIA_LABELS.map(({ label, placeholder, customLabel }) => (
           <ValidatedFormInput
+            customLabel={customLabel}
             label={label}
             isError={isError}
             placeholder={placeholder}
@@ -63,11 +70,12 @@ interface ValidatedFormInputProps extends SocialMediaField {
 
 // Helper component for social media as this is the only validated input
 const ValidatedFormInput = ({
+  customLabel,
   label,
   placeholder,
   isError,
 }: ValidatedFormInputProps) => {
-  const displayedLabel = upperFirst(label)
+  const displayedLabel = upperFirst(customLabel || label)
   const { register } = useFormContext()
   const { errors } = useFormState<{
     socialMediaContent: Record<
@@ -107,6 +115,10 @@ const getRegExp = (
       return RegExp(`${URL_REGEX_PREFIX}${TELEGRAM_REGEX}`)
     case "tiktok":
       return RegExp(`${URL_REGEX_PREFIX}${label}${TIKTOK_REGEX}`)
+    case "linkedin":
+      return RegExp(`${URL_REGEX_PREFIX}${label}${LINKEDIN_REGEX}`)
+    case "twitter":
+      return RegExp(`${URL_REGEX_PREFIX}(x|twitter)${URL_REGEX_SUFFIX}`)
     default:
       return RegExp(`${URL_REGEX_PREFIX}${label}${URL_REGEX_SUFFIX}`)
   }

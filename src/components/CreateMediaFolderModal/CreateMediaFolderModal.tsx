@@ -71,6 +71,7 @@ interface CreateMediaFolderModalProps {
 
 const getButtonLabel = (
   originalSelectedMedia: SelectedMediaDto[],
+  filesCount: number,
   selectedMedia: SelectedMediaDto[],
   mediaLabels: MediaLabels
 ) => {
@@ -80,7 +81,7 @@ const getButtonLabel = (
     pluralMediaLabel,
   } = mediaLabels
 
-  if (originalSelectedMedia.length > 0) {
+  if (originalSelectedMedia.length > 0 || filesCount === 0) {
     return `Create ${singularDirectoryLabel}`
   }
 
@@ -229,7 +230,7 @@ export const CreateMediaFolderModal = ({
                 </FormErrorMessage>
               </FormControl>
 
-              {originalSelectedMedia.length === 0 && (
+              {originalSelectedMedia.length === 0 && files.length !== 0 && (
                 <>
                   <Text as="h5" textStyle="h5" mt="2rem">
                     Select {pluralMediaLabel} to add to this{" "}
@@ -314,7 +315,7 @@ export const CreateMediaFolderModal = ({
                 justifyContent="flex-end"
                 mt="0.5rem"
               >
-                {originalSelectedMedia.length > 0 && (
+                {(originalSelectedMedia.length > 0 || files.length === 0) && (
                   <Button
                     variant="clear"
                     colorScheme="neutral"
@@ -323,7 +324,7 @@ export const CreateMediaFolderModal = ({
                     Cancel
                   </Button>
                 )}
-                {originalSelectedMedia.length === 0 && (
+                {originalSelectedMedia.length === 0 && files.length !== 0 && (
                   <Button
                     variant="clear"
                     colorScheme="neutral"
@@ -354,11 +355,13 @@ export const CreateMediaFolderModal = ({
                     !methods.formState.isDirty ||
                     _.some(methods.formState.errors) ||
                     (originalSelectedMedia.length === 0 &&
+                      files.length !== 0 &&
                       methods.watch("selectedPages").length === 0)
                   }
                 >
                   {getButtonLabel(
                     originalSelectedMedia,
+                    files.length,
                     methods.getValues("selectedPages"),
                     mediaLabels
                   )}
