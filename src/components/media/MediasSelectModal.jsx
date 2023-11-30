@@ -255,7 +255,7 @@ const MediasSelectModal = ({
                   onChange={({ target }) => {
                     debouncedHandleSearch(target.value)
                   }}
-                  placeholder="Press enter to search"
+                  placeholder="Start typing to search"
                 />
               </Box>
               {/* Upload medias */}
