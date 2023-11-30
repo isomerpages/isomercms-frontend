@@ -44,6 +44,7 @@ import {
   IsomerCardTitle,
   IsomerClickableCard,
   IsomerImage,
+  TrailingNode,
 } from "layouts/components/Editor/extensions"
 
 import { isEmbedCodeValid } from "utils/allowedHTML"
@@ -125,6 +126,7 @@ export const EditPage = () => {
       TableCell,
       Underline,
       Placeholder,
+      TrailingNode,
     ],
     autofocus: "start",
   })
