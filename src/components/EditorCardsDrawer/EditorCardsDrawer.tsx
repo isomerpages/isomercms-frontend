@@ -14,7 +14,7 @@ import { Button, FormLabel, Toggle } from "@opengovsg/design-system-react"
 import { Editor } from "@tiptap/core"
 import _ from "lodash"
 import { useEffect, useState } from "react"
-import { FormProvider, useForm } from "react-hook-form"
+import { FormProvider, useFieldArray, useForm } from "react-hook-form"
 import { BiPlus } from "react-icons/bi"
 import * as Yup from "yup"
 
@@ -30,6 +30,7 @@ import {
 import { EditableContextProvider } from "contexts/EditableContext"
 
 import { EditorCard, EditorCardsInfo } from "types/editPage"
+import { LINK_URL_REGEX } from "utils"
 
 import { EditorCardItem } from "./EditorCardItem"
 
@@ -47,7 +48,12 @@ const editorCardsInfoSchema = Yup.object().shape({
             TIPTAP_CARDS_DESCRIPTION_CHAR_LIMIT,
             `Description cannot exceed ${TIPTAP_CARDS_DESCRIPTION_CHAR_LIMIT} characters`
           ),
-          linkUrl: Yup.string().required("Link URL is required"),
+          linkUrl: Yup.string()
+            .required("Link URL is required")
+            .matches(
+              new RegExp(LINK_URL_REGEX),
+              "Please enter a valid link URL"
+            ),
           linkText: Yup.string().required("Link text is required"),
         })
       ),
@@ -58,7 +64,12 @@ const editorCardsInfoSchema = Yup.object().shape({
             TIPTAP_CARDS_DESCRIPTION_CHAR_LIMIT,
             `Description cannot exceed ${TIPTAP_CARDS_DESCRIPTION_CHAR_LIMIT} characters`
           ),
-          linkUrl: Yup.string().required("Link URL is required"),
+          linkUrl: Yup.string()
+            .required("Link URL is required")
+            .matches(
+              new RegExp(LINK_URL_REGEX),
+              "Please enter a valid link URL"
+            ),
           linkText: Yup.string().required("Link text is required"),
         })
       ),
@@ -95,7 +106,6 @@ export const EditorCardsDrawer = ({
   onClose,
   onProceed,
 }: EditorCardsDrawerProps): JSX.Element => {
-  const [previewState, setPreviewState] = useState<EditorCard[]>([])
   const [initialEditorState, setInitialEditorState] = useState<EditorCard[]>([])
   const {
     isOpen: isCloseWarningModalOpen,
@@ -109,6 +119,10 @@ export const EditorCardsDrawer = ({
       isDisplayImage: true,
       cards: [],
     },
+  })
+  const cardsArray = useFieldArray({
+    control: methods.control,
+    name: "cards",
   })
 
   const onDrawerClose = () => {
@@ -138,48 +152,38 @@ export const EditorCardsDrawer = ({
     onClose()
   }
 
-  const onDragEnd: OnDragEndResponder = ({ source, destination }) => {
-    if (!destination) return
-
+  const onChange = () => {
     const cards = methods.getValues("cards")
+    const isDisplayImage = methods.getValues("isDisplayImage")
 
-    // Swap cards in source and destination
-    const temp = cards[source.index]
-    cards[source.index] = cards[destination.index]
-    cards[destination.index] = temp
-
-    methods.setValue("cards", cards)
+    const newState = getEditorCardsContent({ isDisplayImage, cards })
+    editor.commands.setCardsContentWithoutHistory(newState)
   }
 
-  const onChange = () => {
-    // Not needed because we are using react-hook-form
+  const onDragEnd: OnDragEndResponder = ({ source, destination }) => {
+    if (!destination) return
+    cardsArray.move(source.index, destination.index)
+    onChange()
   }
 
   const onCreate = () => {
-    const newCards = [
-      ...methods.getValues("cards"),
-      {
-        image: "https://placehold.co/600x400",
-        altText: "",
-        title: "This is a title for your card",
-        description: "This is body text for your card. Describe your card.",
-        linkUrl: "https://www.isomer.gov.sg",
-        linkText: "This is a link for your card",
-      },
-    ]
-
-    methods.setValue("cards", newCards)
+    cardsArray.append({
+      image: "https://placehold.co/600x400",
+      altText: "",
+      title: "This is a title for your card",
+      description: "This is body text for your card. Describe your card.",
+      linkUrl: "https://www.isomer.gov.sg",
+      linkText: "This is a link for your card",
+    })
+    onChange()
   }
 
   const onDelete = (id: string, type: string) => {
     if (type !== "cards") return
 
     const index = parseInt(id.split("-")[1], 10)
-
-    methods.setValue(
-      "cards",
-      methods.getValues("cards").filter((card, i) => i !== index)
-    )
+    cardsArray.remove(index)
+    onChange()
   }
 
   const displayHandler = () => {
@@ -253,20 +257,6 @@ export const EditorCardsDrawer = ({
     }
   }, [isOpen])
 
-  useEffect(() => {
-    if (!isOpen) return
-
-    const cards = methods.getValues("cards")
-    const isDisplayImage = methods.getValues("isDisplayImage")
-
-    const newState = getEditorCardsContent({ isDisplayImage, cards })
-
-    if (_.isEqual(previewState, newState)) return
-
-    setPreviewState(newState)
-    editor.commands.setCardsContentWithoutHistory(newState)
-  }, [editor.commands, isOpen, methods.formState, previewState])
-
   return (
     <>
       <EditorDrawerCloseWarningModal
@@ -305,8 +295,12 @@ export const EditorCardsDrawer = ({
                     <Toggle
                       isRequired={false}
                       label=""
+                      isChecked={methods.watch("isDisplayImage")}
                       {...methods.register("isDisplayImage", {
-                        onChange: () => methods.trigger(),
+                        onChange: () => {
+                          onChange()
+                          methods.trigger()
+                        },
                       })}
                     />
                   </Flex>
@@ -323,14 +317,17 @@ export const EditorCardsDrawer = ({
                         spacing="0.75rem"
                         mt="1rem"
                         mb="1.25rem"
-                        {...methods.register("cards")}
+                        {...methods.register("cards", {
+                          onChange,
+                        })}
                       >
-                        {!!methods.watch("cards") &&
-                          methods
-                            .watch("cards")
-                            .map((card, index) => (
-                              <EditorCardItem index={index} methods={methods} />
-                            ))}
+                        {cardsArray.fields.map((card, index) => (
+                          <EditorCardItem
+                            key={card.id}
+                            index={index}
+                            methods={methods}
+                          />
+                        ))}
                       </VStack>
                     </Editable.Droppable>
                   </DragDropContext>
