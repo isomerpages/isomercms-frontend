@@ -282,20 +282,6 @@ const MediasSelectModal = ({
                           We couldn’t find any {pluralMediaLabel} with “
                           {searchValue}”.
                         </Text>
-                        {queryParams.mediaDirectoryName !==
-                          pluralMediaLabel && (
-                          <Button
-                            variant="clear"
-                            onClick={() => {
-                              setQueryParams((prevState) => ({
-                                ...prevState,
-                                mediaDirectoryName: pluralMediaLabel,
-                              }))
-                            }}
-                          >
-                            Search in All {pluralMediaLabel} instead
-                          </Button>
-                        )}
                       </VStack>
                     )
                   : listMediaFilesData.total === 0 && (
