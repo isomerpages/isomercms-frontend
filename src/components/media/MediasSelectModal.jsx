@@ -62,6 +62,8 @@ import { getMediaDirectoryName, getMediaLabels } from "utils/media"
 
 import { deslugifyDirectory, validateExternalImagePermalink } from "utils"
 
+const DEBOUNCE_TIME = 1000
+
 const filterMediaByFileName = (medias, filterTerm) =>
   medias.filter((media) =>
     media.name.toLowerCase().includes(filterTerm.toLowerCase())
@@ -70,6 +72,34 @@ const filterMediaByFileName = (medias, filterTerm) =>
 const titleCase = (str) => {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
 }
+
+const FolderBreadcrumb = ({ mediaDirectoryName, setQueryParams }) => (
+  <VStack>
+    <Breadcrumb alignSelf="start">
+      {mediaDirectoryName &&
+        mediaDirectoryName.split("%2F").map((dir, idx) => (
+          <BreadcrumbItem
+            isCurrentPage={idx === mediaDirectoryName.split("%2F").length - 1}
+          >
+            <BreadcrumbLink
+              onClick={(e) => {
+                e.preventDefault()
+                setQueryParams((prevState) => ({
+                  ...prevState,
+                  mediaDirectoryName: getMediaDirectoryName(
+                    mediaDirectoryName,
+                    { end: idx + 1 }
+                  ),
+                }))
+              }}
+            >
+              {deslugifyDirectory(dir)}
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+        ))}
+    </Breadcrumb>
+  </VStack>
+)
 
 const MediasSelectModal = ({
   onProceed,
@@ -170,7 +200,7 @@ const MediasSelectModal = ({
   const debouncedHandleSearch = _.debounce((value) => {
     setSearchedValue(value)
     // Perform any other actions you want with the input value
-  }, 1000)
+  }, DEBOUNCE_TIME)
 
   const internalMediaSelect = (
     <Grid h="100%" templateColumns="15.25rem 1fr">
@@ -344,37 +374,6 @@ const MediasSelectModal = ({
     </Grid>
   )
 
-  const FolderBreadcrumb = () => (
-    <VStack>
-      <Breadcrumb alignSelf="start">
-        {queryParams.mediaDirectoryName
-          ? queryParams.mediaDirectoryName.split("%2F").map((dir, idx) => (
-              <BreadcrumbItem
-                isCurrentPage={
-                  idx === queryParams.mediaDirectoryName.split("%2F").length - 1
-                }
-              >
-                <BreadcrumbLink
-                  onClick={(e) => {
-                    e.preventDefault()
-                    setQueryParams((prevState) => ({
-                      ...prevState,
-                      mediaDirectoryName: getMediaDirectoryName(
-                        queryParams.mediaDirectoryName,
-                        { end: idx + 1 }
-                      ),
-                    }))
-                  }}
-                >
-                  {deslugifyDirectory(dir)}
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-            ))
-          : null}
-      </Breadcrumb>
-    </VStack>
-  )
-
   return (
     <Modal
       isOpen
@@ -414,7 +413,12 @@ const MediasSelectModal = ({
                     <Tab>Add by url</Tab>
                   </TabList>
                 </Tabs>
-                {activeTab === 0 && <FolderBreadcrumb />}
+                {activeTab === 0 && (
+                  <FolderBreadcrumb
+                    mediaDirectoryName={queryParams.mediaDirectoryName}
+                    setQueryParams={setQueryParams}
+                  />
+                )}
               </VStack>
             </ModalHeader>
             <ModalBody>
@@ -601,7 +605,9 @@ const MediasSelectModal = ({
                   {singularMediaLabel}. You can organise your {pluralMediaLabel}{" "}
                   in Workspace &gt; {titleCase(pluralMediaLabel)}.
                 </Text>
-                <FolderBreadcrumb />
+                <FolderBreadcrumb
+                  mediaDirectoryName={queryParams.mediaDirectoryName}
+                />
               </VStack>
             </ModalHeader>
             <ModalBody>{internalMediaSelect}</ModalBody>
