@@ -25,7 +25,6 @@ import {
   BiLink,
   BiListOl,
   BiListUl,
-  BiMinus,
   BiPlus,
   BiRedo,
   BiStrikethrough,
@@ -284,7 +283,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
           description:
             "Lay out content in a card grid. You can add images, links, and/or text.",
           icon: EditorCardsImage,
-          action: () => editor.chain().focus().setHorizontalRule().run(),
+          action: () => editor.chain().focus().addCards().run(),
         },
         {
           name: "Divider",

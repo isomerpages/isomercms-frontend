@@ -33,8 +33,16 @@ import {
   FormSGDiv,
   FormSGIframe,
   Iframe,
-  IsomerImage,
   Instagram,
+  IsomerCard,
+  IsomerCardBody,
+  IsomerCardDescription,
+  IsomerCardImage,
+  IsomerCardLink,
+  IsomerCards,
+  IsomerCardTitle,
+  IsomerClickableCard,
+  IsomerImage,
 } from "layouts/components/Editor/extensions"
 
 import { isEmbedCodeValid } from "utils/allowedHTML"
@@ -73,12 +81,28 @@ export const EditPage = () => {
       TaskItem,
       CharacterCount,
       IsomerImage,
-      Link.configure({ openOnClick: false, protocols: ["mailto"] }),
+      Link.extend({
+        priority: 100,
+        parseHTML() {
+          return [{ tag: "a:not(.isomer-card)" }]
+        },
+      }).configure({
+        openOnClick: false,
+        protocols: ["mailto"],
+      }),
       Iframe,
       FormSG,
       FormSGDiv,
       FormSGIframe,
       Instagram,
+      IsomerCards,
+      IsomerCard,
+      IsomerClickableCard,
+      IsomerCardImage,
+      IsomerCardBody,
+      IsomerCardTitle,
+      IsomerCardDescription,
+      IsomerCardLink,
       Markdown,
       BubbleMenu.configure({
         pluginKey: "linkBubble",
@@ -88,6 +112,9 @@ export const EditPage = () => {
       }),
       BubbleMenu.configure({
         pluginKey: "imageBubble",
+      }),
+      BubbleMenu.configure({
+        pluginKey: "cardsBubble",
       }),
       Table.configure({
         resizable: false,
