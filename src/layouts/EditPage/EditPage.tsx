@@ -159,26 +159,6 @@ export const EditPage = () => {
 
   if (!editor) return null
 
-  const onExternalMediaSave = async ({
-    selectedMediaPath,
-    altText,
-  }: {
-    selectedMediaPath: string
-    altText: string
-  }) => {
-    if (mediaType === "images") {
-      editor
-        .chain()
-        .focus()
-        .setImage({
-          src: selectedMediaPath,
-          alt: altText,
-        })
-        .run()
-    }
-    onMediaModalClose()
-  }
-
   const getImageSrc = async (src: string) => {
     if (src.startsWith("https://")) {
       // External link, don't modify
@@ -190,10 +170,10 @@ export const EditPage = () => {
       mediaDirectoryName: imageDirectory || "images",
       fileName,
     })
-    const nomalisedMediaPath = mediaPath.startsWith("images/")
+    const normalisedMediaPath = mediaPath.startsWith("images/")
       ? `/${mediaPath}`
       : mediaPath
-    return { mediaPath: nomalisedMediaPath }
+    return { mediaPath: normalisedMediaPath }
   }
 
   const handleEmbedInsert = ({ value }: EditorEmbedContents) => {
