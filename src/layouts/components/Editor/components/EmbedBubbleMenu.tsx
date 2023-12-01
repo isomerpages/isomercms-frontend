@@ -112,8 +112,8 @@ export const EmbedBubbleMenu = () => {
       editor={editor}
       tippyOptions={{
         duration: 100,
-        placement: "top-start",
-        offset: [493, -16],
+        placement: "top-end",
+        offset: [0, -16],
         zIndex: 0,
       }}
     >
