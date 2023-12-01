@@ -4,7 +4,7 @@ import CharacterCount from "@tiptap/extension-character-count"
 import Highlight from "@tiptap/extension-highlight"
 import Link from "@tiptap/extension-link"
 import Placeholder from "@tiptap/extension-placeholder"
-import Table from "@tiptap/extension-table"
+// import Table from "@tiptap/extension-table"
 import TableCell from "@tiptap/extension-table-cell"
 import TableHeader from "@tiptap/extension-table-header"
 import TableRow from "@tiptap/extension-table-row"
@@ -46,6 +46,7 @@ import {
   IsomerImage,
   TrailingNode,
 } from "layouts/components/Editor/extensions"
+import { Table } from "layouts/components/Editor/extensions/Table"
 
 import { isEmbedCodeValid } from "utils/allowedHTML"
 import { isEmbedActive } from "utils/tiptap"
