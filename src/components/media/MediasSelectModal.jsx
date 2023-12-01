@@ -277,7 +277,7 @@ const MediasSelectModal = ({
           <div
             className={`${mediaStyles.mediaCards} justify-content-center pt-3 pl-2`}
           >
-            <Flex w="100%" justifyContent="space-between" pb="1.25rem">
+            <Flex w="100%" justifyContent="space-between" pb="1.25rem" pt="1px">
               {/* Search medias */}
               <Box>
                 <Searchbar
