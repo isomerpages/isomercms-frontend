@@ -34,7 +34,11 @@ import {
 } from "react-icons/bi"
 import { IconType } from "react-icons/lib"
 
+import { FEATURE_FLAGS } from "constants/featureFlags"
+
 import { useEditorModal } from "contexts/EditorModalContext"
+
+import { useIsIsomerFeatureOn } from "utils/growthbook"
 
 import {
   EditorAccordionImage,
@@ -53,10 +57,12 @@ interface MenuBarItem {
   leftItem?: JSX.Element
   action: () => void
   isActive?: () => boolean
+  isHidden?: boolean
 }
 
 interface MenuBarDivider {
   type: "divider"
+  isHidden?: boolean
 }
 
 interface MenuBarVeritcalList {
@@ -65,6 +71,7 @@ interface MenuBarVeritcalList {
   menuWidth: MenuListProps["width"]
   defaultTitle: string
   items: MenuBarItem[]
+  isHidden?: boolean
 }
 
 interface MenuBarHorizontalList {
@@ -72,6 +79,7 @@ interface MenuBarHorizontalList {
   label: string
   defaultIcon: IconType
   items: MenuBarItem[]
+  isHidden?: boolean
 }
 
 interface MenuBarDetailedItem {
@@ -79,6 +87,7 @@ interface MenuBarDetailedItem {
   description: string
   icon: IconType
   action: () => void
+  isHidden?: boolean
 }
 
 interface MenuBarDetailedList {
@@ -86,6 +95,7 @@ interface MenuBarDetailedList {
   label: string
   icon: IconType
   items: MenuBarDetailedItem[]
+  isHidden?: boolean
 }
 
 type MenuBarEntry =
@@ -266,11 +276,13 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
     },
     {
       type: "divider",
+      isHidden: !useIsIsomerFeatureOn(FEATURE_FLAGS.IS_COMPLEX_BLOCKS_ENABLED),
     },
     {
       type: "detailed-list",
       label: "Add complex blocks",
       icon: BiPlus,
+      isHidden: !useIsIsomerFeatureOn(FEATURE_FLAGS.IS_COMPLEX_BLOCKS_ENABLED),
       items: [
         {
           name: "Accordion",
@@ -315,7 +327,9 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
       bgColor="gray.50"
       flex="0 0 auto"
       flexWrap="wrap"
-      p="0.25rem"
+      pl="0.75rem"
+      pr="0.25rem"
+      py="0.25rem"
       borderBottom="1px solid"
       borderColor="base.divider.strong"
       borderTopRadius="0.25rem"
@@ -323,7 +337,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
     >
       {items.map((item) => (
         <>
-          {item.type === "divider" && (
+          {item.type === "divider" && !item.isHidden && (
             <Divider
               orientation="vertical"
               border="px solid"
@@ -333,7 +347,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
             />
           )}
 
-          {item.type === "vertical-list" && (
+          {item.type === "vertical-list" && !item.isHidden && (
             <Menu>
               {({ isOpen }) => {
                 const activeItem = item.items.find(
@@ -347,37 +361,44 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
                       colorScheme="grey"
                       isOpen={isOpen}
                       size="lg"
-                      p="0.75rem"
+                      pl="0.375rem"
+                      pr="0.75rem"
+                      py="0.75rem"
                       w={item.buttonWidth}
                     >
                       {activeItem?.title || item.defaultTitle}
                     </Menu.Button>
 
                     <Menu.List w={item.menuWidth}>
-                      {item.items.map((subItem) => (
-                        <Menu.Item onClick={subItem.action}>
-                          {subItem.leftItem}
-                          {subItem.title && !subItem.icon && (
-                            <Text
-                              textStyle={subItem.textStyle}
-                              fontWeight={
-                                subItem.textStyle !== "body-1" ? 400 : undefined
-                              }
-                              color="chakra-body-text"
-                            >
-                              {subItem.title}
-                            </Text>
-                          )}
-                          {subItem.icon && (
-                            <MenuItem
-                              icon={subItem.icon}
-                              title={subItem.title}
-                              action={subItem.action}
-                              isActive={subItem.isActive}
-                            />
-                          )}
-                        </Menu.Item>
-                      ))}
+                      {item.items.map(
+                        (subItem) =>
+                          !subItem.isHidden && (
+                            <Menu.Item onClick={subItem.action}>
+                              {subItem.leftItem}
+                              {subItem.title && !subItem.icon && (
+                                <Text
+                                  textStyle={subItem.textStyle}
+                                  fontWeight={
+                                    subItem.textStyle !== "body-1"
+                                      ? 400
+                                      : undefined
+                                  }
+                                  color="chakra-body-text"
+                                >
+                                  {subItem.title}
+                                </Text>
+                              )}
+                              {subItem.icon && (
+                                <MenuItem
+                                  icon={subItem.icon}
+                                  title={subItem.title}
+                                  action={subItem.action}
+                                  isActive={subItem.isActive}
+                                />
+                              )}
+                            </Menu.Item>
+                          )
+                      )}
                     </Menu.List>
                   </>
                 )
@@ -385,7 +406,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
             </Menu>
           )}
 
-          {item.type === "horizontal-list" && (
+          {item.type === "horizontal-list" && !item.isHidden && (
             <Popover placement="bottom">
               {({ isOpen }) => (
                 <>
@@ -419,14 +440,17 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
                   <PopoverContent w="5.75rem">
                     <PopoverBody>
                       <HStack>
-                        {item.items.map((subItem) => (
-                          <MenuItem
-                            icon={subItem.icon}
-                            title={subItem.title}
-                            action={subItem.action}
-                            isActive={subItem.isActive}
-                          />
-                        ))}
+                        {item.items.map(
+                          (subItem) =>
+                            !subItem.isHidden && (
+                              <MenuItem
+                                icon={subItem.icon}
+                                title={subItem.title}
+                                action={subItem.action}
+                                isActive={subItem.isActive}
+                              />
+                            )
+                        )}
                       </HStack>
                     </PopoverBody>
                   </PopoverContent>
@@ -435,7 +459,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
             </Popover>
           )}
 
-          {item.type === "detailed-list" && (
+          {item.type === "detailed-list" && !item.isHidden && (
             <Popover placement="bottom" offset={[0, 16]}>
               <PopoverTrigger>
                 <Button
@@ -460,52 +484,55 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
               <PopoverContent>
                 <PopoverBody px={0} py="0.75rem">
                   <VStack spacing="0.75rem">
-                    {item.items.map((subItem) => (
-                      <Button
-                        onClick={subItem.action}
-                        variant="clear"
-                        colorScheme="neutral"
-                        border="none"
-                        h="fit-content"
-                        w="100%"
-                        textAlign="left"
-                        px={0}
-                        py="0.25rem"
-                        aria-label={item.label}
-                        borderRadius={0}
-                        _hover={{ bg: "base.canvas.brand-subtle" }}
-                      >
-                        <HStack
-                          w="100%"
-                          px="1rem"
-                          py="0.75rem"
-                          spacing="0.75rem"
-                          alignItems="flex-start"
-                        >
-                          <Icon
-                            as={subItem.icon}
-                            fontSize="3rem"
-                            borderWidth="1px"
-                            borderStyle="solid"
-                          />
-                          <Box>
-                            <Text textStyle="subhead-2" mb="0.25rem">
-                              {subItem.name}
-                            </Text>
-                            <Text textStyle="body-2">
-                              {subItem.description}
-                            </Text>
-                          </Box>
-                        </HStack>
-                      </Button>
-                    ))}
+                    {item.items.map(
+                      (subItem) =>
+                        !subItem.isHidden && (
+                          <Button
+                            onClick={subItem.action}
+                            variant="clear"
+                            colorScheme="neutral"
+                            border="none"
+                            h="fit-content"
+                            w="100%"
+                            textAlign="left"
+                            px={0}
+                            py="0.25rem"
+                            aria-label={item.label}
+                            borderRadius={0}
+                            _hover={{ bg: "base.canvas.brand-subtle" }}
+                          >
+                            <HStack
+                              w="100%"
+                              px="1rem"
+                              py="0.75rem"
+                              spacing="0.75rem"
+                              alignItems="flex-start"
+                            >
+                              <Icon
+                                as={subItem.icon}
+                                fontSize="3rem"
+                                borderWidth="1px"
+                                borderStyle="solid"
+                              />
+                              <Box>
+                                <Text textStyle="subhead-2" mb="0.25rem">
+                                  {subItem.name}
+                                </Text>
+                                <Text textStyle="body-2">
+                                  {subItem.description}
+                                </Text>
+                              </Box>
+                            </HStack>
+                          </Button>
+                        )
+                    )}
                   </VStack>
                 </PopoverBody>
               </PopoverContent>
             </Popover>
           )}
 
-          {item.type === "item" && <MenuItem {...item} />}
+          {item.type === "item" && !item.isHidden && <MenuItem {...item} />}
         </>
       ))}
     </HStack>
