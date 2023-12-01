@@ -65,7 +65,7 @@ interface MenuBarDivider {
   isHidden?: boolean
 }
 
-interface MenuBarVeritcalList {
+interface MenuBarVerticalList {
   type: "vertical-list"
   buttonWidth: MenuButtonProps["width"]
   menuWidth: MenuListProps["width"]
@@ -100,7 +100,7 @@ interface MenuBarDetailedList {
 
 type MenuBarEntry =
   | MenuBarDivider
-  | MenuBarVeritcalList
+  | MenuBarVerticalList
   | MenuBarHorizontalList
   | MenuBarDetailedList
   | MenuBarItem
