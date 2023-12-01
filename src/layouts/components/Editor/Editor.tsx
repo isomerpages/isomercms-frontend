@@ -7,6 +7,7 @@ import { useEditorContext } from "contexts/EditorContext"
 
 import { LinkBubbleMenu, MenuBar, TableBubbleMenu } from "./components"
 import { CardsBubbleMenu } from "./components/CardsBubbleMenu"
+import { EmbedBubbleMenu } from "./components/EmbedBubbleMenu"
 import { ImageBubbleMenu } from "./components/ImageBubbleMenu"
 
 export const Editor = (props: BoxProps) => {
@@ -27,6 +28,7 @@ export const Editor = (props: BoxProps) => {
         <ImageBubbleMenu />
         <TableBubbleMenu />
         <CardsBubbleMenu />
+        <EmbedBubbleMenu />
         <Box
           as={EditorContent}
           editor={editor}

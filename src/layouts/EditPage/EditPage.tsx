@@ -48,6 +48,7 @@ import {
 } from "layouts/components/Editor/extensions"
 
 import { isEmbedCodeValid } from "utils/allowedHTML"
+import { isEmbedActive } from "utils/tiptap"
 
 import { MediaService } from "services"
 import { DrawerVariant, EditorEmbedContents } from "types/editPage"
@@ -296,7 +297,7 @@ export const EditPage = () => {
               onClose={onEmbedModalClose}
               onProceed={handleEmbedInsert}
               cursorValue={
-                editor.state.selection.empty
+                editor.state.selection.empty || !isEmbedActive(editor)
                   ? ""
                   : getHTMLFromFragment(
                       editor.state.selection.content().content,
