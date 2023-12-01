@@ -16,6 +16,7 @@ import { useGetPageHook } from "hooks/pageHooks"
 import { useCspHook } from "hooks/settingsHooks"
 
 import { isEmbedCodeValid } from "utils/allowedHTML"
+import { isEmbedActive } from "utils/tiptap"
 
 import { MediaService } from "services"
 import { DrawerVariant, EditorEmbedContents } from "types/editPage"
@@ -211,7 +212,7 @@ export const EditPage = () => {
               onClose={onEmbedModalClose}
               onProceed={handleEmbedInsert}
               cursorValue={
-                editor.state.selection.empty
+                editor.state.selection.empty || !isEmbedActive(editor)
                   ? ""
                   : getHTMLFromFragment(
                       editor.state.selection.content().content,

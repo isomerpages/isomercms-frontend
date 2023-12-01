@@ -19,6 +19,7 @@ DOMPurify.setConfig({
     "async",
     "mozallowfullscreen",
     "webkitallowfullscreen",
+    "referrerpolicy",
   ],
   // required in case <script> tag appears as the first line of the markdown
   FORCE_BODY: true,

@@ -1,17 +1,52 @@
-import { HStack, Icon } from "@chakra-ui/react"
+import { HStack, Icon, useDisclosure } from "@chakra-ui/react"
 import { IconButton, Tooltip } from "@opengovsg/design-system-react"
-import { BubbleMenu } from "@tiptap/react"
+import { BubbleMenu, getHTMLFromFragment } from "@tiptap/react"
 import { BiPencil, BiTrash } from "react-icons/bi"
 
-import { useEditorContext } from "contexts/EditorContext"
-import { useEditorDrawerContext } from "contexts/EditorDrawerContext"
+import { EditorEmbedModal } from "components/EditorEmbedModal"
 
-const CardsButton = () => {
-  const { onDrawerOpen } = useEditorDrawerContext()
+import { useEditorContext } from "contexts/EditorContext"
+
+import { useCspHook } from "hooks/settingsHooks"
+
+import { isEmbedCodeValid } from "utils/allowedHTML"
+import { isEmbedActive } from "utils/tiptap"
+
+import { EditorEmbedContents } from "types/editPage"
+
+const EmbedButton = () => {
+  const {
+    isOpen: isEmbedModalOpen,
+    onOpen: onEmbedModalOpen,
+    onClose: onEmbedModalClose,
+  } = useDisclosure()
   const { editor } = useEditorContext()
+  const { data: csp } = useCspHook()
+
+  const handleEmbedInsert = ({ value }: EditorEmbedContents) => {
+    if (isEmbedCodeValid(csp, value)) {
+      editor.chain().focus().insertContent(value.replaceAll("\n", "")).run()
+    }
+
+    onEmbedModalClose()
+  }
 
   return (
     <>
+      <EditorEmbedModal
+        isOpen={isEmbedModalOpen}
+        onClose={onEmbedModalClose}
+        onProceed={handleEmbedInsert}
+        cursorValue={
+          editor.state.selection.empty
+            ? ""
+            : getHTMLFromFragment(
+                editor.state.selection.content().content,
+                editor.schema
+              )
+        }
+      />
+
       <HStack
         bgColor="#fafafa"
         borderRadius="0.25rem"
@@ -21,11 +56,11 @@ const CardsButton = () => {
         px="0.5rem"
         py="0.25rem"
       >
-        <Tooltip label="Edit card grid" hasArrow placement="top">
+        <Tooltip label="Edit embed" hasArrow placement="top">
           <IconButton
             _hover={{ bg: "gray.100" }}
             _active={{ bg: "gray.200" }}
-            onClick={onDrawerOpen("cards")}
+            onClick={onEmbedModalOpen}
             bgColor="transparent"
             border="none"
             h="1.75rem"
@@ -33,7 +68,7 @@ const CardsButton = () => {
             minH="1.75rem"
             minW="1.75rem"
             p="0.25rem"
-            aria-label="edit cards block"
+            aria-label="edit embed code"
           >
             <Icon
               as={BiPencil}
@@ -42,11 +77,11 @@ const CardsButton = () => {
             />
           </IconButton>
         </Tooltip>
-        <Tooltip label="Delete card grid" hasArrow placement="top">
+        <Tooltip label="Delete embed" hasArrow placement="top">
           <IconButton
             _hover={{ bg: "gray.100" }}
             _active={{ bg: "gray.200" }}
-            onClick={() => editor.chain().focus().deleteCards().run()}
+            onClick={() => editor.chain().focus().deleteIframe().run()}
             bgColor="transparent"
             border="none"
             h="1.75rem"
@@ -54,7 +89,7 @@ const CardsButton = () => {
             minH="1.75rem"
             minW="1.75rem"
             p="0.25rem"
-            aria-label="delete cards block"
+            aria-label="delete embed content"
           >
             <Icon
               as={BiTrash}
@@ -68,21 +103,21 @@ const CardsButton = () => {
   )
 }
 
-export const CardsBubbleMenu = () => {
+export const EmbedBubbleMenu = () => {
   const { editor } = useEditorContext()
 
   return (
     <BubbleMenu
-      shouldShow={() => editor.isActive("isomercards")}
+      shouldShow={() => isEmbedActive(editor)}
       editor={editor}
       tippyOptions={{
         duration: 100,
-        placement: "top-start",
-        offset: [511, -16],
+        placement: "top-end",
+        offset: [0, -16],
         zIndex: 0,
       }}
     >
-      <CardsButton />
+      <EmbedButton />
     </BubbleMenu>
   )
 }
