@@ -57,7 +57,6 @@ interface MenuBarItem {
   leftItem?: JSX.Element
   action: () => void
   isActive?: () => boolean
-  isHidden?: boolean
 }
 
 interface MenuBarDivider {
@@ -347,7 +346,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
             />
           )}
 
-          {item.type === "vertical-list" && !item.isHidden && (
+          {item.type === "vertical-list" && (
             <Menu>
               {({ isOpen }) => {
                 const activeItem = item.items.find(
@@ -370,35 +369,30 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
                     </Menu.Button>
 
                     <Menu.List w={item.menuWidth}>
-                      {item.items.map(
-                        (subItem) =>
-                          !subItem.isHidden && (
-                            <Menu.Item onClick={subItem.action}>
-                              {subItem.leftItem}
-                              {subItem.title && !subItem.icon && (
-                                <Text
-                                  textStyle={subItem.textStyle}
-                                  fontWeight={
-                                    subItem.textStyle !== "body-1"
-                                      ? 400
-                                      : undefined
-                                  }
-                                  color="chakra-body-text"
-                                >
-                                  {subItem.title}
-                                </Text>
-                              )}
-                              {subItem.icon && (
-                                <MenuItem
-                                  icon={subItem.icon}
-                                  title={subItem.title}
-                                  action={subItem.action}
-                                  isActive={subItem.isActive}
-                                />
-                              )}
-                            </Menu.Item>
-                          )
-                      )}
+                      {item.items.map((subItem) => (
+                        <Menu.Item onClick={subItem.action}>
+                          {subItem.leftItem}
+                          {subItem.title && !subItem.icon && (
+                            <Text
+                              textStyle={subItem.textStyle}
+                              fontWeight={
+                                subItem.textStyle !== "body-1" ? 400 : undefined
+                              }
+                              color="chakra-body-text"
+                            >
+                              {subItem.title}
+                            </Text>
+                          )}
+                          {subItem.icon && (
+                            <MenuItem
+                              icon={subItem.icon}
+                              title={subItem.title}
+                              action={subItem.action}
+                              isActive={subItem.isActive}
+                            />
+                          )}
+                        </Menu.Item>
+                      ))}
                     </Menu.List>
                   </>
                 )
@@ -406,7 +400,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
             </Menu>
           )}
 
-          {item.type === "horizontal-list" && !item.isHidden && (
+          {item.type === "horizontal-list" && (
             <Popover placement="bottom">
               {({ isOpen }) => (
                 <>
@@ -440,17 +434,14 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
                   <PopoverContent w="5.75rem">
                     <PopoverBody>
                       <HStack>
-                        {item.items.map(
-                          (subItem) =>
-                            !subItem.isHidden && (
-                              <MenuItem
-                                icon={subItem.icon}
-                                title={subItem.title}
-                                action={subItem.action}
-                                isActive={subItem.isActive}
-                              />
-                            )
-                        )}
+                        {item.items.map((subItem) => (
+                          <MenuItem
+                            icon={subItem.icon}
+                            title={subItem.title}
+                            action={subItem.action}
+                            isActive={subItem.isActive}
+                          />
+                        ))}
                       </HStack>
                     </PopoverBody>
                   </PopoverContent>
@@ -532,7 +523,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
             </Popover>
           )}
 
-          {item.type === "item" && !item.isHidden && <MenuItem {...item} />}
+          {item.type === "item" && <MenuItem {...item} />}
         </>
       ))}
     </HStack>
