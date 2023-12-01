@@ -5,7 +5,7 @@ import { BlockWrapper } from "../../components/BlockWrapper"
 
 export const IframeView = ({ node, selected }: NodeViewProps) => {
   return (
-    <BlockWrapper name="Iframe" isSelected={selected}>
+    <BlockWrapper name="Embed" isSelected={selected}>
       <Box
         as={NodeViewWrapper}
         bg="#FAF594"
