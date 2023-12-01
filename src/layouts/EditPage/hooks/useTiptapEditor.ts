@@ -29,6 +29,7 @@ import {
   IsomerCardTitle,
   IsomerClickableCard,
   IsomerImage,
+  TrailingNode,
 } from "layouts/components/Editor/extensions"
 
 export const useTiptapEditor = () => {
@@ -83,6 +84,7 @@ export const useTiptapEditor = () => {
       TableCell,
       Underline,
       Placeholder,
+      TrailingNode,
     ],
     autofocus: "start",
   })
