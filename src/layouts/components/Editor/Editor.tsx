@@ -35,7 +35,7 @@ export const Editor = (props: BoxProps) => {
           flex="1 1 auto"
           overflowX="hidden"
           overflowY="auto"
-          px="1.25rem"
+          px="2rem"
           py="1rem"
           h="100%"
         />
