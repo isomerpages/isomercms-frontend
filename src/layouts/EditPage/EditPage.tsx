@@ -60,9 +60,7 @@ import { TiptapEditPage } from "./TiptapEditPage"
 export const EditPage = () => {
   const params = useParams<{ siteName: string }>()
   const decodedParams = getDecodedParams(params)
-  const { data: initialPageData, isLoading: isLoadingPage } = useGetPageHook(
-    params
-  )
+  const { data: initialPageData } = useGetPageHook(params)
   const { data: csp } = useCspHook()
   const [variant, setVariant] = useState(
     initialPageData?.content?.frontMatter?.variant || "markdown"
@@ -165,16 +163,20 @@ export const EditPage = () => {
   if (!editor) return null
 
   const getImageSrc = async (src: string) => {
+    if (src.startsWith("https://")) {
+      // External link, don't modify
+      return { mediaPath: src }
+    }
     const { fileName, imageDirectory } = getImageDetails(src)
-    const { mediaPath, mediaUrl } = await mediaService.get({
+    const { mediaPath } = await mediaService.get({
       siteName,
       mediaDirectoryName: imageDirectory || "images",
       fileName,
     })
-    const nomalisedMediaPath = mediaPath.startsWith("images/")
+    const normalisedMediaPath = mediaPath.startsWith("images/")
       ? `/${mediaPath}`
       : mediaPath
-    return { mediaPath: nomalisedMediaPath, mediaUrl }
+    return { mediaPath: normalisedMediaPath }
   }
 
   const handleEmbedInsert = ({ value }: EditorEmbedContents) => {
