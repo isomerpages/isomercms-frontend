@@ -16,7 +16,6 @@ import { useGetPageHook } from "hooks/pageHooks"
 import { useCspHook } from "hooks/settingsHooks"
 
 import { EditorAccordionDrawer } from "layouts/components/EditorAccordionDrawer/EditorAccordionDrawer"
-import { EditorCardsDrawer } from "layouts/components/EditorCardsDrawer/EditorCardsDrawer"
 
 import checkCSP from "utils/cspUtils"
 import { getMediaSrcsFromHtml } from "utils/images"
