@@ -16,8 +16,6 @@ import StarterKit from "@tiptap/starter-kit"
 import { Details } from "@tiptap-pro/extension-details"
 import { DetailsContent } from "@tiptap-pro/extension-details-content"
 import { DetailsSummary } from "@tiptap-pro/extension-details-summary"
-// import { IsomerDetailsGroup } from "layouts/components/Editor/extensions/Details/IsomerDetailGroup"
-// import { IsomerDetail } from "layouts/components/Editor/extensions/Details/IsomerDetails"
 import { Context, useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { Markdown } from "tiptap-markdown"
@@ -51,6 +49,8 @@ import {
   IsomerImage,
   TrailingNode,
 } from "layouts/components/Editor/extensions"
+import { IsomerDetailsGroup } from "layouts/components/Editor/extensions/Details/IsomerDetailGroup"
+import { IsomerDetails } from "layouts/components/Editor/extensions/Details/IsomerDetails"
 
 import { isEmbedCodeValid } from "utils/allowedHTML"
 import { isEmbedActive } from "utils/tiptap"
@@ -140,14 +140,18 @@ export const EditPage = () => {
           return ""
         },
       }),
-      Details.configure({
+      IsomerDetails.configure({
         HTMLAttributes: {
           class: "isomer-details",
         },
       }),
       DetailsSummary,
-      DetailsContent,
-      // IsomerDetailsGroup,
+      DetailsContent.configure({
+        HTMLAttributes: {
+          class: "isomer-details-content",
+        },
+      }),
+      IsomerDetailsGroup,
     ],
     autofocus: "start",
   })
@@ -174,6 +178,12 @@ export const EditPage = () => {
     isOpen: isCardsDrawerOpen,
     onOpen: onCardsDrawerOpen,
     onClose: onCardsDrawerClose,
+  } = useDisclosure()
+
+  const {
+    isOpen: isAccordionDrawerOpen,
+    onOpen: onAccordionDrawerOpen,
+    onClose: onAccordionDrawerClose,
   } = useDisclosure()
 
   const { siteName } = decodedParams
@@ -213,12 +223,18 @@ export const EditPage = () => {
     if (drawerType === "cards") {
       return isCardsDrawerOpen
     }
+    if (drawerType === "accordion") {
+      return isAccordionDrawerOpen
+    }
     return false
   }
 
   const onDrawerOpen = (drawerType: DrawerVariant) => {
     if (drawerType === "cards") {
       return onCardsDrawerOpen
+    }
+    if (drawerType === "accordion") {
+      return onAccordionDrawerOpen
     }
 
     return () => undefined
@@ -228,6 +244,9 @@ export const EditPage = () => {
     if (drawerType === "cards") {
       return onCardsDrawerClose
     }
+    if (drawerType === "accordion") {
+      return onAccordionDrawerClose
+    }
 
     return () => undefined
   }
@@ -235,6 +254,9 @@ export const EditPage = () => {
   const onDrawerProceed = (drawerType: DrawerVariant) => {
     if (drawerType === "cards") {
       return onCardsDrawerClose
+    }
+    if (drawerType === "accordion") {
+      return onAccordionDrawerClose
     }
 
     return () => undefined
@@ -255,7 +277,7 @@ export const EditPage = () => {
         }}
       >
         <EditorDrawerContextProvider
-          isAnyDrawerOpen={isCardsDrawerOpen}
+          isAnyDrawerOpen={isCardsDrawerOpen || isAccordionDrawerOpen}
           isDrawerOpen={isDrawerOpen}
           onDrawerOpen={onDrawerOpen}
           onDrawerClose={onDrawerClose}

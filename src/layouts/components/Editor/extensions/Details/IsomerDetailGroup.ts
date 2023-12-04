@@ -1,6 +1,9 @@
-import { Node } from "@tiptap/core"
+import { ChainedCommands, findParentNode, Node } from "@tiptap/core"
 import { NodeRange, Slice } from "@tiptap/pm/model"
+import { EditorState } from "@tiptap/pm/state"
 import { mergeAttributes, ReactNodeViewRenderer } from "@tiptap/react"
+
+import { AccordionBackgroundType } from "types/editPage"
 
 import { IsomerDetailGroupView } from "./IsomerDetailGroupView"
 
@@ -16,6 +19,9 @@ declare module "@tiptap/core" {
     detailGroup: {
       setDetailsGroup: () => ReturnType
       appendDetail: (startPos: number, endPos: number) => ReturnType
+      changeDetailGroupBackground: (
+        backgroundColor: AccordionBackgroundType
+      ) => ReturnType
     }
   }
 }
@@ -25,14 +31,24 @@ export const IsomerDetailsGroup = Node.create<IsomerDetailGroupOptions>({
   group: "block",
   atom: true,
   draggable: true,
-  defining: true,
-
   content: "details+",
+  defining: true,
+  isolating: true,
+  allowGapCursor: false,
 
   addCommands() {
     return {
       setDetailsGroup: () => ({ chain, state }) => {
         const { schema, selection } = state
+
+        const currNode = findParentNode((t) => t.type === this.type)(selection)
+
+        const isInsideDetailGroup = currNode !== undefined
+
+        if (isInsideDetailGroup) {
+          // Do not allow inner accordions
+          return false
+        }
         const { $from: fromPos, $to: toPos } = selection
         const blockRange: NodeRange | null = fromPos.blockRange(toPos)
 
@@ -112,6 +128,7 @@ export const IsomerDetailsGroup = Node.create<IsomerDetailGroupOptions>({
         if (!content) {
           return false
         }
+
         return chain()
           .insertContentAt(
             { from: blockRange.start, to: blockRange.end },
@@ -135,11 +152,87 @@ export const IsomerDetailsGroup = Node.create<IsomerDetailGroupOptions>({
           )
           .run()
       },
+
+      changeDetailGroupBackground: (
+        backgroundColor: AccordionBackgroundType
+      ) => ({ chain, state }) => {
+        const { schema, selection } = state
+        const { $from: start, $to: end } = selection
+
+        // get block range from start to end pos
+        const blockRange: NodeRange | null = start.blockRange(end)
+
+        // If there's no block range, return false
+        if (!blockRange) return false
+
+        const docSlice: Slice = state.doc.slice(
+          blockRange.start,
+          blockRange.end
+        )
+
+        // If the content doesn't match the schema, return false
+        if (
+          !schema.nodes.detailsContent.contentMatch.matchFragment(
+            docSlice.content
+          )
+        ) {
+          return false
+        }
+        const jsonContent = docSlice.toJSON()
+        const existingContent = jsonContent?.content ?? []
+        const { content } = existingContent[0]
+        // Insert new content and set the text selection
+        if (!content) {
+          return false
+        }
+
+        return chain()
+          .insertContentAt(
+            { from: blockRange.start, to: blockRange.end },
+            {
+              type: this.name,
+              attrs: { backgroundColor },
+              content: [...content],
+            }
+          )
+          .run()
+      },
+      unsetDetailsGroup: () => ({
+        chain,
+        state,
+      }: {
+        state: EditorState
+        chain: ChainedCommands
+      }) => {
+        const { selection } = state
+        const currNode = findParentNode((t) => t.type === this.type)(selection)
+        if (!currNode) return false
+        const startPos = currNode.pos
+        const range = { from: startPos, to: startPos + currNode.node.nodeSize }
+
+        // TODO: check type
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
+        return chain()
+          .insertContentAt(range, [])
+          .setTextSelection(startPos + 1)
+          .run()
+      },
     }
   },
 
+  // TODO: add keyboard shortcuts for backspace
+  // addKeyboardShortcuts() {
+  //   return {
+  //     "Backspace": () => this.editor.commands.detailGroup.setDetailsGroup(),
+  //   }
+  // }
+
   addAttributes() {
     return {
+      backgroundColor: {
+        default: "white",
+      },
       class: {
         default: "isomer-accordion",
       },
@@ -153,12 +246,18 @@ export const IsomerDetailsGroup = Node.create<IsomerDetailGroupOptions>({
     return [{ tag: `div.isomer-accordion` }]
   },
 
-  renderHTML({ HTMLAttributes }) {
+  renderHTML({ HTMLAttributes, node }) {
+    const variant =
+      node.attrs.backgroundColor === "gray"
+        ? "isomer-accordion-gray"
+        : "isomer-accordion-white"
+
+    delete HTMLAttributes.backgroundColor
     return [
       "div",
       mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
         "data-type": this.name,
-        class: "isomer-accordion",
+        class: `isomer-accordion ${variant}`,
       }),
       0,
     ]
