@@ -13,6 +13,11 @@ import TaskList from "@tiptap/extension-task-list"
 import Underline from "@tiptap/extension-underline"
 import { getHTMLFromFragment, useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
+import { Details } from "@tiptap-pro/extension-details"
+import { DetailsContent } from "@tiptap-pro/extension-details-content"
+import { DetailsSummary } from "@tiptap-pro/extension-details-summary"
+// import { IsomerDetailsGroup } from "layouts/components/Editor/extensions/Details/IsomerDetailGroup"
+// import { IsomerDetail } from "layouts/components/Editor/extensions/Details/IsomerDetails"
 import { Context, useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { Markdown } from "tiptap-markdown"
@@ -125,7 +130,24 @@ export const EditPage = () => {
       TableCell,
       Underline,
       Placeholder,
-      TrailingNode,
+      Placeholder.configure({
+        includeChildren: true,
+        placeholder: ({ node }) => {
+          if (node.type.name === "detailsSummary") {
+            return "Summary"
+          }
+
+          return ""
+        },
+      }),
+      Details.configure({
+        HTMLAttributes: {
+          class: "isomer-details",
+        },
+      }),
+      DetailsSummary,
+      DetailsContent,
+      // IsomerDetailsGroup,
     ],
     autofocus: "start",
   })
