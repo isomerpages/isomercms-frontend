@@ -94,7 +94,7 @@ export const useTiptapEditor = () => {
             return "Summary"
           }
 
-          return ""
+          return "Start typing here or add content using buttons on the toolbar above."
         },
       }),
       IsomerDetails.configure({
