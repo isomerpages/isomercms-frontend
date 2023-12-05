@@ -22,7 +22,6 @@ import { getMediaSrcsFromHtml } from "utils/images"
 
 import { Editor } from "../components/Editor/Editor"
 
-import { DEFAULT_BODY } from "./constants"
 import { EditPageLayout } from "./EditPageLayout"
 import { sanitiseRawHtml, updateHtmlWithMediaData } from "./utils"
 
@@ -53,9 +52,6 @@ export const TiptapEditPage = ({
       // only if the existing page body has content.
       if (initialPageData?.content?.pageBody) {
         editor?.commands.setContent(initialPageData?.content?.pageBody)
-      } else {
-        // Otherwise, prefill with the default
-        editor?.commands.setContent(DEFAULT_BODY)
       }
     }
     // NOTE: We disable as the editor is a class and holds its own internal state.
