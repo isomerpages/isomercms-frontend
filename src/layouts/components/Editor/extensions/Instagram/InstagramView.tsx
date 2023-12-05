@@ -5,7 +5,7 @@ import { BlockWrapper } from "../../components/BlockWrapper"
 
 export const InstagramView = ({ node, selected }: NodeViewProps) => {
   return (
-    <BlockWrapper name="Instagram embed" isSelected={selected}>
+    <BlockWrapper name="Embed" isSelected={selected}>
       <Box
         as={NodeViewWrapper}
         bg="#FAF594"

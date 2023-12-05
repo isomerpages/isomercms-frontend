@@ -7,7 +7,7 @@ export const FormSGView = ({ node, selected }: NodeViewProps) => {
   const formSrc = node.content.child(1).attrs.src
 
   return (
-    <BlockWrapper name="FormSG embed" isSelected={selected}>
+    <BlockWrapper name="Embed" isSelected={selected}>
       <Box
         as={NodeViewWrapper}
         bg="#FAF594"
