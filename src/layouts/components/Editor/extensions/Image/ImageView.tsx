@@ -4,7 +4,9 @@ import { useParams } from "react-router-dom"
 
 import { useGetMultipleMediaHook } from "hooks/mediaHooks"
 
-export const ImageView = ({ node }: NodeViewProps) => {
+import { BlockWrapper } from "../../components/BlockWrapper"
+
+export const ImageView = ({ node, selected }: NodeViewProps) => {
   const { siteName } = useParams<{ siteName: string }>()
   const isExternalImage = node.attrs.src.startsWith("https://")
   const mediaSrcs = isExternalImage
@@ -22,8 +24,10 @@ export const ImageView = ({ node }: NodeViewProps) => {
     imgSrc = mediaData[0].mediaUrl
   }
   return (
-    <Box as={NodeViewWrapper} data-drag-handle>
-      <Image src={imgSrc} />
-    </Box>
+    <BlockWrapper name="Image" isSelected={selected} data-drag-handle>
+      <Box as={NodeViewWrapper}>
+        <Image src={imgSrc} />
+      </Box>
+    </BlockWrapper>
   )
 }

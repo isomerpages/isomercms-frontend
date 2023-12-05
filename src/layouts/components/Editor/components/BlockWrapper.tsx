@@ -21,8 +21,8 @@ export const BlockWrapper = ({
           }}
           position="absolute"
           display={isSelected ? "block" : "none"}
-          top="-2px"
-          left="-2px"
+          top="0px"
+          left="0px"
           backgroundColor="#055AFF"
           textColor="white"
           p="0.25rem"
@@ -32,9 +32,11 @@ export const BlockWrapper = ({
 
         <Box
           _hover={{
-            outline: "2px solid #055AFF",
+            border: "2px solid #055AFF",
           }}
-          outline={isSelected ? "2px solid #055AFF" : undefined}
+          // NOTE: Set transparent border to prevent resize on hover
+          // as border will affect calculated width and height
+          border={isSelected ? "2px solid #055AFF" : "2px solid transparent"}
           p="0.75rem"
           objectFit="contain"
         >
