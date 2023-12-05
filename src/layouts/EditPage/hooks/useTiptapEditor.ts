@@ -3,7 +3,6 @@ import CharacterCount from "@tiptap/extension-character-count"
 import Highlight from "@tiptap/extension-highlight"
 import Link from "@tiptap/extension-link"
 import Placeholder from "@tiptap/extension-placeholder"
-import Table from "@tiptap/extension-table"
 import TableCell from "@tiptap/extension-table-cell"
 import TableHeader from "@tiptap/extension-table-header"
 import TableRow from "@tiptap/extension-table-row"
@@ -35,6 +34,7 @@ import {
 } from "layouts/components/Editor/extensions"
 import { IsomerDetailsGroup } from "layouts/components/Editor/extensions/Details/IsomerDetailGroup"
 import { IsomerDetails } from "layouts/components/Editor/extensions/Details/IsomerDetails"
+import { Table } from "layouts/components/Editor/extensions/Table"
 
 export const useTiptapEditor = () => {
   return useEditor({
