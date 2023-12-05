@@ -1,20 +1,7 @@
 import { useDisclosure } from "@chakra-ui/react"
-import BubbleMenu from "@tiptap/extension-bubble-menu"
-import CharacterCount from "@tiptap/extension-character-count"
-import Highlight from "@tiptap/extension-highlight"
-import Link from "@tiptap/extension-link"
-import Placeholder from "@tiptap/extension-placeholder"
-import TableCell from "@tiptap/extension-table-cell"
-import TableHeader from "@tiptap/extension-table-header"
-import TableRow from "@tiptap/extension-table-row"
-import TaskItem from "@tiptap/extension-task-item"
-import TaskList from "@tiptap/extension-task-list"
-import Underline from "@tiptap/extension-underline"
-import { getHTMLFromFragment, useEditor } from "@tiptap/react"
-import StarterKit from "@tiptap/starter-kit"
+import { getHTMLFromFragment } from "@tiptap/react"
 import { Context, useContext, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
-import { Markdown } from "tiptap-markdown"
 
 import { EditorEmbedModal } from "components/EditorEmbedModal"
 import HyperlinkModal from "components/HyperlinkModal"
@@ -28,25 +15,6 @@ import { ServicesContext } from "contexts/ServicesContext"
 import { useGetPageHook } from "hooks/pageHooks"
 import { useCspHook } from "hooks/settingsHooks"
 
-import {
-  FormSG,
-  FormSGDiv,
-  FormSGIframe,
-  Iframe,
-  Instagram,
-  IsomerCard,
-  IsomerCardBody,
-  IsomerCardDescription,
-  IsomerCardImage,
-  IsomerCardLink,
-  IsomerCards,
-  IsomerCardTitle,
-  IsomerClickableCard,
-  IsomerImage,
-  TrailingNode,
-} from "layouts/components/Editor/extensions"
-import { Table } from "layouts/components/Editor/extensions/Table"
-
 import { isEmbedCodeValid } from "utils/allowedHTML"
 import { isEmbedActive } from "utils/tiptap"
 
@@ -54,15 +22,14 @@ import { MediaService } from "services"
 import { DrawerVariant, EditorEmbedContents } from "types/editPage"
 import { getDecodedParams, getImageDetails } from "utils"
 
+import { useTiptapEditor } from "./hooks/useTiptapEditor"
 import { MarkdownEditPage } from "./MarkdownEditPage"
 import { TiptapEditPage } from "./TiptapEditPage"
 
 export const EditPage = () => {
   const params = useParams<{ siteName: string }>()
   const decodedParams = getDecodedParams(params)
-  const { data: initialPageData, isLoading: isLoadingPage } = useGetPageHook(
-    params
-  )
+  const { data: initialPageData } = useGetPageHook(params)
   const { data: csp } = useCspHook()
   const [variant, setVariant] = useState(
     initialPageData?.content?.frontMatter?.variant || "markdown"
@@ -76,61 +43,7 @@ export const EditPage = () => {
       setVariant(initialPageData?.content?.frontMatter?.variant)
   }, [initialPageData?.content?.frontMatter?.variant])
 
-  const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Highlight,
-      TaskList,
-      TaskItem,
-      CharacterCount,
-      IsomerImage,
-      Link.extend({
-        priority: 100,
-        parseHTML() {
-          return [{ tag: "a:not(.isomer-card)" }]
-        },
-      }).configure({
-        openOnClick: false,
-        protocols: ["mailto"],
-      }),
-      Iframe,
-      FormSG,
-      FormSGDiv,
-      FormSGIframe,
-      Instagram,
-      IsomerCards,
-      IsomerCard,
-      IsomerClickableCard,
-      IsomerCardImage,
-      IsomerCardBody,
-      IsomerCardTitle,
-      IsomerCardDescription,
-      IsomerCardLink,
-      Markdown,
-      BubbleMenu.configure({
-        pluginKey: "linkBubble",
-      }),
-      BubbleMenu.configure({
-        pluginKey: "tableBubble",
-      }),
-      BubbleMenu.configure({
-        pluginKey: "imageBubble",
-      }),
-      BubbleMenu.configure({
-        pluginKey: "cardsBubble",
-      }),
-      Table.configure({
-        resizable: false,
-      }),
-      TableRow,
-      TableHeader,
-      TableCell,
-      Underline,
-      Placeholder,
-      TrailingNode,
-    ],
-    autofocus: "start",
-  })
+  const editor = useTiptapEditor()
 
   const {
     isOpen: isMediaModalOpen,
@@ -156,6 +69,12 @@ export const EditPage = () => {
     onClose: onCardsDrawerClose,
   } = useDisclosure()
 
+  const {
+    isOpen: isAccordionDrawerOpen,
+    onOpen: onAccordionDrawerOpen,
+    onClose: onAccordionDrawerClose,
+  } = useDisclosure()
+
   const { siteName } = decodedParams
 
   const { mediaService } = useContext<{ mediaService: MediaService }>(
@@ -165,16 +84,20 @@ export const EditPage = () => {
   if (!editor) return null
 
   const getImageSrc = async (src: string) => {
+    if (src.startsWith("https://")) {
+      // External link, don't modify
+      return { mediaPath: src }
+    }
     const { fileName, imageDirectory } = getImageDetails(src)
-    const { mediaPath, mediaUrl } = await mediaService.get({
+    const { mediaPath } = await mediaService.get({
       siteName,
       mediaDirectoryName: imageDirectory || "images",
       fileName,
     })
-    const nomalisedMediaPath = mediaPath.startsWith("images/")
+    const normalisedMediaPath = mediaPath.startsWith("images/")
       ? `/${mediaPath}`
       : mediaPath
-    return { mediaPath: nomalisedMediaPath, mediaUrl }
+    return { mediaPath: normalisedMediaPath }
   }
 
   const handleEmbedInsert = ({ value }: EditorEmbedContents) => {
@@ -189,12 +112,18 @@ export const EditPage = () => {
     if (drawerType === "cards") {
       return isCardsDrawerOpen
     }
+    if (drawerType === "accordion") {
+      return isAccordionDrawerOpen
+    }
     return false
   }
 
   const onDrawerOpen = (drawerType: DrawerVariant) => {
     if (drawerType === "cards") {
       return onCardsDrawerOpen
+    }
+    if (drawerType === "accordion") {
+      return onAccordionDrawerOpen
     }
 
     return () => undefined
@@ -204,6 +133,9 @@ export const EditPage = () => {
     if (drawerType === "cards") {
       return onCardsDrawerClose
     }
+    if (drawerType === "accordion") {
+      return onAccordionDrawerClose
+    }
 
     return () => undefined
   }
@@ -211,6 +143,9 @@ export const EditPage = () => {
   const onDrawerProceed = (drawerType: DrawerVariant) => {
     if (drawerType === "cards") {
       return onCardsDrawerClose
+    }
+    if (drawerType === "accordion") {
+      return onAccordionDrawerClose
     }
 
     return () => undefined
@@ -231,7 +166,7 @@ export const EditPage = () => {
         }}
       >
         <EditorDrawerContextProvider
-          isAnyDrawerOpen={isCardsDrawerOpen}
+          isAnyDrawerOpen={isCardsDrawerOpen || isAccordionDrawerOpen}
           isDrawerOpen={isDrawerOpen}
           onDrawerOpen={onDrawerOpen}
           onDrawerClose={onDrawerClose}
