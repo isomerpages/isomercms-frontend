@@ -48,7 +48,7 @@ export const LINK_URL_REGEX = `^((${PERMALINK_REGEX.slice(
 )})|(https://(${DOMAIN_NAME_REGEX.slice(1, -1)}${URL_REGEX_SUFFIX.slice(
   5,
   -1
-)}))$`
+)}))|(?=\\s*)$`
 
 export const permalinkRegexTest = RegExp(PERMALINK_REGEX)
 export const phoneRegexTest = RegExp(PHONE_REGEX)
