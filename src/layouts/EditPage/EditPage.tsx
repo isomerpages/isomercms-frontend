@@ -29,9 +29,7 @@ import { TiptapEditPage } from "./TiptapEditPage"
 export const EditPage = () => {
   const params = useParams<{ siteName: string }>()
   const decodedParams = getDecodedParams(params)
-  const { data: initialPageData, isLoading: isLoadingPage } = useGetPageHook(
-    params
-  )
+  const { data: initialPageData } = useGetPageHook(params)
   const { data: csp } = useCspHook()
   const [variant, setVariant] = useState(
     initialPageData?.content?.frontMatter?.variant || "markdown"
@@ -71,6 +69,12 @@ export const EditPage = () => {
     onClose: onCardsDrawerClose,
   } = useDisclosure()
 
+  const {
+    isOpen: isAccordionDrawerOpen,
+    onOpen: onAccordionDrawerOpen,
+    onClose: onAccordionDrawerClose,
+  } = useDisclosure()
+
   const { siteName } = decodedParams
 
   const { mediaService } = useContext<{ mediaService: MediaService }>(
@@ -80,16 +84,20 @@ export const EditPage = () => {
   if (!editor) return null
 
   const getImageSrc = async (src: string) => {
+    if (src.startsWith("https://")) {
+      // External link, don't modify
+      return { mediaPath: src }
+    }
     const { fileName, imageDirectory } = getImageDetails(src)
-    const { mediaPath, mediaUrl } = await mediaService.get({
+    const { mediaPath } = await mediaService.get({
       siteName,
       mediaDirectoryName: imageDirectory || "images",
       fileName,
     })
-    const nomalisedMediaPath = mediaPath.startsWith("images/")
+    const normalisedMediaPath = mediaPath.startsWith("images/")
       ? `/${mediaPath}`
       : mediaPath
-    return { mediaPath: nomalisedMediaPath, mediaUrl }
+    return { mediaPath: normalisedMediaPath }
   }
 
   const handleEmbedInsert = ({ value }: EditorEmbedContents) => {
@@ -104,12 +112,18 @@ export const EditPage = () => {
     if (drawerType === "cards") {
       return isCardsDrawerOpen
     }
+    if (drawerType === "accordion") {
+      return isAccordionDrawerOpen
+    }
     return false
   }
 
   const onDrawerOpen = (drawerType: DrawerVariant) => {
     if (drawerType === "cards") {
       return onCardsDrawerOpen
+    }
+    if (drawerType === "accordion") {
+      return onAccordionDrawerOpen
     }
 
     return () => undefined
@@ -119,6 +133,9 @@ export const EditPage = () => {
     if (drawerType === "cards") {
       return onCardsDrawerClose
     }
+    if (drawerType === "accordion") {
+      return onAccordionDrawerClose
+    }
 
     return () => undefined
   }
@@ -126,6 +143,9 @@ export const EditPage = () => {
   const onDrawerProceed = (drawerType: DrawerVariant) => {
     if (drawerType === "cards") {
       return onCardsDrawerClose
+    }
+    if (drawerType === "accordion") {
+      return onAccordionDrawerClose
     }
 
     return () => undefined
@@ -146,7 +166,7 @@ export const EditPage = () => {
         }}
       >
         <EditorDrawerContextProvider
-          isAnyDrawerOpen={isCardsDrawerOpen}
+          isAnyDrawerOpen={isCardsDrawerOpen || isAccordionDrawerOpen}
           isDrawerOpen={isDrawerOpen}
           onDrawerOpen={onDrawerOpen}
           onDrawerClose={onDrawerClose}

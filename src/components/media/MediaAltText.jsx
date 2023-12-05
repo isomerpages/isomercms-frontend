@@ -96,7 +96,13 @@ export const MediaAltText = ({ onProceed, onClose, type }) => {
                      */}
                     <FormField
                       placeholder={formTitle}
-                      {...register("altText")}
+                      {...register("altText", {
+                        maxLength: {
+                          message:
+                            "Alt text should be less than 100 characters",
+                          value: 100,
+                        },
+                      })}
                       id="altText"
                     />
                     <FormError>{errors.altText?.message}</FormError>

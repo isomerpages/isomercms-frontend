@@ -12,6 +12,8 @@ import TaskList from "@tiptap/extension-task-list"
 import Underline from "@tiptap/extension-underline"
 import { useEditor } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
+import { DetailsContent } from "@tiptap-pro/extension-details-content"
+import { DetailsSummary } from "@tiptap-pro/extension-details-summary"
 import { Markdown } from "tiptap-markdown"
 
 import {
@@ -31,6 +33,8 @@ import {
   IsomerImage,
   TrailingNode,
 } from "layouts/components/Editor/extensions"
+import { IsomerDetailsGroup } from "layouts/components/Editor/extensions/Details/IsomerDetailGroup"
+import { IsomerDetails } from "layouts/components/Editor/extensions/Details/IsomerDetails"
 
 export const useTiptapEditor = () => {
   return useEditor({
@@ -83,7 +87,28 @@ export const useTiptapEditor = () => {
       TableHeader,
       TableCell,
       Underline,
-      Placeholder,
+      Placeholder.configure({
+        includeChildren: true,
+        placeholder: ({ node }) => {
+          if (node.type.name === "detailsSummary") {
+            return "Summary"
+          }
+
+          return ""
+        },
+      }),
+      IsomerDetails.configure({
+        HTMLAttributes: {
+          class: "isomer-details",
+        },
+      }),
+      DetailsSummary,
+      DetailsContent.configure({
+        HTMLAttributes: {
+          class: "isomer-details-content",
+        },
+      }),
+      IsomerDetailsGroup,
       TrailingNode,
     ],
     autofocus: "start",
