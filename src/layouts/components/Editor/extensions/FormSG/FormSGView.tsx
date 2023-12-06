@@ -8,7 +8,9 @@ export const FormSGView = ({ node, selected }: NodeViewProps) => {
 
   return (
     <BlockWrapper name="Embed" isSelected={selected}>
-      <Code paddingInline="0.75rem">{formSrc}</Code>
+      <Code paddingInline="0.75rem" maxW="100%">
+        {formSrc}
+      </Code>
     </BlockWrapper>
   )
 }
