@@ -14,10 +14,10 @@ export interface IframeOptions {
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     iframe: {
-      /**
-       * Add an iframe
-       */
+      // Set the current node as an iframe
       setIframe: (options: { src: string }) => ReturnType
+      // Delete the current node
+      deleteIframe: () => ReturnType
     }
   }
 }
@@ -68,7 +68,7 @@ export const Iframe = Node.create<IframeOptions>({
   parseHTML() {
     return [
       {
-        tag: 'iframe:not([src^="https://form.gov.sg/"])',
+        tag: "iframe",
       },
     ]
   },
@@ -87,6 +87,10 @@ export const Iframe = Node.create<IframeOptions>({
           tr.replaceRangeWith(selection.from, selection.to, node)
         }
 
+        return true
+      },
+      deleteIframe: () => ({ tr, editor }) => {
+        editor.state.selection.replace(tr)
         return true
       },
     }

@@ -19,7 +19,7 @@
 
   height: 100%;
 
-  p.is-empty::before {
+  > p.is-empty::before {
     color: #adb5bd;
     content: attr(data-placeholder);
     float: left;
@@ -126,6 +126,73 @@
       > div {
         flex: 1 1 auto;
       }
+    }
+  }
+
+  .node-detailGroup * [data-type="details"]:first-child {
+    border-top: 1px solid #d4d4d4;
+  }
+
+  summary {
+    color: #4372d6;
+    font-size: 1.25rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 1.75rem; /* 140% */
+    letter-spacing: -0.0175rem;
+  }
+
+  [data-type="details"] {
+    display: flex;
+
+    border-bottom: 1px solid #d4d4d4;
+    padding: 0.5rem;
+    margin-top: 0;
+    margin-bottom: 0;
+    border-top: 0;
+
+    > button {
+      display: flex;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      padding: 0;
+      height: 1.5em;
+      width: 1.5em;
+      color: black;
+
+      &::after {
+        content: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M16.293%209.29297L12%2013.586L7.70697%209.29297L6.29297%2010.707L12%2016.414L17.707%2010.707L16.293%209.29297Z%22%20fill%3D%22%23484848%22%2F%3E%3C%2Fsvg%3E");
+        justify-content: center;
+        align-items: center;
+        width: 1.5em;
+        height: 1.5em;
+      }
+    }
+
+    > div {
+      flex: 1 1 auto;
+    }
+
+    * summary {
+      list-style: none;
+    }
+
+    &.is-open > button::after {
+      content: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2224%22%20height%3D%2224%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M6.29297%2013.2932L7.70697%2014.7072L12%2010.4142L16.293%2014.7072L17.707%2013.2932L12%207.58618L6.29297%2013.2932Z%22%20fill%3D%22%234372D6%22%2F%3E%3C%2Fsvg%3E");
+    }
+
+    :last-child {
+      margin-bottom: 0;
+    }
+
+    [data-type="detailsContent"] > p {
+      color: #838894;
+      font-size: 1.25rem;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 2.2rem; /* 176% */
+      letter-spacing: -0.0175rem;
     }
   }
 }

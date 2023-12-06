@@ -5,20 +5,23 @@ import { marked } from "marked"
 import { useCallback, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 
+import { EditorCardsDrawer } from "components/EditorCardsDrawer"
 import PagePreview from "components/pages/PagePreview"
 
 import { useEditorContext } from "contexts/EditorContext"
+import { useEditorDrawerContext } from "contexts/EditorDrawerContext"
 
 import { useGetMultipleMediaHook } from "hooks/mediaHooks"
 import { useGetPageHook } from "hooks/pageHooks"
 import { useCspHook } from "hooks/settingsHooks"
+
+import { EditorAccordionDrawer } from "layouts/components/EditorAccordionDrawer/EditorAccordionDrawer"
 
 import checkCSP from "utils/cspUtils"
 import { getMediaSrcsFromHtml } from "utils/images"
 
 import { Editor } from "../components/Editor/Editor"
 
-import { DEFAULT_BODY } from "./constants"
 import { EditPageLayout } from "./EditPageLayout"
 import { sanitiseRawHtml, updateHtmlWithMediaData } from "./utils"
 
@@ -31,6 +34,11 @@ interface TiptapEditPageProps {
 export const TiptapEditPage = ({
   shouldUseFetchedData,
 }: TiptapEditPageProps) => {
+  const {
+    isDrawerOpen,
+    onDrawerClose,
+    onDrawerProceed,
+  } = useEditorDrawerContext()
   const params = useParams<{ siteName: string }>()
   const { data: initialPageData, isLoading: isLoadingPage } = useGetPageHook(
     params
@@ -44,9 +52,6 @@ export const TiptapEditPage = ({
       // only if the existing page body has content.
       if (initialPageData?.content?.pageBody) {
         editor?.commands.setContent(initialPageData?.content?.pageBody)
-      } else {
-        // Otherwise, prefill with the default
-        editor?.commands.setContent(DEFAULT_BODY)
       }
     }
     // NOTE: We disable as the editor is a class and holds its own internal state.
@@ -101,8 +106,22 @@ export const TiptapEditPage = ({
       getEditorContent={() => editor.getHTML()}
       variant="tiptap"
     >
+      {/* Editor drawers */}
+      <EditorCardsDrawer
+        editor={editor}
+        isOpen={isDrawerOpen("cards")}
+        onClose={onDrawerClose("cards")}
+        onProceed={onDrawerProceed("cards")}
+      />
+      <EditorAccordionDrawer
+        editor={editor}
+        isOpen={isDrawerOpen("accordion")}
+        onClose={onDrawerClose("accordion")}
+        onProceed={onDrawerProceed("accordion")}
+      />
       {/* Editor */}
       <Editor h="80vh" w="45vw" />
+
       {/* Preview */}
       <PagePreview
         // NOTE: Reserve 45vw for editor

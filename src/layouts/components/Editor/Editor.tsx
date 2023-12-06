@@ -6,6 +6,8 @@ import { EditorContent } from "@tiptap/react"
 import { useEditorContext } from "contexts/EditorContext"
 
 import { LinkBubbleMenu, MenuBar, TableBubbleMenu } from "./components"
+import { CardsBubbleMenu } from "./components/CardsBubbleMenu"
+import { EmbedBubbleMenu } from "./components/EmbedBubbleMenu"
 import { ImageBubbleMenu } from "./components/ImageBubbleMenu"
 
 export const Editor = (props: BoxProps) => {
@@ -25,13 +27,16 @@ export const Editor = (props: BoxProps) => {
         <LinkBubbleMenu />
         <ImageBubbleMenu />
         <TableBubbleMenu />
+        <CardsBubbleMenu />
+        <EmbedBubbleMenu />
         <Box
           as={EditorContent}
           editor={editor}
           flex="1 1 auto"
           overflowX="hidden"
           overflowY="auto"
-          p="1.25rem 1rem"
+          px="2rem"
+          py="1rem"
           h="100%"
         />
         <Divider borderColor="base.divider.strong" />

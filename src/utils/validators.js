@@ -41,6 +41,14 @@ const DATE_REGEX_Y_M_D = "^([0-9]{4}-[0-9]{2}-[0-9]{2})$"
 const DATE_REGEX_D_M_Y = "^([0-9]{2}/[0-9]{2}/[0-9]{4})$"
 const ALPHABETS_ONLY_REGEX = '^[a-zA-Z" "\\._-]+$'
 const ALPHANUMERICS_ONLY_REGEX = '^[a-zA-Z0-9" "\\._\\-:]+$'
+// Matches either a local permalink or an external URL over HTTPS
+export const LINK_URL_REGEX = `^((${PERMALINK_REGEX.slice(
+  1,
+  -1
+)})|(https://(${DOMAIN_NAME_REGEX.slice(1, -1)}${URL_REGEX_SUFFIX.slice(
+  5,
+  -1
+)}))|(?=\\s*)$`
 
 export const permalinkRegexTest = RegExp(PERMALINK_REGEX)
 export const phoneRegexTest = RegExp(PHONE_REGEX)
@@ -58,7 +66,8 @@ export const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX)
 export const specialCharactersRegexTest = /[~%^*_+\-./\\`;~{}[\]"<>]/
 export const jekyllFirstCharacterRegexTest = /^[._#~]/
 export const mediaSpecialCharactersRegexTest = /[~%^?*+#./\\`;~{}[\]"<>]/
-export const imagesSuffixRegexTest = /^.+\.(svg|jpg|jpeg|png|gif|tif|tiff|bmp|ico)$/
+export const externalMediaRegexTest = /^https:\/\/.+/
+export const imagesSuffixRegexTest = /.+\.(svg|jpg|jpeg|png|gif|tif|tiff|bmp|ico)$/
 export const filesSuffixRegexTest = /^.+\.(pdf)$/
 
 const ISOMER_TEMPLATE_PROTECTED_DIRS = [
@@ -1264,6 +1273,14 @@ const validateSubfolderName = (value, existingNames) => {
   return errorMessage
 }
 
+const validateExternalImagePermalink = (value) => {
+  let errorMessage = ""
+  if (!externalMediaRegexTest.test(value)) {
+    errorMessage = `Enter a valid URL. A URL must start with "https://"`
+  }
+  return errorMessage
+}
+
 export {
   validateContactType,
   validateLocationType,
@@ -1281,4 +1298,5 @@ export {
   validateFileName,
   validateResourceRoomName,
   validateSubfolderName,
+  validateExternalImagePermalink,
 }
