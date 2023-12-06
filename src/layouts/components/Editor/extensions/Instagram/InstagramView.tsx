@@ -6,7 +6,9 @@ import { BlockWrapper } from "../../components/BlockWrapper"
 export const InstagramView = ({ node, selected }: NodeViewProps) => {
   return (
     <BlockWrapper name="Embed" isSelected={selected}>
-      <Code paddingInline="0.75rem"> {node.attrs.permalink}</Code>
+      <Code paddingInline="0.75rem" maxW="100%">
+        {node.attrs.permalink}
+      </Code>
     </BlockWrapper>
   )
 }
