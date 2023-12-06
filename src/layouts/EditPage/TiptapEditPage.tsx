@@ -98,12 +98,15 @@ export const TiptapEditPage = ({
     setHtmlChunk(processedChunk)
   }, [mediaData, editorHtmlValue, csp, mediaSrcs])
 
+  const { isAnyDrawerOpen } = useEditorDrawerContext()
+
   return (
     <EditPageLayout
       setEditorContent={(content) => {
         editor.commands.setContent(content)
       }}
       getEditorContent={() => editor.getHTML()}
+      shouldDisableSave={isAnyDrawerOpen}
       variant="tiptap"
     >
       {/* Editor drawers */}
