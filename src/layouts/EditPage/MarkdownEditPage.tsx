@@ -24,6 +24,7 @@ import MarkdownEditor from "components/pages/MarkdownEditor"
 import PagePreview from "components/pages/PagePreview"
 
 import { useEditorContext } from "contexts/EditorContext"
+import { useEditorDrawerContext } from "contexts/EditorDrawerContext"
 
 import { useGetMultipleMediaHook } from "hooks/mediaHooks"
 import { useGetPageHook } from "hooks/pageHooks"
@@ -119,11 +120,14 @@ export const MarkdownEditPage = ({ togglePreview }: MarkdownPageProps) => {
     updateHtmlWithMediaData()
   }, [mediaData, editorValue, updateHtmlWithMediaData])
 
+  const { isAnyDrawerOpen } = useEditorDrawerContext()
+
   return (
     <EditPageLayout
       variant="markdown"
       getEditorContent={() => editorValue}
       setEditorContent={(content: string) => setEditorValue(content)}
+      shouldDisableSave={isAnyDrawerOpen}
     >
       <Box w="100%" p="1.25rem">
         <Flex flexDir="row" bg="gray.100" p="1.38rem" mb="1.38rem">

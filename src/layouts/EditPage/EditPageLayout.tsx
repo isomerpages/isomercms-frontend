@@ -20,8 +20,6 @@ import Header from "components/Header"
 import { OverwriteChangesModal } from "components/OverwriteChangesModal"
 import { WarningModal } from "components/WarningModal"
 
-import { useEditorDrawerContext } from "contexts/EditorDrawerContext"
-
 import { useGetMultipleMediaHook } from "hooks/mediaHooks"
 import { useGetPageHook, useUpdatePageHook } from "hooks/pageHooks"
 import { useCspHook, useGetSiteColorsHook } from "hooks/settingsHooks"
@@ -37,6 +35,7 @@ import { sanitiseRawHtml, updateHtmlWithMediaData } from "./utils"
 interface EditPageLayoutProps {
   getEditorContent: () => string
   setEditorContent: (content: string) => void
+  shouldDisableSave?: boolean
   variant: PageVariant
 }
 
@@ -44,9 +43,9 @@ export const EditPageLayout = ({
   getEditorContent,
   setEditorContent,
   variant = "markdown",
+  shouldDisableSave = false,
   children,
 }: PropsWithChildren<EditPageLayoutProps>) => {
-  const { isAnyDrawerOpen } = useEditorDrawerContext()
   const params = useParams<{ siteName: string }>()
   const decodedParams = getDecodedParams(params)
   const [mediaSrcs, setMediaSrcs] = useState(new Set(""))
@@ -223,7 +222,7 @@ export const EditPageLayout = ({
               // TODO: Add an alert/modal
               // to warn the user when they violate our csp
               // so they know why + can take action to remedy
-              isDisabled={isContentViolation || isAnyDrawerOpen}
+              isDisabled={isContentViolation || shouldDisableSave}
               isLoading={isSavingPage}
             >
               Save
