@@ -68,4 +68,27 @@ export const IsomerDetails = Details.extend({
       )
     }
   },
+
+  addKeyboardShortcuts() {
+    return {
+      Backspace: () => {
+        const { schema, selection } = this.editor.state
+        const { empty, $anchor } = selection
+
+        if (!empty || $anchor.parent.type !== schema.nodes.detailsSummary) {
+          return false
+        }
+
+        if ($anchor.parentOffset !== 0) {
+          return this.editor.commands.command(({ tr }) => {
+            const start = $anchor.pos - 1
+            const end = $anchor.pos
+            tr.delete(start, end)
+            return true
+          })
+        }
+        return this.editor.commands.removeDetail()
+      },
+    }
+  },
 })
