@@ -109,7 +109,7 @@ const EditPage = ({ match }) => {
       {/* Preview */}
       <PagePreview
         h="calc(100vh - 160px - 1.25rem)"
-        w="62.5rem"
+        flex="0 0 62.5rem"
         pageParams={decodedParams}
         title={pageData?.content?.frontMatter?.title || ""}
         chunk={htmlChunk}
