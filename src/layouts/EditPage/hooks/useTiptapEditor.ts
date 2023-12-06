@@ -16,9 +16,6 @@ import { DetailsSummary } from "@tiptap-pro/extension-details-summary"
 import { Markdown } from "tiptap-markdown"
 
 import {
-  FormSG,
-  FormSGDiv,
-  FormSGIframe,
   Iframe,
   Instagram,
   IsomerCard,
@@ -55,9 +52,6 @@ export const useTiptapEditor = () => {
         protocols: ["mailto"],
       }),
       Iframe,
-      FormSG,
-      FormSGDiv,
-      FormSGIframe,
       Instagram,
       IsomerCards,
       IsomerCard,

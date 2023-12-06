@@ -44,7 +44,6 @@ export const BlockWrapper = ({
           // NOTE: Set transparent border to prevent resize on hover
           // as border will affect calculated width and height
           border={isSelected ? "2px solid #055AFF" : "2px solid transparent"}
-          p="0.75rem"
           objectFit="contain"
         >
           {children}

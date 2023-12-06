@@ -57,7 +57,7 @@ export const EditorEmbedModal = ({
           )
           .matches(
             // Blockquote is to allow for Instagram embeds
-            /^(<iframe |<blockquote |<div)(.*)$/s,
+            /^(<iframe|<blockquote|<div)(\s)+(.*)$/s,
             "Please enter a valid embed code"
           )
           .test({
