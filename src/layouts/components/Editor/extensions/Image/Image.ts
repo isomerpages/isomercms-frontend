@@ -11,6 +11,7 @@ interface IsomerImageOptions {
   width?: string
   height?: string
   href?: string
+  style?: string
 }
 
 declare module "@tiptap/core" {
@@ -18,6 +19,7 @@ declare module "@tiptap/core" {
     isomerImage: {
       setImage: (options: IsomerImageOptions) => ReturnType
       deleteImage: () => ReturnType
+      setImageStyle: (style: string) => ReturnType
     }
   }
 }
@@ -81,6 +83,23 @@ export const IsomerImage = Image.extend({
 
       deleteImage: () => ({ tr, editor }) => {
         editor.state.selection.replace(tr)
+        return true
+      },
+
+      setImageStyle: (style) => ({ tr, dispatch, editor }) => {
+        const { from, to } = tr.selection
+        const attrs = { style }
+
+        tr.doc.nodesBetween(from, to, (node, pos) => {
+          if (node.type === editor.schema.nodes.image) {
+            tr.setNodeMarkup(pos, null, { ...node.attrs, ...attrs })
+          }
+        })
+
+        if (dispatch) {
+          tr.scrollIntoView()
+        }
+
         return true
       },
     }

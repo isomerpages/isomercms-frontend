@@ -56,21 +56,7 @@ export const ResizeImagePopover = ({
       return
     }
 
-    const isomerImageAttrs = {
-      src: node.attrs.src,
-      alt: node.attrs.alt,
-      href: node.attrs.href,
-    }
-
-    editor
-      .chain()
-      .focus()
-      .updateAttributes("image", {
-        // use locally scoped style to override width in template scss
-        style: `width: ${data.value}%;`,
-        ...isomerImageAttrs,
-      })
-      .run()
+    editor.chain().focus().setImageStyle(`width: ${data.value}%;`).run()
 
     onClose()
   }
