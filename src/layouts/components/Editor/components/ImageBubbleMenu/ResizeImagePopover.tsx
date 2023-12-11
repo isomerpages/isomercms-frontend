@@ -68,8 +68,6 @@ export const ResizeImagePopover = ({
       .updateAttributes("image", {
         // use locally scoped style to override width in template scss
         style: `width: ${data.value}%;`,
-        // To display the resized width value in the form
-        // width: `${data.value}%`,
         ...isomerImageAttrs,
       })
       .run()
@@ -82,6 +80,7 @@ export const ResizeImagePopover = ({
       const initialValue: string | number =
         editor.state.selection
           .content()
+          // regex to parse the width value from style tag
           .content.firstChild?.attrs.style?.match(/width: (\d+)%/)?.[1] ?? 100
 
       if (typeof initialValue === "string") {
