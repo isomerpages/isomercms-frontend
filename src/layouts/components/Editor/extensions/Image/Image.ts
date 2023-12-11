@@ -64,22 +64,16 @@ export const IsomerImage = Image.extend({
           return false
         }
 
-        if (dispatch) {
-          const node = editor.schema.nodes.image.create(options)
+        const { from, to } = tr.selection
 
-          if (tr.selection.empty) {
-            const offset = tr.selection.to
-
-            tr.insert(offset, node)
-              .scrollIntoView()
-              .setSelection(Selection.near(tr.doc.resolve(offset)))
-          } else {
-            const offset = tr.selection.to + 1
-
-            tr.insert(offset, node)
-              .scrollIntoView()
-              .setSelection(Selection.near(tr.doc.resolve(offset)))
+        tr.doc.nodesBetween(from, to, (node, pos) => {
+          if (node.type === editor.schema.nodes.image) {
+            tr.setNodeMarkup(pos, null, { ...node.attrs, ...options })
           }
+        })
+
+        if (dispatch) {
+          tr.scrollIntoView()
         }
 
         return true
