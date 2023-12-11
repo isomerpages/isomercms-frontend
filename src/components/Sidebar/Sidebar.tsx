@@ -174,7 +174,7 @@ export const Sidebar = (): JSX.Element => {
       </LinkBox>
       <LinkBox>
         <LinkOverlay
-          href="https://go.gov.sg/isomer-cms-help"
+          href="https://go.gov.sg/isomer-issue"
           rel="noopener noreferrer"
           target="_blank"
         >
