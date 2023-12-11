@@ -41,7 +41,7 @@ export const IsomerImage = Image.extend({
         default: "auto",
       },
       style: {
-        default: null,
+        default: "width: 100%",
       },
       href: {
         default: null,
