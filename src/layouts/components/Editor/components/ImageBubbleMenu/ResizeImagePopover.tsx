@@ -56,7 +56,11 @@ export const ResizeImagePopover = ({
       return
     }
 
-    editor.chain().focus().setImageStyle(`width: ${data.value}%;`).run()
+    const style = {
+      width: data.value,
+    }
+
+    editor.chain().focus().setImageStyle(style).run()
 
     onClose()
   }

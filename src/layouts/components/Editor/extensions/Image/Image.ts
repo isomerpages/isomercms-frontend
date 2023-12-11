@@ -14,12 +14,17 @@ interface IsomerImageOptions {
   style?: string
 }
 
+interface IsomerImageStyle {
+  width?: number
+  backgroundColor?: string
+}
+
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     isomerImage: {
       setImage: (options: IsomerImageOptions) => ReturnType
       deleteImage: () => ReturnType
-      setImageStyle: (style: string) => ReturnType
+      setImageStyle: (style: IsomerImageStyle) => ReturnType
     }
   }
 }
@@ -86,8 +91,25 @@ export const IsomerImage = Image.extend({
         return true
       },
 
-      setImageStyle: (style) => ({ tr, dispatch, editor }) => {
+      setImageStyle: (styleOptions) => ({ tr, dispatch, editor }) => {
         const { from, to } = tr.selection
+
+        let style = ""
+
+        if (styleOptions.width) {
+          if (styleOptions.width < 1 || styleOptions.width > 100) {
+            console.error(
+              "Invalid width value. It should be between 1 and 100."
+            )
+            return false
+          }
+          style += `width: ${styleOptions.width}%;`
+        }
+
+        if (styleOptions.backgroundColor) {
+          style += `background-color: ${styleOptions.backgroundColor};`
+        }
+
         const attrs = { style }
 
         tr.doc.nodesBetween(from, to, (node, pos) => {
