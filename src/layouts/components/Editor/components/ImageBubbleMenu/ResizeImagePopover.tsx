@@ -69,7 +69,7 @@ export const ResizeImagePopover = ({
         // use locally scoped style to override width in template scss
         style: `width: ${data.value}%;`,
         // To display the resized width value in the form
-        width: `${data.value}%`,
+        // width: `${data.value}%`,
         ...isomerImageAttrs,
       })
       .run()
@@ -80,12 +80,16 @@ export const ResizeImagePopover = ({
   useEffect(() => {
     if (isOpen) {
       const initialValue: string | number =
-        editor.state.selection.content().content.firstChild?.attrs.width ?? 100
+        editor.state.selection
+          .content()
+          .content.firstChild?.attrs.style?.match(/width: (\d+)%/)?.[1] ?? 100
 
       if (typeof initialValue === "string") {
         methods.setValue(
           "value",
-          initialValue.endsWith("%") ? Number(initialValue.slice(0, -1)) : 100
+          initialValue.endsWith("%")
+            ? Number(initialValue.slice(0, -1))
+            : Number(initialValue)
         )
       } else {
         methods.setValue("value", initialValue)
