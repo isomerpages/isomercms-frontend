@@ -97,13 +97,7 @@ const EditPage = ({ match }) => {
       setEditorContent={setEditorValue}
     >
       {/* Editor */}
-      <Box
-        flexGrow={1}
-        p="1.25rem"
-        maxH="100%"
-        overflowY="scroll"
-        flex="0 0 45vw"
-      >
+      <Box p="1.25rem" maxH="100%" overflowY="scroll" flex="0 0 45vw">
         <MarkdownEditor
           siteName={siteName}
           onChange={(value) => setEditorValue(value)}

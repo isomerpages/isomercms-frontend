@@ -129,7 +129,7 @@ export const MarkdownEditPage = ({ togglePreview }: MarkdownPageProps) => {
       setEditorContent={(content: string) => setEditorValue(content)}
       shouldDisableSave={isAnyDrawerOpen}
     >
-      <Box flex="0 0 45vw" p="1.25rem">
+      <Box flex="0 0 45vw" p="1.25rem" overflow="auto">
         <Flex flexDir="row" bg="gray.100" p="1.38rem" mb="1.38rem">
           <Flex flexDir="column" alignContent="flex-start" mr="1rem">
             <Text textStyle="subhead-1" mb="0.62rem">
