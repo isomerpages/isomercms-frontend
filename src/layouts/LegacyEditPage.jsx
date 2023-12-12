@@ -97,7 +97,7 @@ const EditPage = ({ match }) => {
       setEditorContent={setEditorValue}
     >
       {/* Editor */}
-      <Box minW="50%" flexGrow={1} p="1.25rem" maxH="100%" overflowY="scroll">
+      <Box p="1.25rem" maxH="100%" overflowY="scroll" flex="0 0 45vw">
         <MarkdownEditor
           siteName={siteName}
           onChange={(value) => setEditorValue(value)}
@@ -109,7 +109,7 @@ const EditPage = ({ match }) => {
       {/* Preview */}
       <PagePreview
         h="calc(100vh - 160px - 1.25rem)"
-        flex="0 0 62.5rem"
+        flex="1 0"
         pageParams={decodedParams}
         title={pageData?.content?.frontMatter?.title || ""}
         chunk={htmlChunk}

@@ -13,11 +13,19 @@ interface IsomerImageOptions {
   href?: string
 }
 
+interface IsomerImageStyle {
+  width?: number
+}
+
 declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     isomerImage: {
       setImage: (options: IsomerImageOptions) => ReturnType
+      setImageMeta: (
+        options: Pick<IsomerImageOptions, "alt" | "href">
+      ) => ReturnType
       deleteImage: () => ReturnType
+      setImageStyle: (style: IsomerImageStyle) => ReturnType
     }
   }
 }
@@ -39,6 +47,9 @@ export const IsomerImage = Image.extend({
       },
       height: {
         default: "auto",
+      },
+      style: {
+        default: "width: 100%",
       },
       href: {
         default: null,
@@ -76,8 +87,54 @@ export const IsomerImage = Image.extend({
         return true
       },
 
+      setImageMeta: (options) => ({ tr, dispatch, editor }) => {
+        const { from, to } = tr.selection
+
+        tr.doc.nodesBetween(from, to, (node, pos) => {
+          if (node.type === editor.schema.nodes.image) {
+            tr.setNodeMarkup(pos, null, { ...node.attrs, ...options })
+          }
+        })
+
+        if (dispatch) {
+          tr.scrollIntoView()
+        }
+
+        return true
+      },
+
       deleteImage: () => ({ tr, editor }) => {
         editor.state.selection.replace(tr)
+        return true
+      },
+
+      setImageStyle: (styleOptions) => ({ tr, dispatch, editor }) => {
+        const { from, to } = tr.selection
+
+        let style = ""
+
+        if (styleOptions.width) {
+          if (styleOptions.width < 1 || styleOptions.width > 100) {
+            console.error(
+              "Invalid width value. It should be between 1 and 100."
+            )
+            return false
+          }
+          style += `width: ${styleOptions.width}%;`
+        }
+
+        const attrs = { style }
+
+        tr.doc.nodesBetween(from, to, (node, pos) => {
+          if (node.type === editor.schema.nodes.image) {
+            tr.setNodeMarkup(pos, null, { ...node.attrs, ...attrs })
+          }
+        })
+
+        if (dispatch) {
+          tr.scrollIntoView()
+        }
+
         return true
       },
     }

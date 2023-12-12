@@ -117,7 +117,7 @@ const ImageLinkButton = () => {
           )}
         </Popover>
 
-        {/* <Popover placement="bottom">
+        <Popover placement="bottom">
           {({ isOpen, onClose }) => (
             <>
               <PopoverTrigger>
@@ -148,7 +148,7 @@ const ImageLinkButton = () => {
               </PopoverContent>
             </>
           )}
-        </Popover> */}
+        </Popover>
 
         <Tooltip label="Remove image" hasArrow placement="top">
           <IconButton
