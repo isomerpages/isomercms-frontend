@@ -1,5 +1,6 @@
 import { Box } from "@chakra-ui/react"
 import { BubbleMenu } from "@tiptap/react"
+import { BiTrash } from "react-icons/bi"
 
 import { useEditorContext } from "contexts/EditorContext"
 
@@ -66,6 +67,12 @@ export const TableBubbleMenu = () => {
           icon={BxDelRow}
           action={() => editor.chain().focus().deleteRow().run()}
           title="Delete row"
+          isRound
+        />
+        <MenuItem
+          icon={BiTrash}
+          action={() => editor.chain().focus().deleteTable().run()}
+          title="Delete table"
           isRound
         />
       </Box>
