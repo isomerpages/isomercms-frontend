@@ -16,7 +16,6 @@ interface IsomerImageOptions {
 
 interface IsomerImageStyle {
   width?: number
-  backgroundColor?: string
 }
 
 declare module "@tiptap/core" {
@@ -104,10 +103,6 @@ export const IsomerImage = Image.extend({
             return false
           }
           style += `width: ${styleOptions.width}%;`
-        }
-
-        if (styleOptions.backgroundColor) {
-          style += `background-color: ${styleOptions.backgroundColor};`
         }
 
         const attrs = { style }
