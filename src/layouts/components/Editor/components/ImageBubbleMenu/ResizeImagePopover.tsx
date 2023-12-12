@@ -56,20 +56,11 @@ export const ResizeImagePopover = ({
       return
     }
 
-    const isomerImageAttrs = {
-      src: node.attrs.src,
-      alt: node.attrs.alt,
-      href: node.attrs.href,
+    const style = {
+      width: data.value,
     }
 
-    editor
-      .chain()
-      .focus()
-      .setImage({
-        width: `${data.value}%`,
-        ...isomerImageAttrs,
-      })
-      .run()
+    editor.chain().focus().setImageStyle(style).run()
 
     onClose()
   }
@@ -77,18 +68,23 @@ export const ResizeImagePopover = ({
   useEffect(() => {
     if (isOpen) {
       const initialValue: string | number =
-        editor.state.selection.content().content.firstChild?.attrs.width ?? 100
+        editor.state.selection
+          .content()
+          // regex to parse the width value from style tag
+          .content.firstChild?.attrs.style?.match(/width: (\d+)%/)?.[1] ?? 100
 
       if (typeof initialValue === "string") {
         methods.setValue(
           "value",
-          initialValue.endsWith("%") ? Number(initialValue.slice(0, -1)) : 100
+          initialValue.endsWith("%")
+            ? Number(initialValue.slice(0, -1))
+            : Number(initialValue)
         )
       } else {
         methods.setValue("value", initialValue)
       }
     }
-  }, [isOpen])
+  }, [editor.state.selection, isOpen, methods])
 
   return (
     <FormProvider {...methods}>
