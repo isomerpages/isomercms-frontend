@@ -53,7 +53,7 @@ export const ImageAltTextPopover = ({
     editor
       .chain()
       .focus()
-      .setImage({
+      .setImageMeta({
         alt: data.value,
         ...isomerImageAttrs,
       })

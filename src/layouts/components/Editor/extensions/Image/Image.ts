@@ -22,6 +22,7 @@ declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     isomerImage: {
       setImage: (options: IsomerImageOptions) => ReturnType
+      setImageMeta: (options: IsomerImageOptions) => ReturnType
       deleteImage: () => ReturnType
       setImageStyle: (style: IsomerImageStyle) => ReturnType
     }
@@ -60,6 +61,32 @@ export const IsomerImage = Image.extend({
   addCommands() {
     return {
       setImage: (options) => ({ tr, dispatch, editor }) => {
+        if (!options.src) {
+          return false
+        }
+
+        if (dispatch) {
+          const node = editor.schema.nodes.image.create(options)
+
+          if (tr.selection.empty) {
+            const offset = tr.selection.to
+
+            tr.insert(offset, node)
+              .scrollIntoView()
+              .setSelection(Selection.near(tr.doc.resolve(offset)))
+          } else {
+            const offset = tr.selection.to + 1
+
+            tr.insert(offset, node)
+              .scrollIntoView()
+              .setSelection(Selection.near(tr.doc.resolve(offset)))
+          }
+        }
+
+        return true
+      },
+
+      setImageMeta: (options) => ({ tr, dispatch, editor }) => {
         if (!options.src) {
           return false
         }
