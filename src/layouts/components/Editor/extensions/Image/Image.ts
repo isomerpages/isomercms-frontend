@@ -11,7 +11,6 @@ interface IsomerImageOptions {
   width?: string
   height?: string
   href?: string
-  style?: string
 }
 
 interface IsomerImageStyle {
@@ -22,6 +21,9 @@ declare module "@tiptap/core" {
   interface Commands<ReturnType> {
     isomerImage: {
       setImage: (options: IsomerImageOptions) => ReturnType
+      setImageMeta: (
+        options: Pick<IsomerImageOptions, "alt" | "href">
+      ) => ReturnType
       deleteImage: () => ReturnType
       setImageStyle: (style: IsomerImageStyle) => ReturnType
     }
@@ -80,6 +82,22 @@ export const IsomerImage = Image.extend({
               .scrollIntoView()
               .setSelection(Selection.near(tr.doc.resolve(offset)))
           }
+        }
+
+        return true
+      },
+
+      setImageMeta: (options) => ({ tr, dispatch, editor }) => {
+        const { from, to } = tr.selection
+
+        tr.doc.nodesBetween(from, to, (node, pos) => {
+          if (node.type === editor.schema.nodes.image) {
+            tr.setNodeMarkup(pos, null, { ...node.attrs, ...options })
+          }
+        })
+
+        if (dispatch) {
+          tr.scrollIntoView()
         }
 
         return true

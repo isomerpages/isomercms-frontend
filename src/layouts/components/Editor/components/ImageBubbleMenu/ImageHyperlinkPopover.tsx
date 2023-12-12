@@ -57,7 +57,7 @@ export const ImageHyperlinkPopover = ({
     editor
       .chain()
       .focus()
-      .setImage({
+      .setImageMeta({
         href: data.value,
         ...isomerImageAttrs,
       })
