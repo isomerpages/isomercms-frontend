@@ -12,6 +12,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react"
+import { useFeatureValue } from "@growthbook/growthbook-react"
 import { Button, Menu } from "@opengovsg/design-system-react"
 import { Editor } from "@tiptap/react"
 import {
@@ -35,10 +36,9 @@ import {
 import { IconType } from "react-icons/lib"
 
 import { FEATURE_FLAGS } from "constants/featureFlags"
+import { RTE_BLOCKS } from "constants/rteBlocks"
 
 import { useEditorModal } from "contexts/EditorModalContext"
-
-import { useIsIsomerFeatureOn } from "utils/growthbook"
 
 import {
   EditorAccordionImage,
@@ -275,19 +275,39 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
     },
     {
       type: "divider",
-      isHidden: !useIsIsomerFeatureOn(FEATURE_FLAGS.IS_COMPLEX_BLOCKS_ENABLED),
+      // isHidden: !useIsIsomerFeatureOn(FEATURE_FLAGS.IS_COMPLEX_BLOCKS_ENABLED),
+      isHidden:
+        useFeatureValue<{ blocks: string[] }>(
+          FEATURE_FLAGS.RTE_ENABLED_BLOCKS,
+          {
+            blocks: [],
+          }
+        ).blocks.length === 0,
     },
     {
       type: "detailed-list",
       label: "Add complex blocks",
       icon: BiPlus,
-      isHidden: !useIsIsomerFeatureOn(FEATURE_FLAGS.IS_COMPLEX_BLOCKS_ENABLED),
+      //  isHidden: !useIsIsomerFeatureOn(FEATURE_FLAGS.IS_COMPLEX_BLOCKS_ENABLED),
+      isHidden:
+        useFeatureValue<{ blocks: string[] }>(
+          FEATURE_FLAGS.RTE_ENABLED_BLOCKS,
+          {
+            blocks: [],
+          }
+        ).blocks.length === 0,
       items: [
         {
           name: "Accordion",
           description: "Let users hide or show content.",
           icon: EditorAccordionImage,
           action: () => editor.chain().focus().setHorizontalRule().run(),
+          isHidden: !useFeatureValue<{ blocks: string[] }>(
+            FEATURE_FLAGS.RTE_ENABLED_BLOCKS,
+            {
+              blocks: [],
+            }
+          ).blocks.includes(RTE_BLOCKS.ACCORDION),
         },
         {
           name: "Card grid",
@@ -295,12 +315,24 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
             "Lay out content in a card grid. You can add images, links, and/or text.",
           icon: EditorCardsImage,
           action: () => editor.chain().focus().addCards().run(),
+          isHidden: !useFeatureValue<{ blocks: string[] }>(
+            FEATURE_FLAGS.RTE_ENABLED_BLOCKS,
+            {
+              blocks: [],
+            }
+          ).blocks.includes(RTE_BLOCKS.CARDGRID),
         },
         {
           name: "Divider",
           description: "Use a divider to create sections on your page.",
           icon: EditorDividerImage,
           action: () => editor.chain().focus().setHorizontalRule().run(),
+          isHidden: !useFeatureValue<{ blocks: string[] }>(
+            FEATURE_FLAGS.RTE_ENABLED_BLOCKS,
+            {
+              blocks: [],
+            }
+          ).blocks.includes(RTE_BLOCKS.DIVIDER),
         },
       ],
     },
