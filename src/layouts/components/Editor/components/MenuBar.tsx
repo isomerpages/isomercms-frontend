@@ -275,7 +275,6 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
     },
     {
       type: "divider",
-      // isHidden: !useIsIsomerFeatureOn(FEATURE_FLAGS.IS_COMPLEX_BLOCKS_ENABLED),
       isHidden:
         useFeatureValue<{ blocks: string[] }>(
           FEATURE_FLAGS.RTE_ENABLED_BLOCKS,
@@ -288,7 +287,6 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
       type: "detailed-list",
       label: "Add complex blocks",
       icon: BiPlus,
-      //  isHidden: !useIsIsomerFeatureOn(FEATURE_FLAGS.IS_COMPLEX_BLOCKS_ENABLED),
       isHidden:
         useFeatureValue<{ blocks: string[] }>(
           FEATURE_FLAGS.RTE_ENABLED_BLOCKS,

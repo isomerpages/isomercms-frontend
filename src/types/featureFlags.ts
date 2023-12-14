@@ -12,7 +12,6 @@ export interface FeatureFlags {
   [FEATURE_FLAGS.RTE_ENABLED_BLOCKS]: string[]
   [FEATURE_FLAGS.TIPTAP_EDITOR]: boolean
   [FEATURE_FLAGS.IS_SHOW_STAGING_BUILD_STATUS_ENABLED]: boolean
-  // [FEATURE_FLAGS.IS_COMPLEX_BLOCKS_ENABLED]: boolean
 }
 
 export type GBAttributes = {
