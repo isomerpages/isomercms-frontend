@@ -1313,6 +1313,9 @@ const EditHomepage = ({ match }) => {
 
       resetFirstLoad()
       await updateHomepageHandler(params)
+      // set this to original frontmatter after successful save
+      // so that the warning modal does not pop up when clicking back
+      setOriginalFrontMatter(frontMatter)
     } catch (err) {
       if (err.response.status !== 409) {
         errorToast({
