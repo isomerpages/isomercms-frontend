@@ -106,12 +106,9 @@ type MenuBarEntry =
 
 export const MenuBar = ({ editor }: { editor: Editor }) => {
   const { showModal } = useEditorModal()
-  const rteEnabledBlocks = useFeatureValue<{ blocks: RTEBlockValues[] }>(
-    FEATURE_FLAGS.RTE_ENABLED_BLOCKS,
-    {
-      blocks: [],
-    }
-  ).blocks
+  const rteEnabledBlocks = useFeatureValue(FEATURE_FLAGS.RTE_ENABLED_BLOCKS, {
+    blocks: [],
+  }).blocks as RTEBlockValues[]
 
   const isRteEnabledBlocksEmpty = rteEnabledBlocks.length === 0
 
