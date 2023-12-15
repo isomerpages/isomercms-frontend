@@ -36,7 +36,7 @@ import {
 import { IconType } from "react-icons/lib"
 
 import { FEATURE_FLAGS } from "constants/featureFlags"
-import { RTE_BLOCKS } from "constants/rteBlocks"
+import { RTE_BLOCKS, RTEBlockValues } from "constants/rteBlocks"
 
 import { useEditorModal } from "contexts/EditorModalContext"
 
@@ -106,6 +106,14 @@ type MenuBarEntry =
 
 export const MenuBar = ({ editor }: { editor: Editor }) => {
   const { showModal } = useEditorModal()
+  const rteEnabledBlocks = useFeatureValue<{ blocks: RTEBlockValues[] }>(
+    FEATURE_FLAGS.RTE_ENABLED_BLOCKS,
+    {
+      blocks: [],
+    }
+  ).blocks
+
+  const isRteEnabledBlocksEmpty = rteEnabledBlocks.length === 0
 
   const items: MenuBarEntry[] = [
     {
@@ -275,37 +283,20 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
     },
     {
       type: "divider",
-      isHidden:
-        useFeatureValue<{ blocks: string[] }>(
-          FEATURE_FLAGS.RTE_ENABLED_BLOCKS,
-          {
-            blocks: [],
-          }
-        ).blocks.length === 0,
+      isHidden: isRteEnabledBlocksEmpty,
     },
     {
       type: "detailed-list",
       label: "Add complex blocks",
       icon: BiPlus,
-      isHidden:
-        useFeatureValue<{ blocks: string[] }>(
-          FEATURE_FLAGS.RTE_ENABLED_BLOCKS,
-          {
-            blocks: [],
-          }
-        ).blocks.length === 0,
+      isHidden: isRteEnabledBlocksEmpty,
       items: [
         {
           name: "Accordion",
           description: "Let users hide or show content.",
           icon: EditorAccordionImage,
           action: () => editor.chain().focus().setHorizontalRule().run(),
-          isHidden: !useFeatureValue<{ blocks: string[] }>(
-            FEATURE_FLAGS.RTE_ENABLED_BLOCKS,
-            {
-              blocks: [],
-            }
-          ).blocks.includes(RTE_BLOCKS.ACCORDION),
+          isHidden: !rteEnabledBlocks.includes(RTE_BLOCKS.ACCORDION),
         },
         {
           name: "Card grid",
@@ -313,24 +304,14 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
             "Lay out content in a card grid. You can add images, links, and/or text.",
           icon: EditorCardsImage,
           action: () => editor.chain().focus().addCards().run(),
-          isHidden: !useFeatureValue<{ blocks: string[] }>(
-            FEATURE_FLAGS.RTE_ENABLED_BLOCKS,
-            {
-              blocks: [],
-            }
-          ).blocks.includes(RTE_BLOCKS.CARDGRID),
+          isHidden: !rteEnabledBlocks.includes(RTE_BLOCKS.CARDGRID),
         },
         {
           name: "Divider",
           description: "Use a divider to create sections on your page.",
           icon: EditorDividerImage,
           action: () => editor.chain().focus().setHorizontalRule().run(),
-          isHidden: !useFeatureValue<{ blocks: string[] }>(
-            FEATURE_FLAGS.RTE_ENABLED_BLOCKS,
-            {
-              blocks: [],
-            }
-          ).blocks.includes(RTE_BLOCKS.DIVIDER),
+          isHidden: !rteEnabledBlocks.includes(RTE_BLOCKS.DIVIDER),
         },
       ],
     },
