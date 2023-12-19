@@ -216,13 +216,6 @@ const validateNonFutureResourceDate = (dateStr) => {
   const daysDiff = today - chosenDate
   return daysDiff >= 0
 }
-
-const validateNonFutureAnnouncementDate = (dateStr) => {
-  const today = moment().tz("Asia/Singapore")
-  const isoDateStr = moment(dateStr, "DD MMMM YYYY", true)
-  return isoDateStr.isAfter(today)
-}
-
 // Homepage Editor
 // ==========
 // Returns new errors.highlights[index] object
@@ -289,8 +282,6 @@ const validateAnnouncementItems = (announcementError, field, value) => {
     case "date": {
       if (!moment(value, "DD MMMM YYYY", true).isValid()) {
         errorMessage = `Date is invalid`
-      } else if (validateNonFutureAnnouncementDate(value)) {
-        errorMessage = `Date cannot be in the future`
       }
 
       break
