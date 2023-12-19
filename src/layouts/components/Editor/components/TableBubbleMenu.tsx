@@ -11,6 +11,8 @@ import {
   BxAddRowBelow,
   BxDelCol,
   BxDelRow,
+  BxMergeCells,
+  BxSplitCell,
 } from "assets"
 
 import { MenuItem } from "./MenuItem"
@@ -67,6 +69,19 @@ export const TableBubbleMenu = () => {
           icon={BxDelRow}
           action={() => editor.chain().focus().deleteRow().run()}
           title="Delete row"
+          isRound
+        />
+        <MenuItem type="divider" />
+        <MenuItem
+          icon={BxMergeCells}
+          action={() => editor.chain().focus().mergeCells().run()}
+          title="Merge cells"
+          isRound
+        />
+        <MenuItem
+          icon={BxSplitCell}
+          action={() => editor.chain().focus().splitCell().run()}
+          title="Split cell"
           isRound
         />
         <MenuItem type="divider" />

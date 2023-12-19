@@ -347,7 +347,6 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
           {item.type === "divider" && !item.isHidden && (
             <Divider
               orientation="vertical"
-              border="px solid"
               borderColor="base.divider.strong"
               h="1.25rem"
               mx="0.25rem"
