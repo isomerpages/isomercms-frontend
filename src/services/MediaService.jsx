@@ -46,4 +46,14 @@ export class MediaService {
       .delete(this.getMediaEndpoint(apiParams), { data: body })
       .then((res) => res.data)
   }
+
+  async deleteMultiple(apiParams, { items }) {
+    const { siteName } = apiParams
+    const body = {
+      items,
+    }
+    return this.apiClient
+      .delete(`/sites/${siteName}/media`, { data: body })
+      .then((res) => res.data)
+  }
 }
