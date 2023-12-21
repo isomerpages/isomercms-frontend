@@ -65,6 +65,7 @@ export const getWorkspacePages = (siteName: string): Promise<PageData[]> => {
   return apiService.get<PageData[]>(endpoint).then(({ data }) => data)
 }
 
+// 0 references, legacy method currently unused
 export const getMediaData = ({
   siteName,
   mediaDirectoryName,
@@ -100,7 +101,7 @@ export const getMediaFolderFiles = ({
   siteName,
   mediaDirectoryName,
   curPage = 0,
-  limit = 1000,
+  limit = 15, // NOTE: limit only affects repos on GGS. For GitHub will still load the max items allowed (1000)
   search = "",
 }: MediaDirectoryParams): Promise<GetMediaFilesDto> => {
   const endpoint = `/sites/${siteName}/media/${mediaDirectoryName}/files`
