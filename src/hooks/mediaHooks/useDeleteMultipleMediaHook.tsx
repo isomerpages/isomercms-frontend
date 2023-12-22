@@ -24,35 +24,22 @@ const deleteMultipleMedia = async (
 ) => {
   const mediaService = new MediaService({ apiClient: apiService })
 
-  await selectedMediaDto
-    .map((deleteMedia) => {
-      const pathTokens = deleteMedia.filePath.split("/")
-
-      const reqParams = {
-        siteName,
-        mediaDirectoryName: pathTokens.slice(0, -1).join("%2F"),
-        fileName: pathTokens.pop(),
-        sha: deleteMedia.sha,
+  await mediaService
+    .deleteMultiple(
+      { siteName },
+      {
+        items: selectedMediaDto.map(({ filePath, sha }) => {
+          return {
+            filePath,
+            sha,
+          }
+        }),
       }
-
-      return reqParams
-    })
-    .reduce(
-      (acc, curr) =>
-        acc
-          .then(() => {
-            const { sha, ...rest } = curr
-            mediaService.delete(rest, { sha }).catch((error) => {
-              // We want to continue even if some of the media files fail to delete
-              // because there is no turning back now if we fail (the earlier files
-              // would have been deleted)
-              return error
-            }) as Promise<void>
-          })
-          // This wait is necessary to avoid the repo lock
-          .then(() => new Promise((resolve) => setTimeout(resolve, 500))),
-      Promise.resolve()
     )
+    // Note: Unfortunately, we have to wait for GitHub to finish deleting the files
+    // before we can refetch the list of files in the directory. Otherwise, the
+    // refetch will return the files that were just deleted.
+    .then(() => new Promise((resolve) => setTimeout(resolve, 1000)))
 }
 
 export const useDeleteMultipleMediaHook = (
@@ -71,7 +58,19 @@ export const useDeleteMultipleMediaHook = (
       ...mutationOptions,
       onSettled: (data, error, variables, context) => {
         queryClient.invalidateQueries([LIST_MEDIA_DIRECTORY_FILES_KEY])
-        queryClient.invalidateQueries([GET_ALL_MEDIA_FILES_KEY])
+        // Note: We choose to remove here because once the files are deleted,
+        // refetching will definitely cause a 404 Not Found error, which is what
+        // we want to avoid
+        variables.forEach(({ filePath }) => {
+          const directoryName = encodeURIComponent(
+            filePath.split("/").slice(0, -1).join("/")
+          )
+          const fileName = encodeURIComponent(filePath.split("/").pop() || "")
+          queryClient.removeQueries([
+            GET_ALL_MEDIA_FILES_KEY,
+            { siteName: params.siteName, directoryName, name: fileName },
+          ])
+        })
         if (mutationOptions?.onSettled)
           mutationOptions.onSettled(data, error, variables, context)
       },
