@@ -129,13 +129,15 @@ const Header = ({
         </HStack>
         {/* <Spacer /> */}
         {title ? (
-          <Flex 
-            minWidth="-webkit-min-content" 
+          <Flex
+            minWidth="-webkit-min-content"
             alignItems="center"
             flex={1}
             justifyContent="center"
-            >
-            <Text textStyle="h5" noOfLines={1}>{title}</Text>
+          >
+            <Text textStyle="h5" noOfLines={1}>
+              {title}
+            </Text>
           </Flex>
         ) : null}
         <HStack flex="0 1 content" justifyContent="flex-end" w="fit-content">
