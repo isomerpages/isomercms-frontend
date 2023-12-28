@@ -99,7 +99,7 @@ const Header = ({
         w="100%"
         spacing="0.5rem"
       >
-        <HStack spacing="1.25rem" flex="1 1 content">
+        <HStack spacing="1.25rem" flex="0 1 content">
           {!showButton ? (
             <Box w="180px">
               <img
@@ -121,7 +121,7 @@ const Header = ({
                 }
                 onClick={handleBackNav}
               />
-              <Text color="text.label" textStyle="body-1">
+              <Text color="text.label" textStyle="body-1" noOfLines={1}>
                 {backButtonTextFromParams || backButtonText}
               </Text>
             </>
@@ -140,7 +140,7 @@ const Header = ({
             </Text>
           </Flex>
         ) : null}
-        <HStack flex="0 1 content" justifyContent="flex-end" w="fit-content">
+        <HStack flex="0 0 content" justifyContent="flex-end" w="fit-content">
           (
           {isShowStagingBuildStatusEnabled && (
             <Box mr="-0.25rem">
