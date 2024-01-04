@@ -2,7 +2,7 @@ import { AxiosError } from "axios"
 import _ from "lodash"
 import { useMutation, UseMutationResult, useQueryClient } from "react-query"
 
-import { SETTINGS_CONTENT_KEY } from "constants/queryKeys"
+import { SETTINGS_CONTENT_KEY, STAGING_URL_KEY } from "constants/queryKeys"
 
 import * as SettingsService from "services/SettingsService"
 
@@ -58,6 +58,7 @@ export const useUpdateSettings = (
     {
       onSettled: () => {
         queryClient.invalidateQueries([SETTINGS_CONTENT_KEY, siteName])
+        queryClient.invalidateQueries([STAGING_URL_KEY, siteName])
       },
       onSuccess,
       onError,
