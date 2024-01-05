@@ -113,7 +113,12 @@ const ItemName = ({ name, path }: Pick<EditedItemProps, "name" | "path">) => {
   const theme = useTheme()
   return (
     <VStack align="flex-start">
-      <Text textStyle="subhead-2" textColor="text.label" noOfLines={1}>
+      <Text
+        textStyle="subhead-2"
+        textColor="text.label"
+        noOfLines={1}
+        width="100%"
+      >
         {name}
       </Text>
       <Breadcrumb
@@ -526,13 +531,11 @@ const RequestOverviewTable = ({
             const row: Row<EditedItemProps> = table.getRowModel().rows[index]
             // NOTE: This is guaranteed to exist because the table will filter
             // so that the index we're referencing is within the filtered items.
-            return row
-              .getVisibleCells()
-              .map((cell) => (
-                <Td key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </Td>
-              ))
+            return row.getVisibleCells().map((cell) => (
+              <Td key={cell.id} maxW="40vw">
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
+              </Td>
+            ))
           }}
         />
       </Box>
