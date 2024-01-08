@@ -3,6 +3,8 @@ import { UseQueryResult, useQuery } from "react-query"
 
 import { GET_HOMEPAGE_KEY } from "constants/queryKeys"
 
+import { getAxiosErrorMessage } from "utils/axios"
+
 import { HomepageService } from "services"
 import { HomepageDto } from "types/homepage"
 import { useErrorToast, DEFAULT_RETRY_MSG } from "utils"
@@ -18,7 +20,9 @@ export const useGetHomepageHook = (
       onError: (err: AxiosError) => {
         errorToast({
           id: "get-homepage-error",
-          description: `Your homepage could not be retrieved. ${DEFAULT_RETRY_MSG}. Error: ${err.response?.data.error.message}`,
+          description: `Your homepage could not be retrieved. ${DEFAULT_RETRY_MSG}. Error: ${getAxiosErrorMessage(
+            err
+          )}`,
         })
       },
     }

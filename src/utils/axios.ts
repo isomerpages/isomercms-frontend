@@ -1,6 +1,6 @@
 import { AxiosError } from "axios"
 
-import { ErrorDto, IsomerErrorDto } from "types/error"
+import { ErrorDto, IsomerErrorDto, MiddlewareErrorDto } from "types/error"
 import { DEFAULT_RETRY_MSG } from "utils"
 
 export const isAxiosError = (err: unknown): err is AxiosError => {
@@ -25,8 +25,18 @@ const isIsomerExternalError = (
   )
 }
 
+const isIsomerBackendMiddlewareError = (
+  err: AxiosError<unknown>
+): err is AxiosError<MiddlewareErrorDto> => {
+  return !!(err as AxiosError<MiddlewareErrorDto>).response?.data.error.message
+}
+
 export const getAxiosErrorMessage = (
-  error: null | AxiosError<ErrorDto> | AxiosError,
+  error:
+    | null
+    | AxiosError<ErrorDto>
+    | AxiosError<MiddlewareErrorDto>
+    | AxiosError,
   defaultErrorMessage = DEFAULT_RETRY_MSG
 ): string => {
   if (!error) return ""
@@ -35,9 +45,12 @@ export const getAxiosErrorMessage = (
     return `${error.response?.data.error?.code}: ${error.response?.data.error?.message}`
   }
 
+  if (isIsomerBackendMiddlewareError(error)) {
+    return error.response?.data?.error?.message || defaultErrorMessage
+  }
   if (isBackendError(error)) {
     return error.response?.data.message || defaultErrorMessage
   }
 
-  return error.response?.data?.error?.message || defaultErrorMessage
+  return defaultErrorMessage
 }

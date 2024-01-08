@@ -8,8 +8,10 @@ import {
   RESOURCE_ROOM_NAME_KEY,
 } from "constants/queryKeys"
 
+import { getAxiosErrorMessage } from "utils/axios"
+
 import { NavService } from "services"
-import { MiddlewareError } from "types/error"
+import { MiddlewareErrorDto } from "types/error"
 import {
   CollectionNav,
   NavDto,
@@ -27,7 +29,7 @@ export interface UpdateNavParams {
 
 export const useUpdateNavHook = (
   siteName: string
-): UseMutationResult<void, AxiosError<MiddlewareError>, UpdateNavParams> => {
+): UseMutationResult<void, AxiosError<MiddlewareErrorDto>, UpdateNavParams> => {
   const queryClient = useQueryClient()
   const successToast = useSuccessToast()
   const errorToast = useErrorToast()
@@ -56,10 +58,12 @@ export const useUpdateNavHook = (
           description: "Navigation bar updated successfully",
         })
       },
-      onError: (err: AxiosError) => {
+      onError: (err: AxiosError<MiddlewareErrorDto>) => {
         errorToast({
           id: "update-nav-error",
-          description: `Could not update navigation bar. ${DEFAULT_RETRY_MSG}. Error: ${err.response?.data.error.message}`,
+          description: `Could not update navigation bar. ${DEFAULT_RETRY_MSG}. Error: ${getAxiosErrorMessage(
+            err
+          )}`,
         })
       },
     }
