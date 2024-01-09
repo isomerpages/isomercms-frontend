@@ -2,7 +2,6 @@ import {
   useDisclosure,
   Text,
   Box,
-  Flex,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -10,7 +9,6 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Spacer,
   Icon,
   Link,
 } from "@chakra-ui/react"
@@ -20,7 +18,7 @@ import DOMPurify from "dompurify"
 import _ from "lodash"
 import { marked } from "marked"
 import { useCallback, useEffect, useState } from "react"
-import { BiSolidInfoCircle, BiLinkExternal } from "react-icons/bi"
+import { BiLinkExternal } from "react-icons/bi"
 import { useParams } from "react-router-dom"
 
 import MarkdownEditor from "components/pages/MarkdownEditor"
