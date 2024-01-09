@@ -1,7 +1,17 @@
 import "./styles.scss"
 
-import { Box, BoxProps, Divider, Flex, Text } from "@chakra-ui/react"
+import {
+  Box,
+  BoxProps,
+  Divider,
+  Flex,
+  Icon,
+  Link,
+  Text,
+} from "@chakra-ui/react"
+import { Infobox } from "@opengovsg/design-system-react"
 import { EditorContent } from "@tiptap/react"
+import { BiLinkExternal } from "react-icons/bi"
 
 import { useEditorContext } from "contexts/EditorContext"
 
@@ -15,6 +25,20 @@ export const Editor = (props: BoxProps) => {
 
   return (
     <Box p="1.25rem" h="100%" maxW="50%" minW="40%" {...props}>
+      <Infobox my="1.5rem" variant="info">
+        <Text>
+          You are using Isomer’s new no-code editor.{" "}
+          <Link
+            isExternal
+            href="https://guide.isomer.gov.sg/guide/your-workspace/pages/new-editor-editing-page"
+          >
+            Read more about the new editor here{" "}
+            <Icon as={BiLinkExternal} color="icon.default" />
+          </Link>
+          <br />
+          You can switch back to the legacy editor anytime in Page Settings.
+        </Text>
+      </Infobox>
       <Flex
         bg="white"
         border="1px solid"
