@@ -11,6 +11,7 @@ import {
   ModalHeader,
   ModalOverlay,
   Spacer,
+  Icon,
 } from "@chakra-ui/react"
 import { Button, Infobox } from "@opengovsg/design-system-react"
 import axios from "axios"
@@ -18,6 +19,7 @@ import DOMPurify from "dompurify"
 import _ from "lodash"
 import { marked } from "marked"
 import { useCallback, useEffect, useState } from "react"
+import { BiSolidInfoCircle } from "react-icons/bi"
 import { useParams } from "react-router-dom"
 
 import MarkdownEditor from "components/pages/MarkdownEditor"
@@ -130,14 +132,28 @@ export const MarkdownEditPage = ({ togglePreview }: MarkdownPageProps) => {
       shouldDisableSave={isAnyDrawerOpen}
     >
       <Box flex="0 0 45vw" p="1.25rem" overflow="auto">
-        <Flex flexDir="row" bg="gray.100" p="1.38rem" mb="1.38rem">
+        <Flex
+          flexDir="row"
+          bg="utility.feedback.info-subtle"
+          p="1.38rem"
+          mb="1.38rem"
+          gap="0.5rem"
+        >
+          <Flex flexDir="column" alignContent="center">
+            <Icon
+              as={BiSolidInfoCircle}
+              fontSize="1.25rem"
+              color="icon.default"
+            />
+          </Flex>
           <Flex flexDir="column" alignContent="flex-start" mr="1rem">
-            <Text textStyle="subhead-1" mb="0.62rem">
-              🎉 We’re introducing a new editor on Isomer!
+            <Text>
+              This editor will be on maintenance mode from{" "}
+              <b>March 1st, 2024</b>.
             </Text>
             <Text>
-              With the new editor, you can edit pages without any HTML/Markdown.
-              Preview what your page might look like before making the shift.
+              Try Isomer’s new editor and edit pages without writing any code.
+              Preview this page on the new editor before switching.
             </Text>
           </Flex>
           <Spacer />
