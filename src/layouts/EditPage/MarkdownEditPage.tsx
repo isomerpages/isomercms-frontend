@@ -133,31 +133,13 @@ export const MarkdownEditPage = ({ togglePreview }: MarkdownPageProps) => {
       shouldDisableSave={isAnyDrawerOpen}
     >
       <Box flex="0 0 45vw" p="1.25rem" overflow="auto">
-        <Flex
-          flexDir="row"
-          bg="utility.feedback.info-subtle"
-          p="1.38rem"
-          mb="1.38rem"
-          gap="0.5rem"
-        >
-          <Flex flexDir="column" alignContent="center">
-            <Icon
-              as={BiSolidInfoCircle}
-              fontSize="1.25rem"
-              color="icon.default"
-            />
-          </Flex>
-          <Flex flexDir="column" alignContent="flex-start" mr="1rem">
-            <Text>
-              This editor will be on maintenance mode from{" "}
-              <b>March 1st, 2024</b>.
-            </Text>
-            <Text>
-              Try Isomer’s new editor and edit pages without writing any code.
-              Preview this page on the new editor before switching.
-            </Text>
-          </Flex>
-          <Spacer />
+        <Infobox my="1.5rem" variant="info">
+          <Text>
+            This editor will be on maintenance mode from <b>March 1st, 2024</b>.
+            <br />
+            Try Isomer’s new editor and edit pages without writing any code.
+            Preview this page on the new editor before switching.
+          </Text>
           <Button
             variant="outline"
             alignSelf="center"
@@ -169,7 +151,7 @@ export const MarkdownEditPage = ({ togglePreview }: MarkdownPageProps) => {
           >
             Preview page
           </Button>
-        </Flex>
+        </Infobox>
         <MarkdownEditor
           siteName={siteName}
           onChange={(value: string) => setEditorValue(value)}
