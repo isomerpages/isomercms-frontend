@@ -12,6 +12,7 @@ import {
   ModalOverlay,
   Spacer,
   Icon,
+  Link,
 } from "@chakra-ui/react"
 import { Button, Infobox } from "@opengovsg/design-system-react"
 import axios from "axios"
@@ -19,7 +20,7 @@ import DOMPurify from "dompurify"
 import _ from "lodash"
 import { marked } from "marked"
 import { useCallback, useEffect, useState } from "react"
-import { BiSolidInfoCircle } from "react-icons/bi"
+import { BiSolidInfoCircle, BiLinkExternal } from "react-icons/bi"
 import { useParams } from "react-router-dom"
 
 import MarkdownEditor from "components/pages/MarkdownEditor"
@@ -213,25 +214,26 @@ const PreviewModal = ({
       <ModalOverlay />
       <ModalContent p="1rem">
         <ModalHeader>
-          <Text textStyle="h3">Preview Isomer’s new editor</Text>
+          <Text textStyle="h3">
+            Preview page content on Isomer’s new editor
+          </Text>
         </ModalHeader>
         <ModalCloseButton top="1.5rem" insetEnd="2rem" />
         <ModalBody>
           <Text mb="1.5rem">
             We’re introducing a new editor on IsomerCMS. Using this editor, you
-            can edit pages without using any Markdown or HTML. Explore what your
-            content looks like on the new editor.
+            can edit pages without using any Markdown or HTML.{" "}
+            <Link
+              isExternal
+              href="https://guide.isomer.gov.sg/guide/your-workspace/pages/new-editor-editing-page"
+            >
+              Read more about the new editor here{" "}
+              <Icon as={BiLinkExternal} color="icon.default" />
+            </Link>
           </Text>
-          <Text>
-            You can toggle to use the new editor anytime on Page Settings.
-          </Text>
-          <Infobox my="1.5rem" variant="warning">
+          <Infobox my="1.5rem" variant="info">
             <Text>
-              The current editor will be phased out by{" "}
-              <Text as="span" fontWeight="bold">
-                Q2 2024
-              </Text>
-              .
+              You can toggle to use the new editor anytime on Page Settings.
             </Text>
           </Infobox>
           <Editor maxW="100%" p="0" />
