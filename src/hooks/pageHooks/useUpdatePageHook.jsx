@@ -26,11 +26,17 @@ export function useUpdatePageHook(params, queryParams) {
     (body) => {
       const { newFileName, sha, frontMatter, pageBody } = extractPageInfo(body)
 
+      let updatedPageBody = pageBody
+
+      while (updatedPageBody.endsWith("<p></p>")) {
+        updatedPageBody = updatedPageBody.slice(0, -7)
+      }
+
       return pageService.update(params, {
         newFileName,
         sha,
         frontMatter,
-        pageBody,
+        pageBody: updatedPageBody,
       })
     },
     {
