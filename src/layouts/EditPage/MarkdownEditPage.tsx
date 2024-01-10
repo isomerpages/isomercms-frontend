@@ -223,7 +223,7 @@ const PreviewModal = ({
               You can toggle to use the new editor anytime on Page Settings.
             </Text>
           </Infobox>
-          <Editor maxW="100%" p="0" />
+          <Editor maxW="100%" p="0" showInfoBox={false} />
         </ModalBody>
         <ModalFooter>
           <Button variant="clear" mr={3} onClick={onClose}>

@@ -20,25 +20,29 @@ import { CardsBubbleMenu } from "./components/CardsBubbleMenu"
 import { EmbedBubbleMenu } from "./components/EmbedBubbleMenu"
 import { ImageBubbleMenu } from "./components/ImageBubbleMenu"
 
-export const Editor = (props: BoxProps) => {
+export const Editor = (props: BoxProps & { showInfoBox: boolean }) => {
   const { editor } = useEditorContext()
+  const { showInfoBox } = props
 
   return (
     <Box p="1.25rem" h="100%" maxW="50%" minW="40%" {...props}>
-      <Infobox my="1.5rem" variant="info">
-        <Text>
-          You are using Isomer’s new no-code editor.{" "}
-          <Link
-            isExternal
-            href="https://guide.isomer.gov.sg/guide/your-workspace/pages/new-editor-editing-page"
-          >
-            Read more about the new editor here{" "}
-            <Icon as={BiLinkExternal} color="icon.default" />
-          </Link>
-          <br />
-          You can switch back to the legacy editor anytime in Page Settings.
-        </Text>
-      </Infobox>
+      {showInfoBox && (
+        <Infobox my="1.5rem" variant="info">
+          <Text>
+            You are using Isomer’s new no-code editor.{" "}
+            <Link
+              isExternal
+              href="https://guide.isomer.gov.sg/guide/your-workspace/pages/new-editor-editing-page"
+            >
+              Read more about the new editor here{" "}
+              <Icon as={BiLinkExternal} color="icon.default" />
+            </Link>
+            <br />
+            You can switch back to the legacy editor anytime in Page Settings.
+          </Text>
+        </Infobox>
+      )}
+
       <Flex
         bg="white"
         border="1px solid"
