@@ -3,9 +3,10 @@ import { UseMutationResult, useQueryClient, useMutation } from "react-query"
 
 import { GET_CONTACT_US_KEY } from "constants/queryKeys"
 
+import { getAxiosErrorMessage } from "utils/axios"
+
 import { ContactUsService } from "services"
 import { ContactUsFrontMatter } from "types/contactUs"
-import { MiddlewareError } from "types/error"
 import { useSuccessToast, useErrorToast, DEFAULT_RETRY_MSG } from "utils"
 
 interface UpdateContactUsParams {
@@ -15,11 +16,7 @@ interface UpdateContactUsParams {
 
 export const useUpdateContactUsHook = (
   siteName: string
-): UseMutationResult<
-  void,
-  AxiosError<MiddlewareError>,
-  UpdateContactUsParams
-> => {
+): UseMutationResult<void, AxiosError, UpdateContactUsParams> => {
   const queryClient = useQueryClient()
   const successToast = useSuccessToast()
   const errorToast = useErrorToast()
@@ -42,10 +39,12 @@ export const useUpdateContactUsHook = (
           description: "Contact Us page updated successfully",
         })
       },
-      onError: (err: AxiosError) => {
+      onError: (err) => {
         errorToast({
           id: "update-homepage-error",
-          description: `Could not update Contact Us page. ${DEFAULT_RETRY_MSG}. Error: ${err.response?.data.error.message}`,
+          description: `Could not update Contact Us page. ${DEFAULT_RETRY_MSG}. Error: ${getAxiosErrorMessage(
+            err
+          )}`,
         })
       },
     }

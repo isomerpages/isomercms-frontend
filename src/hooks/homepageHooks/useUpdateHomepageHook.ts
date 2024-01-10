@@ -8,18 +8,20 @@ import {
 
 import { GET_HOMEPAGE_KEY } from "constants/queryKeys"
 
+import { getAxiosErrorMessage } from "utils/axios"
+
 import { HomepageService } from "services"
-import { MiddlewareError } from "types/error"
+import { MiddlewareErrorDto } from "types/error"
 import { HomepageDto } from "types/homepage"
 import { useSuccessToast, useErrorToast, DEFAULT_RETRY_MSG } from "utils"
 
 export const useUpdateHomepageHook = (
   siteName: string,
   mutationOptions?: Omit<
-    UseMutationOptions<void, AxiosError<MiddlewareError>, HomepageDto>,
+    UseMutationOptions<void, AxiosError<MiddlewareErrorDto>, HomepageDto>,
     "mutationFn" | "mutationKey"
   >
-): UseMutationResult<void, AxiosError<MiddlewareError>, HomepageDto> => {
+): UseMutationResult<void, AxiosError<MiddlewareErrorDto>, HomepageDto> => {
   const queryClient = useQueryClient()
   const successToast = useSuccessToast()
   const errorToast = useErrorToast()
@@ -44,7 +46,9 @@ export const useUpdateHomepageHook = (
         if (err.response?.status !== 409) {
           errorToast({
             id: "update-homepage-error",
-            description: `Could not update homepage. ${DEFAULT_RETRY_MSG}. Error: ${err.response?.data?.message}`,
+            description: `Could not update homepage. ${DEFAULT_RETRY_MSG}. Error: ${getAxiosErrorMessage(
+              err
+            )}`,
           })
         }
         if (mutationOptions?.onError)
