@@ -97,7 +97,7 @@ const Header = ({
         bg="white"
         h="4rem"
         w="100%"
-        spacing="0.5rem"
+        gap="1.5rem"
       >
         <HStack spacing="1.25rem" flex="0 1 content">
           {!showButton ? (
