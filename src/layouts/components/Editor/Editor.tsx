@@ -27,7 +27,13 @@ export const Editor = (props: BoxProps & { showInfoBox: boolean }) => {
   return (
     <Box p="1.25rem" h="100%" maxW="50%" minW="40%" {...props}>
       {showInfoBox && (
-        <Infobox my="1.5rem" variant="info">
+        <Infobox
+          mb="1.5rem"
+          variant="info"
+          size="sm"
+          borderRadius={0}
+          p="0.625rem 0.5rem 0.625rem 0.5rem"
+        >
           <Text>
             You are using Isomer’s new no-code editor.{" "}
             <Link

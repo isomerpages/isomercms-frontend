@@ -131,8 +131,14 @@ export const MarkdownEditPage = ({ togglePreview }: MarkdownPageProps) => {
       shouldDisableSave={isAnyDrawerOpen}
     >
       <Box flex="0 0 45vw" p="1.25rem" overflow="auto">
-        <Infobox my="1.5rem" variant="info">
-          <Text>
+        <Infobox
+          mb="1.5rem"
+          variant="info"
+          size="sm"
+          borderRadius={0}
+          p="0.625rem 0.5rem 0.625rem 0.5rem"
+        >
+          <Text pr="0.5rem">
             We have a new editor on Isomer!
             <br />
             You can continue using this editor, but we won’t be able to assist
@@ -147,6 +153,7 @@ export const MarkdownEditPage = ({ togglePreview }: MarkdownPageProps) => {
           </Text>
           <Button
             variant="outline"
+            fontSize="body-2"
             alignSelf="center"
             onClick={() => {
               // NOTE: Set initial content to the markdown content first
@@ -154,7 +161,7 @@ export const MarkdownEditPage = ({ togglePreview }: MarkdownPageProps) => {
               onOpen()
             }}
           >
-            Preview page
+            Preview new editor
           </Button>
         </Infobox>
         <MarkdownEditor
@@ -218,7 +225,13 @@ const PreviewModal = ({
               <Icon as={BiLinkExternal} color="icon.default" />
             </Link>
           </Text>
-          <Infobox my="1.5rem" variant="info">
+          <Infobox
+            mb="1.5rem"
+            variant="info"
+            size="sm"
+            borderRadius={0}
+            p="0.625rem 0.5rem 0.625rem 0.5rem"
+          >
             <Text>
               You can toggle to use the new editor anytime on Page Settings.
             </Text>
