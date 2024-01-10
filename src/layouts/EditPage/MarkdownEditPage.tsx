@@ -133,10 +133,17 @@ export const MarkdownEditPage = ({ togglePreview }: MarkdownPageProps) => {
       <Box flex="0 0 45vw" p="1.25rem" overflow="auto">
         <Infobox my="1.5rem" variant="info">
           <Text>
-            This editor will be on maintenance mode from <b>March 1st, 2024</b>.
+            We have a new editor on Isomer!
             <br />
-            Try Isomer’s new editor and edit pages without writing any code.
-            Preview this page on the new editor before switching.
+            You can continue using this editor, but we won’t be able to assist
+            you if you face any issues.{" "}
+            <Link
+              href="https://guide.isomer.gov.sg/guide/your-workspace/pages/new-editor-editing-page"
+              isExternal
+            >
+              Refer to the guide
+            </Link>{" "}
+            for more details.
           </Text>
           <Button
             variant="outline"
