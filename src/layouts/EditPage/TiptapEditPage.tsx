@@ -123,7 +123,7 @@ export const TiptapEditPage = ({
         onProceed={onDrawerProceed("accordion")}
       />
       {/* Editor */}
-      <Editor h="80vh" w="45vw" />
+      <Editor h="80vh" w="45vw" showInfoBox />
 
       {/* Preview */}
       <PagePreview

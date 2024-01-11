@@ -2,7 +2,6 @@ import {
   useDisclosure,
   Text,
   Box,
-  Flex,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -10,7 +9,8 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Spacer,
+  Icon,
+  Link,
 } from "@chakra-ui/react"
 import { Button, Infobox } from "@opengovsg/design-system-react"
 import axios from "axios"
@@ -18,6 +18,7 @@ import DOMPurify from "dompurify"
 import _ from "lodash"
 import { marked } from "marked"
 import { useCallback, useEffect, useState } from "react"
+import { BiLinkExternal } from "react-icons/bi"
 import { useParams } from "react-router-dom"
 
 import MarkdownEditor from "components/pages/MarkdownEditor"
@@ -130,19 +131,29 @@ export const MarkdownEditPage = ({ togglePreview }: MarkdownPageProps) => {
       shouldDisableSave={isAnyDrawerOpen}
     >
       <Box flex="0 0 45vw" p="1.25rem" overflow="auto">
-        <Flex flexDir="row" bg="gray.100" p="1.38rem" mb="1.38rem">
-          <Flex flexDir="column" alignContent="flex-start" mr="1rem">
-            <Text textStyle="subhead-1" mb="0.62rem">
-              🎉 We’re introducing a new editor on Isomer!
-            </Text>
-            <Text>
-              With the new editor, you can edit pages without any HTML/Markdown.
-              Preview what your page might look like before making the shift.
-            </Text>
-          </Flex>
-          <Spacer />
+        <Infobox
+          mb="1.5rem"
+          variant="info"
+          size="sm"
+          borderRadius={0}
+          p="0.625rem 0.5rem 0.625rem 0.5rem"
+        >
+          <Text pr="0.5rem">
+            We have a new editor on Isomer!
+            <br />
+            You can continue using this editor, but we won’t be able to assist
+            you if you face any issues.{" "}
+            <Link
+              href="https://guide.isomer.gov.sg/guide/your-workspace/pages/new-editor-editing-page"
+              isExternal
+            >
+              Refer to the guide
+            </Link>{" "}
+            for more details.
+          </Text>
           <Button
             variant="outline"
+            fontSize="body-2"
             alignSelf="center"
             onClick={() => {
               // NOTE: Set initial content to the markdown content first
@@ -150,9 +161,9 @@ export const MarkdownEditPage = ({ togglePreview }: MarkdownPageProps) => {
               onOpen()
             }}
           >
-            Preview page
+            Preview new editor
           </Button>
-        </Flex>
+        </Infobox>
         <MarkdownEditor
           siteName={siteName}
           onChange={(value: string) => setEditorValue(value)}
@@ -197,28 +208,35 @@ const PreviewModal = ({
       <ModalOverlay />
       <ModalContent p="1rem">
         <ModalHeader>
-          <Text textStyle="h3">Preview Isomer’s new editor</Text>
+          <Text textStyle="h3">
+            Preview page content on Isomer’s new editor
+          </Text>
         </ModalHeader>
         <ModalCloseButton top="1.5rem" insetEnd="2rem" />
         <ModalBody>
           <Text mb="1.5rem">
             We’re introducing a new editor on IsomerCMS. Using this editor, you
-            can edit pages without using any Markdown or HTML. Explore what your
-            content looks like on the new editor.
+            can edit pages without using any Markdown or HTML.{" "}
+            <Link
+              isExternal
+              href="https://guide.isomer.gov.sg/guide/your-workspace/pages/new-editor-editing-page"
+            >
+              Read more about the new editor here{" "}
+              <Icon as={BiLinkExternal} color="icon.default" />
+            </Link>
           </Text>
-          <Text>
-            You can toggle to use the new editor anytime on Page Settings.
-          </Text>
-          <Infobox my="1.5rem" variant="warning">
+          <Infobox
+            mb="1.5rem"
+            variant="info"
+            size="sm"
+            borderRadius={0}
+            p="0.625rem 0.5rem 0.625rem 0.5rem"
+          >
             <Text>
-              The current editor will be phased out by{" "}
-              <Text as="span" fontWeight="bold">
-                Q2 2024
-              </Text>
-              .
+              You can toggle to use the new editor anytime on Page Settings.
             </Text>
           </Infobox>
-          <Editor maxW="100%" p="0" />
+          <Editor maxW="100%" p="0" showInfoBox={false} />
         </ModalBody>
         <ModalFooter>
           <Button variant="clear" mr={3} onClick={onClose}>

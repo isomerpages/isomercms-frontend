@@ -97,8 +97,9 @@ const Header = ({
         bg="white"
         h="4rem"
         w="100%"
+        gap="1.5rem"
       >
-        <HStack spacing="1.25rem" flex={1}>
+        <HStack spacing="1.25rem" flex="0 1 content">
           {!showButton ? (
             <Box w="180px">
               <img
@@ -120,7 +121,7 @@ const Header = ({
                 }
                 onClick={handleBackNav}
               />
-              <Text color="text.label" textStyle="body-1">
+              <Text color="text.label" textStyle="body-1" noOfLines={1}>
                 {backButtonTextFromParams || backButtonText}
               </Text>
             </>
@@ -128,11 +129,18 @@ const Header = ({
         </HStack>
         {/* <Spacer /> */}
         {title ? (
-          <Flex minWidth="-webkit-min-content" alignItems="center">
-            <Text textStyle="h5">{title}</Text>
+          <Flex
+            minWidth="-webkit-min-content"
+            alignItems="center"
+            flex={1}
+            justifyContent="center"
+          >
+            <Text textStyle="h5" noOfLines={1}>
+              {title}
+            </Text>
           </Flex>
         ) : null}
-        <HStack flex={1} justifyContent="flex-end">
+        <HStack flex="0 0 content" justifyContent="flex-end" w="fit-content">
           (
           {isShowStagingBuildStatusEnabled && (
             <Box mr="-0.25rem">

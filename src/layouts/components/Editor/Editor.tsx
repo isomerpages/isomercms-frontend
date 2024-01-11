@@ -1,7 +1,17 @@
 import "./styles.scss"
 
-import { Box, BoxProps, Divider, Flex, Text } from "@chakra-ui/react"
+import {
+  Box,
+  BoxProps,
+  Divider,
+  Flex,
+  Icon,
+  Link,
+  Text,
+} from "@chakra-ui/react"
+import { Infobox } from "@opengovsg/design-system-react"
 import { EditorContent } from "@tiptap/react"
+import { BiLinkExternal } from "react-icons/bi"
 
 import { useEditorContext } from "contexts/EditorContext"
 
@@ -10,11 +20,35 @@ import { CardsBubbleMenu } from "./components/CardsBubbleMenu"
 import { EmbedBubbleMenu } from "./components/EmbedBubbleMenu"
 import { ImageBubbleMenu } from "./components/ImageBubbleMenu"
 
-export const Editor = (props: BoxProps) => {
+export const Editor = (props: BoxProps & { showInfoBox: boolean }) => {
   const { editor } = useEditorContext()
+  const { showInfoBox } = props
 
   return (
     <Box p="1.25rem" h="100%" maxW="50%" minW="40%" {...props}>
+      {showInfoBox && (
+        <Infobox
+          mb="1.5rem"
+          variant="info"
+          size="sm"
+          borderRadius={0}
+          p="0.625rem 0.5rem 0.625rem 0.5rem"
+        >
+          <Text>
+            You are using Isomer’s new no-code editor.{" "}
+            <Link
+              isExternal
+              href="https://guide.isomer.gov.sg/guide/your-workspace/pages/new-editor-editing-page"
+            >
+              Read more about the new editor here{" "}
+              <Icon as={BiLinkExternal} color="icon.default" />
+            </Link>
+            <br />
+            You can switch back to the legacy editor anytime in Page Settings.
+          </Text>
+        </Infobox>
+      )}
+
       <Flex
         bg="white"
         border="1px solid"
