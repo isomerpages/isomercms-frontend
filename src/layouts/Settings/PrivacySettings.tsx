@@ -69,7 +69,7 @@ export const PrivacySettings = ({
 
   return (
     <Section id="privacy-fields">
-      <SectionHeader label="Privacy Settings" />
+      <SectionHeader label="Staging Site Visibility" />
       <VStack spacing="1.5rem" align="flex-start" w="50%">
         <FormControl isDisabled={isError}>
           <Flex justifyContent="space-between" w="100%">
