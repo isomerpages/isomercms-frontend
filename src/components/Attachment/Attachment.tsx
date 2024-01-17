@@ -147,6 +147,16 @@ export const Attachment = forwardRef<AttachmentProps, "div">(
             message: `File is too big (${getReadableFileSize(file.size)})`,
           }
         }
+
+        // Note: We do not current support this right now on the backend, but
+        // once we add support for it, we can remove this restriction.
+        if (file.name.endsWith(".jfif")) {
+          return {
+            code: "jfif-file-not-supported",
+            message:
+              "The JFIF file format is not supported, please convert to JPEG instead",
+          }
+        }
         return null
       },
       [maxSize]

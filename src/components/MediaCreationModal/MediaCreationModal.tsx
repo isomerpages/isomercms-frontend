@@ -36,18 +36,16 @@ import { Dropzone } from "./components/Dropzone"
 
 type MediaSteps = "upload" | "progressing" | "success" | "failed"
 
-const IMAGE_UPLOAD_ACCEPTED_MIME_TYPES = {
-  "image/jpeg": [".jpg", ".jpeg"],
-  "image/png": [".png"],
-  "image/gif": [".gif"],
-  "image/svg+xml": [".svg"],
-  "image/tiff": [".tiff", ".tif"],
-  "image/bmp": [".bmp"],
-}
+const IMAGE_UPLOAD_ACCEPTED_MIME_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+  "image/svg+xml",
+  "image/tiff",
+  "image/bmp",
+]
 
-const FILE_UPLOAD_ACCEPTED_MIME_TYPES = {
-  "application/pdf": [".pdf"],
-}
+const FILE_UPLOAD_ACCEPTED_MIME_TYPES = ["application/pdf"]
 
 interface MediaDropzoneProps {
   fileRejections: FileRejection[]
