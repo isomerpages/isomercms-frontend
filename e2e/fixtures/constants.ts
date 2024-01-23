@@ -1,10 +1,10 @@
 export const {
-  TEST_REPO_NAME,
-  CMS_BASEURL,
-  BACKEND_URL,
-  COOKIE_NAME,
-  COOKIE_VALUE,
-} = process.env
+  CYPRESS_TEST_REPO_NAME: TEST_REPO_NAME,
+  CYPRESS_CMS_BASEURL: CMS_BASEURL,
+  CYPRESS_BACKEND_URL: BACKEND_URL,
+  CYPRESS_COOKIE_NAME: COOKIE_NAME,
+  CYPRESS_COOKIE_VALUE: COOKIE_VALUE,
+} = process.env as Record<string, string>
 
 export const E2E_USER = {
   userId: "test",
