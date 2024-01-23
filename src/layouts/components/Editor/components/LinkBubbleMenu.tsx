@@ -83,7 +83,7 @@ const LinkButton = () => {
         Change link
       </button>
       <FormControl isRequired isInvalid={!!errors.href?.message}>
-        <Modal isOpen={isOpen} onClose={onClose} size="sm">
+        <Modal motionPreset="none" isOpen={isOpen} onClose={onClose} size="sm">
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>Update link</ModalHeader>

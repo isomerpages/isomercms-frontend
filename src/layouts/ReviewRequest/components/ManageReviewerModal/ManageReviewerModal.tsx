@@ -79,7 +79,7 @@ export const ManageReviewerModal = ({
   }, [errorToast, isUpdateReviewRequestError, updateReviewRequestError])
 
   return (
-    <Modal {...props}>
+    <Modal motionPreset="none" {...props}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>

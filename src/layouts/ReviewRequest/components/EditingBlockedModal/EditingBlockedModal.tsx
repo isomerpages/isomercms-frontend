@@ -16,7 +16,7 @@ export const EditingBlockedModal = (
   const { onClose } = props
 
   return (
-    <Modal {...props}>
+    <Modal motionPreset="none" {...props}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>

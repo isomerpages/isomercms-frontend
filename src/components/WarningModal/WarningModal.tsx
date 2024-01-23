@@ -23,7 +23,7 @@ export const WarningModal = ({
   children,
   ...rest
 }: PropsWithChildren<WarningModalProps>): JSX.Element => (
-  <Modal {...rest}>
+  <Modal motionPreset="none" {...rest}>
     <ModalOverlay />
     <ModalContent>
       <ModalHeader>

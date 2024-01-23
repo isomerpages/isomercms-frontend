@@ -147,7 +147,7 @@ export const PageSettingsModal = ({
   }
 
   return (
-    <Modal isOpen onClose={onClose}>
+    <Modal motionPreset="none" isOpen onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton id="settings-CLOSE" />

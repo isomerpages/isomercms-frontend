@@ -343,6 +343,7 @@ export const MediaCreationModal = ({
         onClose()
         onModalClose()
       }}
+      motionPreset="none"
     >
       <ModalOverlay />
       <ModalContent>

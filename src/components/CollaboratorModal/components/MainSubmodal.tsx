@@ -189,6 +189,7 @@ export const MainSubmodal = ({
   return (
     <Modal
       {...props}
+      motionPreset="none"
       onCloseComplete={() => {
         reset()
         collaboratorFormMethods.resetField("isAcknowledged")

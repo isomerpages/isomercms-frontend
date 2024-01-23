@@ -204,7 +204,13 @@ const PreviewModal = ({
   togglePreview,
 }: PreviewModalProps) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="4xl" scrollBehavior="inside">
+    <Modal
+      motionPreset="none"
+      isOpen={isOpen}
+      onClose={onClose}
+      size="4xl"
+      scrollBehavior="inside"
+    >
       <ModalOverlay />
       <ModalContent p="1rem">
         <ModalHeader>

@@ -125,7 +125,7 @@ const EmptyResourceRoom = () => {
           />
         </Center>
       </SiteEditLayout>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal motionPreset="none" isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Create resource room</ModalHeader>
@@ -355,7 +355,7 @@ const ResourceRoomContent = ({
         </Section>
       </SiteEditLayout>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal motionPreset="none" isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <form

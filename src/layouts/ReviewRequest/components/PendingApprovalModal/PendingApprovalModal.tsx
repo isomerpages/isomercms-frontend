@@ -16,7 +16,7 @@ export const PendingApprovalModal = (
   const { onClose } = props
 
   return (
-    <Modal {...props}>
+    <Modal motionPreset="none" {...props}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>

@@ -24,7 +24,7 @@ export const EditorDrawerCloseWarningModal = ({
   onProceed,
 }: EditorDrawerCloseWarningModalProps): JSX.Element => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal motionPreset="none" isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Are you sure you want to exit {name} editing?</ModalHeader>

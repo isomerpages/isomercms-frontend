@@ -112,7 +112,7 @@ export const MoveMediaModal = ({
   }, [mediaType, isOpen])
 
   return (
-    <Modal isOpen={isOpen} onClose={onModalClose}>
+    <Modal motionPreset="none" isOpen={isOpen} onClose={onModalClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />

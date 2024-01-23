@@ -90,11 +90,11 @@ export const ReviewRequestModal = (
   const selectedReviewers = methods.watch("reviewers")
 
   return (
-    <Modal {...props} size="full">
+    <Modal {...props} size="full" motionPreset="none">
       <ModalOverlay />
       <ModalContent>
         <form onSubmit={onSubmit}>
-          {/* 
+          {/*
           NOTE: padding has to be used as the base component from Chakra uses it to set padding.
           Not using it (and using pt etc) would result in the property being overwritten to the default.
           The format is top, left + right, bottom.
@@ -114,10 +114,10 @@ export const ReviewRequestModal = (
           <ModalBody px="16.5rem" pt="1.5rem" pb="2.5rem">
             <Tabs>
               <TabList>
-                {/* 
+                {/*
                 NOTE: The design system tab has inbuilt left-margin.
                 However, the figma design requires that the tabs be aligned with the content.
-                Hence, margin is set to 0 here 
+                Hence, margin is set to 0 here
                 */}
                 <Tab ml={0}>Add Details</Tab>
                 <Tab>Edited Items</Tab>

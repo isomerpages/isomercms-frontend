@@ -27,7 +27,7 @@ export const ApprovedModal = ({
   const { onClose } = props
 
   return (
-    <Modal {...props}>
+    <Modal motionPreset="none" {...props}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader bg="primary.100" p={0}>

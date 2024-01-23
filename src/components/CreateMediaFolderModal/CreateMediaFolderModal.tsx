@@ -191,7 +191,12 @@ export const CreateMediaFolderModal = ({
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onModalClose} size="5xl">
+    <Modal
+      isOpen={isOpen}
+      onClose={onModalClose}
+      size="5xl"
+      motionPreset="none"
+    >
       <ModalOverlay />
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>

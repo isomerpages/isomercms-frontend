@@ -383,6 +383,7 @@ const MediasSelectModal = ({
       closeOnOverlayClick={false}
       isCentered
       overflowY="hidden"
+      motionPreset="none"
     >
       <ModalOverlay />
       <ModalContent

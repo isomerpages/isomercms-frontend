@@ -40,7 +40,7 @@ export const RemoveCollaboratorSubmodal = ({
   } = useDeleteCollaboratorHook(siteName)
 
   return (
-    <Modal {...props}>
+    <Modal motionPreset="none" {...props}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Remove collaborator?</ModalHeader>

@@ -79,6 +79,7 @@ export const AnnouncementModal = ({
         onClose()
       }}
       size="md"
+      motionPreset="none"
     >
       <ModalOverlay />
       <ModalContent>

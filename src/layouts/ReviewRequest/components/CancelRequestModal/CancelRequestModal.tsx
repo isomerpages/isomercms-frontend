@@ -45,7 +45,7 @@ export const CancelRequestModal = (
   }, [error, errorToast, isError])
 
   return (
-    <Modal {...props}>
+    <Modal motionPreset="none" {...props}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>

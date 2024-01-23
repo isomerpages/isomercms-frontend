@@ -54,6 +54,7 @@ export const EditorCardItem = ({
   return (
     <>
       <Modal
+        motionPreset="none"
         isOpen={isDeleteWarningModalOpen}
         onClose={onDeleteWarningModalClose}
       >

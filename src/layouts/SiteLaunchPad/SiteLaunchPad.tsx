@@ -67,7 +67,11 @@ const RiskAcceptanceModal = ({
   const isRiskAccepted = watch("isRiskAccepted")
   const { increasePageNumber, decreasePageNumber } = useSiteLaunchContext()
   return (
-    <Modal isOpen={isOpen} onClose={() => decreasePageNumber()}>
+    <Modal
+      motionPreset="none"
+      isOpen={isOpen}
+      onClose={() => decreasePageNumber()}
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>

@@ -71,7 +71,7 @@ export const SendRequestModal = ({
   const remainingAdmins = sortedAdmins.slice(2)
 
   return (
-    <Modal {...props}>
+    <Modal motionPreset="none" {...props}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>

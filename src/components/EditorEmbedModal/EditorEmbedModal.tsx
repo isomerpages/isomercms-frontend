@@ -90,7 +90,7 @@ export const EditorEmbedModal = ({
   }, [cursorValue, isOpen, methods])
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal motionPreset="none" isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
 
       <FormProvider {...methods}>

@@ -33,6 +33,7 @@ export const PublishedModal = (
   return (
     <Modal
       {...props}
+      motionPreset="none"
       onCloseComplete={() => {
         invalidateMergeRelatedQueries(
           queryClient,

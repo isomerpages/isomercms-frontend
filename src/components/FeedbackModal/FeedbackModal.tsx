@@ -40,7 +40,7 @@ export const FeedbackModal = ({
   const { mutateAsync: submitFeedback, isLoading } = useSubmitFeedback()
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal motionPreset="none" isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
         <form

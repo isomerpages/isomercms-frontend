@@ -28,7 +28,7 @@ const HyperlinkModal = ({ onSave, initialText, onClose }) => {
   const [link, setLink] = useState("")
 
   return (
-    <Modal isOpen onClose={onClose}>
+    <Modal isOpen onClose={onClose} motionPreset="none">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>

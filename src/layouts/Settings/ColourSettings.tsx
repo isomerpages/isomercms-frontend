@@ -150,6 +150,7 @@ const FormColourPickerBase = forwardRef<FormColourPickerProps, "input">(
           </Flex>
         </HStack>
         <Modal
+          motionPreset="none"
           onClose={onClose}
           isOpen={isOpen}
           isCentered

@@ -58,7 +58,7 @@ export function ViewStagingSiteModal({
   editMode,
 }: ViewStagingSiteModalProps) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal motionPreset="none" isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader mb="0.5rem"> Open staging site</ModalHeader>
