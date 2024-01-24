@@ -168,6 +168,7 @@ export const InfocolsSectionBody = ({
                           alignSelf="center"
                           variant="clear"
                           colorScheme="critical"
+                          isDisabled={infoboxes.length <= 1}
                         >
                           Delete infobox
                         </Button>
