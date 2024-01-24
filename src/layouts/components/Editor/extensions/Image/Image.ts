@@ -143,10 +143,10 @@ export const IsomerImage = Image.extend({
   parseHTML() {
     return [
       {
-        tag: "img[src]",
+        tag: 'img[src]:not([src^="data:"])',
       },
       {
-        tag: "a[href].isomer-image-wrapper > img[src]",
+        tag: 'a[href].isomer-image-wrapper > img[src]:not([src^="data:"])',
       },
     ]
   },
