@@ -1,6 +1,6 @@
 import axios from "axios"
-import beautifyHtml from "beautify"
 import DOMPurify from "dompurify"
+import { prettyPrint as beautifyHtml } from "html"
 import _ from "lodash"
 import { marked } from "marked"
 import { useCallback, useEffect, useState } from "react"
@@ -107,7 +107,9 @@ export const TiptapEditPage = ({
         editor.commands.setContent(content)
       }}
       getEditorContent={() =>
-        beautifyHtml(editor.getHTML(), { format: "html" })
+        // Note: The indent_size is set to -1 instead of 0 to remove all
+        // indentation, due to a bug in the upstream library
+        beautifyHtml(editor.getHTML(), { indent_size: -1 })
       }
       shouldDisableSave={isAnyDrawerOpen}
       variant="tiptap"
