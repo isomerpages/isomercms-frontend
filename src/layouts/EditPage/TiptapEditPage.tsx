@@ -1,4 +1,5 @@
 import axios from "axios"
+import beautifyHtml from "beautify"
 import DOMPurify from "dompurify"
 import _ from "lodash"
 import { marked } from "marked"
@@ -105,7 +106,9 @@ export const TiptapEditPage = ({
       setEditorContent={(content) => {
         editor.commands.setContent(content)
       }}
-      getEditorContent={() => editor.getHTML()}
+      getEditorContent={() =>
+        beautifyHtml(editor.getHTML(), { format: "html" })
+      }
       shouldDisableSave={isAnyDrawerOpen}
       variant="tiptap"
     >
