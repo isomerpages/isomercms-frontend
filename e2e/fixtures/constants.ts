@@ -49,13 +49,6 @@ export const LOCAL_STORAGE_USERID_KEY = "userId"
 export const LOCAL_STORAGE_USER_KEY = "user"
 export const TEST_PRIMARY_COLOR = [255, 0, 0]
 
-// TODO: Check if this is required and delete if not
-export enum Interceptors {
-  GET = "@getRequest",
-  POST = "@postRequest",
-  DELETE = "@deleteRequest",
-}
-
 export const BASE_SEO_LINK = "www.open.gov.sg"
 
 export const E2E_EMAIL_REPO_STAGING_LINK =
