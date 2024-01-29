@@ -1,9 +1,22 @@
+import path from "path"
+
 import { test, expect } from "@playwright/test"
 
-import { titleToPageFileName } from "utils/fileNameUtils"
+import {
+  slugifyCategory,
+  generateResourceFileName,
+  titleToPageFileName,
+} from "utils/fileNameUtils"
 
 import { getApi } from "./api/context.api"
-import { BASE_SEO_LINK, E2E_EMAIL_TEST_SITE } from "./fixtures/constants"
+import {
+  BACKEND_URL,
+  BASE_SEO_LINK,
+  CMS_BASEURL,
+  E2E_EMAIL_TEST_SITE,
+  Interceptors,
+  TEST_REPO_NAME,
+} from "./fixtures/constants"
 import { SUCCESSFUL_EDIT_PAGE_TOAST } from "./fixtures/messages"
 import { setEmailSessionDefaults } from "./utils/session"
 
@@ -51,6 +64,15 @@ test.describe("editPage.spec", () => {
         description: "",
       },
     }
+
+    test.beforeAll(async ({ request }) => {
+      // TODO: set the default settings first
+      // setDefaultSettings()
+      // Set up test resource categories
+      // visit(`/sites/${TEST_REPO_NAME}/workspace`)
+      // contains("a", "Create page").click({ force: true })
+      // get("#title").clear().type(TEST_UNLINKED_PAGE_TITLE)
+    })
 
     const BASE_SETTINGS = {
       title: "Title",
@@ -203,6 +225,7 @@ test.describe("editPage.spec", () => {
       ).toBeVisible()
     })
 
+    // TODO: Fix this test so that it does not depend on the previous test to create the dependency.
     test("Edit page (unlinked) should allow user to upload and add new image", async ({
       page,
     }) => {
@@ -267,6 +290,7 @@ test.describe("editPage.spec", () => {
       await expect(page.getByText(`/images/${ADDED_FILE_TITLE}`)).toBeVisible()
     })
 
+    // TODO: Fix this test so that it does not depend on the previous test to create the dependency.
     test("Edit page (unlinked) should allow user to add existing file", async ({
       page,
     }) => {
@@ -373,6 +397,182 @@ test.describe("editPage.spec", () => {
       await page.getByRole("button", { name: "Acknowledge" }).click()
       await page.reload()
       await expect(await page.getByText(TEST_INLINE_SCRIPT).count()).toEqual(0)
+    })
+  })
+
+  test.describe("Edit collection page", () => {
+    const TEST_FOLDER_TITLE = "Test Edit Collection Category"
+    const TEST_FOLDER_TITLE_SLUGIFIED = slugifyCategory(TEST_FOLDER_TITLE)
+
+    const TEST_PAGE_TITLE = "Test Collection Page"
+    const TEST_PAGE_FILENAME = titleToPageFileName(TEST_PAGE_TITLE)
+    const TEST_PAGE_TITLE_ENCODED = encodeURIComponent(TEST_PAGE_FILENAME)
+
+    const TEST_PAGE_CONTENT = "lorem ipsum"
+
+    const DEFAULT_IMAGE_TITLE = "isomer-logo.svg"
+
+    const ADDED_FILE_TITLE = "singapore-pages.pdf"
+
+    const LINK_TITLE = "link"
+    const LINK_URL = "https://www.google.com"
+
+    const COLLECTION_PAGE = {
+      frontMatter: {
+        title: TEST_PAGE_TITLE,
+        permalink: "/permalink",
+        variant: "tiptap",
+        description: "",
+      },
+    }
+
+    test.beforeEach(async ({ page, context }) => {
+      setEmailSessionDefaults(context, "Email admin")
+      const api = await getApi(await context.storageState())
+      await api.post(`v2/sites/${E2E_EMAIL_TEST_SITE.repo}/collections`, {
+        data: { items: [], newDirectoryName: TEST_FOLDER_TITLE },
+      })
+      await api.post(
+        `/v2/sites/${E2E_EMAIL_TEST_SITE.repo}/collections/${TEST_FOLDER_TITLE_SLUGIFIED}/pages`,
+        {
+          data: {
+            content: COLLECTION_PAGE,
+            newFileName: TEST_PAGE_FILENAME,
+          },
+        }
+      )
+      await page.goto(
+        `/sites/${E2E_EMAIL_TEST_SITE.repo}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}/editPage/${TEST_PAGE_FILENAME}`
+      )
+    })
+
+    test("Edit page (collection) should be created correctly", async ({
+      page,
+    }) => {
+      // Arrange
+      await page.waitForLoadState("domcontentloaded")
+
+      // Act
+      const displayHeader = page.locator("#display-header")
+      const header = page.getByRole("heading", { name: TEST_PAGE_TITLE })
+      const sidenav = page.locator("#sidenav")
+
+      // Assert
+      await expect(displayHeader).toHaveCSS("background-color", PRIMARY_COLOUR)
+      await expect(header).toBeVisible()
+      await expect(sidenav).toBeVisible()
+      await expect(sidenav.getByText(TEST_PAGE_TITLE)).toBeVisible()
+    })
+
+    test("Edit page (collection) should provide a warning to users when navigating away", async ({
+      page,
+    }) => {
+      // Arrange
+      await page.getByRole("textbox").fill(TEST_PAGE_CONTENT)
+      const backButton = page.getByRole("button", { name: "Back to sites" })
+      await backButton.click()
+
+      // Act
+      const warningModal = page.getByText("Warning")
+      await expect(warningModal).toBeVisible()
+      await page.getByRole("button", { name: "No" }).click()
+
+      // Sanity check: still in unlinked pages and content still present
+      await expect(page.url()).toContain(
+        `/sites/${E2E_EMAIL_TEST_SITE.repo}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}/editPage/${TEST_PAGE_TITLE_ENCODED}`
+      )
+      await expect(page.getByText(TEST_PAGE_CONTENT)).toBeVisible()
+
+      await backButton.click()
+      await expect(warningModal).toBeVisible()
+      await page.getByRole("button", { name: "Yes" }).click()
+
+      // Assert
+      await expect(page.url()).toContain(
+        `/sites/${E2E_EMAIL_TEST_SITE.repo}/folders/${TEST_FOLDER_TITLE_SLUGIFIED}`
+      )
+    })
+
+    test("Edit page (collection) should allow user to modify and save content", async ({
+      page,
+    }) => {
+      // Arrange
+      await page.getByRole("textbox").fill(TEST_PAGE_CONTENT)
+      const saveButton = page.getByRole("button", { name: "Save" })
+
+      // Act
+      await saveButton.click()
+
+      // Assert
+      // 1. Toast
+      await expect(page.getByText(SUCCESSFUL_EDIT_PAGE_TOAST)).toBeVisible()
+
+      // 2. Content is there even after refreshing
+      await page.reload()
+      await expect(page.getByText(TEST_PAGE_CONTENT)).toBeVisible()
+    })
+
+    // TODO: Fix this test so that it does not depend on the previous test suite to create the dependency.
+    test("Edit page (collection) should allow user to add existing image", async ({
+      page,
+    }) => {
+      // Arrange
+      const addImageButton = page.getByRole("button", {
+        name: "Insert Image",
+      })
+      await addImageButton.click()
+      const defaultImageButton = page.getByRole("button").filter({
+        hasText: DEFAULT_IMAGE_TITLE,
+      })
+      await defaultImageButton.click()
+
+      // Act
+      await page.getByRole("button", { name: "Add image to page" }).click()
+      await page.getByPlaceholder("Alt text").fill("Hello World")
+      await page.locator("form").getByRole("button", { name: "Save" }).click()
+
+      await expect(
+        page.getByText(`/images/${DEFAULT_IMAGE_TITLE}`)
+      ).toBeVisible()
+    })
+
+    // TODO: Fix this test so that it does not depend on the previous test suite to create the dependency.
+    test("Edit page (collection) should allow user to add existing file", async ({
+      page,
+    }) => {
+      // Arrange
+      const addFileButton = page.getByRole("button", {
+        name: "Insert File",
+      })
+      await addFileButton.click()
+      const defaultFileButton = page.getByRole("button").filter({
+        hasText: ADDED_FILE_TITLE,
+      })
+      await defaultFileButton.click()
+
+      // Act
+      await page
+        .getByRole("button", { name: `Add file to ${TEST_PAGE_TITLE}` })
+        .click()
+      await page.getByPlaceholder("Text").fill("Hello World")
+      await page.locator("form").getByRole("button", { name: "Save" }).click()
+
+      await expect(page.getByText(`/files/${ADDED_FILE_TITLE}`)).toBeVisible()
+    })
+
+    test("Edit page (collection) should allow user to add link", async ({
+      page,
+    }) => {
+      // Act
+      await page.getByRole("button", { name: "Insert Link" }).click()
+
+      await page.getByPlaceholder("Text").fill(LINK_TITLE)
+      await page.getByPlaceholder("Link").fill(LINK_URL)
+
+      await page.getByRole("button", { name: "Save" }).click()
+
+      // Assert
+      page.getByText(`[${LINK_TITLE}](${LINK_URL})`)
     })
   })
 })
