@@ -146,7 +146,7 @@ export const IsomerImage = Image.extend({
         tag: 'img[src]:not([src^="data:"])',
       },
       {
-        tag: 'a[href].isomer-image-wrapper > img[src]:not([src^="data:"])',
+        tag: "a[href].isomer-image-wrapper:has(> img)",
       },
     ]
   },
