@@ -1,6 +1,5 @@
 import {
   Input,
-  Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -36,6 +35,7 @@ import {
 } from "components/Form"
 import FormFieldMedia from "components/FormFieldMedia"
 import { LoadingButton } from "components/LoadingButton"
+import { Modal } from "components/Modal"
 
 import { isWriteActionsDisabled } from "utils/reviewRequests"
 

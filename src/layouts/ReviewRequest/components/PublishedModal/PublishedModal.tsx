@@ -1,5 +1,4 @@
 import {
-  Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -13,6 +12,8 @@ import {
 import { Button, ModalCloseButton, Link } from "@opengovsg/design-system-react"
 import { useQueryClient } from "react-query"
 import { useParams } from "react-router-dom"
+
+import { Modal } from "components/Modal"
 
 import { invalidateMergeRelatedQueries } from "hooks/reviewHooks"
 import { useGetSiteUrl } from "hooks/siteDashboardHooks"

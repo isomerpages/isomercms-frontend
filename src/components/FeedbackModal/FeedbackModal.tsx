@@ -1,5 +1,4 @@
 import {
-  Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -19,6 +18,7 @@ import {
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 
+import { Modal } from "components/Modal"
 import { Rating } from "components/Rating/Rating"
 
 import { useLoginContext } from "contexts/LoginContext"

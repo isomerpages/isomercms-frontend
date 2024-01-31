@@ -1,5 +1,4 @@
 import {
-  Modal,
   ModalOverlay,
   ModalContent,
   ModalFooter,
@@ -18,6 +17,8 @@ import {
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { Redirect, useParams } from "react-router-dom"
+
+import { Modal } from "components/Modal"
 
 import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 

@@ -4,7 +4,6 @@ import {
   FormControl,
   FormErrorMessage,
   Icon,
-  Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
@@ -35,6 +34,7 @@ import {
 import { ContextMenu } from "components/ContextMenu"
 import { EmptyArea } from "components/EmptyArea"
 import { Greyscale } from "components/Greyscale"
+import { Modal } from "components/Modal"
 
 import {
   useCreateResourceDirectory,

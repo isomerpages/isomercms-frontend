@@ -8,7 +8,6 @@ import {
   Divider,
   FormControl,
   Input,
-  Modal,
   ModalOverlay,
   ModalContent,
   ModalProps,
@@ -28,6 +27,8 @@ import { useEffect } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { BiTrash } from "react-icons/bi"
 import { useParams } from "react-router-dom"
+
+import { Modal } from "components/Modal"
 
 import { useLoginContext } from "contexts/LoginContext"
 

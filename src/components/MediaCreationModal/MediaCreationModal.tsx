@@ -1,5 +1,4 @@
 import {
-  Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -23,6 +22,7 @@ import { FileRejection } from "react-dropzone"
 import { BiCheckCircle, BiSolidErrorCircle } from "react-icons/bi"
 
 import { Attachment } from "components/Attachment"
+import { Modal } from "components/Modal"
 
 import { useCreateMultipleMedia } from "hooks/mediaHooks/useCreateMultipleMedia"
 

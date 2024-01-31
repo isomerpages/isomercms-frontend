@@ -5,7 +5,6 @@ import {
   forwardRef,
   Flex,
   FormControl,
-  Modal,
   ModalContent,
 } from "@chakra-ui/react"
 import {
@@ -18,6 +17,8 @@ import { upperFirst } from "lodash"
 import { useState } from "react"
 import { SketchPicker } from "react-color"
 import { useFormContext, Controller } from "react-hook-form"
+
+import { Modal } from "components/Modal"
 
 import { Section, SectionHeader } from "layouts/components"
 

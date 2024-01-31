@@ -1,5 +1,4 @@
 import {
-  Modal,
   ModalBody,
   ModalContent,
   ModalHeader,
@@ -8,6 +7,8 @@ import {
 } from "@chakra-ui/react"
 import { ModalCloseButton } from "@opengovsg/design-system-react"
 import { useState } from "react"
+
+import { Modal } from "components/Modal"
 
 import { useLoginContext } from "contexts/LoginContext"
 
