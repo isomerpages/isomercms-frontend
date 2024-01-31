@@ -2,7 +2,6 @@ import {
   Box,
   HStack,
   Icon,
-  Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
@@ -24,6 +23,8 @@ import {
 } from "@opengovsg/design-system-react"
 import { useState } from "react"
 import { BiImage } from "react-icons/bi"
+
+import { Modal } from "components/Modal"
 
 import { MediaLabels, SelectedMediaDto } from "types/media"
 import { getReadableFileSize } from "utils"
@@ -56,7 +57,7 @@ export const DeleteMediaModal = ({
   }
 
   return (
-    <Modal motionPreset="none" isOpen={isOpen} onClose={onModalClose}>
+    <Modal isOpen={isOpen} onClose={onModalClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />

@@ -2,7 +2,6 @@ import {
   Box,
   HStack,
   Icon,
-  Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
@@ -25,6 +24,7 @@ import { UseMutateFunction } from "react-query"
 import { useParams } from "react-router-dom"
 
 import { Breadcrumbs } from "components/Breadcrumbs"
+import { Modal } from "components/Modal"
 import { DirMenuItem, FileMenuItem } from "components/move/MoveMenuItem"
 
 import {
@@ -112,7 +112,7 @@ export const MoveMediaModal = ({
   }, [mediaType, isOpen])
 
   return (
-    <Modal motionPreset="none" isOpen={isOpen} onClose={onModalClose}>
+    <Modal isOpen={isOpen} onClose={onModalClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton />

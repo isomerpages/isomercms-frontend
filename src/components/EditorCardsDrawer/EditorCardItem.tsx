@@ -2,7 +2,6 @@ import {
   Box,
   FormControl,
   HStack,
-  Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
@@ -27,6 +26,7 @@ import { UseFormReturn } from "react-hook-form"
 import { Editable } from "components/Editable"
 import { FormContext } from "components/Form"
 import FormFieldMedia from "components/FormFieldMedia"
+import { Modal } from "components/Modal"
 
 import { TIPTAP_CARDS_DESCRIPTION_CHAR_LIMIT } from "constants/tiptap"
 
@@ -54,7 +54,6 @@ export const EditorCardItem = ({
   return (
     <>
       <Modal
-        motionPreset="none"
         isOpen={isDeleteWarningModalOpen}
         onClose={onDeleteWarningModalClose}
       >

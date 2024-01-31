@@ -1,5 +1,4 @@
 import {
-  Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -10,13 +9,15 @@ import {
 } from "@chakra-ui/react"
 import { Button, ModalCloseButton } from "@opengovsg/design-system-react"
 
+import { Modal } from "components/Modal"
+
 export const EditingBlockedModal = (
   props: Omit<ModalProps, "children">
 ): JSX.Element => {
   const { onClose } = props
 
   return (
-    <Modal motionPreset="none" {...props}>
+    <Modal {...props}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>

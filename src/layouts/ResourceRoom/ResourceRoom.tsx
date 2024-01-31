@@ -4,7 +4,6 @@ import {
   FormControl,
   FormErrorMessage,
   Icon,
-  Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
@@ -35,6 +34,7 @@ import {
 import { ContextMenu } from "components/ContextMenu"
 import { EmptyArea } from "components/EmptyArea"
 import { Greyscale } from "components/Greyscale"
+import { Modal } from "components/Modal"
 
 import {
   useCreateResourceDirectory,
@@ -125,7 +125,7 @@ const EmptyResourceRoom = () => {
           />
         </Center>
       </SiteEditLayout>
-      <Modal motionPreset="none" isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Create resource room</ModalHeader>
@@ -355,7 +355,7 @@ const ResourceRoomContent = ({
         </Section>
       </SiteEditLayout>
 
-      <Modal motionPreset="none" isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <form

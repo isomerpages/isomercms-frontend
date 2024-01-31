@@ -1,5 +1,4 @@
 import {
-  Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -19,6 +18,8 @@ import { Button, ModalCloseButton, Tab } from "@opengovsg/design-system-react"
 import { useEffect } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { useParams } from "react-router-dom"
+
+import { Modal } from "components/Modal"
 
 import { useLoginContext } from "contexts/LoginContext"
 
@@ -90,7 +91,7 @@ export const ReviewRequestModal = (
   const selectedReviewers = methods.watch("reviewers")
 
   return (
-    <Modal {...props} size="full" motionPreset="none">
+    <Modal {...props} size="full">
       <ModalOverlay />
       <ModalContent>
         <form onSubmit={onSubmit}>

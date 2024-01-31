@@ -1,5 +1,4 @@
 import {
-  Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -11,6 +10,8 @@ import {
 import { Button, ModalCloseButton } from "@opengovsg/design-system-react"
 import { useEffect } from "react"
 import { useParams } from "react-router-dom"
+
+import { Modal } from "components/Modal"
 
 import { useCancelReviewRequest } from "hooks/reviewHooks/useCancelReviewRequest"
 
@@ -45,7 +46,7 @@ export const CancelRequestModal = (
   }, [error, errorToast, isError])
 
   return (
-    <Modal motionPreset="none" {...props}>
+    <Modal {...props}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>

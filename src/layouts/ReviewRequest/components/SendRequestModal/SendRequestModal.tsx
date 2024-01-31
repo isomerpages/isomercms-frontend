@@ -1,5 +1,4 @@
 import {
-  Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -22,6 +21,7 @@ import { BiCopy, BiMailSend } from "react-icons/bi"
 import Select from "react-select"
 
 import { ButtonLink } from "components/ButtonLink"
+import { Modal } from "components/Modal"
 
 import { User } from "types/reviewRequest"
 
@@ -71,7 +71,7 @@ export const SendRequestModal = ({
   const remainingAdmins = sortedAdmins.slice(2)
 
   return (
-    <Modal motionPreset="none" {...props}>
+    <Modal {...props}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>

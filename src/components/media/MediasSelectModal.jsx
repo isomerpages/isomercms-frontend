@@ -6,7 +6,6 @@ import {
   Center,
   SimpleGrid,
   Text,
-  Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -46,6 +45,7 @@ import { useRouteMatch } from "react-router-dom"
 
 import { ImagePreviewCard } from "components/ImagePreviewCard"
 import { LoadingButton } from "components/LoadingButton"
+import { Modal } from "components/Modal"
 
 import { MEDIA_PAGINATION_SIZE } from "constants/media"
 
@@ -383,7 +383,6 @@ const MediasSelectModal = ({
       closeOnOverlayClick={false}
       isCentered
       overflowY="hidden"
-      motionPreset="none"
     >
       <ModalOverlay />
       <ModalContent

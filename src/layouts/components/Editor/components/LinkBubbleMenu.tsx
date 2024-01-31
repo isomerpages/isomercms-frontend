@@ -1,6 +1,5 @@
 import {
   useDisclosure,
-  Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -13,6 +12,8 @@ import { Button, FormErrorMessage, Input } from "@opengovsg/design-system-react"
 import { BubbleMenu } from "@tiptap/react"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
+
+import { Modal } from "components/Modal"
 
 import { useEditorContext } from "contexts/EditorContext"
 import { useEditorModal } from "contexts/EditorModalContext"
@@ -83,7 +84,7 @@ const LinkButton = () => {
         Change link
       </button>
       <FormControl isRequired isInvalid={!!errors.href?.message}>
-        <Modal motionPreset="none" isOpen={isOpen} onClose={onClose} size="sm">
+        <Modal isOpen={isOpen} onClose={onClose} size="sm">
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>Update link</ModalHeader>

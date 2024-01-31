@@ -1,5 +1,4 @@
 import {
-  Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -15,6 +14,8 @@ import { useEffect } from "react"
 import { Controller, FormProvider, useForm } from "react-hook-form"
 import { useParams } from "react-router-dom"
 import Select from "react-select"
+
+import { Modal } from "components/Modal"
 
 import { useReviewRequestRoleContext } from "contexts/ReviewRequestRoleContext"
 
@@ -79,7 +80,7 @@ export const ManageReviewerModal = ({
   }, [errorToast, isUpdateReviewRequestError, updateReviewRequestError])
 
   return (
-    <Modal motionPreset="none" {...props}>
+    <Modal {...props}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>

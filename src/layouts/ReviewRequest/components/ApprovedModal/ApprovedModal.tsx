@@ -1,5 +1,4 @@
 import {
-  Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -11,6 +10,8 @@ import {
   VStack,
 } from "@chakra-ui/react"
 import { Button, ModalCloseButton } from "@opengovsg/design-system-react"
+
+import { Modal } from "components/Modal"
 
 import { ToastImage } from "assets"
 
@@ -27,7 +28,7 @@ export const ApprovedModal = ({
   const { onClose } = props
 
   return (
-    <Modal motionPreset="none" {...props}>
+    <Modal {...props}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader bg="primary.100" p={0}>

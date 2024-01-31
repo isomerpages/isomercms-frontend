@@ -1,7 +1,6 @@
 import {
   Text,
   HStack,
-  Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
@@ -11,6 +10,8 @@ import {
 } from "@chakra-ui/react"
 import { ModalCloseButton } from "@opengovsg/design-system-react"
 import { PropsWithChildren } from "react"
+
+import { Modal } from "components/Modal"
 
 interface WarningModalProps extends ModalProps {
   displayTitle: string
@@ -23,7 +24,7 @@ export const WarningModal = ({
   children,
   ...rest
 }: PropsWithChildren<WarningModalProps>): JSX.Element => (
-  <Modal motionPreset="none" {...rest}>
+  <Modal {...rest}>
     <ModalOverlay />
     <ModalContent>
       <ModalHeader>

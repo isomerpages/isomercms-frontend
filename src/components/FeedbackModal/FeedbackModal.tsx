@@ -1,5 +1,4 @@
 import {
-  Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -19,6 +18,7 @@ import {
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 
+import { Modal } from "components/Modal"
 import { Rating } from "components/Rating/Rating"
 
 import { useLoginContext } from "contexts/LoginContext"
@@ -40,7 +40,7 @@ export const FeedbackModal = ({
   const { mutateAsync: submitFeedback, isLoading } = useSubmitFeedback()
 
   return (
-    <Modal motionPreset="none" isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
         <form

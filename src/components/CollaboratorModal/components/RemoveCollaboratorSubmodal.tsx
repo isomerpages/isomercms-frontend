@@ -5,11 +5,12 @@ import {
   Stack,
   ModalProps,
   ModalOverlay,
-  Modal,
   ModalContent,
 } from "@chakra-ui/react"
 import { Button, ModalCloseButton } from "@opengovsg/design-system-react"
 import { useParams } from "react-router-dom"
+
+import { Modal } from "components/Modal"
 
 import { useLoginContext } from "contexts/LoginContext"
 
@@ -40,7 +41,7 @@ export const RemoveCollaboratorSubmodal = ({
   } = useDeleteCollaboratorHook(siteName)
 
   return (
-    <Modal motionPreset="none" {...props}>
+    <Modal {...props}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Remove collaborator?</ModalHeader>

@@ -1,5 +1,4 @@
 import {
-  Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -20,6 +19,8 @@ import { Story, ComponentMeta } from "@storybook/react"
 import _ from "lodash"
 import { useForm, FormProvider } from "react-hook-form"
 
+import { Modal } from "components/Modal"
+
 import { MOCK_ADMINS } from "mocks/constants"
 import { ReviewRequestInfo } from "types/reviewRequest"
 
@@ -36,7 +37,7 @@ const Template: Story<ReviewRequestFormProps> = ({ admins }) => {
   })
   const props = useDisclosure({ defaultIsOpen: true })
   return (
-    <Modal {...props} size="full" motionPreset="none">
+    <Modal {...props} size="full">
       <ModalOverlay />
       <ModalContent>
         {/*

@@ -2,7 +2,6 @@ import {
   useDisclosure,
   Text,
   Box,
-  Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
@@ -21,6 +20,7 @@ import { useCallback, useEffect, useState } from "react"
 import { BiLinkExternal } from "react-icons/bi"
 import { useParams } from "react-router-dom"
 
+import { Modal } from "components/Modal"
 import MarkdownEditor from "components/pages/MarkdownEditor"
 import PagePreview from "components/pages/PagePreview"
 
@@ -204,13 +204,7 @@ const PreviewModal = ({
   togglePreview,
 }: PreviewModalProps) => {
   return (
-    <Modal
-      motionPreset="none"
-      isOpen={isOpen}
-      onClose={onClose}
-      size="4xl"
-      scrollBehavior="inside"
-    >
+    <Modal isOpen={isOpen} onClose={onClose} size="4xl" scrollBehavior="inside">
       <ModalOverlay />
       <ModalContent p="1rem">
         <ModalHeader>

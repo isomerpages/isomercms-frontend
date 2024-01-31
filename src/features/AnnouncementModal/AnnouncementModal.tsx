@@ -1,7 +1,6 @@
 import {
   Flex,
   Image,
-  Modal,
   ModalCloseButton,
   ModalContent,
   ModalFooter,
@@ -17,6 +16,7 @@ import { Button } from "@opengovsg/design-system-react"
 import { useMemo, useState } from "react"
 import { BiRightArrowAlt } from "react-icons/bi"
 
+import { Modal } from "components/Modal"
 import { ProgressIndicator } from "components/ProgressIndicator"
 
 import { useAnnouncements } from "hooks/useAnnouncement"
@@ -79,7 +79,6 @@ export const AnnouncementModal = ({
         onClose()
       }}
       size="md"
-      motionPreset="none"
     >
       <ModalOverlay />
       <ModalContent>

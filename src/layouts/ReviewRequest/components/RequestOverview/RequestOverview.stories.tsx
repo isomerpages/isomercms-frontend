@@ -1,5 +1,4 @@
 import {
-  Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -19,6 +18,8 @@ import { ModalCloseButton, Button, Tab } from "@opengovsg/design-system-react"
 import { Story, ComponentMeta } from "@storybook/react"
 import _ from "lodash"
 
+import { Modal } from "components/Modal"
+
 import { MOCK_ITEMS } from "mocks/constants"
 
 import { RequestOverview, RequestOverviewProps } from "./RequestOverview"
@@ -31,7 +32,7 @@ const overviewMeta = {
 const Template: Story<RequestOverviewProps> = ({ items }) => {
   const props = useDisclosure({ defaultIsOpen: true })
   return (
-    <Modal {...props} size="full" motionPreset="none">
+    <Modal {...props} size="full">
       <ModalOverlay />
       <ModalContent>
         {/*

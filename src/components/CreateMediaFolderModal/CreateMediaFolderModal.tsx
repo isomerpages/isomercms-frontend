@@ -3,7 +3,6 @@ import {
   Center,
   FormControl,
   HStack,
-  Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
@@ -31,6 +30,7 @@ import { useRouteMatch } from "react-router-dom"
 
 import { DirectorySettingsSchema } from "components/DirectorySettingsModal"
 import { ImagePreviewCard } from "components/ImagePreviewCard"
+import { Modal } from "components/Modal"
 
 import { MEDIA_PAGINATION_SIZE } from "constants/media"
 
@@ -191,12 +191,7 @@ export const CreateMediaFolderModal = ({
   }
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onModalClose}
-      size="5xl"
-      motionPreset="none"
-    >
+    <Modal isOpen={isOpen} onClose={onModalClose} size="5xl">
       <ModalOverlay />
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)}>

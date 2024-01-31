@@ -1,5 +1,4 @@
 import {
-  Modal,
   ModalOverlay,
   ModalContent,
   ModalFooter,
@@ -18,6 +17,8 @@ import {
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { Redirect, useParams } from "react-router-dom"
+
+import { Modal } from "components/Modal"
 
 import { useSiteLaunchContext } from "contexts/SiteLaunchContext"
 
@@ -67,11 +68,7 @@ const RiskAcceptanceModal = ({
   const isRiskAccepted = watch("isRiskAccepted")
   const { increasePageNumber, decreasePageNumber } = useSiteLaunchContext()
   return (
-    <Modal
-      motionPreset="none"
-      isOpen={isOpen}
-      onClose={() => decreasePageNumber()}
-    >
+    <Modal isOpen={isOpen} onClose={() => decreasePageNumber()}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>

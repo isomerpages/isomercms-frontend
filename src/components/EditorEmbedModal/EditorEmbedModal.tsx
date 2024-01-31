@@ -1,7 +1,6 @@
 import {
   FormControl,
   HStack,
-  Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
@@ -21,6 +20,8 @@ import {
 import { useEffect } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import * as Yup from "yup"
+
+import { Modal } from "components/Modal"
 
 import { useCspHook } from "hooks/settingsHooks"
 
@@ -90,7 +91,7 @@ export const EditorEmbedModal = ({
   }, [cursorValue, isOpen, methods])
 
   return (
-    <Modal motionPreset="none" isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
 
       <FormProvider {...methods}>
