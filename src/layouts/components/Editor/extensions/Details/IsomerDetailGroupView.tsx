@@ -29,7 +29,12 @@ export const IsomerDetailGroupView = ({
           display="flex"
           justifyContent="flex-end"
         >
-          <Box backgroundColor={selected ? "white" : "transparent"}>
+          <Box
+            backgroundColor={selected ? "white" : "transparent"}
+            marginTop="-0.25rem"
+            boxShadow="0px 0px 4px 0px rgba(0, 0, 0, 0.8)"
+            borderRadius="4px"
+          >
             <Tooltip label="Edit accordion grid" hasArrow placement="top">
               <IconButton
                 _hover={{ bg: "gray.100" }}
@@ -109,13 +114,14 @@ export const IsomerDetailGroupView = ({
     <BlockWrapper
       name="Accordion grid"
       isSelected={selected}
-      otherButtons={otherButtons}
+      childButtons={otherButtons}
       padding-top="0.5rem"
       padding-bottom="0.5rem"
     >
       <Box
         borderColor="base.divider.strong"
         borderWidth="1px"
+        mt="1rem"
         h="100%"
         w="100%"
       >

@@ -7,19 +7,19 @@ import "./styles.scss"
 interface BlockWrapperProps {
   name: string
   isSelected: boolean
-  otherButtons?: JSX.Element
+  childButtons?: JSX.Element
 }
 
 export const BlockWrapper = ({
   name,
   isSelected,
-  otherButtons,
+  childButtons,
   children,
 }: PropsWithChildren<BlockWrapperProps>): JSX.Element => {
   return (
     <Box as={NodeViewWrapper}>
       <Box position="relative" maxW="36.5rem" data-group>
-        {isSelected && <>{otherButtons}</>}
+        {isSelected && <>{childButtons}</>}
         <Box
           _groupHover={{
             display: "block",
