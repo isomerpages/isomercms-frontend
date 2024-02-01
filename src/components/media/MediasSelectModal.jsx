@@ -600,6 +600,7 @@ const MediasSelectModal = ({
                 </Text>
                 <FolderBreadcrumb
                   mediaDirectoryName={queryParams.mediaDirectoryName}
+                  setQueryParams={setQueryParams}
                 />
               </VStack>
             </ModalHeader>
