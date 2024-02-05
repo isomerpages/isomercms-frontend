@@ -34,6 +34,25 @@ import { LINK_URL_REGEX } from "utils"
 
 import { EditorCardItem } from "./EditorCardItem"
 
+const editorCardsInfoBasicShape = {
+  title: Yup.string().required("Title is required"),
+  description: Yup.string().max(
+    TIPTAP_CARDS_DESCRIPTION_CHAR_LIMIT,
+    `Description cannot exceed ${TIPTAP_CARDS_DESCRIPTION_CHAR_LIMIT} characters`
+  ),
+  linkUrl: Yup.string().matches(
+    new RegExp(LINK_URL_REGEX),
+    "Please enter a valid link URL"
+  ),
+  linkText: Yup.string().when("linkUrl", {
+    is: (value: string) => value.length > 0,
+    then: Yup.string().required(
+      "Link text is required when link URL is present"
+    ),
+    otherwise: Yup.string(),
+  }),
+}
+
 const editorCardsInfoSchema = Yup.object().shape({
   isDisplayImage: Yup.boolean(),
   cards: Yup.array()
@@ -43,34 +62,12 @@ const editorCardsInfoSchema = Yup.object().shape({
         Yup.object().shape({
           image: Yup.string().required("An image is required"),
           altText: Yup.string().required("Alt text is required"),
-          title: Yup.string().required("Title is required"),
-          description: Yup.string().max(
-            TIPTAP_CARDS_DESCRIPTION_CHAR_LIMIT,
-            `Description cannot exceed ${TIPTAP_CARDS_DESCRIPTION_CHAR_LIMIT} characters`
-          ),
-          linkUrl: Yup.string()
-            .required("Link URL is required")
-            .matches(
-              new RegExp(LINK_URL_REGEX),
-              "Please enter a valid link URL"
-            ),
-          linkText: Yup.string().required("Link text is required"),
+          ...editorCardsInfoBasicShape,
         })
       ),
       otherwise: Yup.array().of(
         Yup.object().shape({
-          title: Yup.string().required("Title is required"),
-          description: Yup.string().max(
-            TIPTAP_CARDS_DESCRIPTION_CHAR_LIMIT,
-            `Description cannot exceed ${TIPTAP_CARDS_DESCRIPTION_CHAR_LIMIT} characters`
-          ),
-          linkUrl: Yup.string()
-            .required("Link URL is required")
-            .matches(
-              new RegExp(LINK_URL_REGEX),
-              "Please enter a valid link URL"
-            ),
-          linkText: Yup.string().required("Link text is required"),
+          ...editorCardsInfoBasicShape,
         })
       ),
     })
