@@ -196,12 +196,15 @@ export const EditorCardItem = ({
           </FormControl>
 
           {/* Card link URL */}
-          <FormControl isRequired isInvalid={!!errors.cards?.[index]?.linkUrl}>
+          <FormControl isInvalid={!!errors.cards?.[index]?.linkUrl}>
             <FormLabel mb="0.75rem">Link URL</FormLabel>
             <Input
               type="text"
               placeholder="Insert /page-url or https://"
-              {...methods.register(`cards.${index}.linkUrl`, { onChange })}
+              {...methods.register(`cards.${index}.linkUrl`, {
+                onChange,
+                onBlur: () => methods.trigger(),
+              })}
             />
             <FormErrorMessage>
               {errors.cards?.[index]?.linkUrl?.message}
@@ -209,12 +212,18 @@ export const EditorCardItem = ({
           </FormControl>
 
           {/* Card link text */}
-          <FormControl isRequired isInvalid={!!errors.cards?.[index]?.linkText}>
+          <FormControl
+            isRequired={methods.watch(`cards.${index}.linkUrl`)?.length > 0}
+            isInvalid={!!errors.cards?.[index]?.linkText}
+          >
             <FormLabel mb="0.75rem">Link text</FormLabel>
             <Input
               type="text"
               placeholder="Enter text to be displayed for the link"
-              {...methods.register(`cards.${index}.linkText`, { onChange })}
+              {...methods.register(`cards.${index}.linkText`, {
+                onChange,
+                onBlur: () => methods.trigger(),
+              })}
             />
             <FormErrorMessage>
               {errors.cards?.[index]?.linkText?.message}
