@@ -14,7 +14,7 @@ const REVIEW_MODAL_SUBTITLE =
 const REVIEW_REQUEST_ALERT_MESSAGE =
   "There’s a Review request pending approval. Any changes you make now will be added to the existing Review request, and published with the changes in it."
 
-const getReviewRequestButton = async (page: Page) => {
+const getReviewRequestButton = (page: Page) => {
   const button = page.locator("button", { hasText: /Request a Review/ }).first()
 
   expect(button).toBeVisible()
