@@ -116,7 +116,7 @@
     "build:netlify": "CI=false npm run build && npm run sourcemaps:upload",
     "release": "npm version $npm_config_isomer_update && git push --tags",
     "test": "craco test",
-    "test:playwright": "source .env && npx playwright test --ui",
+    "test:playwright": "source .env && npm run reset-e2e && npx playwright test --ui",
     "test:ci": "node scripts/run-e2e.js run",
     "test:email-ci": "node scripts/run-e2e.js run-email",
     "test-e2e": "source .env && node scripts/run-e2e.js run",
