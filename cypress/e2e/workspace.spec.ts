@@ -1,3 +1,5 @@
+import { SUCCESSFUL_EDIT_PAGE_TOAST } from "hooks/pageHooks/useUpdatePageHook"
+
 import { deslugifyDirectory } from "utils/deslugify"
 import { slugifyCategory, titleToPageFileName } from "utils/fileNameUtils"
 
@@ -6,7 +8,6 @@ import {
   TEST_REPO_NAME,
   Interceptors,
 } from "../fixtures/constants"
-import { SUCCESSFUL_EDIT_PAGE_TOAST } from "../fixtures/messages"
 
 const DATA_LOAD_ASSERTION_TEXT = "You can link folders to your navigation bar."
 

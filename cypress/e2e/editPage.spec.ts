@@ -1,4 +1,6 @@
 import "cypress-file-upload"
+import { SUCCESSFUL_EDIT_PAGE_TOAST } from "hooks/pageHooks/useUpdatePageHook"
+
 import {
   slugifyCategory,
   generateResourceFileName,
@@ -10,7 +12,6 @@ import {
   Interceptors,
   TEST_REPO_NAME,
 } from "../fixtures/constants"
-import { SUCCESSFUL_EDIT_PAGE_TOAST } from "../fixtures/messages"
 
 // Constants
 const PRIMARY_COLOUR = "rgb(255, 0, 0)"
