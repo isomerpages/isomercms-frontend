@@ -1,5 +1,4 @@
 import {
-  Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -9,6 +8,8 @@ import {
   Text,
 } from "@chakra-ui/react"
 import { Button, ModalCloseButton } from "@opengovsg/design-system-react"
+
+import { Modal } from "components/Modal"
 
 export const PendingApprovalModal = (
   props: Omit<ModalProps, "children">

@@ -1,6 +1,5 @@
 import {
   HStack,
-  Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
@@ -15,7 +14,8 @@ import { Button, ModalCloseButton } from "@opengovsg/design-system-react"
 import QRCode from "qrcode"
 import { useEffect, useState } from "react"
 
-import { ButtonLink } from "../ButtonLink"
+import { ButtonLink } from "components/ButtonLink"
+import { Modal } from "components/Modal"
 
 export interface ViewStagingSiteModalProps {
   isOpen: boolean

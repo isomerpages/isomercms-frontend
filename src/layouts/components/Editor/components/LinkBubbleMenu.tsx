@@ -1,6 +1,5 @@
 import {
   useDisclosure,
-  Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -13,6 +12,8 @@ import { Button, FormErrorMessage, Input } from "@opengovsg/design-system-react"
 import { BubbleMenu } from "@tiptap/react"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
+
+import { Modal } from "components/Modal"
 
 import { useEditorContext } from "contexts/EditorContext"
 import { useEditorModal } from "contexts/EditorModalContext"
@@ -72,7 +73,9 @@ const LinkButton = () => {
           const { href: _linkHref } = editor.getAttributes("link")
           const linkHref = _linkHref as string
           const isLinkRelativeFilePath =
-            linkHref.startsWith("/") && linkHref.split("/").at(1) === "files"
+            linkHref &&
+            linkHref.startsWith("/") &&
+            linkHref.split("/").at(1) === "files"
           if (isLinkRelativeFilePath) {
             showModal("files")
           } else {

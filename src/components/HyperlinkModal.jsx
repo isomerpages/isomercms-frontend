@@ -1,5 +1,4 @@
 import {
-  Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -16,6 +15,7 @@ import PropTypes from "prop-types"
 import { useState } from "react"
 
 import FormField from "components/FormField"
+import { Modal } from "components/Modal"
 
 import FormContext from "./Form/FormContext"
 import FormTitle from "./Form/FormTitle"
