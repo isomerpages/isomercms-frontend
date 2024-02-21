@@ -13,11 +13,9 @@ import { adjustImageSrcs } from "utils"
  */
 const ALLOWED_SRC = [
   "//www.instagram.com/embed.js",
-  "https://www.evvochannel.tv/jwplayer7/jwplayer.js",
   "/jquery/resize-tables.js",
   "/jquery/jquery.min.js",
   "/jquery/bp-menu-new-tab.js",
-  "//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js",
 ]
 
 DOMPurify.setConfig({
