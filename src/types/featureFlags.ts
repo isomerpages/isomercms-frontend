@@ -13,6 +13,7 @@ export interface FeatureFlags {
   [FEATURE_FLAGS.RTE_ENABLED_BLOCKS]: { blocks: RTEBlockValues[] }
   [FEATURE_FLAGS.TIPTAP_EDITOR]: boolean
   [FEATURE_FLAGS.IS_SHOW_STAGING_BUILD_STATUS_ENABLED]: boolean
+  [FEATURE_FLAGS.IS_BROKEN_LINKS_REPORT_ENABLED]: boolean
 }
 
 export type GBAttributes = {

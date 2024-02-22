@@ -6,6 +6,7 @@ export const FEATURE_FLAGS = {
   RTE_ENABLED_BLOCKS: "rte_enabled_blocks",
   TIPTAP_EDITOR: "is-tiptap-enabled",
   IS_SHOW_STAGING_BUILD_STATUS_ENABLED: "is_show_staging_build_status_enabled",
+  IS_BROKEN_LINKS_REPORT_ENABLED: "is_broken_links_report_enabled",
 } as const
 
 export type FeatureFlagsType = typeof FEATURE_FLAGS[keyof typeof FEATURE_FLAGS]
