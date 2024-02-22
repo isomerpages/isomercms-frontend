@@ -11,6 +11,7 @@ import {
   useDisclosure,
   VStack,
 } from "@chakra-ui/react"
+import { useFeatureIsOn, useGrowthBook } from "@growthbook/growthbook-react"
 import { Button, Link } from "@opengovsg/design-system-react"
 import _ from "lodash"
 import { useEffect } from "react"
@@ -101,6 +102,9 @@ export const SiteDashboard = (): JSX.Element => {
     isLoading: isBrokenLinksLoading,
   } = useGetBrokenLinks(siteName)
 
+  const isBrokenLinksReporterEnabled = useFeatureIsOn(
+    "is_broken_links_report_enabled"
+  )
   const savedAt = getDateTimeFromUnixTime(siteInfo?.savedAt || 0)
   const publishedAt = getDateTimeFromUnixTime(siteInfo?.publishedAt || 0)
 
@@ -205,48 +209,52 @@ export const SiteDashboard = (): JSX.Element => {
                   ))
                 )}
               </DisplayCardContent>
-
-              {isBrokenLinksLoading || brokenLinks?.status === "loading" ? (
-                <Skeleton w="100%" height="4rem" />
-              ) : (
+              {isBrokenLinksReporterEnabled && (
                 <>
-                  <DisplayCardHeader mt="0.75rem">
-                    <DisplayCardTitle>Your site health</DisplayCardTitle>
-                    <DisplayCardCaption>
-                      {`Understand your site's broken references`}
-                    </DisplayCardCaption>
-                  </DisplayCardHeader>
-                  <DisplayCardContent>
-                    {isBrokenLinksError || brokenLinks?.status === "error" ? (
-                      <Text textStyle="body-1">
-                        Unable to retrieve broken links report
-                      </Text>
-                    ) : (
-                      <DisplayCard
-                        variant="full"
-                        bgColor="background.action.defaultInverse"
-                      >
-                        <HStack w="full" justifyContent="space-between">
-                          <HStack>
-                            <Text textStyle="h4">
-                              {brokenLinks?.status === "success" &&
-                                brokenLinks?.errors.length}
-                            </Text>
-                            <Text textStyle="body-1">
-                              broken references found
-                            </Text>
-                          </HStack>
-
-                          <Link
-                            href={`/sites/${siteName}/linkCheckerReport`}
-                            textStyle="body-1"
+                  {isBrokenLinksLoading || brokenLinks?.status === "loading" ? (
+                    <Skeleton w="100%" height="4rem" />
+                  ) : (
+                    <>
+                      <DisplayCardHeader mt="0.75rem">
+                        <DisplayCardTitle>Your site health</DisplayCardTitle>
+                        <DisplayCardCaption>
+                          {`Understand your site's broken references`}
+                        </DisplayCardCaption>
+                      </DisplayCardHeader>
+                      <DisplayCardContent>
+                        {isBrokenLinksError ||
+                        brokenLinks?.status === "error" ? (
+                          <Text textStyle="body-1">
+                            Unable to retrieve broken links report
+                          </Text>
+                        ) : (
+                          <DisplayCard
+                            variant="full"
+                            bgColor="background.action.defaultInverse"
                           >
-                            View report
-                          </Link>
-                        </HStack>
-                      </DisplayCard>
-                    )}
-                  </DisplayCardContent>
+                            <HStack w="full" justifyContent="space-between">
+                              <HStack>
+                                <Text textStyle="h4">
+                                  {brokenLinks?.status === "success" &&
+                                    brokenLinks?.errors.length}
+                                </Text>
+                                <Text textStyle="body-1">
+                                  broken references found
+                                </Text>
+                              </HStack>
+
+                              <Link
+                                href={`/sites/${siteName}/linkCheckerReport`}
+                                textStyle="body-1"
+                              >
+                                View report
+                              </Link>
+                            </HStack>
+                          </DisplayCard>
+                        )}
+                      </DisplayCardContent>
+                    </>
+                  )}
                 </>
               )}
             </DisplayCard>

@@ -13,6 +13,7 @@ import {
   Tr,
   VStack,
 } from "@chakra-ui/react"
+import { useFeatureIsOn } from "@growthbook/growthbook-react"
 import { Badge, Breadcrumb, Button, Link } from "@opengovsg/design-system-react"
 import { Redirect, useParams } from "react-router-dom"
 
@@ -89,6 +90,17 @@ export const LinksReportBanner = () => {
   )
 }
 
+const normaliseUrl = (url: string): string => {
+  let normalisedUrl = url
+  if (url.endsWith("/")) {
+    normalisedUrl = url.slice(0, -1)
+  }
+  if (url.startsWith("/")) {
+    normalisedUrl = url.slice(1)
+  }
+  return normalisedUrl
+}
+
 const SiteReportCard = ({
   breadcrumb,
   links,
@@ -103,7 +115,9 @@ const SiteReportCard = ({
     siteName
   )
 
-  const viewableLinkInStaging = stagingUrl + viewablePageInStaging.slice(1) // rm the leading `/`
+  const normalisedStagingUrl = normaliseUrl(stagingUrl || "")
+  const normalisedViewablePageInStaging = normaliseUrl(viewablePageInStaging)
+  const viewableLinkInStaging = `${normalisedStagingUrl}/${normalisedViewablePageInStaging}`
 
   return (
     <VStack
@@ -306,7 +320,15 @@ const LinkBody = () => {
     siteName
   )
 
-  if (isBrokenLinksError || brokenLinks?.status === "error") {
+  const isBrokenLinksReporterEnabled = useFeatureIsOn(
+    "is_broken_links_report_enabled"
+  )
+
+  if (
+    !isBrokenLinksReporterEnabled ||
+    isBrokenLinksError ||
+    brokenLinks?.status === "error"
+  ) {
     return <ErrorLoading />
   }
 
