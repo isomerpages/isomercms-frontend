@@ -32,6 +32,7 @@ import { useErrorToast } from "utils"
 import { SiteViewHeader } from "../layouts/SiteViewLayout/SiteViewHeader"
 
 const getBreadcrumb = (viewablePageInCms: string): string => {
+  //! TODO: Fix bug for homepage + contact us
   /**
    * There are four main types of pages
    * 1. /folders/parentFolder/subfolders/childFolder/editPage/page.md -> parentFolder/childFolder/page
