@@ -17,6 +17,7 @@ import EditHomepage from "layouts/EditHomepage"
 import EditNavBar from "layouts/EditNavBar"
 import { EditPage } from "layouts/EditPage/index"
 import { Folders } from "layouts/Folders"
+import { LinksReport } from "layouts/LinkReport/LinksReport"
 import { LoginPage } from "layouts/Login"
 import { SgidLoginCallbackPage } from "layouts/Login/SgidLoginCallbackPage"
 import { Media } from "layouts/Media"
@@ -103,6 +104,12 @@ export const RouteSelector = () => {
         <ProtectedRouteWithProps path="/sites/:siteName/dashboard">
           <SiteLaunchProvider>
             <SiteDashboard />
+          </SiteLaunchProvider>
+        </ProtectedRouteWithProps>
+
+        <ProtectedRouteWithProps path="/sites/:siteName/linkCheckerReport">
+          <SiteLaunchProvider>
+            <LinksReport />
           </SiteLaunchProvider>
         </ProtectedRouteWithProps>
 
