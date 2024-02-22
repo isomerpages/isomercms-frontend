@@ -163,25 +163,10 @@ const LoginContent = (): JSX.Element => {
       </Infobox>
       <Tabs width="100%">
         <TabList>
-          <Tab>Github Login</Tab>
           <Tab>Email Login</Tab>
+          <Tab>Github Login</Tab>
         </TabList>
         <TabPanels pt="2rem" minHeight="16.5rem">
-          <TabPanel>
-            <Button
-              as={Link}
-              rel="noopener noreferrer"
-              textDecoration="none"
-              w="full"
-              _hover={{
-                textDecoration: "none",
-                bgColor: "primary.600",
-              }}
-              href={`${process.env.REACT_APP_BACKEND_URL_V2}/auth/github-redirect`}
-            >
-              <Text color="white">Log in with GitHub</Text>
-            </Button>
-          </TabPanel>
           <TabPanel>
             <Button
               onClick={() => getSgidAuth()}
@@ -226,6 +211,21 @@ const LoginContent = (): JSX.Element => {
                 errorMessage={getAxiosErrorMessage(loginError)}
               />
             )}
+          </TabPanel>
+          <TabPanel>
+            <Button
+              as={Link}
+              rel="noopener noreferrer"
+              textDecoration="none"
+              w="full"
+              _hover={{
+                textDecoration: "none",
+                bgColor: "primary.600",
+              }}
+              href={`${process.env.REACT_APP_BACKEND_URL_V2}/auth/github-redirect`}
+            >
+              <Text color="white">Log in with GitHub</Text>
+            </Button>
           </TabPanel>
           <Text color="text.helper" fontSize="0.625rem" pt="2rem">
             {
