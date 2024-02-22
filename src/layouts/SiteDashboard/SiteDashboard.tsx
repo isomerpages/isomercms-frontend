@@ -43,6 +43,7 @@ import {
   useGetCollaboratorsStatistics,
   useUpdateViewedReviewRequests,
 } from "hooks/siteDashboardHooks"
+import { useGetBrokenLinks } from "hooks/siteDashboardHooks/useGetLinkChecker"
 import useRedirectHook from "hooks/useRedirectHook"
 
 import { getDateTimeFromUnixTime } from "utils/date"
@@ -93,6 +94,12 @@ export const SiteDashboard = (): JSX.Element => {
   const {
     mutateAsync: updateViewedReviewRequests,
   } = useUpdateViewedReviewRequests()
+
+  const {
+    data: brokenLinks,
+    isError: isBrokenLinksError,
+    isLoading: isBrokenLinksLoading,
+  } = useGetBrokenLinks(siteName)
 
   const savedAt = getDateTimeFromUnixTime(siteInfo?.savedAt || 0)
   const publishedAt = getDateTimeFromUnixTime(siteInfo?.publishedAt || 0)
@@ -198,6 +205,50 @@ export const SiteDashboard = (): JSX.Element => {
                   ))
                 )}
               </DisplayCardContent>
+
+              {isBrokenLinksLoading || brokenLinks?.status === "loading" ? (
+                <Skeleton w="100%" height="4rem" />
+              ) : (
+                <>
+                  <DisplayCardHeader mt="0.75rem">
+                    <DisplayCardTitle>Your site health</DisplayCardTitle>
+                    <DisplayCardCaption>
+                      {`Understand your site's broken references`}
+                    </DisplayCardCaption>
+                  </DisplayCardHeader>
+                  <DisplayCardContent>
+                    {isBrokenLinksError || brokenLinks?.status === "error" ? (
+                      <Text textStyle="body-1">
+                        Unable to retrieve broken links report
+                      </Text>
+                    ) : (
+                      <DisplayCard
+                        variant="full"
+                        bgColor="background.action.defaultInverse"
+                      >
+                        <HStack w="full" justifyContent="space-between">
+                          <HStack>
+                            <Text textStyle="h4">
+                              {brokenLinks?.status === "success" &&
+                                brokenLinks?.errors.length}
+                            </Text>
+                            <Text textStyle="body-1">
+                              broken references found
+                            </Text>
+                          </HStack>
+
+                          <Link
+                            href={`/sites/${siteName}/linkCheckerReport`}
+                            textStyle="body-1"
+                          >
+                            View report
+                          </Link>
+                        </HStack>
+                      </DisplayCard>
+                    )}
+                  </DisplayCardContent>
+                </>
+              )}
             </DisplayCard>
           </Box>
 
