@@ -60,8 +60,14 @@ export const LinksReportBanner = () => {
   const onClick = () => {
     refreshLinkChecker(siteName)
   }
+  const isBrokenLinksReporterEnabled = useFeatureIsOn(
+    "is_broken_links_report_enabled"
+  )
 
-  const { data: brokenLinks } = useGetBrokenLinks(siteName)
+  const { data: brokenLinks } = useGetBrokenLinks(
+    siteName,
+    isBrokenLinksReporterEnabled
+  )
 
   const isBrokenLinksLoading = brokenLinks?.status === "loading"
   return (
@@ -315,13 +321,13 @@ const ErrorLoading = () => {
 }
 
 const LinkBody = () => {
-  const { siteName } = useParams<{ siteName: string }>()
-  const { data: brokenLinks, isError: isBrokenLinksError } = useGetBrokenLinks(
-    siteName
-  )
-
   const isBrokenLinksReporterEnabled = useFeatureIsOn(
     "is_broken_links_report_enabled"
+  )
+  const { siteName } = useParams<{ siteName: string }>()
+  const { data: brokenLinks, isError: isBrokenLinksError } = useGetBrokenLinks(
+    siteName,
+    isBrokenLinksReporterEnabled
   )
 
   if (

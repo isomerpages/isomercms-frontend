@@ -96,15 +96,16 @@ export const SiteDashboard = (): JSX.Element => {
     mutateAsync: updateViewedReviewRequests,
   } = useUpdateViewedReviewRequests()
 
+  const isBrokenLinksReporterEnabled = useFeatureIsOn(
+    "is_broken_links_report_enabled"
+  )
+
   const {
     data: brokenLinks,
     isError: isBrokenLinksError,
     isLoading: isBrokenLinksLoading,
-  } = useGetBrokenLinks(siteName)
+  } = useGetBrokenLinks(siteName, isBrokenLinksReporterEnabled)
 
-  const isBrokenLinksReporterEnabled = useFeatureIsOn(
-    "is_broken_links_report_enabled"
-  )
   const savedAt = getDateTimeFromUnixTime(siteInfo?.savedAt || 0)
   const publishedAt = getDateTimeFromUnixTime(siteInfo?.publishedAt || 0)
 

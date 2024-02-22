@@ -4,9 +4,16 @@ import { apiService } from "./ApiService"
 
 export const getLinkCheckerStatus = async ({
   siteName,
+  isBrokenLinksReporterEnabled,
 }: {
   siteName: string
+  isBrokenLinksReporterEnabled: boolean
 }): Promise<RepoErrorDto> => {
+  if (!isBrokenLinksReporterEnabled) {
+    return {
+      status: "error",
+    }
+  }
   const endpoint = `/sites/${siteName}/getLinkCheckerStatus`
   return (await apiService.get(endpoint)).data
 }
