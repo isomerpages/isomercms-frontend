@@ -6,6 +6,18 @@ import checkCSP from "utils/cspUtils"
 import { MediaData } from "types/directory"
 import { adjustImageSrcs } from "utils"
 
+/**
+ * While we do have a CSP in place, we want to further restrict the content that
+ * that the user can input.
+ * NOTE: Any changes to this list should also be updated in backend code
+ */
+const ALLOWED_SRC = [
+  "//www.instagram.com/embed.js",
+  "/jquery/resize-tables.js",
+  "/jquery/jquery.min.js",
+  "/jquery/bp-menu-new-tab.js",
+]
+
 DOMPurify.setConfig({
   ADD_TAGS: ["iframe", "#comment", "script"],
   ADD_ATTR: [
@@ -26,11 +38,19 @@ DOMPurify.setConfig({
 })
 DOMPurify.addHook("uponSanitizeElement", (node, data) => {
   // Allow script tags if it has a src attribute
-  // Script sources are handled by our CSP sanitiser
-  if (
+  const hasUnallowedSrcValue =
     data.tagName === "script" &&
-    !(node.hasAttribute("src") && node.innerHTML === "")
-  ) {
+    !(
+      node.hasAttribute("src") &&
+      node.innerHTML === "" &&
+      ALLOWED_SRC.includes(node.getAttribute("src") ?? "")
+    )
+
+  const hasUnallowedScriptAttribute =
+    data.tagName === "script" &&
+    (node.hasAttribute("href") || node.hasAttribute("xlink:href"))
+
+  if (hasUnallowedSrcValue || hasUnallowedScriptAttribute) {
     // Adapted from https://github.com/cure53/DOMPurify/blob/e0970d88053c1c564b6ccd633b4af7e7d9a10375/src/purify.js#L719-L736
     DOMPurify.removed.push({ element: node })
     try {
