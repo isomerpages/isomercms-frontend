@@ -7,12 +7,16 @@ import * as LinkCheckerService from "services/LinkCheckerService"
 import { RepoErrorDto } from "types/linkReport"
 
 export const useGetBrokenLinks = (
-  siteName: string
+  siteName: string,
+  isBrokenLinksReporterEnabled: boolean
 ): UseQueryResult<RepoErrorDto> => {
   return useQuery<RepoErrorDto>(
     [SITE_LINK_CHECKER_STATUS_KEY, siteName],
     () => {
-      return LinkCheckerService.getLinkCheckerStatus({ siteName })
+      return LinkCheckerService.getLinkCheckerStatus({
+        siteName,
+        isBrokenLinksReporterEnabled,
+      })
     },
     {
       retry: false,
