@@ -38,15 +38,19 @@ DOMPurify.setConfig({
 })
 DOMPurify.addHook("uponSanitizeElement", (node, data) => {
   // Allow script tags if it has a src attribute
-  // Script sources are handled by our CSP sanitiser
-  if (
+  const hasUnallowedSrcValue =
     data.tagName === "script" &&
     !(
       node.hasAttribute("src") &&
       node.innerHTML === "" &&
       ALLOWED_SRC.includes(node.getAttribute("src") ?? "")
     )
-  ) {
+
+  const hasUnallowedScriptAttribute =
+    data.tagName === "script" &&
+    (node.hasAttribute("href") || node.hasAttribute("xlink:href"))
+
+  if (hasUnallowedSrcValue || hasUnallowedScriptAttribute) {
     // Adapted from https://github.com/cure53/DOMPurify/blob/e0970d88053c1c564b6ccd633b4af7e7d9a10375/src/purify.js#L719-L736
     DOMPurify.removed.push({ element: node })
     try {
