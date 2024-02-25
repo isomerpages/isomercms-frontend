@@ -33,12 +33,11 @@ import { useErrorToast } from "utils"
 import { SiteViewHeader } from "../layouts/SiteViewLayout/SiteViewHeader"
 
 const getBreadcrumb = (viewablePageInCms: string): string => {
-  //! TODO: Fix bug for homepage + contact us
   /**
    * There are four main types of pages
    * 1. /folders/parentFolder/subfolders/childFolder/editPage/page.md -> parentFolder/childFolder/page
    * 2. /folders/parentFolder/editPage/page.md -> parentFolder/page
-   * 3. /editPage/page.md -> Feedback Form
+   * 3. /editPage/page.md -> page
    * 4. /resourceRoom/resourceRmName/resourceCategory/resourceCatName/editPage/page.md -> resourceRmName/resourceCatName/page
    */
   const paths = viewablePageInCms.split("/")
@@ -72,26 +71,33 @@ export const LinksReportBanner = () => {
   const isBrokenLinksLoading = brokenLinks?.status === "loading"
   return (
     <Center bg="white" minH="124">
-      <VStack ml="3rem" w="70%" alignItems="start">
-        <Text textStyle="h2" textColor="black" textAlign="left">
-          Broken references report
-          <Badge colorScheme="warning" variant="subtle" ml="1rem" mt="0.25rem">
+      <HStack w="100%" justifyContent="space-between">
+        <VStack ml="2rem" w="100%" alignItems="start">
+          <Badge variant="subtle" mt="0.75rem" mb="0.5rem">
             Experimental feature
           </Badge>
-        </Text>
-        <HStack w="100%" justifyContent="space-between">
-          <Text textStyle="subheading-1" color="black" textAlign="left">
+          <Text textStyle="h2" textColor="black" textAlign="left" mb="0.5rem">
+            Broken references report
+          </Text>
+
+          <Text
+            textStyle="subheading-1"
+            color="black"
+            textAlign="left"
+            mb="3rem"
+          >
             This report contains a list of broken references found in your site.
           </Text>
-          <Button
-            onClick={onClick}
-            variant="solid"
-            isDisabled={isBrokenLinksLoading}
-          >
-            {isBrokenLinksLoading ? "Running checker..." : "Run Checker Again"}
-          </Button>
-        </HStack>
-      </VStack>
+        </VStack>
+        <Button
+          onClick={onClick}
+          variant="solid"
+          isDisabled={isBrokenLinksLoading}
+          mr="2rem"
+        >
+          {isBrokenLinksLoading ? "Running checker..." : "Run Checker Again"}
+        </Button>
+      </HStack>
     </Center>
   )
 }
@@ -127,19 +133,20 @@ const SiteReportCard = ({
 
   return (
     <VStack
-      w="70vw"
-      backgroundColor="base.canvas.brandLight"
+      w="inherit"
+      backgroundColor="base.canvas.default"
       mb="1.5rem"
+      mr="1rem"
       id={viewablePageInStaging}
     >
       <HStack
         alignSelf="center"
         justifyContent="space-between"
         w="95%"
-        mt="1rem"
-        ml="-4rem"
+        mt="1.5rem"
+        mb="1.75rem"
       >
-        <Breadcrumb separator="/" pl="1rem">
+        <Breadcrumb separator="/">
           {breadcrumb.split("/").map((item) => {
             return (
               <BreadcrumbItem>
@@ -148,7 +155,7 @@ const SiteReportCard = ({
             )
           })}
         </Breadcrumb>
-        <HStack pr="1rem" spacing="0.75rem" pt="0.25rem">
+        <HStack spacing="0.75rem" pt="0.25rem">
           <Link
             href={viewableLinkInStaging}
             isExternal
@@ -165,7 +172,7 @@ const SiteReportCard = ({
           </Link>
         </HStack>
       </HStack>
-      <TableContainer w="95%" mb="1rem" ml="-4rem">
+      <TableContainer w="95%" mb="1.5rem">
         <Table variant="striped">
           <Thead>
             <Tr>
@@ -188,18 +195,18 @@ const SiteReportCard = ({
               if (isBrokenLink) {
                 return (
                   <Tr>
-                    <Td>{errorType}</Td>
+                    <Td borderBottom={0}>{errorType}</Td>
 
                     {link.linkToAsset ? (
-                      <Td>{link.linkToAsset}</Td>
+                      <Td borderBottom={0}>{link.linkToAsset}</Td>
                     ) : (
-                      <Td>No URL linked</Td>
+                      <Td borderBottom={0}>No URL linked</Td>
                     )}
 
                     {link.linkedText ? (
-                      <Td>{link.linkedText}</Td>
+                      <Td borderBottom={0}>{link.linkedText}</Td>
                     ) : (
-                      <Td>Empty link text</Td>
+                      <Td borderBottom={0}>Empty link text</Td>
                     )}
                   </Tr>
                 )
@@ -207,9 +214,9 @@ const SiteReportCard = ({
 
               return (
                 <Tr>
-                  <Td>{errorType}</Td>
-                  <Td>{link.linkToAsset}</Td>
-                  <Td>Not applicable</Td>
+                  <Td borderBottom={0}>{errorType}</Td>
+                  <Td borderBottom={0}>{link.linkToAsset}</Td>
+                  <Td borderBottom={0}>Not applicable</Td>
                 </Tr>
               )
             })}
@@ -257,7 +264,14 @@ const LinkContent = ({ brokenLinks }: { brokenLinks: RepoError[] }) => {
       alignContent="normal"
       alignItems="flex-start"
     >
-      <VStack spacing="0.5rem" m="1rem" textStyle="body-1" alignItems="start">
+      <VStack
+        spacing="0.5rem"
+        m="1rem"
+        textStyle="body-1"
+        alignItems="start"
+        position="sticky"
+        top="1rem"
+      >
         <Text mb="0.25rem" textStyle="h5">
           Pages with broken links
         </Text>
