@@ -20,3 +20,8 @@ export type CollaboratorData = {
 export type CollaboratorRole = {
   role: SiteMemberRole
 }
+
+export type AddCollaboratorDto = {
+  newCollaboratorEmail: string
+  isAcknowledged: boolean
+}
