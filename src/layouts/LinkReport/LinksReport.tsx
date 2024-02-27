@@ -142,11 +142,10 @@ const SiteReportCard = ({
 
   return (
     <VStack
-      w="calc(100vw - 320px)"
+      w="calc(100vw - 24.25rem)"
       backgroundColor="base.canvas.default"
       mb="1.5rem"
-      mr="1rem"
-      ml="1.5rem"
+      alignSelf="baseline"
       id={viewablePageInStaging}
     >
       <HStack
