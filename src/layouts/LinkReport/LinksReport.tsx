@@ -15,7 +15,12 @@ import {
 } from "@chakra-ui/react"
 import { useFeatureIsOn } from "@growthbook/growthbook-react"
 import { Badge, Breadcrumb, Button, Link } from "@opengovsg/design-system-react"
+import { set } from "lodash"
+import { useEffect, useState } from "react"
+import { useQueryClient } from "react-query"
 import { Redirect, useParams } from "react-router-dom"
+
+import { SITE_LINK_CHECKER_STATUS_KEY } from "constants/queryKeys"
 
 import { useGetStagingUrl } from "hooks/siteDashboardHooks"
 import { useGetBrokenLinks } from "hooks/siteDashboardHooks/useGetLinkChecker"
@@ -28,7 +33,6 @@ import {
   NonPermalinkErrorDto,
   RepoError,
 } from "types/linkReport"
-import { useErrorToast } from "utils"
 
 import { SiteViewHeader } from "../layouts/SiteViewLayout/SiteViewHeader"
 
@@ -63,16 +67,18 @@ export const LinksReportBanner = () => {
     "is_broken_links_report_enabled"
   )
 
-  const { data: brokenLinks } = useGetBrokenLinks(
-    siteName,
-    isBrokenLinksReporterEnabled
-  )
+  const {
+    data: brokenLinks,
+    error: brokenLinksError,
+    isLoading: isBrokenLinksFetching,
+  } = useGetBrokenLinks(siteName, isBrokenLinksReporterEnabled)
 
-  const isBrokenLinksLoading = brokenLinks?.status === "loading"
+  const isBrokenLinksLoading =
+    brokenLinks?.status === "loading" || isBrokenLinksFetching
   return (
-    <Center bg="white" minH="124">
+    <Center bg="white">
       <HStack w="100%" justifyContent="space-between">
-        <VStack ml="2rem" w="100%" alignItems="start">
+        <VStack ml="2rem" w="100%" alignItems="start" mt="4rem">
           <Badge variant="subtle" mt="0.75rem" mb="0.5rem">
             Experimental feature
           </Badge>
@@ -89,14 +95,17 @@ export const LinksReportBanner = () => {
             This report contains a list of broken references found in your site.
           </Text>
         </VStack>
-        <Button
-          onClick={onClick}
-          variant="solid"
-          isDisabled={isBrokenLinksLoading}
-          mr="2rem"
-        >
-          {isBrokenLinksLoading ? "Running checker..." : "Run Checker Again"}
-        </Button>
+        {!brokenLinksError && (
+          <Button
+            onClick={onClick}
+            variant="solid"
+            isDisabled={isBrokenLinksLoading}
+            mr="2rem"
+            mt="6.5rem"
+          >
+            {isBrokenLinksLoading ? "Running checker..." : "Run checker again"}
+          </Button>
+        )}
       </HStack>
     </Center>
   )
@@ -133,10 +142,11 @@ const SiteReportCard = ({
 
   return (
     <VStack
-      w="inherit"
+      w="calc(100vw - 320px)"
       backgroundColor="base.canvas.default"
       mb="1.5rem"
       mr="1rem"
+      ml="1.5rem"
       id={viewablePageInStaging}
     >
       <HStack
@@ -270,7 +280,7 @@ const LinkContent = ({ brokenLinks }: { brokenLinks: RepoError[] }) => {
         textStyle="body-1"
         alignItems="start"
         position="sticky"
-        top="1rem"
+        top="2rem"
       >
         <Text mb="0.25rem" textStyle="h5">
           Pages with broken links
@@ -283,8 +293,8 @@ const LinkContent = ({ brokenLinks }: { brokenLinks: RepoError[] }) => {
           </Link>
         ))}
       </VStack>
-      <VStack w="70vw" mr="2rem">
-        <HStack spacing="2rem" w="70vw" m="1.5rem" mt="1rem">
+      <VStack width="calc(100vw - 350px)">
+        <HStack spacing="2rem" w="calc(100vw - 350px)" m="1.5rem" mt="1rem">
           <VStack align="stretch">
             <Text textStyle="body-1">Broken links</Text>
             <Text textStyle="h4">{brokenLink}</Text>
@@ -326,12 +336,43 @@ const NoBrokenLinks = () => {
 
 const ErrorLoading = () => {
   const { siteName } = useParams<{ siteName: string }>()
-  const errorToast = useErrorToast()
-  errorToast({
-    id: "broken_links_error",
-    description: `Failed to load broken links for ${siteName}. Please try again later.`,
-  })
-  return <Redirect to={`/sites/${siteName}/dashboard`} />
+  const { mutate: refreshLinkChecker } = useRefreshLinkChecker(siteName)
+  return (
+    <Center h="70vh">
+      <VStack width="24rem">
+        <Text textStyle="h4" textAlign="center" mb="0.5rem">
+          {`We couldn't generate a broken report for this site.`}
+        </Text>
+        <Text textStyle="body-1" textAlign="center" mb="1rem">
+          {" "}
+          You might want to try running the check again. If the issue persists,
+          reach out to Isomer Support.
+        </Text>
+        <Button
+          onClick={() => {
+            refreshLinkChecker(siteName)
+          }}
+        >
+          Run check again
+        </Button>
+      </VStack>
+    </Center>
+  )
+}
+
+const LoadingLinkChecker = () => {
+  return (
+    <Center h="70vh">
+      <VStack width="24rem">
+        <Text textStyle="h4" textAlign="center">
+          Scanning your site for broken references{" "}
+        </Text>
+        <Text textStyle="body-1" textAlign="center">
+          This may take a while...
+        </Text>
+      </VStack>
+    </Center>
+  )
 }
 
 const LinkBody = () => {
@@ -360,16 +401,7 @@ const LinkBody = () => {
     return <LinkContent brokenLinks={brokenLinks.errors} />
   }
 
-  return (
-    <Center h="70vh">
-      <VStack>
-        <Text textStyle="h4" maxW="48" textAlign="center">
-          Scanning your site for broken references{" "}
-        </Text>
-        <Text textStyle="body-1">This may take a while...</Text>
-      </VStack>
-    </Center>
-  )
+  return <LoadingLinkChecker />
 }
 
 export const LinksReport = () => {
