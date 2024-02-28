@@ -142,7 +142,7 @@ const SiteReportCard = ({
 
   return (
     <VStack
-      w="calc(100vw - 24.25rem)"
+      w="calc(100vw - 24rem)"
       backgroundColor="base.canvas.default"
       mb="1.5rem"
       alignSelf="baseline"
@@ -280,6 +280,7 @@ const LinkContent = ({ brokenLinks }: { brokenLinks: RepoError[] }) => {
         alignItems="start"
         position="sticky"
         top="2rem"
+        w="17.5rem"
       >
         <Text mb="0.25rem" textStyle="h5">
           Pages with broken links
