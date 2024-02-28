@@ -12,7 +12,7 @@ import {
   VStack,
 } from "@chakra-ui/react"
 import { useFeatureIsOn, useGrowthBook } from "@growthbook/growthbook-react"
-import { Button, Link } from "@opengovsg/design-system-react"
+import { Badge, Button, Link } from "@opengovsg/design-system-react"
 import _ from "lodash"
 import { useEffect } from "react"
 import { BiCheckCircle, BiCog, BiEditAlt, BiGroup } from "react-icons/bi"
@@ -45,6 +45,7 @@ import {
   useUpdateViewedReviewRequests,
 } from "hooks/siteDashboardHooks"
 import { useGetBrokenLinks } from "hooks/siteDashboardHooks/useGetLinkChecker"
+import { useRefreshLinkChecker } from "hooks/siteDashboardHooks/useRefreshLinkChecker"
 import useRedirectHook from "hooks/useRedirectHook"
 
 import { getDateTimeFromUnixTime } from "utils/date"
@@ -100,9 +101,10 @@ export const SiteDashboard = (): JSX.Element => {
     "is_broken_links_report_enabled"
   )
 
+  const { mutate: refreshLinkChecker } = useRefreshLinkChecker(siteName)
+
   const {
     data: brokenLinks,
-    isError: isBrokenLinksError,
     isLoading: isBrokenLinksLoading,
   } = useGetBrokenLinks(siteName, isBrokenLinksReporterEnabled)
 
@@ -212,23 +214,20 @@ export const SiteDashboard = (): JSX.Element => {
               </DisplayCardContent>
               {isBrokenLinksReporterEnabled && (
                 <>
-                  {isBrokenLinksLoading || brokenLinks?.status === "loading" ? (
+                  {isBrokenLinksLoading ? (
                     <Skeleton w="100%" height="4rem" />
                   ) : (
                     <>
                       <DisplayCardHeader mt="0.75rem">
-                        <DisplayCardTitle>Your site health</DisplayCardTitle>
-                        <DisplayCardCaption>
-                          {`Understand your site's broken references`}
-                        </DisplayCardCaption>
+                        <Badge variant="subtle" mt="0.75rem" mb="0.5rem">
+                          Experimental feature
+                        </Badge>
+                        <DisplayCardTitle>
+                          Broken references checker
+                        </DisplayCardTitle>
                       </DisplayCardHeader>
                       <DisplayCardContent>
-                        {isBrokenLinksError ||
-                        brokenLinks?.status === "error" ? (
-                          <Text textStyle="body-1">
-                            Unable to retrieve broken links report
-                          </Text>
-                        ) : (
+                        {brokenLinks && brokenLinks?.status === "success" ? (
                           <DisplayCard
                             variant="full"
                             bgColor="background.action.defaultInverse"
@@ -244,12 +243,39 @@ export const SiteDashboard = (): JSX.Element => {
                                 </Text>
                               </HStack>
 
-                              <Link
-                                href={`/sites/${siteName}/linkCheckerReport`}
+                              <Button
+                                onClick={() => {
+                                  setRedirectToPage(
+                                    `/sites/${siteName}/linkCheckerReport`
+                                  )
+                                }}
                                 textStyle="body-1"
                               >
                                 View report
-                              </Link>
+                              </Button>
+                            </HStack>
+                          </DisplayCard>
+                        ) : (
+                          <DisplayCard
+                            variant="full"
+                            bgColor="background.action.defaultInverse"
+                          >
+                            <HStack w="full" justifyContent="space-between">
+                              <Text textStyle="body-1">
+                                Find out which links, images, and files are
+                                broken on your site
+                              </Text>
+
+                              <Button
+                                onClick={() => {
+                                  refreshLinkChecker(siteName)
+                                  setRedirectToPage(
+                                    `/sites/${siteName}/linkCheckerReport`
+                                  )
+                                }}
+                              >
+                                <Text textStyle="body-1">Run checker</Text>
+                              </Button>
                             </HStack>
                           </DisplayCard>
                         )}
