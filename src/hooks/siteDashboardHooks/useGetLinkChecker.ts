@@ -20,7 +20,12 @@ export const useGetBrokenLinks = (
     },
     {
       retry: false,
-      refetchInterval: 1000 * 10,
+      refetchInterval: (data) => {
+        if (data?.status === "loading") {
+          return 1000 * 10
+        }
+        return false
+      },
     }
   )
 }

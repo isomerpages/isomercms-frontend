@@ -23,7 +23,7 @@ import {
   Button,
 } from "@opengovsg/design-system-react"
 import _ from "lodash"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { BiTrash } from "react-icons/bi"
 import { useParams } from "react-router-dom"
@@ -148,20 +148,10 @@ export const MainSubmodal = ({
   ...props
 }: MainSubmodalProps): JSX.Element => {
   const { siteName } = useParams<{ siteName: string }>()
+  const [errorMessage, setErrorMessage] = useState<string>("")
   const successToast = useSuccessToast()
-  const {
-    mutateAsync: addCollaborator,
-    error: addCollaboratorError,
-    isSuccess: addCollaboratorSuccess,
-    isError: isAddCollaboratorError,
-    isLoading: isAddCollaboratorLoading,
-    reset,
-  } = CollaboratorHooks.useAddCollaboratorHook(siteName)
   const { data: role } = CollaboratorHooks.useGetCollaboratorRoleHook(siteName)
 
-  const errorMessage = extractErrorMessage(
-    addCollaboratorError?.response?.data.error
-  )
   const showAckModal = errorMessage === ACK_REQUIRED_ERROR_MESSAGE
   const isDisabled = !isAdminUser(role)
 
@@ -176,16 +166,23 @@ export const MainSubmodal = ({
   const curCollaboratorValue = collaboratorFormMethods.watch(
     "newCollaboratorEmail"
   )
-
-  useEffect(() => {
-    if (addCollaboratorSuccess) {
+  const {
+    mutate: addCollaborator,
+    isError: isAddCollaboratorError,
+    isLoading: isAddCollaboratorLoading,
+    reset,
+  } = CollaboratorHooks.useAddCollaboratorHook(siteName, {
+    onSuccess: () => {
       successToast({
         id: "add-collaborator",
         description: "Collaborator added successfully",
       })
       collaboratorFormMethods.reset()
-    }
-  }, [addCollaboratorSuccess, collaboratorFormMethods, successToast])
+    },
+    onError: (err) => {
+      setErrorMessage(extractErrorMessage(err.response?.data.error))
+    },
+  })
 
   return (
     <Modal
@@ -200,9 +197,9 @@ export const MainSubmodal = ({
       <ModalContent>
         <FormProvider {...collaboratorFormMethods}>
           <form
-            onSubmit={collaboratorFormMethods.handleSubmit(async (data) => {
-              await addCollaborator(data)
-            })}
+            onSubmit={collaboratorFormMethods.handleSubmit((data) =>
+              addCollaborator(data)
+            )}
           >
             <ModalHeader>
               {showAckModal
