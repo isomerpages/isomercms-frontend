@@ -27,6 +27,13 @@ export const MediaSettingsSchema = (existingTitlesArray = []) =>
           return (value.match(/\./g) || []).length <= 1
         }
       )
+      .test(
+        "File not supported",
+        "File names cannot begin with an underscore",
+        (value) => {
+          return !value.startsWith("_")
+        }
+      )
       .min(
         MEDIA_SETTINGS_TITLE_MIN_LENGTH,
         `Title must be longer than ${MEDIA_SETTINGS_TITLE_MIN_LENGTH} characters`
