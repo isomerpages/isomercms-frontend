@@ -1,9 +1,9 @@
-import { sanitizeUrl } from "@braintree/sanitize-url"
 import PropTypes from "prop-types"
 import { forwardRef } from "react"
 
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
+import { sanitiseTemplateUrl } from "templates/utils/sanitiseTemplateUrl"
 import { getClassNames } from "templates/utils/stylingUtils"
 
 const TemplateFeedbackSection = forwardRef(({ feedback }, ref) => (
@@ -38,7 +38,7 @@ const TemplateFeedbackSection = forwardRef(({ feedback }, ref) => (
             If you have a query, feedback or wish to report a problem related to
             this website, please fill in the{" "}
             <a
-              href={sanitizeUrl(feedback)}
+              href={sanitiseTemplateUrl(feedback)}
               rel="noopener noreferrer"
               target="_blank"
               onClick={(event) => event.preventDefault()}
