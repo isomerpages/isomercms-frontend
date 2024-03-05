@@ -29,9 +29,9 @@ export const MediaSettingsSchema = (existingTitlesArray = []) =>
       )
       .test(
         "File not supported",
-        "File names cannot begin with an underscore",
+        "File names must begin with a letter or number",
         (value) => {
-          return !value.startsWith("_")
+          return /^[a-zA-Z0-9]/.test(value)
         }
       )
       .min(
