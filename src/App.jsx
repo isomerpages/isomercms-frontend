@@ -57,7 +57,7 @@ if (REACT_APP_ENV === "staging" || REACT_APP_ENV === "production") {
     applicationId: REACT_APP_DATADOG_APP_ID,
     clientToken: REACT_APP_DATADOG_CLIENT_TOKEN,
     site: "datadoghq.com",
-    service: "isomercms-frontend",
+    service: "isomer-infra",
     env: REACT_APP_ENV,
     // Specify a version number to identify the deployed version of your application in Datadog
     version: REACT_APP_VERSION,
