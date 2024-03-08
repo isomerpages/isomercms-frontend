@@ -5,7 +5,7 @@ import { MediaSettingsModal } from "components/MediaSettingsModal"
 import { useGetMediaHook, useUpdateMediaHook } from "hooks/mediaHooks"
 
 export const MediaSettingsScreen = ({ match, onClose }) => {
-  const { params, decodedParams } = match
+  const { params } = match
   const { data: mediaData } = useGetMediaHook(params)
   const { mutateAsync: updateHandler } = useUpdateMediaHook(params, {
     onSuccess: onClose,
@@ -13,7 +13,7 @@ export const MediaSettingsScreen = ({ match, onClose }) => {
 
   return (
     <MediaSettingsModal
-      params={decodedParams}
+      params={params}
       onClose={onClose}
       mediaData={mediaData}
       onProceed={updateHandler}
