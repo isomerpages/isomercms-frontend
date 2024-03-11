@@ -48,6 +48,8 @@ export const useCreateMultipleMedia = (
           // with a safe replacement character
           newFileName: `${getFileName(file.name)
             .replaceAll(/[\W\s]/g, "_")
+            // Remove any leading underscores
+            .replace(/^_+/g, "")
             .trim()}.${getFileExt(file.name)}`,
         }))
       )

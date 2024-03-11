@@ -1,9 +1,9 @@
-import { sanitizeUrl } from "@braintree/sanitize-url"
 import PropTypes from "prop-types"
 import { forwardRef } from "react"
 
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
+import { sanitiseTemplateUrl } from "templates/utils/sanitiseTemplateUrl"
 import { getClassNames } from "templates/utils/stylingUtils"
 
 const LocationHours = ({ operatingHours }) => (
@@ -38,8 +38,8 @@ const LocationAddress = ({ location }) => (
       <a
         href={
           location.maps_link
-            ? sanitizeUrl(location.maps_link)
-            : sanitizeUrl(
+            ? sanitiseTemplateUrl(location.maps_link)
+            : sanitiseTemplateUrl(
                 `https://maps.google.com/?q=${location.address
                   .join("+")
                   .replace(/\s/g, "+")}`

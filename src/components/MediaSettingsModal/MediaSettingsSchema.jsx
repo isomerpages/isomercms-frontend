@@ -27,6 +27,13 @@ export const MediaSettingsSchema = (existingTitlesArray = []) =>
           return (value.match(/\./g) || []).length <= 1
         }
       )
+      .test(
+        "File not supported",
+        "File names must begin with a letter or number",
+        (value) => {
+          return /^[a-zA-Z0-9]/.test(value)
+        }
+      )
       .min(
         MEDIA_SETTINGS_TITLE_MIN_LENGTH,
         `Title must be longer than ${MEDIA_SETTINGS_TITLE_MIN_LENGTH} characters`

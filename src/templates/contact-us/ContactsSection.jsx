@@ -1,10 +1,10 @@
-import { sanitizeUrl } from "@braintree/sanitize-url"
 import DOMPurify from "dompurify"
 import PropTypes from "prop-types"
 import { forwardRef } from "react"
 
 import editorStyles from "styles/isomer-cms/pages/Editor.module.scss"
 
+import { sanitiseTemplateUrl } from "templates/utils/sanitiseTemplateUrl"
 import { getClassNames } from "templates/utils/stylingUtils"
 
 const Contact = forwardRef(({ contact }, ref) => (
@@ -30,7 +30,7 @@ const Contact = forwardRef(({ contact }, ref) => (
               ])}
             >
               <a
-                href={sanitizeUrl(`tel:${d[key].replace(/\s/g, "")}`)}
+                href={sanitiseTemplateUrl(`tel:${d[key].replace(/\s/g, "")}`)}
                 onClick={(event) => event.preventDefault()}
               >
                 <u>{d[key]}</u>
@@ -47,7 +47,7 @@ const Contact = forwardRef(({ contact }, ref) => (
               ])}
             >
               <a
-                href={sanitizeUrl(`mailto:${d[key]}`)}
+                href={sanitiseTemplateUrl(`mailto:${d[key]}`)}
                 onClick={(event) => event.preventDefault()}
               >
                 <u>{d[key]}</u>
