@@ -398,6 +398,14 @@ const LinkBody = () => {
       return <NoBrokenLinks />
     }
 
+    // todo: remove this once design is ready with showing duplicate permalinks
+    const onlyDuplicatePermalinks = brokenLinks.errors.every(
+      (error) => error.type === "duplicate-permalink"
+    )
+    if (onlyDuplicatePermalinks) {
+      return <NoBrokenLinks />
+    }
+
     return <LinkContent brokenLinks={brokenLinks.errors} />
   }
 
