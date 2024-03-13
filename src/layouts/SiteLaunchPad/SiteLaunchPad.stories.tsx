@@ -7,7 +7,9 @@ import { SiteLaunchProvider } from "contexts/SiteLaunchContext"
 import {
   MOCK_FAILURE_LAUNCHED_SITE_LAUNCH_DTO,
   MOCK_LAUNCHING_SITE_LAUNCH_DTO,
+  MOCK_NON_WWW_LAUNCHING_SITE_LAUNCH_DTO,
   MOCK_SUCCESS_LAUNCHED_SITE_LAUNCH_DTO,
+  MOCK_WWW_LAUNCHING_SITE_LAUNCH_DTO,
 } from "mocks/constants"
 import { buildSiteLaunchDto } from "mocks/utils"
 import { SiteLaunchBEStatus, SiteLaunchFEStatus } from "types/siteLaunch"
@@ -48,12 +50,6 @@ const Template: StoryFn<typeof SiteLaunchPad> = (args) => (
 // NOTE: This is just a mock, so no need actual functions
 const siteLaunchPadArgs = {
   pageNumber: 1,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  setPageNumber: () => {},
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  handleDecrementStepNumber: () => {},
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  handleIncrementStepNumber: () => {},
 }
 
 export const Default = Template.bind({})
@@ -87,6 +83,20 @@ siteLaunchChecklistOldDomain.args = {
   pageNumber: 4,
 }
 
+siteLaunchChecklistOldDomain.decorators = [
+  (Story) => {
+    return (
+      <SiteLaunchProvider
+        initialStepNumber={0}
+        initialSiteLaunchStatus={SiteLaunchFEStatus.ChecklistTasksPending}
+        isNewDomain={false}
+      >
+        <Story />
+      </SiteLaunchProvider>
+    )
+  },
+]
+
 export const siteLaunchChecklistNewDomain = Template.bind({})
 
 siteLaunchChecklistNewDomain.args = {
@@ -98,9 +108,125 @@ siteLaunchChecklistNewDomain.decorators = [
   (Story) => {
     return (
       <SiteLaunchProvider
-        initialStepNumber={1}
+        initialStepNumber={0}
         initialSiteLaunchStatus={SiteLaunchFEStatus.ChecklistTasksPending}
         isNewDomain
+      >
+        <Story />
+      </SiteLaunchProvider>
+    )
+  },
+]
+
+export const NewDomainNonWwwDnsRecords = Template.bind({})
+
+NewDomainNonWwwDnsRecords.args = {
+  ...siteLaunchPadArgs,
+  pageNumber: 4,
+}
+NewDomainNonWwwDnsRecords.parameters = {
+  msw: {
+    handlers: {
+      siteLaunchStatusProps: buildSiteLaunchDto(
+        MOCK_NON_WWW_LAUNCHING_SITE_LAUNCH_DTO
+      ),
+    },
+  },
+}
+
+NewDomainNonWwwDnsRecords.decorators = [
+  (Story) => {
+    return (
+      <SiteLaunchProvider
+        initialSiteLaunchStatus={SiteLaunchFEStatus.Loading}
+        isNewDomain
+      >
+        <Story />
+      </SiteLaunchProvider>
+    )
+  },
+]
+
+export const NewDomainWwwDnsRecords = Template.bind({})
+
+NewDomainWwwDnsRecords.args = {
+  ...siteLaunchPadArgs,
+  pageNumber: 4,
+}
+NewDomainWwwDnsRecords.parameters = {
+  msw: {
+    handlers: {
+      siteLaunchStatusProps: buildSiteLaunchDto(
+        MOCK_WWW_LAUNCHING_SITE_LAUNCH_DTO
+      ),
+    },
+  },
+}
+
+NewDomainWwwDnsRecords.decorators = [
+  (Story) => {
+    return (
+      <SiteLaunchProvider
+        initialSiteLaunchStatus={SiteLaunchFEStatus.Loading}
+        isNewDomain
+      >
+        <Story />
+      </SiteLaunchProvider>
+    )
+  },
+]
+
+export const OldDomainWwwDnsRecords = Template.bind({})
+
+OldDomainWwwDnsRecords.args = {
+  ...siteLaunchPadArgs,
+  pageNumber: 4,
+}
+OldDomainWwwDnsRecords.parameters = {
+  msw: {
+    handlers: {
+      siteLaunchStatusProps: buildSiteLaunchDto(
+        MOCK_WWW_LAUNCHING_SITE_LAUNCH_DTO
+      ),
+    },
+  },
+}
+
+OldDomainWwwDnsRecords.decorators = [
+  (Story) => {
+    return (
+      <SiteLaunchProvider
+        initialSiteLaunchStatus={SiteLaunchFEStatus.Loading}
+        isNewDomain={false}
+      >
+        <Story />
+      </SiteLaunchProvider>
+    )
+  },
+]
+
+export const OldDomainNonWwwDnsRecords = Template.bind({})
+
+OldDomainNonWwwDnsRecords.args = {
+  ...siteLaunchPadArgs,
+  pageNumber: 4,
+}
+OldDomainNonWwwDnsRecords.parameters = {
+  msw: {
+    handlers: {
+      siteLaunchStatusProps: buildSiteLaunchDto(
+        MOCK_NON_WWW_LAUNCHING_SITE_LAUNCH_DTO
+      ),
+    },
+  },
+}
+
+OldDomainNonWwwDnsRecords.decorators = [
+  (Story) => {
+    return (
+      <SiteLaunchProvider
+        initialSiteLaunchStatus={SiteLaunchFEStatus.Loading}
+        isNewDomain={false}
       >
         <Story />
       </SiteLaunchProvider>
