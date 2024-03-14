@@ -66,18 +66,18 @@ export const RouteSelector = () => {
         <ProtectedRouteWithProps
           exact
           path={[
-            "/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName/editPage/:fileName",
-            "/sites/:siteName/folders/:collectionName/subfolders/:subCollectionName/editPage/:fileName",
-            "/sites/:siteName/folders/:collectionName/editPage/:fileName",
-            "/sites/:siteName/editPage/:fileName",
+            "/sites/:siteName([a-zA-Z0-9-]+)/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName/editPage/:fileName",
+            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName/subfolders/:subCollectionName/editPage/:fileName",
+            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName/editPage/:fileName",
+            "/sites/:siteName([a-zA-Z0-9-]+)/editPage/:fileName",
           ]}
           component={injectApprovalRedirect(EditPage)}
         />
 
         <ProtectedRouteWithProps
           path={[
-            "/sites/:siteName/folders/:collectionName/subfolders/:subCollectionName",
-            "/sites/:siteName/folders/:collectionName",
+            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName/subfolders/:subCollectionName",
+            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName",
           ]}
         >
           <ApprovedReviewRedirect>
@@ -87,13 +87,13 @@ export const RouteSelector = () => {
 
         <ProtectedRouteWithProps
           exact
-          path="/sites/:siteName/navbar"
+          path="/sites/:siteName([a-zA-Z0-9-]+)/navbar"
           component={injectApprovalRedirect(EditNavBar)}
         />
 
         <ProtectedRouteWithProps
           path={[
-            "/sites/:siteName/media/:mediaRoom/mediaDirectory/:mediaDirectoryName",
+            "/sites/:siteName([a-zA-Z0-9-]+)/media/:mediaRoom/mediaDirectory/:mediaDirectoryName",
           ]}
         >
           <ApprovedReviewRedirect>
@@ -101,47 +101,47 @@ export const RouteSelector = () => {
           </ApprovedReviewRedirect>
         </ProtectedRouteWithProps>
 
-        <ProtectedRouteWithProps path="/sites/:siteName/dashboard">
+        <ProtectedRouteWithProps path="/sites/:siteName([a-zA-Z0-9-]+)/dashboard">
           <SiteLaunchProvider>
             <SiteDashboard />
           </SiteLaunchProvider>
         </ProtectedRouteWithProps>
 
-        <ProtectedRouteWithProps path="/sites/:siteName/linkCheckerReport">
+        <ProtectedRouteWithProps path="/sites/:siteName([a-zA-Z0-9-]+)/linkCheckerReport">
           <SiteLaunchProvider>
             <LinksReport />
           </SiteLaunchProvider>
         </ProtectedRouteWithProps>
 
-        <ProtectedRouteWithProps path="/sites/:siteName/siteLaunchPad">
+        <ProtectedRouteWithProps path="/sites/:siteName([a-zA-Z0-9-]+)/siteLaunchPad">
           <SiteLaunchProvider>
             <SiteLaunchPadPage />
           </SiteLaunchProvider>
         </ProtectedRouteWithProps>
 
-        <ProtectedRouteWithProps path="/sites/:siteName/review/:reviewId">
+        <ProtectedRouteWithProps path="/sites/:siteName([a-zA-Z0-9-]+)/review/:reviewId">
           <ReviewRequestRoleProvider>
             <ReviewRequestDashboard />
           </ReviewRequestRoleProvider>
         </ProtectedRouteWithProps>
 
-        <ProtectedRouteWithProps path="/sites/:siteName/workspace">
+        <ProtectedRouteWithProps path="/sites/:siteName([a-zA-Z0-9-]+)/workspace">
           <ApprovedReviewRedirect>
             <Workspace />
           </ApprovedReviewRedirect>
         </ProtectedRouteWithProps>
 
         <ProtectedRouteWithProps
-          path="/sites/:siteName/homepage"
+          path="/sites/:siteName([a-zA-Z0-9-]+)/homepage"
           component={injectApprovalRedirect(EditHomepage)}
         />
 
         <ProtectedRouteWithProps
-          path="/sites/:siteName/contact-us"
+          path="/sites/:siteName([a-zA-Z0-9-]+)/contact-us"
           component={injectApprovalRedirect(EditContactUs)}
         />
 
-        <ProtectedRouteWithProps path="/sites/:siteName/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName">
+        <ProtectedRouteWithProps path="/sites/:siteName([a-zA-Z0-9-]+)/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName">
           <ApprovedReviewRedirect>
             <ResourceCategory />
           </ApprovedReviewRedirect>
@@ -149,8 +149,8 @@ export const RouteSelector = () => {
 
         <ProtectedRouteWithProps
           path={[
-            "/sites/:siteName/resourceRoom/:resourceRoomName",
-            "/sites/:siteName/resourceRoom",
+            "/sites/:siteName([a-zA-Z0-9-]+)/resourceRoom/:resourceRoomName",
+            "/sites/:siteName([a-zA-Z0-9-]+)/resourceRoom",
           ]}
         >
           <ApprovedReviewRedirect>
@@ -158,7 +158,7 @@ export const RouteSelector = () => {
           </ApprovedReviewRedirect>
         </ProtectedRouteWithProps>
 
-        <ProtectedRouteWithProps path="/sites/:siteName/settings">
+        <ProtectedRouteWithProps path="/sites/:siteName([a-zA-Z0-9-]+)/settings">
           <ApprovedReviewRedirect>
             <Settings />
           </ApprovedReviewRedirect>
