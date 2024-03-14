@@ -188,6 +188,7 @@ details.isomer-details summary::marker {
 }
 
 details.isomer-details summary::after {
+  // Using sgds-icons.chevron-down
   font-family: "sgds-icons";
   content: "\E93C";
   transition: 0.25s transform ease;

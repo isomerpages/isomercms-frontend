@@ -167,6 +167,7 @@
       color: black;
 
       &::after {
+        // Using sgds-icons.chevron-down
         font-family: "sgds-icons";
         content: "\E93C";
         justify-content: center;
@@ -189,6 +190,7 @@
     }
 
     &.is-open > button::after {
+      // Using sgds-icons.chevron-down
       font-family: "sgds-icons";
       content: "\E93C";
       transform: rotate(180deg);
