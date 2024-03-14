@@ -292,7 +292,7 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
           name: "Accordion",
           description: "Let users hide or show content.",
           icon: EditorAccordionImage,
-          action: () => editor.chain().focus().setHorizontalRule().run(),
+          action: () => editor.chain().focus().setDetailsGroup().run(),
           isHidden: !rteEnabledBlocks.includes(RTE_BLOCKS.ACCORDION),
         },
         {
