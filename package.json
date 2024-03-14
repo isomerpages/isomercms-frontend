@@ -90,7 +90,7 @@
     "react-markdown": "^8.0.7",
     "react-query": "^3.34.16",
     "react-router-dom": "^5.1.2",
-    "react-select": "^5.4.0",
+    "react-select": "^5.8.0",
     "react-simplemde-editor": "^5.2.0",
     "react-virtuoso": "^2.19.0",
     "remixicon": "^3.5.0",
