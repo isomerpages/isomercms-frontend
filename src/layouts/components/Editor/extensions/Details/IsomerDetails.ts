@@ -10,7 +10,7 @@ export const IsomerDetails = Details.extend({
       const outerDiv = document.createElement("div")
       const i = mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
         "data-type": this.name,
-        class: "isomer-detail",
+        class: "isomer-details",
       })
       Object.entries(i).forEach(([key, value]) =>
         outerDiv.setAttribute(key, value)

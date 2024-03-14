@@ -188,9 +188,9 @@ details.isomer-details summary::marker {
 }
 
 details.isomer-details summary::after {
-  content: url("https://raw.githubusercontent.com/atisawd/boxicons/master/svg/solid/bxs-chevron-down.svg");
+  font-family: "sgds-icons";
+  content: "\E93C";
   transition: 0.25s transform ease;
-  padding-top: 0.25rem;
 }
 
 details.isomer-details[open] summary::after {
@@ -218,7 +218,6 @@ details.isomer-details {
   }
 
   div.isomer-details-content > p {
-    color: var(--site-secondary-color);
     margin-left: 1rem;
     margin-right: 1.25rem;
     margin-bottom: 1rem;
@@ -251,7 +250,10 @@ details.isomer-details ~ details.isomer-details {
 
 .isomer-accordion-white > details.isomer-details > summary {
   background-color: #fff;
-  color: #4372d6;
+}
+
+.isomer-accordion-white > details.isomer-details[open] > summary {
+  font-weight: 700;
 }
 
 .isomer-accordion-gray > details.isomer-details > summary {

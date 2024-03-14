@@ -17,25 +17,31 @@ export const IsomerDetailGroupView = ({
   const selected = activePos >= startPos && activePos <= endPos
 
   const { onDrawerOpen } = useEditorDrawerContext()
+
+  // todo: get drawer reviewed in staging
+  const isProd = process.env.REACT_APP_ENV === "production"
+
   const otherButtons = (
     <>
       <Box
-        display={selected ? "block" : "none"}
+        display={selected ? "flex" : "none"}
         position="absolute"
         width="100%"
+        justifyContent="end"
       >
         <HStack
+          bgColor="interaction.mainLight.default"
+          borderRadius="0.25rem"
+          border="1px solid"
           borderColor="base.divider.medium"
-          display="flex"
-          justifyContent="flex-end"
+          boxShadow="0px 8px 12px 0px rgba(187, 187, 187, 0.50)"
+          px="0.5rem"
+          py="0.25rem"
+          mr="-0.5rem"
+          mt="-1.5rem"
         >
-          <Box
-            backgroundColor={selected ? "white" : "transparent"}
-            marginTop="-0.25rem"
-            boxShadow="0px 0px 4px 0px rgba(0, 0, 0, 0.8)"
-            borderRadius="4px"
-          >
-            <Tooltip label="Edit accordion grid" hasArrow placement="top">
+          {!isProd && (
+            <Tooltip label="Edit accordion block" hasArrow placement="top">
               <IconButton
                 _hover={{ bg: "gray.100" }}
                 _active={{ bg: "gray.200" }}
@@ -56,30 +62,31 @@ export const IsomerDetailGroupView = ({
                 />
               </IconButton>
             </Tooltip>
-            <Tooltip label="Delete accordion " hasArrow placement="top">
-              <IconButton
-                _hover={{ bg: "gray.100" }}
-                _active={{ bg: "gray.200" }}
-                onClick={() => {
-                  editor.chain().focus().unsetDetailsGroup().run()
-                }}
-                bgColor="transparent"
-                border="none"
-                h="1.75rem"
-                w="1.75rem"
-                minH="1.75rem"
-                minW="1.75rem"
-                p="0.25rem"
-                aria-label="delete accordion block"
-              >
-                <Icon
-                  as={BiTrash}
-                  fontSize="1.25rem"
-                  color="interaction.critical.default"
-                />
-              </IconButton>
-            </Tooltip>
-          </Box>
+          )}
+
+          <Tooltip label="Delete accordion block" hasArrow placement="top">
+            <IconButton
+              _hover={{ bg: "gray.100" }}
+              _active={{ bg: "gray.200" }}
+              onClick={() => {
+                editor.chain().focus().unsetDetailsGroup().run()
+              }}
+              bgColor="transparent"
+              border="none"
+              h="1.75rem"
+              w="1.75rem"
+              minH="1.75rem"
+              minW="1.75rem"
+              p="0.25rem"
+              aria-label="delete accordion block"
+            >
+              <Icon
+                as={BiTrash}
+                fontSize="1.25rem"
+                color="interaction.critical.default"
+              />
+            </IconButton>
+          </Tooltip>
         </HStack>
       </Box>
       <Box
@@ -112,7 +119,7 @@ export const IsomerDetailGroupView = ({
   )
   return (
     <BlockWrapper
-      name="Accordion grid"
+      name="Accordion"
       isSelected={selected}
       childButtons={otherButtons}
       padding-top="0.5rem"
@@ -120,10 +127,10 @@ export const IsomerDetailGroupView = ({
     >
       <Box
         borderColor="base.divider.strong"
-        borderWidth="1px"
-        mt="1rem"
         h="100%"
         w="100%"
+        borderTop="1px solid #d4d4d4"
+        borderBottom="1px solid #d4d4d4"
       >
         <NodeViewContent />
       </Box>
