@@ -192,6 +192,7 @@ details.isomer-details summary::after {
   font-family: "sgds-icons";
   content: "\E93C";
   transition: 0.25s transform ease;
+  margin-left: 0.75rem;
 }
 
 details.isomer-details[open] summary::after {
@@ -218,7 +219,7 @@ details.isomer-details {
     flex: 1 1 auto;
   }
 
-  div.isomer-details-content > p {
+  div.isomer-details-content > * {
     margin-left: 1rem;
     margin-right: 1.25rem;
     margin-bottom: 1rem;
