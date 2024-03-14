@@ -70,7 +70,7 @@ const createPageStyleSheet = (repoName, primaryColor, secondaryColor) => {
 
   // EditHomepage: hero button - secondary color
   customStyleSheet.insertRule(
-    `.is-secondary { background-color: ${secondaryColor} !important;}`,
+    `.is-secondary { background-color: ${secondaryColor} !important; color: #fff !important;}`,
     0
   )
 

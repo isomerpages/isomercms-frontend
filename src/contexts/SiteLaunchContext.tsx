@@ -9,6 +9,7 @@ import { useGetSiteLaunchStatus } from "hooks/siteDashboardHooks"
 import { launchSite } from "services/SiteLaunchService"
 
 import {
+  NEW_DOMAIN_SITE_LAUNCH_TASKS_LENGTH,
   SiteLaunchBEStatus,
   SiteLaunchFEStatus,
   SiteLaunchFEStatusType,
@@ -17,6 +18,7 @@ import {
   SiteLaunchTaskTypeIndex,
   SITE_LAUNCH_PAGES,
   SITE_LAUNCH_TASKS,
+  SITE_LAUNCH_TASKS_LENGTH,
 } from "types/siteLaunch"
 
 interface SiteLaunchContextProps {
@@ -29,6 +31,8 @@ interface SiteLaunchContextProps {
   increasePageNumber: () => void
   decreasePageNumber: () => void
   pageNumber: SiteLaunchPageIndex
+  handleIncrementStepNumber: () => void
+  handleDecrementStepNumber: () => void
 }
 
 interface SiteLaunchProviderProps {
@@ -79,7 +83,6 @@ export const SiteLaunchProvider = ({
   })
 
   const { data: siteLaunchDto } = useGetSiteLaunchStatus(siteName)
-
   const queryClient = useQueryClient()
   const refetchSiteLaunchStatus = () => {
     /**
@@ -107,6 +110,29 @@ export const SiteLaunchProvider = ({
 
     // safe to assert since we do an check prior
     setPageNumber((pageNumber - 1) as SiteLaunchPageIndex)
+  }
+
+  const handleIncrementStepNumber = () => {
+    if (
+      siteLaunchStatusProps &&
+      siteLaunchStatusProps.stepNumber < SITE_LAUNCH_TASKS_LENGTH
+    ) {
+      setSiteLaunchStatusProps({
+        ...siteLaunchStatusProps,
+        stepNumber: (siteLaunchStatusProps.stepNumber +
+          1) as SiteLaunchTaskTypeIndex, // safe to assert since we do a check
+        siteLaunchStatus: SiteLaunchFEStatus.ChecklistTasksPending,
+      })
+    }
+  }
+  const handleDecrementStepNumber = () => {
+    if (siteLaunchStatusProps && siteLaunchStatusProps.stepNumber > 0) {
+      setSiteLaunchStatusProps({
+        ...siteLaunchStatusProps,
+        stepNumber: (siteLaunchStatusProps?.stepNumber -
+          1) as SiteLaunchTaskTypeIndex, // safe to assert since we do a check
+      })
+    }
   }
 
   const generateDNSRecords = async () => {
@@ -165,6 +191,12 @@ export const SiteLaunchProvider = ({
       !isSiteLaunchFEAndBESynced
     ) {
       setPageNumber(SITE_LAUNCH_PAGES.CHECKLIST)
+      setSiteLaunchStatusProps((prevStatusProps) => ({
+        ...prevStatusProps,
+        stepNumber: prevStatusProps.isNewDomain
+          ? NEW_DOMAIN_SITE_LAUNCH_TASKS_LENGTH
+          : SITE_LAUNCH_TASKS_LENGTH,
+      }))
     }
 
     if (
@@ -185,6 +217,8 @@ export const SiteLaunchProvider = ({
   return (
     <SiteLaunchContext.Provider
       value={{
+        handleDecrementStepNumber,
+        handleIncrementStepNumber,
         siteLaunchStatusProps,
         setSiteLaunchStatusProps,
         generateDNSRecords,

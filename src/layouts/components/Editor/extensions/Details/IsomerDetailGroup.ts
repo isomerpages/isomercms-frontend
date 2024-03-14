@@ -1,6 +1,5 @@
-import { ChainedCommands, findParentNode, Node } from "@tiptap/core"
+import { findParentNode, findParentNodeClosestToPos, Node } from "@tiptap/core"
 import { NodeRange, Slice } from "@tiptap/pm/model"
-import { EditorState } from "@tiptap/pm/state"
 import { mergeAttributes, ReactNodeViewRenderer } from "@tiptap/react"
 
 import { AccordionBackgroundType } from "types/editPage"
@@ -22,6 +21,8 @@ declare module "@tiptap/core" {
       changeDetailGroupBackground: (
         backgroundColor: AccordionBackgroundType
       ) => ReturnType
+      unsetDetailsGroup: () => ReturnType
+      removeDetail: () => ReturnType
     }
   }
 }
@@ -32,7 +33,7 @@ export const IsomerDetailsGroup = Node.create<IsomerDetailGroupOptions>({
   atom: true,
   draggable: true,
   content: "details+",
-  defining: true,
+  definingForContext: true,
   isolating: true,
   allowGapCursor: false,
 
@@ -91,7 +92,6 @@ export const IsomerDetailsGroup = Node.create<IsomerDetailGroupOptions>({
               ],
             }
           )
-          .setTextSelection(blockRange.start + 2)
           .run()
       },
       appendDetail: (startPos: number, endPos: number) => ({
@@ -152,6 +152,19 @@ export const IsomerDetailsGroup = Node.create<IsomerDetailGroupOptions>({
           )
           .run()
       },
+      removeDetail: () => ({ chain, state }) => {
+        const { selection } = state
+
+        const currNode = findParentNodeClosestToPos(selection.$anchor, (t) => {
+          return t.type.name === "details"
+        })
+
+        if (currNode === undefined) {
+          return false
+        }
+
+        return chain().deleteNode(currNode.node.type).run()
+      },
 
       changeDetailGroupBackground: (
         backgroundColor: AccordionBackgroundType
@@ -197,36 +210,12 @@ export const IsomerDetailsGroup = Node.create<IsomerDetailGroupOptions>({
           )
           .run()
       },
-      unsetDetailsGroup: () => ({
-        chain,
-        state,
-      }: {
-        state: EditorState
-        chain: ChainedCommands
-      }) => {
-        const { selection } = state
-        const currNode = findParentNode((t) => t.type === this.type)(selection)
-        if (!currNode) return false
-        const startPos = currNode.pos
-        const range = { from: startPos, to: startPos + currNode.node.nodeSize }
-
-        // TODO: check type
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        return chain()
-          .insertContentAt(range, [])
-          .setTextSelection(startPos + 1)
-          .run()
+      unsetDetailsGroup: () => ({ tr, editor }) => {
+        editor.state.selection.replace(tr)
+        return true
       },
     }
   },
-
-  // TODO: add keyboard shortcuts for backspace
-  // addKeyboardShortcuts() {
-  //   return {
-  //     "Backspace": () => this.editor.commands.detailGroup.setDetailsGroup(),
-  //   }
-  // }
 
   addAttributes() {
     return {

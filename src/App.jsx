@@ -50,6 +50,8 @@ const {
   REACT_APP_DATADOG_CLIENT_TOKEN,
   REACT_APP_VERSION,
   REACT_APP_ENV,
+  REACT_APP_BACKEND_URL_V2,
+  REACT_APP_BACKEND_URL,
 } = process.env
 
 if (REACT_APP_ENV === "staging" || REACT_APP_ENV === "production") {
@@ -61,6 +63,7 @@ if (REACT_APP_ENV === "staging" || REACT_APP_ENV === "production") {
     env: REACT_APP_ENV,
     // Specify a version number to identify the deployed version of your application in Datadog
     version: REACT_APP_VERSION,
+    allowedTracingUrls: [REACT_APP_BACKEND_URL_V2, REACT_APP_BACKEND_URL],
     ...DATADOG_RUM_SETTINGS,
   })
 
