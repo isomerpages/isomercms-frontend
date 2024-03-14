@@ -1,6 +1,8 @@
 import { Box, HStack, Icon, IconButton, Tooltip } from "@chakra-ui/react"
 import { NodeViewContent, NodeViewProps } from "@tiptap/react"
-import { BiPlus, BiTrash } from "react-icons/bi"
+import { BiPencil, BiPlus, BiTrash } from "react-icons/bi"
+
+import { useEditorDrawerContext } from "contexts/EditorDrawerContext"
 
 import { BlockWrapper } from "../../components/BlockWrapper"
 
@@ -13,6 +15,8 @@ export const IsomerDetailGroupView = ({
   const endPos = startPos + node.nodeSize
   const activePos = editor.state.selection.anchor
   const selected = activePos >= startPos && activePos < endPos
+
+  const { onDrawerOpen } = useEditorDrawerContext()
 
   const otherButtons = (
     <>
@@ -33,6 +37,28 @@ export const IsomerDetailGroupView = ({
           mr="-0.5rem"
           mt="-1.5rem"
         >
+          <Tooltip label="Edit accordion block" hasArrow placement="top">
+            <IconButton
+              _hover={{ bg: "gray.100" }}
+              _active={{ bg: "gray.200" }}
+              onClick={onDrawerOpen("accordion")}
+              bgColor="transparent"
+              border="none"
+              h="1.75rem"
+              w="1.75rem"
+              minH="1.75rem"
+              minW="1.75rem"
+              p="0.25rem"
+              aria-label="edit accordion block"
+            >
+              <Icon
+                as={BiPencil}
+                fontSize="1.25rem"
+                color="base.content.medium"
+              />
+            </IconButton>
+          </Tooltip>
+
           <Tooltip label="Delete accordion block" hasArrow placement="top">
             <IconButton
               _hover={{ bg: "gray.100" }}
