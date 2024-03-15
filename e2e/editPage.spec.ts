@@ -1,5 +1,3 @@
-import path from "path"
-
 import { test, expect } from "@playwright/test"
 
 import {
@@ -10,11 +8,9 @@ import {
 
 import { getApi } from "./api/context.api"
 import {
-  BACKEND_URL,
   BASE_SEO_LINK,
   CMS_BASEURL,
   E2E_EMAIL_TEST_SITE,
-  Interceptors,
   TEST_REPO_NAME,
 } from "./fixtures/constants"
 import { SUCCESSFUL_EDIT_PAGE_TOAST } from "./fixtures/messages"
@@ -27,6 +23,43 @@ test.describe("editPage.spec", () => {
   test.beforeEach(({ context }) => {
     setEmailSessionDefaults(context, "Email admin")
   })
+
+  const BASE_SETTINGS = {
+    title: "Title",
+    description: "An Isomer site of the Singapore Government",
+    favicon: "/images/favicon-isomer.ico",
+    shareicon: "/images/isomer-logo.svg",
+    google_analytics_ga4: "",
+    is_government: false,
+    contact_us: "/contact-us/",
+    feedback: "",
+    faq: "/faq/",
+    show_reach: true,
+    logo: "/images/isomer-logo.svg",
+    url: BASE_SEO_LINK,
+    social_media: {
+      facebook: "https://www.facebook.com/YourFBPage",
+      linkedin: "https://www.linkedin.com/company/YourAgency",
+      twitter: "https://www.twitter.com/YourTwitter",
+      youtube: "https://www.youtube.com/YourYoutube",
+      instagram: "https://www.instagram.com/your.insta/",
+      telegram: "",
+      tiktok: "",
+    },
+    colors: {
+      "primary-color": PRIMARY_COLOUR,
+      "secondary-color": SECONDARY_COLOUR,
+      "media-colors": [
+        { title: "media-color-one", color: "#ff0000" },
+        { title: "media-color-two", color: "#ff0000" },
+        { title: "media-color-three", color: "#ff0000" },
+        { title: "media-color-four", color: "#ff0000" },
+        { title: "media-color-five", color: "#ff0000" },
+      ],
+    },
+    "facebook-pixel": "",
+    "linkedin-insights": "",
+  }
 
   test.describe("Edit unlinked page", () => {
     const TEST_PAGE_CONTENT = "lorem ipsum"
@@ -63,52 +96,6 @@ test.describe("editPage.spec", () => {
         variant: "tiptap",
         description: "",
       },
-    }
-
-    test.beforeAll(async ({ request }) => {
-      // TODO: set the default settings first
-      // setDefaultSettings()
-      // Set up test resource categories
-      // visit(`/sites/${TEST_REPO_NAME}/workspace`)
-      // contains("a", "Create page").click({ force: true })
-      // get("#title").clear().type(TEST_UNLINKED_PAGE_TITLE)
-    })
-
-    const BASE_SETTINGS = {
-      title: "Title",
-      description: "An Isomer site of the Singapore Government",
-      favicon: "/images/favicon-isomer.ico",
-      shareicon: "/images/isomer-logo.svg",
-      google_analytics_ga4: "",
-      is_government: false,
-      contact_us: "/contact-us/",
-      feedback: "",
-      faq: "/faq/",
-      show_reach: true,
-      logo: "/images/isomer-logo.svg",
-      url: BASE_SEO_LINK,
-      social_media: {
-        facebook: "https://www.facebook.com/YourFBPage",
-        linkedin: "https://www.linkedin.com/company/YourAgency",
-        twitter: "https://www.twitter.com/YourTwitter",
-        youtube: "https://www.youtube.com/YourYoutube",
-        instagram: "https://www.instagram.com/your.insta/",
-        telegram: "",
-        tiktok: "",
-      },
-      colors: {
-        "primary-color": "#ff0000",
-        "secondary-color": "#ff0000",
-        "media-colors": [
-          { title: "media-color-one", color: "#ff0000" },
-          { title: "media-color-two", color: "#ff0000" },
-          { title: "media-color-three", color: "#ff0000" },
-          { title: "media-color-four", color: "#ff0000" },
-          { title: "media-color-five", color: "#ff0000" },
-        ],
-      },
-      "facebook-pixel": "",
-      "linkedin-insights": "",
     }
 
     test.beforeEach(async ({ page, context }) => {
@@ -573,6 +560,68 @@ test.describe("editPage.spec", () => {
 
       // Assert
       page.getByText(`[${LINK_TITLE}](${LINK_URL})`)
+    })
+  })
+
+  test.describe("Edit resource page", () => {
+    const TEST_CATEGORY = "Test Edit Resource Category"
+    const TEST_CATEGORY_SLUGIFIED = slugifyCategory(TEST_CATEGORY)
+    const TEST_RESOURCE_ROOM = "resources"
+    const TEST_PAGE_TITLE = "Test Resource Page"
+    const TEST_PAGE_DATE = "2021-05-17"
+    const TEST_PAGE_URL_SUFFIX = generateResourceFileName(
+      encodeURIComponent(TEST_PAGE_TITLE),
+      TEST_PAGE_DATE,
+      true
+    )
+
+    const TEST_RESOURCE_PAGE = {
+      content: {
+        frontMatter: {
+          title: TEST_PAGE_TITLE,
+          permalink: `/resources/${TEST_CATEGORY_SLUGIFIED}/permalink`,
+          date: TEST_PAGE_DATE,
+          layout: "post",
+          description: "",
+          image: "",
+          variant: "tiptap",
+        },
+      },
+      newFileName: `${TEST_PAGE_DATE}-post-${TEST_PAGE_TITLE}.md`,
+    }
+
+    test.beforeEach(async ({ page, context }) => {
+      setEmailSessionDefaults(context, "Email admin")
+      const api = await getApi(await context.storageState())
+      await api.post(`v2/sites/${E2E_EMAIL_TEST_SITE.repo}/resourceRoom`, {
+        data: { newDirectoryName: TEST_RESOURCE_ROOM },
+      })
+      await api.post(
+        `v2/sites/${E2E_EMAIL_TEST_SITE.repo}/resourceRoom/${TEST_RESOURCE_ROOM}`,
+        {
+          data: { items: [], newDirectoryName: TEST_CATEGORY },
+        }
+      )
+      await api.post(
+        `/v2/sites/${E2E_EMAIL_TEST_SITE.repo}/resourceRoom/resources/${TEST_RESOURCE_ROOM}/${TEST_CATEGORY_SLUGIFIED}/pages`,
+        {
+          data: TEST_RESOURCE_PAGE,
+        }
+      )
+      await api.post("v2/sites/e2e-email-test-repo/settings", {
+        data: BASE_SETTINGS,
+      })
+      await page.goto(
+        `/sites/${E2E_EMAIL_TEST_SITE.repo}/resourceRoom/${TEST_RESOURCE_ROOM}/resourceCategory/${TEST_CATEGORY_SLUGIFIED}/editPage/${TEST_PAGE_URL_SUFFIX}`
+      )
+    })
+
+    test("Edit page (resource) should have correct colour", async ({
+      page,
+    }) => {
+      const header = page.locator("#display-header")
+
+      await expect(header).toHaveCSS("background-color", SECONDARY_COLOUR)
     })
   })
 })
