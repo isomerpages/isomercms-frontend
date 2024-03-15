@@ -1,7 +1,7 @@
 import { Box, Center, Spinner } from "@chakra-ui/react"
 import { useGrowthBook } from "@growthbook/growthbook-react"
 import axios from "axios"
-import _ from "lodash"
+import _, { identity } from "lodash"
 import { useEffect } from "react"
 import { Redirect, Route, RouteProps, useLocation } from "react-router-dom"
 
@@ -11,6 +11,8 @@ import { getDecodedParams } from "utils/decoding"
 import { getSiteNameAttributeFromPath } from "utils/growthbook"
 
 import { GBAttributes } from "types/featureFlags"
+
+import { WithValidator } from "./types"
 
 // axios settings
 axios.defaults.withCredentials = true
@@ -25,7 +27,7 @@ export const ProtectedRoute = ({
   children,
   component: WrappedComponent,
   ...rest
-}: RouteProps): JSX.Element => {
+}: WithValidator<RouteProps>): JSX.Element => {
   const {
     displayedName,
     isLoading,
@@ -35,8 +37,27 @@ export const ProtectedRoute = ({
     contactNumber,
   } = useLoginContext()
   const growthbook = useGrowthBook()
+
   const currPath = useLocation().pathname
   const siteNameFromPath = getSiteNameAttributeFromPath(currPath)
+  const { validate } = rest
+
+  const validateParams = (
+    params: Record<string, string | undefined> | undefined
+  ) => {
+    return _.entries(params)
+      .map(([key, value]) => {
+        // NOTE: There's no provided validation function
+        // so we will assume it's valid
+        if (!validate?.[key]) return true
+
+        // NOTE: If the value is falsy, we will assume it's invalid
+        if (!value) return false
+
+        return validate[key](value)
+      })
+      .every(identity)
+  }
 
   useEffect(() => {
     if (growthbook) {
@@ -75,7 +96,19 @@ export const ProtectedRoute = ({
   }
 
   if (displayedName && children) {
-    return <Route {...rest}>{children}</Route>
+    return (
+      <Route {...rest}>
+        {({ match }) => {
+          const isValid = validateParams(match?.params)
+
+          if (!isValid) {
+            return <Redirect to="/not-found" />
+          }
+
+          return <>{children}</>
+        }}
+      </Route>
+    )
   }
 
   if (displayedName && WrappedComponent) {
@@ -84,11 +117,17 @@ export const ProtectedRoute = ({
         {...rest}
         render={(props) => {
           const { match } = props
-          const { params } = match
+          const isValid = validateParams(match?.params)
+
+          if (!isValid) {
+            return <Redirect to="/not-found" />
+          }
+
           const newMatch = {
             ...match,
-            decodedParams: getDecodedParams(prune(params)),
+            decodedParams: getDecodedParams(prune(match.params)),
           }
+
           return <WrappedComponent {...rest} {...props} match={newMatch} />
         }}
       />
