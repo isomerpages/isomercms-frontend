@@ -9,7 +9,6 @@ import { setEmailSessionDefaults } from "./utils/session"
 
 // Constants
 const PRIMARY_COLOUR = "rgb(255, 0, 0)"
-const SECONDARY_COLOUR = "rgb(0, 255, 0)"
 
 test.describe("editPage.spec", () => {
   test.beforeEach(({ context }) => {
@@ -116,6 +115,7 @@ test.describe("editPage.spec", () => {
       await api.post("v2/sites/e2e-email-test-repo/settings", {
         data: BASE_SETTINGS,
       })
+      page.reload()
 
       // Assert
       await expect(header).toHaveCSS("background-color", PRIMARY_COLOUR)
@@ -325,6 +325,8 @@ test.describe("editPage.spec", () => {
       ).toBeVisible()
     })
 
+    // TODO: Add functionality to prevent users from adding
+    // untrusted external scripts
     test.skip("Edit page (unlinked) should not allow users to add untrusted external scripts", async ({
       page,
     }) => {
@@ -348,6 +350,8 @@ test.describe("editPage.spec", () => {
       )
     })
 
+    // TODO: Add functionality to prevent users from adding
+    // inline scripts
     test.skip("Edit page (unlinked) should not allow users to add inline scripts", async ({
       page,
     }) => {
