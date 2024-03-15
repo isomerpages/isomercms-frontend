@@ -1,5 +1,7 @@
 import slugify from "slugify"
 
+import { SUCCESSFUL_EDIT_PAGE_TOAST } from "hooks/pageHooks/useUpdatePageHook"
+
 import { deslugifyDirectory } from "utils/deslugify"
 import { titleToPageFileName, pageFileNameToTitle } from "utils/fileNameUtils"
 
@@ -8,7 +10,6 @@ import {
   Interceptors,
   TEST_REPO_NAME,
 } from "../fixtures/constants"
-import { SUCCESSFUL_EDIT_PAGE_TOAST } from "../fixtures/messages"
 
 describe("Folders flow", () => {
   const DEFAULT_REPO_FOLDER_NAME = "default"

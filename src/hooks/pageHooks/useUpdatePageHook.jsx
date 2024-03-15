@@ -15,6 +15,8 @@ import { useSuccessToast, useErrorToast } from "utils/toasts"
 
 import { extractPageInfo } from "./utils"
 
+export const SUCCESSFUL_EDIT_PAGE_TOAST = `Changes saved. See a preview on Staging, or request a Review for them to be published.`
+
 export function useUpdatePageHook(params, queryParams) {
   const queryClient = useQueryClient()
   const { pageService } = useContext(ServicesContext)
@@ -57,7 +59,7 @@ export function useUpdatePageHook(params, queryParams) {
           ]) // invalidates unlinked pages
         successToast({
           id: "update-resource-room-name-success",
-          description: `Changes saved. See a preview on Staging, or request a Review for them to be published.`,
+          description: SUCCESSFUL_EDIT_PAGE_TOAST,
         })
         if (queryParams && queryParams.onSuccess) queryParams.onSuccess(data)
       },

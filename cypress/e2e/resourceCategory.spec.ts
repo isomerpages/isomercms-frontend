@@ -1,4 +1,6 @@
 import "cypress-file-upload"
+import { SUCCESSFUL_EDIT_PAGE_TOAST } from "hooks/pageHooks/useUpdatePageHook"
+
 import { generateResourceFileName, slugifyCategory } from "utils/fileNameUtils"
 
 import {
@@ -6,7 +8,6 @@ import {
   TEST_REPO_NAME,
   Interceptors,
 } from "../fixtures/constants"
-import { SUCCESSFUL_EDIT_PAGE_TOAST } from "../fixtures/messages"
 
 describe("Resource category page", () => {
   const TEST_RESOURCE_ROOM_NAME = "resources"

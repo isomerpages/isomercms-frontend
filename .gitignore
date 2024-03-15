@@ -34,3 +34,7 @@ storybook-static/
 
 # cypress
 cypress.env.json
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
