@@ -66,9 +66,9 @@ export const RouteSelector = () => {
         <ProtectedRouteWithProps
           exact
           path={[
-            "/sites/:siteName([a-zA-Z0-9-]+)/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName/editPage/:fileName",
-            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName/subfolders/:subCollectionName/editPage/:fileName",
-            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName/editPage/:fileName",
+            "/sites/:siteName([a-zA-Z0-9-]+)/resourceRoom/:resourceRoomName([a-zA-Z0-9-]+)/resourceCategory/:resourceCategoryName/editPage/:fileName",
+            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName([a-zA-Z0-9-]+)/subfolders/:subCollectionName/editPage/:fileName",
+            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName([a-zA-Z0-9-]+)/editPage/:fileName",
             "/sites/:siteName([a-zA-Z0-9-]+)/editPage/:fileName",
           ]}
           component={injectApprovalRedirect(EditPage)}
@@ -76,8 +76,8 @@ export const RouteSelector = () => {
 
         <ProtectedRouteWithProps
           path={[
-            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName/subfolders/:subCollectionName",
-            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName",
+            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName([a-zA-Z0-9-]+)/subfolders/:subCollectionName",
+            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName([a-zA-Z0-9-]+)",
           ]}
         >
           <ApprovedReviewRedirect>
@@ -141,7 +141,7 @@ export const RouteSelector = () => {
           component={injectApprovalRedirect(EditContactUs)}
         />
 
-        <ProtectedRouteWithProps path="/sites/:siteName([a-zA-Z0-9-]+)/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName">
+        <ProtectedRouteWithProps path="/sites/:siteName([a-zA-Z0-9-]+)/resourceRoom/:resourceRoomName([a-zA-Z0-9-]+)/resourceCategory/:resourceCategoryName">
           <ApprovedReviewRedirect>
             <ResourceCategory />
           </ApprovedReviewRedirect>
@@ -149,7 +149,7 @@ export const RouteSelector = () => {
 
         <ProtectedRouteWithProps
           path={[
-            "/sites/:siteName([a-zA-Z0-9-]+)/resourceRoom/:resourceRoomName",
+            "/sites/:siteName([a-zA-Z0-9-]+)/resourceRoom/:resourceRoomName([a-zA-Z0-9-]+)",
             "/sites/:siteName([a-zA-Z0-9-]+)/resourceRoom",
           ]}
         >
