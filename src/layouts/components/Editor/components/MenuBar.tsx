@@ -41,6 +41,8 @@ import { RTE_BLOCKS, RTEBlockValues } from "constants/rteBlocks"
 import { useEditorModal } from "contexts/EditorModalContext"
 
 import {
+  BxSubscript,
+  BxSuperscript,
   EditorAccordionImage,
   EditorCardsImage,
   EditorDividerImage,
@@ -213,7 +215,20 @@ export const MenuBar = ({ editor }: { editor: Editor }) => {
       action: () => editor.chain().focus().toggleStrike().run(),
       isActive: () => editor.isActive("strike"),
     },
-
+    {
+      type: "item",
+      icon: BxSuperscript,
+      title: "Superscript",
+      action: () => editor.chain().focus().toggleSuperscript().run(),
+      isActive: () => editor.isActive("superscript"),
+    },
+    {
+      type: "item",
+      icon: BxSubscript,
+      title: "Subscript",
+      action: () => editor.chain().focus().toggleSubscript().run(),
+      isActive: () => editor.isActive("subscript"),
+    },
     {
       type: "divider",
     },
