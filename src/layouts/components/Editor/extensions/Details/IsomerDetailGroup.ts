@@ -129,16 +129,23 @@ export const IsomerDetailsGroup = Node.create<IsomerDetailGroupOptions>({
           return false
         }
 
+        // Find out the background color of the parent accordion
+        const backgroundColor = state.doc.nodeAt(blockRange.start)?.attrs
+          ?.backgroundColor
+        if (!backgroundColor) {
+          return false
+        }
+
         return chain()
           .insertContentAt(
             { from: blockRange.start, to: blockRange.end },
             {
               type: this.name,
+              attrs: { backgroundColor },
               content: [
                 ...content,
                 {
                   type: "details",
-                  attrs: { class: "isomer-accordion" },
                   content: [
                     { type: "detailsSummary" },
                     {
@@ -232,13 +239,32 @@ export const IsomerDetailsGroup = Node.create<IsomerDetailGroupOptions>({
   },
 
   parseHTML() {
-    return [{ tag: `div.isomer-accordion` }]
+    return [
+      {
+        tag: `div.isomer-accordion`,
+        getAttrs: (dom) => {
+          if (typeof dom === "string") {
+            return {
+              backgroundColor: "white",
+            }
+          }
+          const backgroundColor: AccordionBackgroundType = dom.className.includes(
+            "isomer-accordion-white"
+          )
+            ? "white"
+            : "grey"
+          return {
+            backgroundColor: backgroundColor === "grey" ? "grey" : "white",
+          }
+        },
+      },
+    ]
   },
 
   renderHTML({ HTMLAttributes, node }) {
     const variant =
-      node.attrs.backgroundColor === "gray"
-        ? "isomer-accordion-gray"
+      node.attrs.backgroundColor === "grey"
+        ? "isomer-accordion-grey"
         : "isomer-accordion-white"
 
     delete HTMLAttributes.backgroundColor

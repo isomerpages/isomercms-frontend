@@ -1,6 +1,6 @@
 import { FormControl, Stack, Text } from "@chakra-ui/react"
 import { Button, Radio } from "@opengovsg/design-system-react"
-import { Editor } from "@tiptap/core"
+import { Editor, getAttributes } from "@tiptap/core"
 import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 
@@ -26,29 +26,25 @@ export const EditorAccordionDrawer = ({
   onProceed,
 }: EditorAccordionDrawerProps): JSX.Element => {
   const options = AccordionBackgrounds
-  const fragment = editor.state.selection.content().content
-  let attrs
 
-  // Not tpp sure why types are wrong here, but this type exists
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  if (fragment.content && fragment.content.length > 0) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    attrs = fragment.content[0].attrs
-  }
+  const attributes = getAttributes(editor.state, "detailGroup")
 
-  const defaultValue = attrs?.backgroundColor || "white"
+  const backgroundColor: AccordionBackgroundType =
+    attributes?.backgroundColor || "white"
 
   const { register, handleSubmit, watch, setValue } = useForm<{
     "customise-accordion-color": AccordionBackgroundType
-  }>()
+  }>({
+    defaultValues: {
+      "customise-accordion-color": backgroundColor,
+    },
+  })
 
   useEffect(() => {
-    setValue("customise-accordion-color", defaultValue)
-    // This is run every time this component mounts
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen])
+    if (!isOpen) return
+    setValue("customise-accordion-color", backgroundColor)
+    // This is run every time this component is shown
+  }, [isOpen, setValue, backgroundColor])
 
   const onSubmit = () => {
     editor.commands.changeDetailGroupBackground(
@@ -57,8 +53,8 @@ export const EditorAccordionDrawer = ({
     onProceed()
   }
   return (
-    <EditorDrawer isOpen={isOpen}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <EditorDrawer isOpen={isOpen}>
         <EditorDrawer.Header onClose={onClose}>
           <Text as="h5" textStyle="h5">
             Editing accordion
@@ -66,21 +62,22 @@ export const EditorAccordionDrawer = ({
         </EditorDrawer.Header>
 
         <EditorDrawer.Content>
-          <Text>Customise accordion color</Text>
+          <Text mb="0.5rem">Customise accordion colour</Text>
           <FormControl id="customise-accordion-color" mb={6}>
             <Radio.RadioGroup
               name="customise-accordion-color"
-              defaultValue={defaultValue}
+              value={watch("customise-accordion-color")}
             >
-              <Stack spacing="0.5rem">
-                {options.map((o) => (
+              <Stack>
+                {options.map((option) => (
                   <Radio
-                    key={o}
-                    value={o}
+                    key={option}
+                    value={option}
                     allowDeselect={false}
+                    size="sm"
                     {...register("customise-accordion-color")}
                   >
-                    {capitalizeFirstLetter(o)}
+                    {capitalizeFirstLetter(option)}
                   </Radio>
                 ))}
               </Stack>
@@ -91,7 +88,7 @@ export const EditorAccordionDrawer = ({
         <EditorDrawer.Footer>
           <Button type="submit">Save accordion</Button>
         </EditorDrawer.Footer>
-      </form>
-    </EditorDrawer>
+      </EditorDrawer>
+    </form>
   )
 }

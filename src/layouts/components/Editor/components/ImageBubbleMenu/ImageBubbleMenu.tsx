@@ -29,7 +29,7 @@ const ImageLinkButton = () => {
         borderRadius="0.25rem"
         border="1px solid"
         borderColor="base.divider.medium"
-        boxShadow="0px 8px 12px 0px rgba(187, 187, 187, 0.50)"
+        boxShadow="sm"
         px="0.5rem"
         py="0.25rem"
       >

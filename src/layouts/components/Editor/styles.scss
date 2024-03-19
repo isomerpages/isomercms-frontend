@@ -150,7 +150,7 @@
 
   [data-type="details"] {
     display: flex;
-    border-bottom: 1px solid #d4d4d4;
+    border-bottom: 1px solid var(--chakra-colors-base-divider-strong);
     padding: 0.5rem;
     margin-top: 0;
     margin-bottom: 0;

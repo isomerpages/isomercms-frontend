@@ -17,6 +17,6 @@ export interface EditorCardsInfo {
 }
 export type DrawerVariant = "cards" | "accordion"
 
-export const AccordionBackgrounds = ["white", "gray"] as const
+export const AccordionBackgrounds = ["white", "grey"] as const
 
 export type AccordionBackgroundType = typeof AccordionBackgrounds[number]

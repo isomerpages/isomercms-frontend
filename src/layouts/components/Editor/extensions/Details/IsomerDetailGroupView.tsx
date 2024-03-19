@@ -31,7 +31,7 @@ export const IsomerDetailGroupView = ({
           borderRadius="0.25rem"
           border="1px solid"
           borderColor="base.divider.medium"
-          boxShadow="0px 8px 12px 0px rgba(187, 187, 187, 0.50)"
+          boxShadow="sm"
           px="0.5rem"
           py="0.25rem"
           mr="-0.5rem"
@@ -98,7 +98,7 @@ export const IsomerDetailGroupView = ({
         borderRadius="0.25rem"
         border="1px solid"
         borderColor="base.divider.medium"
-        boxShadow="0px 8px 12px 0px rgba(187, 187, 187, 0.50)"
+        boxShadow="sm"
       >
         <IconButton
           _hover={{ bg: "gray.100" }}
@@ -140,8 +140,10 @@ export const IsomerDetailGroupView = ({
         borderColor="base.divider.strong"
         h="100%"
         w="100%"
-        borderTop="1px solid #d4d4d4"
-        borderBottom="1px solid #d4d4d4"
+        borderTop="1px solid"
+        borderTopColor="base.divider.strong"
+        borderBottom="1px solid"
+        borderBottomColor="base.divider.strong"
       >
         <NodeViewContent />
       </Box>
