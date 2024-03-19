@@ -51,8 +51,8 @@ export const ProtectedRoute = ({
         // so we will assume it's valid
         if (!validate?.[key]) return true
 
-        // NOTE: If the value is falsy, we will assume it's invalid
-        if (!value) return false
+        // NOTE: If the value is falsy, we will return true as there's nothing to validate
+        if (!value) return true
 
         return validate[key](value)
       })

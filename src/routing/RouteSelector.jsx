@@ -68,10 +68,8 @@ export const RouteSelector = () => {
         <ProtectedRouteWithProps
           exact
           path={[
+            // DONE
             "/sites/:siteName([a-zA-Z0-9-]+)/resourceRoom/:resourceRoomName([a-zA-Z0-9-]+)/resourceCategory/:resourceCategoryName([a-zA-Z0-9-]+)/editPage/:fileName",
-            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName([a-zA-Z0-9-]+)/subfolders/:subCollectionName([a-zA-Z0-9-%]+)/editPage/:fileName",
-            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName([a-zA-Z0-9-]+)/editPage/:fileName",
-            "/sites/:siteName([a-zA-Z0-9-]+)/editPage/:fileName",
           ]}
           component={injectApprovalRedirect(EditPage)}
           validate={{
@@ -83,10 +81,36 @@ export const RouteSelector = () => {
         />
 
         <ProtectedRouteWithProps
+          exact
           path={[
-            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName([a-zA-Z0-9-]+)/subfolders/:subCollectionName([a-zA-Z0-9-%]+)",
+            // Collection is correct
+            // Subcollection disallows a few special characters
+            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName([a-zA-Z0-9-]+)/subfolders/:subCollectionName/editPage/:fileName",
+            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName([a-zA-Z0-9-]+)/editPage/:fileName",
+            "/sites/:siteName([a-zA-Z0-9-]+)/editPage/:fileName",
+          ]}
+          component={injectApprovalRedirect(EditPage)}
+          validate={{
+            fileName: (value) => {
+              const encodedName = value.split(".").slice(0, -1).join(".")
+              return !specialCharactersRegexTest.test(encodedName)
+            },
+            subCollectionName: (value) => {
+              return !specialCharactersRegexTest.test(value)
+            },
+          }}
+        />
+
+        <ProtectedRouteWithProps
+          path={[
+            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName([a-zA-Z0-9-]+)/subfolders/:subCollectionName",
             "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName([a-zA-Z0-9-]+)",
           ]}
+          validate={{
+            subCollectionName: (value) => {
+              return !specialCharactersRegexTest.test(value)
+            },
+          }}
         >
           <ApprovedReviewRedirect>
             <Folders />
