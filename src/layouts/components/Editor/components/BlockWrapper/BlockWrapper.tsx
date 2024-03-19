@@ -31,6 +31,7 @@ export const BlockWrapper = ({
           backgroundColor="#055AFF"
           textColor="white"
           p="0.25rem"
+          mt="-0.75rem"
         >
           <Text textStyle="caption-1" contentEditable="false">
             {name}
