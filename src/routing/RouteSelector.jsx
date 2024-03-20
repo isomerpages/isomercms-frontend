@@ -35,7 +35,7 @@ import { Workspace } from "layouts/Workspace"
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 import RedirectIfLoggedInRoute from "routing/RedirectIfLoggedInRoute"
 
-import { specialCharactersRegexTest } from "utils"
+import { ALLOWED_CHARACTERS_REGEX } from "utils"
 
 import {
   ApprovedReviewRedirect,
@@ -80,11 +80,11 @@ export const RouteSelector = () => {
               const decodedName = decodeURIComponent(encodedName)
               return (
                 value === "terms-of-use.md" ||
-                !specialCharactersRegexTest.test(decodedName)
+                ALLOWED_CHARACTERS_REGEX.test(decodedName)
               )
             },
             subCollectionName: (value) => {
-              return !specialCharactersRegexTest.test(decodeURIComponent(value))
+              return ALLOWED_CHARACTERS_REGEX.test(decodeURIComponent(value))
             },
           }}
         />
@@ -96,7 +96,7 @@ export const RouteSelector = () => {
           ]}
           validate={{
             subCollectionName: (value) => {
-              return !specialCharactersRegexTest.test(decodeURIComponent(value))
+              return ALLOWED_CHARACTERS_REGEX.test(decodeURIComponent(value))
             },
           }}
         >
@@ -120,8 +120,8 @@ export const RouteSelector = () => {
               // NOTE: This value is prepended with either `files|images`
               // and nested directories are separated by `/` as well.
               const decodedValues = decodeURIComponent(value).split("/")
-              return decodedValues.every(
-                (val) => !specialCharactersRegexTest.test(val)
+              return decodedValues.every((val) =>
+                ALLOWED_CHARACTERS_REGEX.test(val)
               )
             },
           }}
