@@ -82,8 +82,6 @@ export const RouteSelector = () => {
         <ProtectedRouteWithProps
           exact
           path={[
-            // Collection is correct
-            // Subcollection disallows a few special characters
             "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName([a-zA-Z0-9-]+)/subfolders/:subCollectionName/editPage/:fileName",
             "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName([a-zA-Z0-9-]+)/editPage/:fileName",
             "/sites/:siteName([a-zA-Z0-9-]+)/editPage/:fileName",
