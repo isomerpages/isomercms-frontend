@@ -68,7 +68,6 @@ export const RouteSelector = () => {
         <ProtectedRouteWithProps
           exact
           path={[
-            // DONE
             "/sites/:siteName([a-zA-Z0-9-]+)/resourceRoom/:resourceRoomName([a-zA-Z0-9-]+)/resourceCategory/:resourceCategoryName([a-zA-Z0-9-]+)/editPage/:fileName",
           ]}
           component={injectApprovalRedirect(EditPage)}
