@@ -69,19 +69,6 @@ export const RouteSelector = () => {
           exact
           path={[
             "/sites/:siteName([a-zA-Z0-9-]+)/resourceRoom/:resourceRoomName([a-zA-Z0-9-]+)/resourceCategory/:resourceCategoryName([a-zA-Z0-9-]+)/editPage/:fileName",
-          ]}
-          component={injectApprovalRedirect(EditPage)}
-          validate={{
-            fileName: (value) => {
-              const encodedName = value.split(".").slice(0, -1).join(".")
-              return !specialCharactersRegexTest.test(encodedName)
-            },
-          }}
-        />
-
-        <ProtectedRouteWithProps
-          exact
-          path={[
             "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName([a-zA-Z0-9-]+)/subfolders/:subCollectionName/editPage/:fileName",
             "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName([a-zA-Z0-9-]+)/editPage/:fileName",
             "/sites/:siteName([a-zA-Z0-9-]+)/editPage/:fileName",
@@ -90,10 +77,14 @@ export const RouteSelector = () => {
           validate={{
             fileName: (value) => {
               const encodedName = value.split(".").slice(0, -1).join(".")
-              return !specialCharactersRegexTest.test(encodedName)
+              const decodedName = decodeURIComponent(encodedName)
+              return (
+                value === "terms-of-use.md" ||
+                !specialCharactersRegexTest.test(decodedName)
+              )
             },
             subCollectionName: (value) => {
-              return !specialCharactersRegexTest.test(value)
+              return !specialCharactersRegexTest.test(decodeURIComponent(value))
             },
           }}
         />
@@ -105,7 +96,7 @@ export const RouteSelector = () => {
           ]}
           validate={{
             subCollectionName: (value) => {
-              return !specialCharactersRegexTest.test(value)
+              return !specialCharactersRegexTest.test(decodeURIComponent(value))
             },
           }}
         >
