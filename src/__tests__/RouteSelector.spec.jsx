@@ -551,7 +551,7 @@ describe("Tests for RouteSelector", () => {
       render(
         <MemoryRouter
           initialEntries={[
-            "/sites/site-name/media/my-room/mediaDirectory/my-directory-name",
+            "/sites/site-name/media/images/mediaDirectory/images%2Fmy%20directory%20name",
           ]}
         >
           <LoggedInContextProvider>
@@ -617,7 +617,7 @@ describe("Tests for RouteSelector", () => {
       render(
         <MemoryRouter
           initialEntries={[
-            "/sites/site-name/folders/my-folder/subfolders/my-subfolder",
+            "/sites/site-name/folders/my-folder/subfolders/my%20subfolder",
           ]}
         >
           <LoggedInContextProvider>
@@ -693,7 +693,7 @@ describe("Tests for RouteSelector", () => {
       render(
         <MemoryRouter
           initialEntries={[
-            "/sites/site-name/folders/my-folder/subfolders/my-subfolder/editPage/my-file",
+            "/sites/site-name/folders/my-folder/subfolders/my%20subfolder/editPage/my-file",
           ]}
         >
           <LoggedInContextProvider>

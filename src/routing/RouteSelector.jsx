@@ -35,6 +35,8 @@ import { Workspace } from "layouts/Workspace"
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 import RedirectIfLoggedInRoute from "routing/RedirectIfLoggedInRoute"
 
+import { specialCharactersRegexTest } from "utils"
+
 import {
   ApprovedReviewRedirect,
   injectApprovalRedirect,
@@ -66,19 +68,48 @@ export const RouteSelector = () => {
         <ProtectedRouteWithProps
           exact
           path={[
-            "/sites/:siteName([a-zA-Z0-9-]+)/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName/editPage/:fileName",
-            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName/subfolders/:subCollectionName/editPage/:fileName",
-            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName/editPage/:fileName",
+            "/sites/:siteName([a-zA-Z0-9-]+)/resourceRoom/:resourceRoomName([a-zA-Z0-9-]+)/resourceCategory/:resourceCategoryName([a-zA-Z0-9-]+)/editPage/:fileName",
+          ]}
+          component={injectApprovalRedirect(EditPage)}
+          validate={{
+            fileName: (value) => {
+              const encodedName = value.split(".").slice(0, -1).join(".")
+              return !specialCharactersRegexTest.test(encodedName)
+            },
+          }}
+        />
+
+        <ProtectedRouteWithProps
+          exact
+          path={[
+            // Collection is correct
+            // Subcollection disallows a few special characters
+            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName([a-zA-Z0-9-]+)/subfolders/:subCollectionName/editPage/:fileName",
+            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName([a-zA-Z0-9-]+)/editPage/:fileName",
             "/sites/:siteName([a-zA-Z0-9-]+)/editPage/:fileName",
           ]}
           component={injectApprovalRedirect(EditPage)}
+          validate={{
+            fileName: (value) => {
+              const encodedName = value.split(".").slice(0, -1).join(".")
+              return !specialCharactersRegexTest.test(encodedName)
+            },
+            subCollectionName: (value) => {
+              return !specialCharactersRegexTest.test(value)
+            },
+          }}
         />
 
         <ProtectedRouteWithProps
           path={[
-            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName/subfolders/:subCollectionName",
-            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName",
+            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName([a-zA-Z0-9-]+)/subfolders/:subCollectionName",
+            "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName([a-zA-Z0-9-]+)",
           ]}
+          validate={{
+            subCollectionName: (value) => {
+              return !specialCharactersRegexTest.test(value)
+            },
+          }}
         >
           <ApprovedReviewRedirect>
             <Folders />
@@ -93,8 +124,18 @@ export const RouteSelector = () => {
 
         <ProtectedRouteWithProps
           path={[
-            "/sites/:siteName([a-zA-Z0-9-]+)/media/:mediaRoom/mediaDirectory/:mediaDirectoryName",
+            "/sites/:siteName([a-zA-Z0-9-]+)/media/:mediaRoom(images|files)/mediaDirectory/:mediaDirectoryName",
           ]}
+          validate={{
+            mediaDirectoryName: (value) => {
+              // NOTE: This value is prepended with either `files|images`
+              // and nested directories are separated by `/` as well.
+              const decodedValues = decodeURIComponent(value).split("/")
+              return decodedValues.every(
+                (val) => !specialCharactersRegexTest.test(val)
+              )
+            },
+          }}
         >
           <ApprovedReviewRedirect>
             <Media />
@@ -119,7 +160,7 @@ export const RouteSelector = () => {
           </SiteLaunchProvider>
         </ProtectedRouteWithProps>
 
-        <ProtectedRouteWithProps path="/sites/:siteName([a-zA-Z0-9-]+)/review/:reviewId">
+        <ProtectedRouteWithProps path="/sites/:siteName([a-zA-Z0-9-]+)/review/:reviewId([0-9]+)">
           <ReviewRequestRoleProvider>
             <ReviewRequestDashboard />
           </ReviewRequestRoleProvider>
@@ -141,7 +182,7 @@ export const RouteSelector = () => {
           component={injectApprovalRedirect(EditContactUs)}
         />
 
-        <ProtectedRouteWithProps path="/sites/:siteName([a-zA-Z0-9-]+)/resourceRoom/:resourceRoomName/resourceCategory/:resourceCategoryName">
+        <ProtectedRouteWithProps path="/sites/:siteName([a-zA-Z0-9-]+)/resourceRoom/:resourceRoomName([a-zA-Z0-9-]+)/resourceCategory/:resourceCategoryName([a-zA-Z0-9-]+)">
           <ApprovedReviewRedirect>
             <ResourceCategory />
           </ApprovedReviewRedirect>
@@ -149,7 +190,7 @@ export const RouteSelector = () => {
 
         <ProtectedRouteWithProps
           path={[
-            "/sites/:siteName([a-zA-Z0-9-]+)/resourceRoom/:resourceRoomName",
+            "/sites/:siteName([a-zA-Z0-9-]+)/resourceRoom/:resourceRoomName([a-zA-Z0-9-]+)",
             "/sites/:siteName([a-zA-Z0-9-]+)/resourceRoom",
           ]}
         >

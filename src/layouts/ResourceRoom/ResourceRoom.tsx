@@ -62,12 +62,19 @@ import { useErrorToast, useSuccessToast } from "utils/toasts"
 
 import { DirectoryData, DirectoryInfoProps } from "types/directory"
 import { ResourceRoomRouteParams } from "types/resources"
-import { DEFAULT_RETRY_MSG, deslugifyDirectory } from "utils"
+import {
+  DEFAULT_RETRY_MSG,
+  deslugifyDirectory,
+  resourceCategoryRegexTest,
+} from "utils"
 
 import { ResourceRoomNameUpdateProps } from "../../types/directory"
 import { SiteEditLayout } from "../layouts"
 
 import { CategoryCard, ResourceBreadcrumb } from "./components"
+
+const INVALID_CHAR_MESSAGE =
+  "Please ensure that you only use alphanumeric characters with dashes and space!"
 
 const EmptyResourceRoom = () => {
   const params = useParams<ResourceRoomRouteParams>()
@@ -142,6 +149,10 @@ const EmptyResourceRoom = () => {
                 placeholder="Resource room name"
                 {...register("newDirectoryName", {
                   required: "Please enter resource room name",
+                  pattern: {
+                    value: resourceCategoryRegexTest,
+                    message: INVALID_CHAR_MESSAGE,
+                  },
                 })}
               />
               <FormErrorMessage>
@@ -375,10 +386,14 @@ const ResourceRoomContent = ({
               >
                 <FormLabel>Resource room title</FormLabel>
                 <Input
-                  placeholder="New resource room name"
+                  placeholder="New resource oom name"
                   {...register("newDirectoryName", {
                     required:
                       "Please ensure that you have entered a resource room name!",
+                    pattern: {
+                      value: resourceCategoryRegexTest,
+                      message: INVALID_CHAR_MESSAGE,
+                    },
                   })}
                 />
                 <FormErrorMessage>
@@ -394,7 +409,7 @@ const ResourceRoomContent = ({
                 <Button
                   type="submit"
                   isLoading={isUpdateResourceRoomNameLoading}
-                  isDisabled={isWriteDisabled}
+                  isDisabled={isWriteDisabled || !!errors.newDirectoryName}
                 >
                   Save
                 </Button>
