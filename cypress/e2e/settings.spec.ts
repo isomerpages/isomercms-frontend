@@ -245,6 +245,131 @@ describe("Settings page", () => {
     cy.get("@showReach").should("not.be.checked")
   })
 
+  // Skipping privatisation tests - need to configur separately for email and github repos (github repos have no password settings)
+  it.skip("Should toggle Privatise staging site button and automatically generate a password", () => {
+    // Arrange
+    // NOTE: Initial state is privatise staging off
+    cy.contains("Privatise staging site")
+      .parent()
+      .parent()
+      .find("input")
+      .as("privatiseStaging")
+    cy.get("@privatiseStaging").should("not.be.checked")
+
+    // Act
+    // Trigger click event
+    // NOTE: We have to force as chakra uses an invisible input as a checkbox
+    cy.get("@privatiseStaging")
+      .check({ force: true, timeout: 0 })
+      .then(() => {
+        // Checking within then because of wonky focus preventing the field from being populated
+        cy.contains("You should change this every 90 days")
+          .parent()
+          .next()
+          .find("input")
+          .as("passwordInput")
+        cy.wait(1000)
+        cy.get("@passwordInput").should("have.length.gt", 0)
+        cy.saveSettings()
+      })
+
+    // Assert
+    cy.get("@privatiseStaging").should("be.checked")
+    cy.contains("Username").parent().next().as("usernameInput")
+    cy.get("@usernameInput").should("be.disabled")
+  })
+
+  it.skip("Should regenerate a password if password field is emptied and privatise button toggled again", () => {
+    // Arrange
+    cy.contains("Privatise staging site")
+      .parent()
+      .parent()
+      .find("input")
+      .as("privatiseStaging")
+    cy.get("@privatiseStaging").should("be.checked")
+    cy.contains("You should change this every 90 days")
+      .parent()
+      .next()
+      .find("input")
+      .as("passwordInput")
+    cy.get("@passwordInput").clear()
+
+    // Act
+    // Trigger click event
+    // NOTE: We have to force as chakra uses an invisible input as a checkbox
+    cy.get("@privatiseStaging").uncheck({ force: true })
+    cy.get("@privatiseStaging")
+      .check({ force: true })
+      .then(() => {
+        // Assert
+        cy.contains("You should change this every 90 days")
+          .parent()
+          .next()
+          .find("input")
+          .as("passwordInput")
+        cy.wait(1000)
+        cy.get("@passwordInput").should("have.length.gt", 0)
+      })
+  })
+
+  it.skip("Should disallow passwords that do not match the criteria", () => {
+    // Arrange
+    const shortPassword = "1!Aa"
+    const noSymbol = "Blahblahblahblahblah1"
+    const noNumber = "Blahblahblahblahblah!"
+    const noCaps = "blahblahblahblahblah1!"
+    const noLower = "BLAHBLAHBLAHBLAHBLAH1!"
+    const expectedError =
+      "Password must be at least 12 characters long, and contain upper and lower case letters, numbers, and special characters"
+    cy.contains("Privatise staging site")
+      .parent()
+      .next()
+      .find("input")
+      .as("privatiseStaging")
+    cy.get("@privatiseStaging").should("be.checked")
+    cy.contains("You should change this every 90 days")
+      .parent()
+      .next()
+      .find("input")
+      .as("passwordInput")
+
+    // Assert
+    cy.get("@passwordInput").clear().type(shortPassword).blur()
+    cy.contains(expectedError).should("exist")
+    cy.get("@passwordInput").clear().type(noSymbol).blur()
+    cy.contains(expectedError).should("exist")
+    cy.get("@passwordInput").clear().type(noNumber).blur()
+    cy.contains(expectedError).should("exist")
+    cy.get("@passwordInput").clear().type(noCaps).blur()
+    cy.contains(expectedError).should("exist")
+    cy.get("@passwordInput").clear().type(noLower).blur()
+    cy.contains(expectedError).should("exist")
+  })
+
+  it.skip("Should be able to turn off password", () => {
+    // Arrange
+    cy.contains("Privatise staging site")
+      .parent()
+      .parent()
+      .find("input")
+      .as("privatiseStaging")
+    cy.get("@privatiseStaging").should("be.checked")
+    cy.contains("You should change this every 90 days")
+      .parent()
+      .next()
+      .find("input")
+      .as("passwordInput")
+
+    // Act
+    // Trigger click event
+    // NOTE: We have to force as chakra uses an invisible input as a checkbox
+    cy.get("@privatiseStaging").uncheck({ force: true })
+    cy.saveSettings()
+
+    // Assert
+    cy.get("@privatiseStaging").should("not.be.checked")
+  })
+
   it("Should change Logos and have change reflect correctly on save", () => {
     cy.get("button:contains(Upload Image)").each((el, index) => {
       cy.wrap(el).click()

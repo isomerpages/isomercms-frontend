@@ -63,6 +63,11 @@ export const fileNameExtensionRegexTest = /^[a-zA-z]{3,4}$/
 export const RESOURCE_CATEGORY_REGEX = "^([a-zA-Z0-9]*[- ]?)+$"
 export const slugifyLowerFalseRegexTest = /^([a-zA-Z0-9]+-)*[a-zA-Z0-9]+$/
 export const resourceCategoryRegexTest = RegExp(RESOURCE_CATEGORY_REGEX)
+// NOTE: This is a negation of the specialCharactersRegex
+// and also allows for `-`.
+// This is because of migration of pre-cms sites from github
+// over to cms allows for dashes in the file/folder name.
+export const ALLOWED_CHARACTERS_REGEX = /[^~%^*_+./\\`;~{}[\]"<>]/
 export const specialCharactersRegexTest = /[~%^*_+\-./\\`;~{}[\]"<>]/
 export const jekyllFirstCharacterRegexTest = /^[._#~]/
 export const mediaSpecialCharactersRegexTest = /[~%^?*+#./\\`;~{}[\]"<>]/

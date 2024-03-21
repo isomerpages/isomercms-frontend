@@ -58,7 +58,13 @@ import {
 } from "features/FeatureTour/FeatureTourSequence"
 import { MediaData } from "types/directory"
 import { MediaFolderTypes, MediaLabels, SelectedMediaDto } from "types/media"
-import { DEFAULT_RETRY_MSG, useErrorToast, useSuccessToast } from "utils"
+import {
+  ALLOWED_CHARACTERS_REGEX,
+  DEFAULT_RETRY_MSG,
+  specialCharactersRegexTest,
+  useErrorToast,
+  useSuccessToast,
+} from "utils"
 
 import { CreateButton } from "../components"
 import { SiteEditLayout } from "../layouts"
@@ -259,7 +265,7 @@ export const Media = (): JSX.Element => {
       setSelectedMedia([])
       onCreateMediaFolderModalClose()
     },
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables) => {
       if (variables.selectedPages.length === 0) {
         successToast({
           id: "create-directory-success",
@@ -280,7 +286,7 @@ export const Media = (): JSX.Element => {
         `${url}%2F${encodeURIComponent(variables.newDirectoryName)}`
       )
     },
-    onError: (err, variables, context) => {
+    onError: () => {
       errorToast({
         id: "create-directory-error",
         description: `Your ${singularDirectoryLabel} could not be created successfully. ${DEFAULT_RETRY_MSG}`,
@@ -296,7 +302,7 @@ export const Media = (): JSX.Element => {
       setSelectedMedia([])
       onMoveModalClose()
     },
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables) => {
       successToast({
         id: "move-multiple-media-success",
         description: `Successfully moved ${
@@ -304,7 +310,7 @@ export const Media = (): JSX.Element => {
         }!`,
       })
     },
-    onError: (err, variables, context) => {
+    onError: (err, variables) => {
       errorToast({
         id: "move-multiple-media-error",
         description: `Your ${
@@ -318,7 +324,7 @@ export const Media = (): JSX.Element => {
     mutate: deleteMultipleMedia,
     isLoading: isDeleteMultipleMediaLoading,
   } = useDeleteMultipleMediaHook(params, {
-    onSettled: (data, error, variables, context) => {
+    onSettled: (data, error, variables) => {
       if (variables.length === 1) {
         setSelectedMedia(
           selectedMedia.filter((selectedData) =>
@@ -333,7 +339,7 @@ export const Media = (): JSX.Element => {
       if (individualMedia) setIndividualMedia(null)
       onDeleteModalClose()
     },
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data, variables) => {
       successToast({
         id: "delete-multiple-media-success",
         description: `Successfully deleted ${
@@ -341,7 +347,7 @@ export const Media = (): JSX.Element => {
         }!`,
       })
     },
-    onError: (err, variables, context) => {
+    onError: (err, variables) => {
       errorToast({
         id: "delete-multiple-media-error",
         description: `Your ${
@@ -724,16 +730,43 @@ export const Media = (): JSX.Element => {
           path={[`${path}/editMediaSettings/:fileName`]}
           component={MediaSettingsScreen}
           onClose={() => history.goBack()}
+          validate={{
+            fileName: (value) => {
+              const encodedName = value.split(".").slice(0, -1).join(".")
+              const decodedName = decodeURIComponent(encodedName)
+              return ALLOWED_CHARACTERS_REGEX.test(decodedName)
+            },
+          }}
         />
         <ProtectedRouteWithProps
           path={[`${path}/deleteDirectory/:mediaDirectoryName`]}
           component={DeleteWarningScreen}
           onClose={() => history.goBack()}
+          validate={{
+            mediaDirectoryName: (value) => {
+              // NOTE: This value is prepended with either `files|images`
+              // and nested directories are separated by `/` as well.
+              const decodedValues = decodeURIComponent(value).split("/")
+              return decodedValues.every((val) =>
+                ALLOWED_CHARACTERS_REGEX.test(val)
+              )
+            },
+          }}
         />
         <ProtectedRouteWithProps
           path={[`${path}/editDirectorySettings/:mediaDirectoryName`]}
           component={DirectorySettingsScreen}
           onClose={() => history.goBack()}
+          validate={{
+            mediaDirectoryName: (value) => {
+              // NOTE: This value is prepended with either `files|images`
+              // and nested directories are separated by `/` as well.
+              const decodedValues = decodeURIComponent(value).split("/")
+              return decodedValues.every((val) =>
+                ALLOWED_CHARACTERS_REGEX.test(val)
+              )
+            },
+          }}
         />
       </Switch>
     </>

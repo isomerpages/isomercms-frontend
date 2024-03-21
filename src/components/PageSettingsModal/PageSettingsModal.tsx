@@ -37,6 +37,7 @@ import FormFieldMedia from "components/FormFieldMedia"
 import { LoadingButton } from "components/LoadingButton"
 import { Modal } from "components/Modal"
 
+import { getDefaultPermalink } from "utils/permalink"
 import { isWriteActionsDisabled } from "utils/reviewRequests"
 
 import { PageVariant } from "types/pages"
@@ -96,6 +97,7 @@ export const PageSettingsModal = ({
 }: PageSettingsModalParams) => {
   const { siteName, fileName } = params
   const isTiptapEnabled = useFeatureIsOn("is-tiptap-enabled")
+  const isPageCreated = !fileName
 
   const existingTitlesArray = pagesData
     .filter((page) => page.name !== fileName)
@@ -146,6 +148,14 @@ export const PageSettingsModal = ({
     })
   }
 
+  const currTitle = watch("title")
+  const currPermalink = watch("permalink")
+  useEffect(() => {
+    if (isPageCreated && currPermalink !== getDefaultPermalink(currTitle)) {
+      setValue("permalink", getDefaultPermalink(currTitle))
+    }
+  }, [isPageCreated, setValue, currTitle, currPermalink])
+
   return (
     <Modal isOpen onClose={onClose}>
       <ModalOverlay />
@@ -169,8 +179,17 @@ export const PageSettingsModal = ({
                 isLink={false}
               />
               {/* Title */}
-              <FormControl isRequired isInvalid={!!errors.title?.message}>
-                <FormLabel>Page title</FormLabel>
+              <FormControl
+                isRequired
+                isInvalid={!!errors.title?.message}
+                mb="1rem"
+              >
+                <Box mb="0.75rem">
+                  <FormLabel mb={0}>Page title</FormLabel>
+                  <FormLabel.Description color="text.description">
+                    This appears on the top of the browser window or tab
+                  </FormLabel.Description>
+                </Box>
                 <Input
                   placeholder="Page title"
                   id="title"
@@ -178,23 +197,36 @@ export const PageSettingsModal = ({
                 />
                 <FormErrorMessage>{errors.title?.message}</FormErrorMessage>
               </FormControl>
-              <br />
               {/* Permalink */}
-              <FormControl isInvalid={!!errors.permalink?.message} isRequired>
+              <FormControl
+                isInvalid={!!errors.permalink?.message}
+                isRequired
+                mb="1rem"
+              >
                 <Box mb="0.75rem">
                   <FormLabel mb={0}>Page URL</FormLabel>
                   <FormLabel.Description color="text.description">
-                    {`${siteUrl}${watch("permalink")}`}
+                    {isPageCreated
+                      ? "You can change this later in Page Settings."
+                      : `${siteUrl}${watch("permalink")}`}
                   </FormLabel.Description>
                 </Box>
                 <Input
                   {...register("permalink", { required: true })}
                   id="permalink"
                   placeholder="Insert /page-url or https://"
+                  isDisabled={isPageCreated}
                 />
+                {isPageCreated && (
+                  <Box my="0.5rem">
+                    <Text textStyle="body-2">
+                      {`${siteUrl}${watch("permalink")}`}
+                    </Text>
+                  </Box>
+                )}
+
                 <FormErrorMessage>{errors.permalink?.message}</FormErrorMessage>
               </FormControl>
-              <br />
               {isTiptapEnabled && (
                 <FormControl isInvalid={!!errors.permalink?.message} isRequired>
                   <Flex mb="0.75rem" alignItems="center">

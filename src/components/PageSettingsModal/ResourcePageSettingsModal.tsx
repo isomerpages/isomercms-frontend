@@ -43,6 +43,7 @@ import FormFieldMedia from "components/FormFieldMedia"
 import { LoadingButton } from "components/LoadingButton"
 import { Modal } from "components/Modal"
 
+import { getDefaultPermalink } from "utils/permalink"
 import { isWriteActionsDisabled } from "utils/reviewRequests"
 
 import { PageVariant } from "types/pages"
@@ -228,6 +229,19 @@ export const ResourcePageSettingsModal = ({
     })
   }
 
+  const isResourcePageCreated = !fileName
+
+  const currTitle = watch("title")
+  const currPermalink = watch("permalink")
+  useEffect(() => {
+    if (
+      isResourcePageCreated &&
+      currPermalink !== getDefaultPermalink(currTitle)
+    ) {
+      setValue("permalink", getDefaultPermalink(currTitle))
+    }
+  }, [isResourcePageCreated, setValue, currTitle, currPermalink])
+
   return (
     <Modal isOpen onClose={onClose}>
       <ModalOverlay />
@@ -235,7 +249,9 @@ export const ResourcePageSettingsModal = ({
         <ModalCloseButton id="settings-CLOSE" />
         <ModalHeader>
           <Text as="h1">
-            {fileName ? "Resource page settings" : "Create new resource"}
+            {isResourcePageCreated
+              ? "Create new resource"
+              : "Resource page settings"}
           </Text>
         </ModalHeader>
         <ModalBody>
@@ -297,14 +313,24 @@ export const ResourcePageSettingsModal = ({
                     <Box mb="0.75rem">
                       <FormLabel mb={0}>Page URL</FormLabel>
                       <FormLabel.Description color="text.description">
-                        {`${siteUrl}${watch("permalink")}`}
+                        {isResourcePageCreated
+                          ? `You can change this later in Resource Page Settings.`
+                          : `${siteUrl}${watch("permalink")}`}
                       </FormLabel.Description>
                     </Box>
                     <Input
                       {...register("permalink", { required: true })}
                       id="permalink"
                       placeholder="Insert /page-url or https://"
+                      isDisabled={isResourcePageCreated}
                     />
+                    {isResourcePageCreated && (
+                      <Box my="0.5rem">
+                        <Text textStyle="body-2">
+                          {`${siteUrl}${watch("permalink")}`}
+                        </Text>
+                      </Box>
+                    )}
                     <FormErrorMessage>
                       {errors.permalink?.message}
                     </FormErrorMessage>
