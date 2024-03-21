@@ -78,10 +78,7 @@ export const RouteSelector = () => {
             fileName: (value) => {
               const encodedName = value.split(".").slice(0, -1).join(".")
               const decodedName = decodeURIComponent(encodedName)
-              return (
-                value === "terms-of-use.md" ||
-                ALLOWED_CHARACTERS_REGEX.test(decodedName)
-              )
+              return ALLOWED_CHARACTERS_REGEX.test(decodedName)
             },
             subCollectionName: (value) => {
               return ALLOWED_CHARACTERS_REGEX.test(decodeURIComponent(value))
