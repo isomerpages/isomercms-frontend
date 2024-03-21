@@ -59,6 +59,7 @@ import {
 import { MediaData } from "types/directory"
 import { MediaFolderTypes, MediaLabels, SelectedMediaDto } from "types/media"
 import {
+  ALLOWED_CHARACTERS_REGEX,
   DEFAULT_RETRY_MSG,
   specialCharactersRegexTest,
   useErrorToast,
@@ -732,7 +733,8 @@ export const Media = (): JSX.Element => {
           validate={{
             fileName: (value) => {
               const encodedName = value.split(".").slice(0, -1).join(".")
-              return !specialCharactersRegexTest.test(encodedName)
+              const decodedName = decodeURIComponent(encodedName)
+              return ALLOWED_CHARACTERS_REGEX.test(decodedName)
             },
           }}
         />
@@ -742,11 +744,11 @@ export const Media = (): JSX.Element => {
           onClose={() => history.goBack()}
           validate={{
             mediaDirectoryName: (value) => {
-              // NOTE: This value is prepended with either `files|images/`
+              // NOTE: This value is prepended with either `files|images`
               // and nested directories are separated by `/` as well.
               const decodedValues = decodeURIComponent(value).split("/")
-              return decodedValues.every(
-                (val) => !specialCharactersRegexTest.test(val)
+              return decodedValues.every((val) =>
+                ALLOWED_CHARACTERS_REGEX.test(val)
               )
             },
           }}
@@ -757,11 +759,11 @@ export const Media = (): JSX.Element => {
           onClose={() => history.goBack()}
           validate={{
             mediaDirectoryName: (value) => {
-              // NOTE: This value is prepended with either `files|images/`
+              // NOTE: This value is prepended with either `files|images`
               // and nested directories are separated by `/` as well.
               const decodedValues = decodeURIComponent(value).split("/")
-              return decodedValues.every(
-                (val) => !specialCharactersRegexTest.test(val)
+              return decodedValues.every((val) =>
+                ALLOWED_CHARACTERS_REGEX.test(val)
               )
             },
           }}
