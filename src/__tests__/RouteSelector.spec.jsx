@@ -384,7 +384,7 @@ describe("Tests for RouteSelector", () => {
       render(
         <MemoryRouter
           initialEntries={[
-            "/sites/site-name/resourceRoom/my-resource/resourceCategory/my-category/editPage/my-file",
+            "/sites/site-name/resourceRoom/my-resource/resourceCategory/my-category/editPage/my-file.md",
           ]}
         >
           <LoggedInContextProvider>
@@ -518,7 +518,7 @@ describe("Tests for RouteSelector", () => {
     test("Should render EditPage page for site site-name if logged in", () => {
       // Act
       render(
-        <MemoryRouter initialEntries={["/sites/site-name/editPage/my-file"]}>
+        <MemoryRouter initialEntries={["/sites/site-name/editPage/my-file.md"]}>
           <LoggedInContextProvider>
             <RouteSelector />
           </LoggedInContextProvider>
@@ -656,7 +656,7 @@ describe("Tests for RouteSelector", () => {
       render(
         <MemoryRouter
           initialEntries={[
-            "/sites/site-name/folders/my-folder/editPage/my-file",
+            "/sites/site-name/folders/my-folder/editPage/my-file.md",
           ]}
         >
           <LoggedInContextProvider>
@@ -693,7 +693,7 @@ describe("Tests for RouteSelector", () => {
       render(
         <MemoryRouter
           initialEntries={[
-            "/sites/site-name/folders/my-folder/subfolders/my%20subfolder/editPage/my-file",
+            "/sites/site-name/folders/my-folder/subfolders/my%20subfolder/editPage/my-file.md",
           ]}
         >
           <LoggedInContextProvider>

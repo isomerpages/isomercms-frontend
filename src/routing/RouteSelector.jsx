@@ -35,7 +35,7 @@ import { Workspace } from "layouts/Workspace"
 import { ProtectedRouteWithProps } from "routing/ProtectedRouteWithProps"
 import RedirectIfLoggedInRoute from "routing/RedirectIfLoggedInRoute"
 
-import { specialCharactersRegexTest } from "utils"
+import { ALLOWED_CHARACTERS_REGEX } from "utils"
 
 import {
   ApprovedReviewRedirect,
@@ -69,21 +69,6 @@ export const RouteSelector = () => {
           exact
           path={[
             "/sites/:siteName([a-zA-Z0-9-]+)/resourceRoom/:resourceRoomName([a-zA-Z0-9-]+)/resourceCategory/:resourceCategoryName([a-zA-Z0-9-]+)/editPage/:fileName",
-          ]}
-          component={injectApprovalRedirect(EditPage)}
-          validate={{
-            fileName: (value) => {
-              const encodedName = value.split(".").slice(0, -1).join(".")
-              return !specialCharactersRegexTest.test(encodedName)
-            },
-          }}
-        />
-
-        <ProtectedRouteWithProps
-          exact
-          path={[
-            // Collection is correct
-            // Subcollection disallows a few special characters
             "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName([a-zA-Z0-9-]+)/subfolders/:subCollectionName/editPage/:fileName",
             "/sites/:siteName([a-zA-Z0-9-]+)/folders/:collectionName([a-zA-Z0-9-]+)/editPage/:fileName",
             "/sites/:siteName([a-zA-Z0-9-]+)/editPage/:fileName",
@@ -92,10 +77,11 @@ export const RouteSelector = () => {
           validate={{
             fileName: (value) => {
               const encodedName = value.split(".").slice(0, -1).join(".")
-              return !specialCharactersRegexTest.test(encodedName)
+              const decodedName = decodeURIComponent(encodedName)
+              return ALLOWED_CHARACTERS_REGEX.test(decodedName)
             },
             subCollectionName: (value) => {
-              return !specialCharactersRegexTest.test(value)
+              return ALLOWED_CHARACTERS_REGEX.test(decodeURIComponent(value))
             },
           }}
         />
@@ -107,7 +93,7 @@ export const RouteSelector = () => {
           ]}
           validate={{
             subCollectionName: (value) => {
-              return !specialCharactersRegexTest.test(value)
+              return ALLOWED_CHARACTERS_REGEX.test(decodeURIComponent(value))
             },
           }}
         >
@@ -131,8 +117,8 @@ export const RouteSelector = () => {
               // NOTE: This value is prepended with either `files|images`
               // and nested directories are separated by `/` as well.
               const decodedValues = decodeURIComponent(value).split("/")
-              return decodedValues.every(
-                (val) => !specialCharactersRegexTest.test(val)
+              return decodedValues.every((val) =>
+                ALLOWED_CHARACTERS_REGEX.test(val)
               )
             },
           }}

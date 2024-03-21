@@ -386,7 +386,7 @@ const ResourceRoomContent = ({
               >
                 <FormLabel>Resource room title</FormLabel>
                 <Input
-                  placeholder="New resource oom name"
+                  placeholder="New resource room name"
                   {...register("newDirectoryName", {
                     required:
                       "Please ensure that you have entered a resource room name!",
