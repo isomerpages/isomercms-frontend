@@ -37,6 +37,7 @@ import FormFieldMedia from "components/FormFieldMedia"
 import { LoadingButton } from "components/LoadingButton"
 import { Modal } from "components/Modal"
 
+import { getDefaultPermalink } from "utils/permalink"
 import { isWriteActionsDisabled } from "utils/reviewRequests"
 
 import { PageVariant } from "types/pages"
@@ -145,15 +146,6 @@ export const PageSettingsModal = ({
       pageData,
       data,
     })
-  }
-
-  const getDefaultPermalink = (title: string) => {
-    if (!title) return ""
-    const titleSlug = title
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "")
-    return `/${titleSlug}/`
   }
 
   const currTitle = watch("title")
