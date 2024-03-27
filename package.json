@@ -133,7 +133,7 @@
     "storybook": "source .env && REACT_APP_ENV=test && storybook dev -p 6006",
     "build-storybook": "REACT_APP_ENV=test && storybook build",
     "chromatic": "npx chromatic --project-token=$CHROMATIC_PROJECT_TOKEN",
-    "sourcemaps:upload": "npx datadog-ci sourcemaps upload ./build --service=isomercms-frontend --release-version=$REACT_APP_VERSION --minified-path-prefix=$REACT_APP_URL"
+    "sourcemaps:upload": "npx datadog-ci sourcemaps upload ./build --service=isomer --release-version=$REACT_APP_VERSION --minified-path-prefix=$REACT_APP_URL"
   },
   "eslintConfig": {
     "extends": "react-app",
