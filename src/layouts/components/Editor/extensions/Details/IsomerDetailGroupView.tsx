@@ -1,6 +1,8 @@
 import { Box, HStack, Icon, IconButton, Tooltip } from "@chakra-ui/react"
 import { NodeViewContent, NodeViewProps } from "@tiptap/react"
-import { BiPlus, BiTrash } from "react-icons/bi"
+import { BiPencil, BiPlus, BiTrash } from "react-icons/bi"
+
+import { useEditorDrawerContext } from "contexts/EditorDrawerContext"
 
 import { BlockWrapper } from "../../components/BlockWrapper"
 
@@ -13,6 +15,8 @@ export const IsomerDetailGroupView = ({
   const endPos = startPos + node.nodeSize
   const activePos = editor.state.selection.anchor
   const selected = activePos >= startPos && activePos < endPos
+
+  const { onDrawerOpen } = useEditorDrawerContext()
 
   const otherButtons = (
     <>
@@ -27,12 +31,34 @@ export const IsomerDetailGroupView = ({
           borderRadius="0.25rem"
           border="1px solid"
           borderColor="base.divider.medium"
-          boxShadow="0px 8px 12px 0px rgba(187, 187, 187, 0.50)"
+          boxShadow="sm"
           px="0.5rem"
           py="0.25rem"
           mr="-0.5rem"
           mt="-1.5rem"
         >
+          <Tooltip label="Edit accordion block" hasArrow placement="top">
+            <IconButton
+              _hover={{ bg: "gray.100" }}
+              _active={{ bg: "gray.200" }}
+              onClick={onDrawerOpen("accordion")}
+              bgColor="transparent"
+              border="none"
+              h="1.75rem"
+              w="1.75rem"
+              minH="1.75rem"
+              minW="1.75rem"
+              p="0.25rem"
+              aria-label="edit accordion block"
+            >
+              <Icon
+                as={BiPencil}
+                fontSize="1.25rem"
+                color="base.content.medium"
+              />
+            </IconButton>
+          </Tooltip>
+
           <Tooltip label="Delete accordion block" hasArrow placement="top">
             <IconButton
               _hover={{ bg: "gray.100" }}
@@ -72,7 +98,7 @@ export const IsomerDetailGroupView = ({
         borderRadius="0.25rem"
         border="1px solid"
         borderColor="base.divider.medium"
-        boxShadow="0px 8px 12px 0px rgba(187, 187, 187, 0.50)"
+        boxShadow="sm"
       >
         <IconButton
           _hover={{ bg: "gray.100" }}
@@ -114,8 +140,10 @@ export const IsomerDetailGroupView = ({
         borderColor="base.divider.strong"
         h="100%"
         w="100%"
-        borderTop="1px solid #d4d4d4"
-        borderBottom="1px solid #d4d4d4"
+        borderTop="1px solid"
+        borderTopColor="base.divider.strong"
+        borderBottom="1px solid"
+        borderBottomColor="base.divider.strong"
       >
         <NodeViewContent />
       </Box>

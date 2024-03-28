@@ -212,8 +212,8 @@ details.isomer-details[open] > *:not(summary) {
 
 details.isomer-details {
   display: flex;
-  border-top: 1px solid #d4d4d4;
-  border-bottom: 1px solid #d4d4d4;
+  border-top: 1px solid var(--chakra-colors-base-divider-strong);
+  border-bottom: 1px solid var(--chakra-colors-base-divider-strong);
 
   > div {
     flex: 1 1 auto;
@@ -226,7 +226,15 @@ details.isomer-details {
   }
 }
 
-details.isomer-details ~ details.isomer-details {
+.isomer-accordion-grey div.isomer-details-content > * {
+  margin-top: 1rem;
+}
+
+.isomer-accordion-white div.isomer-details-content > * {
+  margin-top: 0.25rem;
+}
+
+.isomer-accordion-white details.isomer-details ~ details.isomer-details {
   margin-top: 0;
   margin-bottom: 0;
   border-top: 0;
@@ -247,23 +255,32 @@ details.isomer-details ~ details.isomer-details {
 
 .isomer-details:last-of-type {
   margin-bottom: 0;
-  border-bottom: 1px solid #d4d4d4;
+  border-bottom: 1px solid var(--chakra-colors-base-divider-strong);
 }
 
 .isomer-accordion-white > details.isomer-details > summary {
   background-color: #fff;
 }
 
-.isomer-accordion-white > details.isomer-details[open] > summary {
+.isomer-accordion > details.isomer-details > summary {
+  cursor: pointer;
+}
+
+.isomer-accordion > details.isomer-details[open] > summary {
   font-weight: 700;
 }
 
-.isomer-accordion-gray > details.isomer-details > summary {
+.isomer-accordion-grey > details.isomer-details {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border: 0;
+}
+.isomer-accordion-grey > details.isomer-details > summary {
   background-color: #f4f4f4;
   color: #4372d6;
 }
 
-.isomer-accordion-gray > details.isomer-details > summary:hover {
+.isomer-accordion-grey > details.isomer-details > summary:hover {
   color: #fff;
   background-color: #4372d6;
 }
