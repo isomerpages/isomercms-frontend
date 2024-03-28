@@ -1,6 +1,6 @@
 {
   "name": "isomercms-frontend",
-  "version": "0.83.0",
+  "version": "0.84.0",
   "private": true,
   "engines": {
     "node": ">=16.0.0"
@@ -116,7 +116,7 @@
     "dev": "source .env && react-scripts start",
     "build": "react-scripts build",
     "build:netlify": "CI=false npm run build && npm run sourcemaps:upload",
-    "release": "npm version $npm_config_isomer_update && git push --tags",
+    "release": "bash scripts/release_prep.sh",
     "test": "craco test",
     "test:playwright": "source .env && npm run reset-e2e && npx playwright test --ui",
     "test:ci": "node scripts/run-e2e.js run",
@@ -133,7 +133,7 @@
     "storybook": "source .env && REACT_APP_ENV=test && storybook dev -p 6006",
     "build-storybook": "REACT_APP_ENV=test && storybook build",
     "chromatic": "npx chromatic --project-token=$CHROMATIC_PROJECT_TOKEN",
-    "sourcemaps:upload": "npx datadog-ci sourcemaps upload ./build --service=isomercms-frontend --release-version=$REACT_APP_VERSION --minified-path-prefix=$REACT_APP_URL"
+    "sourcemaps:upload": "npx datadog-ci sourcemaps upload ./build --service=isomer --release-version=$REACT_APP_VERSION --minified-path-prefix=$REACT_APP_URL"
   },
   "eslintConfig": {
     "extends": "react-app",
