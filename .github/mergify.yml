@@ -14,11 +14,11 @@ pull_request_rules:
 
   - name: Approve and merge Snyk.io upgrades
     conditions:
-      - author=snyk-bot
+      - author=isomeradmin
       - check-success~=lint
       - check-success~=build
       - check-success~=test
-      - title~=^\[Snyk\]]
+      - title~=^\[Snyk\]
       - base = develop
     actions:
       review:
