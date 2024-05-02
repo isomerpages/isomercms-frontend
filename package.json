@@ -1,6 +1,6 @@
 {
   "name": "isomercms-frontend",
-  "version": "0.84.0",
+  "version": "0.85.0",
   "private": true,
   "engines": {
     "node": ">=16.0.0"
@@ -40,7 +40,7 @@
     "@tiptap/extension-placeholder": "^2.1.12",
     "@tiptap/extension-subscript": "^2.2.4",
     "@tiptap/extension-superscript": "^2.2.4",
-    "@tiptap/extension-table": "^2.1.12",
+    "@tiptap/extension-table": "^2.3.0",
     "@tiptap/extension-table-cell": "^2.1.12",
     "@tiptap/extension-table-header": "^2.1.12",
     "@tiptap/extension-table-row": "^2.1.12",
@@ -170,7 +170,7 @@
     "@jest/globals": "^27.0.3",
     "@mdx-js/react": "^2.3.0",
     "@playwright/test": "^1.41.1",
-    "@storybook/addon-actions": "^8.0.0",
+    "@storybook/addon-actions": "^8.0.9",
     "@storybook/addon-docs": "^7.0.24",
     "@storybook/addon-essentials": "^7.0.24",
     "@storybook/addon-links": "^7.0.24",
@@ -212,7 +212,7 @@
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "eslint-plugin-storybook": "^0.6.12",
     "find-webpack": "^2.2.1",
-    "husky": "^6.0.0",
+    "husky": "^9.0.11",
     "invariant": "^2.2.4",
     "jest": "^29.5.0",
     "lint-staged": "^11.0.0",
