@@ -88,14 +88,14 @@ export const LinksReportBanner = () => {
         templateColumns="repeat(12, 1fr)"
         w="100%"
         maxW="1440px"
-        gap="16px"
+        gap="1rem"
         mx="auto"
-        px="32px"
+        px="2rem"
       >
         <GridItem colSpan={1} />
         <GridItem colSpan={10}>
           <HStack w="100%" justifyContent="space-between">
-            <VStack w="100%" alignItems="start" my="20px" spacing="8px">
+            <VStack w="100%" alignItems="start" my="1.25rem" spacing=".5rem">
               <Badge variant="subtle">Experimental feature</Badge>
               <Text
                 textStyle="h6"
@@ -138,17 +138,26 @@ const normaliseUrl = (url: string): string => {
 const NoBrokenLinks = () => {
   const { siteName } = useParams<{ siteName: string }>()
   return (
-    <Center height="70vh">
-      <VStack>
+    <Center w="22.5rem" pt="3rem">
+      <VStack justifyContent="center" gap=".75rem">
         <NoBrokenLinksImage />
-        <Text mt="1rem" textStyle="h2">
+        <Text
+          textStyle="h5"
+          fontFamily={typography.fontFamilies.inter}
+          textAlign="center"
+          pt=".5rem"
+        >
           Hurrah! All your references are nice and sturdy.
         </Text>
-        <Text textStyle="body-1">
+        <Text
+          textStyle="body-2"
+          fontFamily={typography.fontFamilies.inter}
+          textAlign="center"
+        >
           We couldn&apos;t find any broken references on your site. You can come
           back anytime to run the checker again.
         </Text>
-        <Button as={RouterLink} to={`/sites/${siteName}/dashboard`}>
+        <Button as={RouterLink} to={`/sites/${siteName}/dashboard`} mt="1rem">
           Back to dashboard
         </Button>
       </VStack>
@@ -189,8 +198,8 @@ const LoadingLinkChecker = () => {
         <Box
           as={BiLoaderAlt}
           animation={`${spin} 1s linear infinite`}
-          height="20px"
-          width="20px"
+          height="1.25rem"
+          width="1.25rem"
         />
         <Text textStyle="h5" textAlign="center">
           Sniffing out broken links on your site...
@@ -210,8 +219,8 @@ const LinkBody = () => {
     onOpen: onLinkReportModalOpen,
     onClose: onLinkReportModalClose,
   } = useDisclosure()
-  const [selectedLinkCms, setSelectedLinkCms] = useState("" as string)
-  const [selectedLinkStaging, setSelectedLinkStaging] = useState("" as string)
+  const [selectedLinkCms, setSelectedLinkCms] = useState("")
+  const [selectedLinkStaging, setSelectedLinkStaging] = useState("")
   const isBrokenLinksReporterEnabled = useFeatureIsOn(
     "is_broken_links_report_enabled"
   )
@@ -243,7 +252,9 @@ const LinkBody = () => {
             pageCmsUrl={selectedLinkCms}
             pageStagingUrl={selectedLinkStaging}
           />
-          <NoBrokenLinks />
+          <Center>
+            <NoBrokenLinks />
+          </Center>
         </>
       )
     }
@@ -263,7 +274,9 @@ const LinkBody = () => {
             pageCmsUrl={selectedLinkCms}
             pageStagingUrl={selectedLinkStaging}
           />
-          <NoBrokenLinks />
+          <Center>
+            <NoBrokenLinks />
+          </Center>
         </>
       )
     }
@@ -302,14 +315,14 @@ const LinkBody = () => {
           templateColumns="repeat(12, 1fr)"
           w="100%"
           maxW="1440px"
-          gap="16px"
+          gap="1rem"
           mx="auto"
-          px="32px"
+          px="2rem"
           h="100%"
         >
           <GridItem colSpan={1} />
           <GridItem colSpan={10}>
-            <VStack spacing="8px" pt="48px">
+            <VStack spacing=".5rem" pt="3rem">
               <Text
                 textStyle="h4"
                 alignSelf="flex-start"
@@ -319,7 +332,7 @@ const LinkBody = () => {
                 {sortedUniqueLinks.length} Pages with {links.length} broken
                 references
               </Text>
-              <HStack alignSelf="flex-start" paddingBottom="16px">
+              <HStack alignSelf="flex-start" paddingBottom="1rem">
                 <Text
                   textStyle="body-2"
                   textAlign="left"
@@ -341,7 +354,7 @@ const LinkBody = () => {
                 <Table>
                   <Thead>
                     <Tr>
-                      <Th h="56px" textAlign="left" padding="6px 16px">
+                      <Th h="3.5rem" textAlign="left" padding=".375rem 1rem">
                         <Text
                           textStyle="subhead-2"
                           fontFamily={typography.fontFamilies.inter}
@@ -351,10 +364,10 @@ const LinkBody = () => {
                         </Text>
                       </Th>
                       <Th
-                        w="200px"
-                        h="56px"
+                        w="12.5rem"
+                        h="3.5rem"
                         textAlign="center"
-                        padding="6px 16px"
+                        padding=".375rem 1rem"
                       >
                         <Text
                           textStyle="subhead-2"
@@ -364,7 +377,7 @@ const LinkBody = () => {
                           Broken References
                         </Text>
                       </Th>
-                      <Th w="200px" textAlign="left" padding="6px 16px">
+                      <Th w="12.5rem" textAlign="left" padding=".375rem 1rem">
                         <Text
                           textStyle="subhead-2"
                           fontFamily={typography.fontFamilies.inter}
@@ -384,8 +397,8 @@ const LinkBody = () => {
                           borderTop="1px"
                           borderColor="base.divider.medium"
                         >
-                          <Td border="0px" padding="18px 16px">
-                            <VStack alignItems="flex-start" spacing="4px">
+                          <Td border="0px" padding="1.125rem 1rem">
+                            <VStack alignItems="flex-start" spacing=".25rem">
                               <Text
                                 textStyle="subhead-2"
                                 fontFamily={typography.fontFamilies.inter}
@@ -405,7 +418,7 @@ const LinkBody = () => {
                               </Breadcrumb>
                             </VStack>
                           </Td>
-                          <Td w="200px" border="0px" padding="18px 16px">
+                          <Td w="12.5rem" border="0px" padding="1.125rem 1rem">
                             <Text
                               textColor="base.content.strong"
                               textStyle="subhead-2"
@@ -420,7 +433,7 @@ const LinkBody = () => {
                               }
                             </Text>
                           </Td>
-                          <Td w="200px" border="0px" padding="18px 16px">
+                          <Td w="12.5rem" border="0px" padding="1.125rem 1rem">
                             <Button
                               variant="link"
                               textStyle="subhead-2"
@@ -437,7 +450,11 @@ const LinkBody = () => {
                               }}
                             >
                               Review Page
-                              <BxRightArrowAlt h="20px" w="20px" pl="4px" />
+                              <BxRightArrowAlt
+                                h="1.25rem"
+                                w="1.25rem"
+                                pl=".25rem"
+                              />
                             </Button>
                           </Td>
                         </Tr>
@@ -468,14 +485,14 @@ const LinkBody = () => {
         templateColumns="repeat(12, 1fr)"
         w="100%"
         maxW="1440px"
-        gap="16px"
+        gap="1rem"
         mx="auto"
-        px="32px"
+        px="2rem"
         h="100%"
       >
         <GridItem colSpan={1} />
         <GridItem colSpan={10}>
-          <VStack spacing="8px" pt="48px">
+          <VStack spacing=".5rem" pt="3rem">
             <Text
               textStyle="h4"
               alignSelf="flex-start"
@@ -484,7 +501,7 @@ const LinkBody = () => {
             >
               Pages with broken references
             </Text>
-            <HStack alignSelf="flex-start" paddingBottom="16px">
+            <HStack alignSelf="flex-start" paddingBottom="1rem">
               <Text
                 textStyle="body-2"
                 textAlign="left"
@@ -506,7 +523,7 @@ const LinkBody = () => {
               <Table>
                 <Thead>
                   <Tr>
-                    <Th h="56px" textAlign="left" padding="6px 16px">
+                    <Th h="3.5rem" textAlign="left" padding=".375rem 1rem">
                       <Text
                         textStyle="subhead-2"
                         fontFamily={typography.fontFamilies.inter}
@@ -516,10 +533,10 @@ const LinkBody = () => {
                       </Text>
                     </Th>
                     <Th
-                      w="200px"
-                      h="56px"
+                      w="12.5rem"
+                      h="3.5rem"
                       textAlign="center"
-                      padding="6px 16px"
+                      padding=".375rem 1rem"
                     >
                       <Text
                         textStyle="subhead-2"
@@ -529,7 +546,7 @@ const LinkBody = () => {
                         Broken References
                       </Text>
                     </Th>
-                    <Th w="200px" textAlign="left" padding="6px 16px">
+                    <Th w="12.5rem" textAlign="left" padding=".375rem 1rem">
                       <Text
                         textStyle="subhead-2"
                         fontFamily={typography.fontFamilies.inter}

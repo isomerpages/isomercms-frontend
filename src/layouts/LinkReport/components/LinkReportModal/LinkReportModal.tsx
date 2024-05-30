@@ -37,7 +37,7 @@ import { set } from "lodash"
 import React, { useEffect, useState } from "react"
 import { BiLoaderAlt } from "react-icons/bi"
 import { useQueryClient } from "react-query"
-import { useParams } from "react-router-dom"
+import { useParams, Link as RouterLink } from "react-router-dom"
 
 import { Modal as CustomModal } from "components/Modal"
 import PaginateBtn from "components/paginateBtn"
@@ -119,16 +119,16 @@ const LinkReportModalBanner = (props: Omit<ModalProps, "children">) => {
       templateColumns="repeat(12, 1fr)"
       w="100%"
       maxW="1440px"
-      gap="16px"
+      gap="1rem"
       mx="auto"
-      px="32px"
+      px="2rem"
       bg="white"
     >
       <GridItem colSpan={1} />
       <GridItem colSpan={10}>
         <HStack
           w="100%"
-          padding="20px 0"
+          padding="1.25rem 0"
           h="fit-content"
           justifyContent="space-between"
         >
@@ -137,11 +137,11 @@ const LinkReportModalBanner = (props: Omit<ModalProps, "children">) => {
             color={colors.interaction.links.default}
             onClick={onClose}
           >
-            <BxRightArrowAlt transform="scale(-1,1)" h="20px" w="20px" />
+            <BxRightArrowAlt transform="scale(-1,1)" h="1.25rem" w="1.25rem" />
             <Text
-              ml="4px"
+              ml=".25rem"
               fontFamily={typography.fontFamilies.inter}
-              fontSize="14px"
+              fontSize=".875rem"
             >
               Back to main report
             </Text>
@@ -151,9 +151,9 @@ const LinkReportModalBanner = (props: Omit<ModalProps, "children">) => {
               onClick={onClick}
               variant="solid"
               isDisabled={isBrokenLinksLoading}
-              height="24px"
-              padding="8px 16px"
-              fontSize="14px"
+              height="1.5rem"
+              padding=".5rem 1rem"
+              fontSize=".875rem"
               size="xs"
             >
               {isBrokenLinksLoading
@@ -202,13 +202,13 @@ const LinksReportDetails = ({
       templateColumns="repeat(12, 1fr)"
       w="100%"
       maxW="1440px"
-      gap="16px"
+      gap="1rem"
       mx="auto"
-      px="32px"
+      px="2rem"
     >
       <GridItem colSpan={1} />
       <GridItem colSpan={10}>
-        <VStack paddingTop="48px" width="100%" align="center" spacing="4px">
+        <VStack paddingTop="3rem" width="100%" align="center" spacing=".25rem">
           <Text
             font-feature-settings="cv10 cv05"
             font-variant-numeric="lining-nums tabular-nums"
@@ -225,15 +225,15 @@ const LinksReportDetails = ({
           <HStack
             display="flex"
             align-items="center"
-            gap="24px"
+            gap="1.5rem"
             width="100%"
-            paddingBottom="20px"
+            paddingBottom="1.25rem"
           >
             <Text
-              fontSize="28px"
+              fontSize="1.75rem"
               fontStyle="normal"
               fontWeight="600"
-              lineHeight="36px"
+              lineHeight="2.25rem"
               fontFamily="Inter"
               flex="1 0 0"
               font-feature-settings="cv10 cv05"
@@ -264,7 +264,7 @@ const LinksReportDetails = ({
                 justifyContent="space-between"
                 display="flex"
                 width="100%"
-                paddingBottom="20px"
+                paddingBottom="1.25rem"
               >
                 <Text
                   textStyle="body-2"
@@ -296,11 +296,11 @@ const LinksReportDetails = ({
                 <Table variant="simple">
                   <Thead>
                     <Tr>
-                      <Th textAlign="left" width="144px" padding="0">
+                      <Th textAlign="left" width="9rem" padding="0">
                         <HStack
-                          height="56px"
-                          padding="6px 16px"
-                          gap="8px"
+                          height="3.5rem"
+                          padding=".375rem 1rem"
+                          gap=".5rem"
                           fontFamily={typography.fontFamilies.inter}
                         >
                           <Text textStyle="subhead-2" textTransform="none">
@@ -308,7 +308,7 @@ const LinksReportDetails = ({
                           </Text>
                         </HStack>
                       </Th>
-                      <Th textAlign="left" padding="6px 16px">
+                      <Th textAlign="left" padding=".375rem 1rem">
                         <Text
                           textStyle="subhead-2"
                           fontFamily={typography.fontFamilies.inter}
@@ -331,7 +331,7 @@ const LinksReportDetails = ({
                               borderTop="1px"
                               borderColor="base.divider.medium"
                             >
-                              <Td width="144px" border="0px" padding="0px 16px">
+                              <Td width="9rem" border="0" padding="0px 1rem">
                                 <Flex
                                   height="100%"
                                   align="center"
@@ -348,7 +348,7 @@ const LinksReportDetails = ({
                               <Td align="left" border="0px" padding="0px">
                                 <VStack
                                   display="flex"
-                                  padding="18px 16px"
+                                  padding="1.125rem 1rem"
                                   flexDirection="column"
                                   alignItems="flex-start"
                                   gap="0"
@@ -358,7 +358,7 @@ const LinksReportDetails = ({
                                     <Text
                                       color={colors.base.content.medium}
                                       textStyle="body-2"
-                                      paddingBottom="4px"
+                                      paddingBottom=".25rem"
                                       fontFamily={typography.fontFamilies.inter}
                                     >
                                       {link.linkedText
@@ -369,7 +369,7 @@ const LinksReportDetails = ({
                                   <Text
                                     color={colors.base.content.strong}
                                     textStyle="body-2"
-                                    paddingBottom="12px"
+                                    paddingBottom=".75rem"
                                     fontFamily={typography.fontFamilies.inter}
                                   >
                                     {link.linkToAsset
@@ -485,17 +485,38 @@ const getSuggestion = (error: DetailedNonPermaLinkError): string => {
 
 const LinkReportModalNoBrokenLink = (props: Omit<ModalProps, "children">) => {
   const { onClose } = props
+  const { siteName } = useParams<{ siteName: string }>()
   return (
-    <Center>
-      <VStack>
+    <Center w="22.5rem" pt="2rem">
+      <VStack gap=".75rem">
         <NoBrokenLinksImage />
-        <Text mt="1rem" textStyle="h2">
+        <Text
+          textStyle="h5"
+          fontFamily={typography.fontFamilies.inter}
+          textAlign="center"
+          pt=".5rem"
+        >
           Hurrah! You’ve fixed all broken references on this page.
         </Text>
-        <Text textStyle="body-1">
+        <Text
+          textStyle="body-2"
+          fontFamily={typography.fontFamilies.inter}
+          textAlign="center"
+        >
           You can come back to scan this page again if you make edits to it.
         </Text>
-        <Button onClick={() => onClose()}>Back to main report</Button>
+        <Button mt="1rem" onClick={() => onClose()}>
+          Back to main report
+        </Button>
+        <Button
+          variant="link"
+          color="interaction.links.default"
+          as={RouterLink}
+          to={`/sites/${siteName}/dashboard`}
+          p=".5rem"
+        >
+          Go to dashboard
+        </Button>
       </VStack>
     </Center>
   )
@@ -513,8 +534,8 @@ const LinkReportModalLoading = () => {
         <Box
           as={BiLoaderAlt}
           animation={`${spin} 1s linear infinite`}
-          height="20px"
-          width="20px"
+          height="1.25rem"
+          width="1.25rem"
         />
         <Text textStyle="h5" textAlign="center">
           Taking another closer look at this page...
