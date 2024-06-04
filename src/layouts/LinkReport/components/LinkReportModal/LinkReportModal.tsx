@@ -246,7 +246,7 @@ const LinksReportDetails = ({
                 border="1px"
                 borderColor="base.divider.medium"
               >
-                <Table variant="simple">
+                <Table variant="simple" style={{ tableLayout: "fixed" }}>
                   <Thead>
                     <Tr>
                       <Th textAlign="left" w="9rem" padding="0">
@@ -317,7 +317,6 @@ const LinksReportDetails = ({
                                       size="1rem"
                                       fill={colors.utility.feedback.critical}
                                     />
-
                                     <Text
                                       textColor="utility.feedback.critical"
                                       textStyle="caption-1"
@@ -332,7 +331,6 @@ const LinksReportDetails = ({
                         })}
                     </Tbody>
                   )}
-
                   {isBrokenLinksLoading && (
                     <Tbody>
                       <Tr borderTop="1px" borderColor="base.divider.medium">

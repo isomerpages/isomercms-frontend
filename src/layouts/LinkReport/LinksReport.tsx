@@ -81,7 +81,7 @@ export const LinksReportBanner = () => {
         <GridItem colSpan={1} />
         <GridItem colSpan={10}>
           <HStack w="100%" justifyContent="space-between">
-            <VStack w="100%" alignItems="start" my="1.25rem" spacing=".5rem">
+            <VStack w="100%" alignItems="start" my="1.25rem" spacing="0.5rem">
               <Badge variant="subtle">Experimental feature</Badge>
               <Text
                 textStyle="h6"
@@ -125,9 +125,9 @@ const NoBrokenLinks = () => {
   const { siteName } = useParams<{ siteName: string }>()
   return (
     <Center w="22.5rem" pt="3rem">
-      <VStack justifyContent="center" gap=".75rem">
+      <VStack justifyContent="center" gap="0.75rem">
         <NoBrokenLinksImage />
-        <Text textStyle="h5" textAlign="center" pt=".5rem">
+        <Text textStyle="h5" textAlign="center" pt="0.5rem">
           Hurrah! All your references are nice and sturdy.
         </Text>
         <Text textStyle="body-2" textAlign="center">
@@ -298,7 +298,7 @@ const LinkBody = () => {
         >
           <GridItem colSpan={1} />
           <GridItem colSpan={10}>
-            <VStack spacing=".5rem" pt="3rem">
+            <VStack spacing="0.5rem" pt="3rem">
               <Text
                 textStyle="h4"
                 alignSelf="flex-start"
@@ -327,10 +327,15 @@ const LinkBody = () => {
                 border="1px"
                 borderColor="base.divider.medium"
               >
-                <Table>
+                <Table style={{ tableLayout: "fixed" }}>
                   <Thead>
                     <Tr>
-                      <Th h="3.5rem" textAlign="left" padding=".375rem 1rem">
+                      <Th
+                        h="3.5rem"
+                        textAlign="left"
+                        padding="0.375rem 1rem"
+                        flex="1"
+                      >
                         <Text textStyle="subhead-2" textTransform="none">
                           Page
                         </Text>
@@ -339,13 +344,13 @@ const LinkBody = () => {
                         w="12.5rem"
                         h="3.5rem"
                         textAlign="center"
-                        padding=".375rem 1rem"
+                        padding="0.375rem 1rem"
                       >
                         <Text textStyle="subhead-2" textTransform="none">
                           Broken References
                         </Text>
                       </Th>
-                      <Th w="12.5rem" textAlign="left" padding=".375rem 1rem">
+                      <Th w="12.5rem" textAlign="left" padding="0.375rem 1rem">
                         <Text textStyle="subhead-2" textTransform="none">
                           View Details
                         </Text>
@@ -361,15 +366,28 @@ const LinkBody = () => {
                           borderTop="1px"
                           borderColor="base.divider.medium"
                         >
-                          <Td border="0px" padding="1.125rem 1rem">
-                            <VStack alignItems="flex-start" spacing=".25rem">
-                              <Text textStyle="subhead-2">
+                          <Td
+                            border="0px"
+                            padding="1.125rem 1rem"
+                            flex="1"
+                            maxW="calc(100% - 25rem)"
+                          >
+                            <VStack alignItems="flex-start" spacing="0.25rem">
+                              <Text
+                                textStyle="subhead-2"
+                                textOverflow="ellipsis"
+                                overflow="hidden"
+                                whiteSpace="nowrap"
+                                w="100%"
+                              >
                                 {uniqueBreadcrumb.split("/").at(-1)}
                               </Text>
                               <Breadcrumb
                                 separator="/"
                                 color="base.content.medium"
                                 size="xs"
+                                maxW="100%"
+                                isTruncated
                               >
                                 {uniqueBreadcrumb.split("/").map((item) => (
                                   <BreadcrumbItem key={item}>
@@ -412,7 +430,7 @@ const LinkBody = () => {
                               <BxRightArrowAlt
                                 h="1.25rem"
                                 w="1.25rem"
-                                pl=".25rem"
+                                pl="0.25rem"
                               />
                             </Button>
                           </Td>
@@ -450,7 +468,7 @@ const LinkBody = () => {
       >
         <GridItem colSpan={1} />
         <GridItem colSpan={10}>
-          <VStack spacing=".5rem" pt="3rem">
+          <VStack spacing="0.5rem" pt="3rem">
             <Text
               textStyle="h4"
               alignSelf="flex-start"
@@ -481,20 +499,20 @@ const LinkBody = () => {
               <Table>
                 <Thead>
                   <Tr>
-                    <Th h="3.5rem" textAlign="left" padding=".375rem 1rem">
+                    <Th h="3.5rem" textAlign="left" padding="0.375rem 1rem">
                       <Text textStyle="subhead-2">Page</Text>
                     </Th>
                     <Th
                       w="12.5rem"
                       h="3.5rem"
                       textAlign="center"
-                      padding=".375rem 1rem"
+                      padding="0.375rem 1rem"
                     >
                       <Text textStyle="subhead-2" textTransform="none">
                         Broken References
                       </Text>
                     </Th>
-                    <Th w="12.5rem" textAlign="left" padding=".375rem 1rem">
+                    <Th w="12.5rem" textAlign="left" padding="0.375rem 1rem">
                       <Text textStyle="subhead-2" textTransform="none">
                         View Details
                       </Text>
