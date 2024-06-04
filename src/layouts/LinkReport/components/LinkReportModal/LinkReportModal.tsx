@@ -127,7 +127,7 @@ const LinkReportModalBanner = (props: Omit<ModalProps, "children">) => {
               variant="solid"
               isDisabled={isBrokenLinksLoading}
               height="1.5rem"
-              padding=".5rem 1rem"
+              padding="0.5rem 1rem"
               textStyle="subhead-2"
               size="xs"
             >
@@ -182,7 +182,7 @@ const LinksReportDetails = ({
     >
       <GridItem colSpan={1} />
       <GridItem colSpan={10}>
-        <VStack paddingTop="3rem" width="100%" align="center" spacing=".25rem">
+        <VStack paddingTop="3rem" width="100%" align="center" spacing="0.25rem">
           <Text
             textStyle="body-3"
             overflow="hidden"
@@ -252,15 +252,15 @@ const LinksReportDetails = ({
                       <Th textAlign="left" w="9rem" padding="0">
                         <HStack
                           height="3.5rem"
-                          padding=".375rem 1rem"
-                          gap=".5rem"
+                          padding="0.375rem 1rem"
+                          gap="0.5rem"
                         >
                           <Text textStyle="subhead-2" textTransform="none">
                             Type
                           </Text>
                         </HStack>
                       </Th>
-                      <Th textAlign="left" padding=".375rem 1rem">
+                      <Th textAlign="left" padding="0.375rem 1rem">
                         <Text textStyle="subhead-2" textTransform="none">
                           Reference and Error
                         </Text>
@@ -296,7 +296,7 @@ const LinksReportDetails = ({
                                     <Text
                                       textColor="base.content.medium"
                                       textStyle="body-2"
-                                      paddingBottom=".25rem"
+                                      paddingBottom="0.25rem"
                                     >
                                       {link.linkedText
                                         ? `"${link.linkedText}"`
@@ -429,7 +429,7 @@ const LinkReportModalNoBrokenLink = (props: Omit<ModalProps, "children">) => {
   const { siteName } = useParams<{ siteName: string }>()
   return (
     <Center w="22.5rem" pt="2rem">
-      <VStack gap=".75rem">
+      <VStack gap="0.75rem">
         <NoBrokenLinksImage />
         <Text textStyle="h5" textAlign="center" pt="0.5rem">
           Hurrah! You’ve fixed all broken references on this page.
