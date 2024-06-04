@@ -320,7 +320,6 @@ const LinkBody = () => {
               </HStack>
               <TableContainer
                 w="100%"
-                maxW="container.xl"
                 mb="1.5rem"
                 borderRadius="8px"
                 bgColor="utility.ui"
@@ -489,7 +488,6 @@ const LinkBody = () => {
             </HStack>
             <TableContainer
               w="100%"
-              maxW="container.xl"
               mb="1.5rem"
               borderRadius={8}
               bgColor="utility.ui"
