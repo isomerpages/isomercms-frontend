@@ -11,6 +11,10 @@ export default function PaginateButton({
   currentPage,
   totalPage,
   onPageChange,
+}: {
+  currentPage: number
+  totalPage: number
+  onPageChange: (arg: number) => void
 }) {
   return (
     <HStack>
