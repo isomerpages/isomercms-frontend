@@ -24,28 +24,15 @@ import {
   Button,
   BxRightArrowAlt,
 } from "@opengovsg/design-system-react"
-import React, { useEffect, useState } from "react"
+import { useState } from "react"
 import { BiLoaderAlt } from "react-icons/bi"
-import { Redirect, useParams, Link as RouterLink } from "react-router-dom"
+import { useParams, Link as RouterLink } from "react-router-dom"
 
-import PaginateBtn from "components/paginateBtn"
-
-import { SITE_LINK_CHECKER_STATUS_KEY } from "constants/queryKeys"
-
-import { useGetStagingUrl } from "hooks/siteDashboardHooks"
 import { useGetBrokenLinks } from "hooks/siteDashboardHooks/useGetLinkChecker"
 import { useRefreshLinkChecker } from "hooks/siteDashboardHooks/useRefreshLinkChecker"
 
 import { NoBrokenLinksImage } from "assets"
-import { colors } from "theme/foundations/colors"
-import { typography } from "theme/foundations/typography"
-import {
-  isBrokenRefError,
-  NonPermalinkError,
-  NonPermalinkErrorDto,
-  RepoError,
-  RepoErrorDto,
-} from "types/linkReport"
+import { isBrokenRefError, NonPermalinkError } from "types/linkReport"
 
 import { SiteViewHeader } from "../layouts/SiteViewLayout/SiteViewHeader"
 
@@ -87,7 +74,6 @@ export const LinksReportBanner = () => {
       <Grid
         templateColumns="repeat(12, 1fr)"
         w="100%"
-        maxW="1440px"
         gap="1rem"
         mx="auto"
         px="2rem"
@@ -141,19 +127,10 @@ const NoBrokenLinks = () => {
     <Center w="22.5rem" pt="3rem">
       <VStack justifyContent="center" gap=".75rem">
         <NoBrokenLinksImage />
-        <Text
-          textStyle="h5"
-          fontFamily={typography.fontFamilies.inter}
-          textAlign="center"
-          pt=".5rem"
-        >
+        <Text textStyle="h5" textAlign="center" pt=".5rem">
           Hurrah! All your references are nice and sturdy.
         </Text>
-        <Text
-          textStyle="body-2"
-          fontFamily={typography.fontFamilies.inter}
-          textAlign="center"
-        >
+        <Text textStyle="body-2" textAlign="center">
           We couldn&apos;t find any broken references on your site. You can come
           back anytime to run the checker again.
         </Text>
@@ -314,7 +291,6 @@ const LinkBody = () => {
         <Grid
           templateColumns="repeat(12, 1fr)"
           w="100%"
-          maxW="1440px"
           gap="1rem"
           mx="auto"
           px="2rem"
@@ -327,7 +303,7 @@ const LinkBody = () => {
                 textStyle="h4"
                 alignSelf="flex-start"
                 textAlign="left"
-                color="base.content.strong"
+                textColor="base.content.strong"
               >
                 {sortedUniqueLinks.length} Pages with {links.length} broken
                 references
@@ -355,11 +331,7 @@ const LinkBody = () => {
                   <Thead>
                     <Tr>
                       <Th h="3.5rem" textAlign="left" padding=".375rem 1rem">
-                        <Text
-                          textStyle="subhead-2"
-                          fontFamily={typography.fontFamilies.inter}
-                          textTransform="none"
-                        >
+                        <Text textStyle="subhead-2" textTransform="none">
                           Page
                         </Text>
                       </Th>
@@ -369,20 +341,12 @@ const LinkBody = () => {
                         textAlign="center"
                         padding=".375rem 1rem"
                       >
-                        <Text
-                          textStyle="subhead-2"
-                          fontFamily={typography.fontFamilies.inter}
-                          textTransform="none"
-                        >
+                        <Text textStyle="subhead-2" textTransform="none">
                           Broken References
                         </Text>
                       </Th>
                       <Th w="12.5rem" textAlign="left" padding=".375rem 1rem">
-                        <Text
-                          textStyle="subhead-2"
-                          fontFamily={typography.fontFamilies.inter}
-                          textTransform="none"
-                        >
+                        <Text textStyle="subhead-2" textTransform="none">
                           View Details
                         </Text>
                       </Th>
@@ -399,10 +363,7 @@ const LinkBody = () => {
                         >
                           <Td border="0px" padding="1.125rem 1rem">
                             <VStack alignItems="flex-start" spacing=".25rem">
-                              <Text
-                                textStyle="subhead-2"
-                                fontFamily={typography.fontFamilies.inter}
-                              >
+                              <Text textStyle="subhead-2">
                                 {uniqueBreadcrumb.split("/").at(-1)}
                               </Text>
                               <Breadcrumb
@@ -422,7 +383,6 @@ const LinkBody = () => {
                             <Text
                               textColor="base.content.strong"
                               textStyle="subhead-2"
-                              fontFamily={typography.fontFamilies.inter}
                               alignSelf="stretch"
                               textAlign="center"
                             >
@@ -437,7 +397,6 @@ const LinkBody = () => {
                             <Button
                               variant="link"
                               textStyle="subhead-2"
-                              fontFamily={typography.fontFamilies.inter}
                               color="interaction.links.default"
                               onClick={() => {
                                 setSelectedLinkCms(itemUrl)
@@ -484,7 +443,6 @@ const LinkBody = () => {
       <Grid
         templateColumns="repeat(12, 1fr)"
         w="100%"
-        maxW="1440px"
         gap="1rem"
         mx="auto"
         px="2rem"
@@ -497,7 +455,7 @@ const LinkBody = () => {
               textStyle="h4"
               alignSelf="flex-start"
               textAlign="left"
-              color="base.content.strong"
+              textColor="base.content.strong"
             >
               Pages with broken references
             </Text>
@@ -505,10 +463,10 @@ const LinkBody = () => {
               <Text
                 textStyle="body-2"
                 textAlign="left"
-                color="base.content.medium"
+                textColor="base.content.medium"
               >
-                Click &apos;Review page&apos; to view a detailed list of
-                references broken on that page.
+                {`Click "Review page" to view a detailed list of
+                references broken on that page.`}
               </Text>
             </HStack>
             <TableContainer
@@ -524,13 +482,7 @@ const LinkBody = () => {
                 <Thead>
                   <Tr>
                     <Th h="3.5rem" textAlign="left" padding=".375rem 1rem">
-                      <Text
-                        textStyle="subhead-2"
-                        fontFamily={typography.fontFamilies.inter}
-                        textTransform="none"
-                      >
-                        Page
-                      </Text>
+                      <Text textStyle="subhead-2">Page</Text>
                     </Th>
                     <Th
                       w="12.5rem"
@@ -538,20 +490,12 @@ const LinkBody = () => {
                       textAlign="center"
                       padding=".375rem 1rem"
                     >
-                      <Text
-                        textStyle="subhead-2"
-                        fontFamily={typography.fontFamilies.inter}
-                        textTransform="none"
-                      >
+                      <Text textStyle="subhead-2" textTransform="none">
                         Broken References
                       </Text>
                     </Th>
                     <Th w="12.5rem" textAlign="left" padding=".375rem 1rem">
-                      <Text
-                        textStyle="subhead-2"
-                        fontFamily={typography.fontFamilies.inter}
-                        textTransform="none"
-                      >
+                      <Text textStyle="subhead-2" textTransform="none">
                         View Details
                       </Text>
                     </Th>

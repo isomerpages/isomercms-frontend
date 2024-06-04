@@ -17,47 +17,27 @@ import {
   Th,
   Thead,
   Tr,
-  Flex,
   Grid,
   GridItem,
-  Icon,
   keyframes,
 } from "@chakra-ui/react"
 import { useFeatureIsOn } from "@growthbook/growthbook-react"
-import {
-  Button,
-  ModalCloseButton,
-  Link,
-  Badge,
-  Breadcrumb,
-  Pagination,
-  BxRightArrowAlt,
-} from "@opengovsg/design-system-react"
-import { set } from "lodash"
-import React, { useEffect, useState } from "react"
-import { BiLoaderAlt } from "react-icons/bi"
-import { useQueryClient } from "react-query"
+import { Button, Link } from "@opengovsg/design-system-react"
+import _ from "lodash"
+import { useState } from "react"
+import { BiLoaderAlt, BiLeftArrowAlt, BiSolidInfoCircle } from "react-icons/bi"
+// import { MdInfo } from "react-icons/md";
 import { useParams, Link as RouterLink } from "react-router-dom"
 
 import { Modal as CustomModal } from "components/Modal"
-import PaginateBtn from "components/paginateBtn"
+import PaginateButton from "components/paginateButton"
 
-import { SITE_LINK_CHECKER_STATUS_KEY } from "constants/queryKeys"
-
-import { invalidateMergeRelatedQueries } from "hooks/reviewHooks"
-import { useGetStagingUrl } from "hooks/siteDashboardHooks"
 import { useGetBrokenLinks } from "hooks/siteDashboardHooks/useGetLinkChecker"
 import { useRefreshLinkChecker } from "hooks/siteDashboardHooks/useRefreshLinkChecker"
 
 import { NoBrokenLinksImage } from "assets"
 import { colors } from "theme/foundations/colors"
-import { typography } from "theme/foundations/typography"
-import {
-  isBrokenRefError,
-  NonPermalinkError,
-  NonPermalinkErrorDto,
-  RepoError,
-} from "types/linkReport"
+import { NonPermalinkError } from "types/linkReport"
 
 export const LinkReportModal = ({
   props,
@@ -74,7 +54,7 @@ export const LinkReportModal = ({
     <CustomModal {...props} size="full">
       <ModalOverlay />
       <ModalContent bgColor="base.canvas.alt">
-        <ModalHeader padding="0" bg={colors.base.canvas.default}>
+        <ModalHeader padding="0 1.5rem" bg={colors.base.canvas.default}>
           <LinkReportModalBanner {...props} />
         </ModalHeader>
         <ModalBody>
@@ -118,31 +98,26 @@ const LinkReportModalBanner = (props: Omit<ModalProps, "children">) => {
     <Grid
       templateColumns="repeat(12, 1fr)"
       w="100%"
-      maxW="1440px"
       gap="1rem"
       mx="auto"
       px="2rem"
-      bg="white"
+      bg="base.canvas.default"
     >
       <GridItem colSpan={1} />
       <GridItem colSpan={10}>
         <HStack
           w="100%"
-          padding="1.25rem 0"
+          py="1.25rem"
           h="fit-content"
           justifyContent="space-between"
         >
           <Button
             variant="link"
-            color={colors.interaction.links.default}
+            color="interaction.links.default"
             onClick={onClose}
           >
-            <BxRightArrowAlt transform="scale(-1,1)" h="1.25rem" w="1.25rem" />
-            <Text
-              ml=".25rem"
-              fontFamily={typography.fontFamilies.inter}
-              fontSize=".875rem"
-            >
+            <BiLeftArrowAlt />
+            <Text ml="0.25rem" fontSize="0.875rem">
               Back to main report
             </Text>
           </Button>
@@ -153,7 +128,7 @@ const LinkReportModalBanner = (props: Omit<ModalProps, "children">) => {
               isDisabled={isBrokenLinksLoading}
               height="1.5rem"
               padding=".5rem 1rem"
-              fontSize=".875rem"
+              textStyle="subhead-2"
               size="xs"
             >
               {isBrokenLinksLoading
@@ -181,16 +156,16 @@ const LinksReportDetails = ({
   const [pageNum, setPageNum] = useState(1)
 
   // Sort based on error type
-  const detailedErrorArr = generateDetailedError(linksArr).sort((a, b) => {
-    return a.detailedType.localeCompare(b.detailedType)
-  })
+  const detailedErrorArr = _.sortBy(
+    generateDetailedError(linksArr),
+    (err) => err.detailedType
+  )
   const { siteName } = useParams<{ siteName: string }>()
   const isBrokenLinksReporterEnabled = useFeatureIsOn(
     "is_broken_links_report_enabled"
   )
   const {
     data: brokenLinks,
-    error: brokenLinksError,
     isLoading: isBrokenLinksFetching,
   } = useGetBrokenLinks(siteName, isBrokenLinksReporterEnabled)
 
@@ -201,7 +176,6 @@ const LinksReportDetails = ({
     <Grid
       templateColumns="repeat(12, 1fr)"
       w="100%"
-      maxW="1440px"
       gap="1rem"
       mx="auto"
       px="2rem"
@@ -210,12 +184,9 @@ const LinksReportDetails = ({
       <GridItem colSpan={10}>
         <VStack paddingTop="3rem" width="100%" align="center" spacing=".25rem">
           <Text
-            font-feature-settings="cv10 cv05"
-            font-variant-numeric="lining-nums tabular-nums"
             textStyle="body-3"
-            fontFamily={typography.fontFamilies.inter}
             overflow="hidden"
-            color={colors.base.content.default}
+            textColor="base.content.default"
             textOverflow="ellipsis"
             alignSelf="flex-start"
           >
@@ -229,29 +200,16 @@ const LinksReportDetails = ({
             width="100%"
             paddingBottom="1.25rem"
           >
-            <Text
-              fontSize="1.75rem"
-              fontStyle="normal"
-              fontWeight="600"
-              lineHeight="2.25rem"
-              fontFamily="Inter"
-              flex="1 0 0"
-              font-feature-settings="cv10 cv05"
-              alignSelf="flex-start"
-            >
+            <Text textStyle="h3" flex="1 0 0" alignSelf="flex-end">
               {isBrokenLinksLoading
                 ? "Re-scanning page..."
                 : `${detailedErrorArr.length} broken references found`}
             </Text>
-            <Link href={pageStagingUrl} isExternal>
-              <HStack spacing="1">
-                <Text>View page on staging</Text>
-              </HStack>
+            <Link alignSelf="flex-end" href={pageStagingUrl} isExternal>
+              <Text>View page on staging</Text>
             </Link>
-            <Link href={pageCmsUrl} isExternal>
-              <HStack spacing="1">
-                <Text>Edit page on CMS</Text>
-              </HStack>
+            <Link alignSelf="flex-end" href={pageCmsUrl} isExternal>
+              <Text>Edit page on CMS</Text>
             </Link>
           </HStack>
           {!isBrokenLinksLoading && detailedErrorArr.length === 0 && (
@@ -266,16 +224,11 @@ const LinksReportDetails = ({
                 width="100%"
                 paddingBottom="1.25rem"
               >
-                <Text
-                  textStyle="body-2"
-                  fontFamily={typography.fontFamilies.inter}
-                  color="base.content.medium"
-                >
-                  After fixing the references, you can click the &quot;Run check
-                  for this page&quot; in the top right hand corner.
+                <Text textStyle="body-2" textColor="base.content.medium">
+                  {`After fixing the references , you can click the "Run check for this page" in the top right hand corner.`}
                 </Text>
                 <Box>
-                  <PaginateBtn
+                  <PaginateButton
                     currentPage={pageNum}
                     totalPage={Math.max(
                       1,
@@ -296,12 +249,11 @@ const LinksReportDetails = ({
                 <Table variant="simple">
                   <Thead>
                     <Tr>
-                      <Th textAlign="left" width="9rem" padding="0">
+                      <Th textAlign="left" w="9rem" padding="0">
                         <HStack
                           height="3.5rem"
                           padding=".375rem 1rem"
                           gap=".5rem"
-                          fontFamily={typography.fontFamilies.inter}
                         >
                           <Text textStyle="subhead-2" textTransform="none">
                             Type
@@ -309,11 +261,7 @@ const LinksReportDetails = ({
                         </HStack>
                       </Th>
                       <Th textAlign="left" padding=".375rem 1rem">
-                        <Text
-                          textStyle="subhead-2"
-                          fontFamily={typography.fontFamilies.inter}
-                          textTransform="none"
-                        >
+                        <Text textStyle="subhead-2" textTransform="none">
                           Reference and Error
                         </Text>
                       </Th>
@@ -327,23 +275,13 @@ const LinksReportDetails = ({
                           const isBrokenLink = link.type === "broken-link"
                           return (
                             <Tr
-                              key={link.linkToAsset}
                               borderTop="1px"
                               borderColor="base.divider.medium"
                             >
-                              <Td width="9rem" border="0" padding="0px 1rem">
-                                <Flex
-                                  height="100%"
-                                  align="center"
-                                  justify="left"
-                                >
-                                  <Text
-                                    textStyle="subhead-2"
-                                    fontFamily={typography.fontFamilies.inter}
-                                  >
-                                    {getErrorText(link)}
-                                  </Text>
-                                </Flex>
+                              <Td w="9rem" border="0" padding="0px 1rem">
+                                <Text textStyle="subhead-2">
+                                  {getErrorText(link)}
+                                </Text>
                               </Td>
                               <Td align="left" border="0px" padding="0px">
                                 <VStack
@@ -356,10 +294,9 @@ const LinksReportDetails = ({
                                 >
                                   {isBrokenLink && (
                                     <Text
-                                      color={colors.base.content.medium}
+                                      textColor="base.content.medium"
                                       textStyle="body-2"
                                       paddingBottom=".25rem"
-                                      fontFamily={typography.fontFamilies.inter}
                                     >
                                       {link.linkedText
                                         ? `"${link.linkedText}"`
@@ -367,32 +304,23 @@ const LinksReportDetails = ({
                                     </Text>
                                   )}
                                   <Text
-                                    color={colors.base.content.strong}
+                                    textColor="base.content.strong"
                                     textStyle="body-2"
-                                    paddingBottom=".75rem"
-                                    fontFamily={typography.fontFamilies.inter}
+                                    paddingBottom="0.75rem"
                                   >
                                     {link.linkToAsset
                                       ? link.linkToAsset
                                       : "No URL linked"}
                                   </Text>
                                   <HStack>
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      width="16"
-                                      height="16"
-                                      viewBox="0 0 16 16"
-                                      fill="none"
-                                    >
-                                      <path
-                                        d="M8.00004 1.3335C4.32404 1.3335 1.33337 4.32416 1.33337 8.00016C1.33337 11.6762 4.32404 14.6668 8.00004 14.6668C11.676 14.6668 14.6667 11.6762 14.6667 8.00016C14.6667 4.32416 11.676 1.3335 8.00004 1.3335ZM8.66671 11.3335H7.33337V7.3335H8.66671V11.3335ZM8.66671 6.00016H7.33337V4.66683H8.66671V6.00016Z"
-                                        fill="#C03434"
-                                      />
-                                    </svg>
+                                    <BiSolidInfoCircle
+                                      size="1rem"
+                                      fill={colors.utility.feedback.critical}
+                                    />
+
                                     <Text
-                                      color={colors.utility.feedback.critical}
+                                      textColor="utility.feedback.critical"
                                       textStyle="caption-1"
-                                      fontFamily={typography.fontFamilies.inter}
                                     >
                                       {getSuggestion(link)}
                                     </Text>
@@ -425,7 +353,12 @@ const LinksReportDetails = ({
 }
 
 type DetailedNonPermaLinkError = NonPermalinkError & {
-  detailedType: string
+  detailedType:
+    | "broken-image"
+    | "broken-file"
+    | "email"
+    | "missing-https"
+    | "broken-link"
 }
 
 const isEmailError = (error: NonPermalinkError): boolean => {
@@ -454,7 +387,7 @@ const generateDetailedError = (
   })
 }
 
-const getErrorText = (error: DetailedNonPermaLinkError): string => {
+const getErrorText = (error: DetailedNonPermaLinkError) => {
   switch (error.detailedType) {
     case "broken-image":
       return "Image"
@@ -463,8 +396,12 @@ const getErrorText = (error: DetailedNonPermaLinkError): string => {
     case "missing-https":
     case "broken-link":
       return "Hyperlink"
-    default:
+    case "email":
       return "Email"
+    default: {
+      const exception: never = error.detailedType
+      throw new Error(exception)
+    }
   }
 }
 
@@ -478,8 +415,12 @@ const getSuggestion = (error: DetailedNonPermaLinkError): string => {
       return "Page doesn't exist."
     case "missing-https":
       return 'Add a "https://".'
-    default:
+    case "email":
       return 'Add a "mailto:".'
+    default: {
+      const exception: never = error.detailedType
+      throw new Error(exception)
+    }
   }
 }
 
@@ -490,19 +431,10 @@ const LinkReportModalNoBrokenLink = (props: Omit<ModalProps, "children">) => {
     <Center w="22.5rem" pt="2rem">
       <VStack gap=".75rem">
         <NoBrokenLinksImage />
-        <Text
-          textStyle="h5"
-          fontFamily={typography.fontFamilies.inter}
-          textAlign="center"
-          pt=".5rem"
-        >
+        <Text textStyle="h5" textAlign="center" pt="0.5rem">
           Hurrah! You’ve fixed all broken references on this page.
         </Text>
-        <Text
-          textStyle="body-2"
-          fontFamily={typography.fontFamilies.inter}
-          textAlign="center"
-        >
+        <Text textStyle="body-2" textAlign="center">
           You can come back to scan this page again if you make edits to it.
         </Text>
         <Button mt="1rem" onClick={() => onClose()}>
@@ -513,7 +445,7 @@ const LinkReportModalNoBrokenLink = (props: Omit<ModalProps, "children">) => {
           color="interaction.links.default"
           as={RouterLink}
           to={`/sites/${siteName}/dashboard`}
-          p=".5rem"
+          p="0.5rem"
         >
           Go to dashboard
         </Button>

@@ -7,7 +7,11 @@ import {
 
 import { typography } from "theme/foundations/typography"
 
-export default function PaginateBtn({ currentPage, totalPage, onPageChange }) {
+export default function PaginateButton({
+  currentPage,
+  totalPage,
+  onPageChange,
+}) {
   return (
     <HStack>
       <Text textStyle="caption-1" fontFamily={typography.fontFamilies.inter}>
@@ -18,9 +22,9 @@ export default function PaginateBtn({ currentPage, totalPage, onPageChange }) {
         aria-label="Previous Page"
         icon={<BxChevronLeft />}
         onClick={() => onPageChange(currentPage - 1)}
-        isDisabled={currentPage === 1}
-        marginLeft="20px"
-        marginRight="12px"
+        isDisabled={currentPage <= 1}
+        marginLeft="1.25rem"
+        marginRight=".75rem"
       />
       <IconButton
         size="sm"
