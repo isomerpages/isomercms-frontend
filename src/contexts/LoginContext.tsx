@@ -7,6 +7,7 @@ import {
   useCallback,
   useState,
 } from "react"
+import { useLocation } from "react-router-dom"
 
 import { LOCAL_STORAGE_KEYS } from "constants/localStorage"
 
@@ -15,6 +16,7 @@ import { useLocalStorage } from "hooks/useLocalStorage"
 import { LoggedInUser, UserType, UserTypes } from "types/user"
 
 const { REACT_APP_BACKEND_URL_V2: BACKEND_URL } = process.env
+const LOGIN_PATHS = ["/", "/sgid-callback"]
 
 interface LoginContextProps extends LoggedInUser {
   isLoading: boolean
@@ -36,6 +38,7 @@ const useLoginContext = (): LoginContextProps => {
 const LoginProvider = ({
   children,
 }: PropsWithChildren<Record<string, never>>): JSX.Element => {
+  const { pathname } = useLocation()
   const [, , removeSites] = useLocalStorage(
     LOCAL_STORAGE_KEYS.SitesIsPrivate,
     false
@@ -69,7 +72,11 @@ const LoginProvider = ({
       return response
     },
     async (error) => {
-      if (error.response && error.response.status === 401) {
+      if (
+        error.response &&
+        error.response.status === 401 &&
+        !LOGIN_PATHS.includes(pathname)
+      ) {
         await logout()
       }
       setIsLoading(false)
