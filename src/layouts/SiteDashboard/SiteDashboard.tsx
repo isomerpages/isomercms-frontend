@@ -236,7 +236,10 @@ export const SiteDashboard = (): JSX.Element => {
                               <HStack>
                                 <Text textStyle="h4">
                                   {brokenLinks?.status === "success" &&
-                                    brokenLinks?.errors.length}
+                                    brokenLinks?.errors.filter(
+                                      (error) =>
+                                        error.type !== "duplicate-permalink"
+                                    ).length}
                                 </Text>
                                 <Text textStyle="body-1">
                                   broken references found
