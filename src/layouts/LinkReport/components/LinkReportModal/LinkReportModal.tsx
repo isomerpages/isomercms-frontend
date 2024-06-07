@@ -30,7 +30,7 @@ import { BiLoaderAlt, BiLeftArrowAlt, BiSolidInfoCircle } from "react-icons/bi"
 import { useParams, Link as RouterLink } from "react-router-dom"
 
 import { Modal as CustomModal } from "components/Modal"
-import PaginateButton from "components/paginateButton"
+import PaginateButton from "components/PaginateButton"
 
 import { useGetBrokenLinks } from "hooks/siteDashboardHooks/useGetLinkChecker"
 import { useRefreshLinkChecker } from "hooks/siteDashboardHooks/useRefreshLinkChecker"

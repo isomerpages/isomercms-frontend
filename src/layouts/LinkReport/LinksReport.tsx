@@ -24,6 +24,7 @@ import {
   Button,
   BxRightArrowAlt,
 } from "@opengovsg/design-system-react"
+import _ from "lodash"
 import { useState } from "react"
 import { BiLoaderAlt } from "react-icons/bi"
 import { useParams, Link as RouterLink } from "react-router-dom"
@@ -41,7 +42,7 @@ import { LinkReportModal } from "./components/LinkReportModal/LinkReportModal"
 const getBreadcrumb = (viewablePageInCms: string): string => {
   const paths = viewablePageInCms.split("/")
   let breadcrumb = paths
-    .filter((_, index) => index % 2 === 0)
+    .filter((placeholder, index) => index % 2 === 0)
     .slice(2)
     .join(" / ")
     .replace(/-/g, " ")
@@ -110,17 +111,6 @@ export const LinksReportBanner = () => {
   )
 }
 
-const normaliseUrl = (url: string): string => {
-  let normalisedUrl = url
-  if (url.endsWith("/")) {
-    normalisedUrl = url.slice(0, -1)
-  }
-  if (url.startsWith("/")) {
-    normalisedUrl = url.slice(1)
-  }
-  return normalisedUrl
-}
-
 const NoBrokenLinks = () => {
   const { siteName } = useParams<{ siteName: string }>()
   return (
@@ -131,8 +121,8 @@ const NoBrokenLinks = () => {
           Hurrah! All your references are nice and sturdy.
         </Text>
         <Text textStyle="body-2" textAlign="center">
-          We couldn&apos;t find any broken references on your site. You can come
-          back anytime to run the checker again.
+          {`We couldn't find any broken references on your site. You can come  
+          back anytime to run the checker again.`}
         </Text>
         <Button as={RouterLink} to={`/sites/${siteName}/dashboard`} mt="1rem">
           Back to dashboard
@@ -202,11 +192,10 @@ const LinkBody = () => {
     "is_broken_links_report_enabled"
   )
   const { siteName } = useParams<{ siteName: string }>()
-  const {
-    data: brokenLinks,
-    isError: isBrokenLinksError,
-    isLoading: isBrokenLinksFetching,
-  } = useGetBrokenLinks(siteName, isBrokenLinksReporterEnabled)
+  const { data: brokenLinks, isError: isBrokenLinksError } = useGetBrokenLinks(
+    siteName,
+    isBrokenLinksReporterEnabled
+  )
 
   if (
     !isBrokenLinksReporterEnabled ||
@@ -269,11 +258,10 @@ const LinkBody = () => {
       ...new Set(links.map((error) => error.viewablePageInCms)),
     ]
 
-    const sortedUniqueLinks = uniqueLinks.sort((a, b) => {
-      const countA = links.filter((link) => link.viewablePageInCms === a).length
-      const countB = links.filter((link) => link.viewablePageInCms === b).length
-      return countB - countA
-    })
+    const sortedUniqueLinks = _.sortBy(
+      uniqueLinks,
+      (e) => links.filter((link) => link.viewablePageInCms === e).length
+    ).reverse()
 
     return (
       <>
@@ -314,8 +302,8 @@ const LinkBody = () => {
                   textAlign="left"
                   color="base.content.medium"
                 >
-                  Click &apos;Review page&apos; to view a detailed list of
-                  references broken on that page.
+                  {`Click "Review page" to view a detailed list of  
+                  references broken on that page.`}
                 </Text>
               </HStack>
               <TableContainer
@@ -498,7 +486,9 @@ const LinkBody = () => {
                 <Thead>
                   <Tr>
                     <Th h="3.5rem" textAlign="left" padding="0.375rem 1rem">
-                      <Text textStyle="subhead-2">Page</Text>
+                      <Text textStyle="subhead-2" textTransform="none">
+                        Page
+                      </Text>
                     </Th>
                     <Th
                       w="12.5rem"

@@ -18,7 +18,7 @@ export default function PaginateButton({
 }) {
   return (
     <HStack>
-      <Text textStyle="caption-1" fontFamily={typography.fontFamilies.inter}>
+      <Text textStyle="caption-1">
         Page {currentPage} out of {totalPage}{" "}
       </Text>
       <IconButton
@@ -28,7 +28,7 @@ export default function PaginateButton({
         onClick={() => onPageChange(currentPage - 1)}
         isDisabled={currentPage <= 1}
         marginLeft="1.25rem"
-        marginRight=".75rem"
+        marginRight="0.75rem"
       />
       <IconButton
         size="sm"
