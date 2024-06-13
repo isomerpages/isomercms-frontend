@@ -2,6 +2,8 @@ import {
   Box,
   BreadcrumbItem,
   Center,
+  Grid,
+  GridItem,
   HStack,
   Table,
   TableContainer,
@@ -12,48 +14,41 @@ import {
   Thead,
   Tr,
   VStack,
+  useDisclosure,
+  keyframes,
 } from "@chakra-ui/react"
 import { useFeatureIsOn } from "@growthbook/growthbook-react"
-import { Badge, Breadcrumb, Button, Link } from "@opengovsg/design-system-react"
-import { set } from "lodash"
-import { useEffect, useState } from "react"
-import { useQueryClient } from "react-query"
-import { Redirect, useParams } from "react-router-dom"
+import {
+  Badge,
+  Breadcrumb,
+  Button,
+  BxRightArrowAlt,
+} from "@opengovsg/design-system-react"
+import _ from "lodash"
+import { useState } from "react"
+import { BiLoaderAlt } from "react-icons/bi"
+import { useParams, Link as RouterLink } from "react-router-dom"
 
-import { SITE_LINK_CHECKER_STATUS_KEY } from "constants/queryKeys"
-
-import { useGetStagingUrl } from "hooks/siteDashboardHooks"
 import { useGetBrokenLinks } from "hooks/siteDashboardHooks/useGetLinkChecker"
 import { useRefreshLinkChecker } from "hooks/siteDashboardHooks/useRefreshLinkChecker"
 
 import { NoBrokenLinksImage } from "assets"
-import {
-  isBrokenRefError,
-  NonPermalinkError,
-  NonPermalinkErrorDto,
-  RepoError,
-} from "types/linkReport"
+import { isBrokenRefError, NonPermalinkError } from "types/linkReport"
 
 import { SiteViewHeader } from "../layouts/SiteViewLayout/SiteViewHeader"
 
+import { LinkReportModal } from "./components/LinkReportModal/LinkReportModal"
+
 const getBreadcrumb = (viewablePageInCms: string): string => {
-  /**
-   * There are four main types of pages
-   * 1. /folders/parentFolder/subfolders/childFolder/editPage/page.md -> parentFolder/childFolder/page
-   * 2. /folders/parentFolder/editPage/page.md -> parentFolder/page
-   * 3. /editPage/page.md -> page
-   * 4. /resourceRoom/resourceRmName/resourceCategory/resourceCatName/editPage/page.md -> resourceRmName/resourceCatName/page
-   */
   const paths = viewablePageInCms.split("/")
   let breadcrumb = paths
-    .filter((_, index) => index % 2 === 0)
+    .filter((placeholder, index) => index % 2 === 0)
     .slice(2)
     .join(" / ")
     .replace(/-/g, " ")
   if (breadcrumb.endsWith(".md")) {
     breadcrumb = breadcrumb.slice(0, -3)
   }
-
   return breadcrumb
 }
 
@@ -63,272 +58,75 @@ export const LinksReportBanner = () => {
   const onClick = () => {
     refreshLinkChecker(siteName)
   }
+
   const isBrokenLinksReporterEnabled = useFeatureIsOn(
     "is_broken_links_report_enabled"
   )
-
   const {
     data: brokenLinks,
     error: brokenLinksError,
     isLoading: isBrokenLinksFetching,
   } = useGetBrokenLinks(siteName, isBrokenLinksReporterEnabled)
-
   const isBrokenLinksLoading =
     brokenLinks?.status === "loading" || isBrokenLinksFetching
+
   return (
     <Center bg="white">
-      <HStack w="100%" justifyContent="space-between">
-        <VStack ml="2rem" w="100%" alignItems="start" mt="4rem">
-          <Badge variant="subtle" mt="0.75rem" mb="0.5rem">
-            Experimental feature
-          </Badge>
-          <Text textStyle="h2" textColor="black" textAlign="left" mb="0.5rem">
-            Broken references report
-          </Text>
-
-          <Text
-            textStyle="subheading-1"
-            color="black"
-            textAlign="left"
-            mb="3rem"
-          >
-            This report contains a list of broken references found in your site.
-          </Text>
-        </VStack>
-        {!brokenLinksError && (
-          <Button
-            onClick={onClick}
-            variant="solid"
-            isDisabled={isBrokenLinksLoading}
-            mr="2rem"
-            mt="6.5rem"
-          >
-            {isBrokenLinksLoading ? "Running checker..." : "Run checker again"}
-          </Button>
-        )}
-      </HStack>
+      <Grid
+        templateColumns="repeat(12, 1fr)"
+        w="100%"
+        gap="1rem"
+        mx="auto"
+        px="2rem"
+      >
+        <GridItem colSpan={1} />
+        <GridItem colSpan={10}>
+          <HStack w="100%" justifyContent="space-between">
+            <VStack w="100%" alignItems="start" my="1.25rem" spacing="0.5rem">
+              <Badge variant="subtle">Experimental feature</Badge>
+              <Text
+                textStyle="h6"
+                textColor="base.content.strong"
+                textAlign="left"
+              >
+                Broken references report for {siteName}
+              </Text>
+            </VStack>
+            {!brokenLinksError && (
+              <Button
+                onClick={onClick}
+                variant="solid"
+                isDisabled={isBrokenLinksLoading}
+                size="xs"
+              >
+                {isBrokenLinksLoading
+                  ? "Running checker..."
+                  : "Run check for site again"}
+              </Button>
+            )}
+          </HStack>
+        </GridItem>
+      </Grid>
     </Center>
   )
 }
 
-const normaliseUrl = (url: string): string => {
-  let normalisedUrl = url
-  if (url.endsWith("/")) {
-    normalisedUrl = url.slice(0, -1)
-  }
-  if (url.startsWith("/")) {
-    normalisedUrl = url.slice(1)
-  }
-  return normalisedUrl
-}
-
-const SiteReportCard = ({
-  breadcrumb,
-  links,
-}: {
-  breadcrumb: string
-  links: NonPermalinkErrorDto[]
-}) => {
-  // can use any link since we know all the links are from the same page
-  const { viewablePageInStaging, viewablePageInCms } = links[0]
-  const { siteName } = useParams<{ siteName: string }>()
-  const { data: stagingUrl, isLoading: isStagingUrlLoading } = useGetStagingUrl(
-    siteName
-  )
-
-  const normalisedStagingUrl = normaliseUrl(stagingUrl || "")
-  const normalisedViewablePageInStaging = normaliseUrl(viewablePageInStaging)
-  const viewableLinkInStaging = `${normalisedStagingUrl}/${normalisedViewablePageInStaging}`
-
-  return (
-    <VStack
-      w="calc(100vw - 24rem)"
-      backgroundColor="base.canvas.default"
-      mb="1.5rem"
-      alignSelf="baseline"
-      id={viewablePageInStaging}
-    >
-      <HStack
-        alignSelf="center"
-        justifyContent="space-between"
-        w="95%"
-        mt="1.5rem"
-        mb="1.75rem"
-      >
-        <Breadcrumb separator="/">
-          {breadcrumb.split("/").map((item) => {
-            return (
-              <BreadcrumbItem>
-                <Text textStyle="h6">{item}</Text>
-              </BreadcrumbItem>
-            )
-          })}
-        </Breadcrumb>
-        <HStack spacing="0.75rem" pt="0.25rem">
-          <Link
-            href={viewableLinkInStaging}
-            isExternal
-            isDisabled={isStagingUrlLoading}
-          >
-            View on staging
-          </Link>
-          <Link
-            href={viewablePageInCms}
-            isExternal
-            isDisabled={isStagingUrlLoading}
-          >
-            Edit page
-          </Link>
-        </HStack>
-      </HStack>
-      <TableContainer w="95%" mb="1.5rem">
-        <Table variant="striped">
-          <Thead>
-            <Tr>
-              <Th>Error type</Th>
-              <Th>Broken URL</Th>
-              <Th>Link Text</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {links.map((link) => {
-              const errorType = link.type
-                .split("-")
-                .map(
-                  (word: string) => word.charAt(0).toUpperCase() + word.slice(1)
-                )
-                .join(" ")
-
-              const isBrokenLink = link.type === "broken-link"
-
-              if (isBrokenLink) {
-                return (
-                  <Tr>
-                    <Td borderBottom={0}>{errorType}</Td>
-
-                    {link.linkToAsset ? (
-                      <Td borderBottom={0}>{link.linkToAsset}</Td>
-                    ) : (
-                      <Td borderBottom={0}>No URL linked</Td>
-                    )}
-
-                    {link.linkedText ? (
-                      <Td borderBottom={0}>{link.linkedText}</Td>
-                    ) : (
-                      <Td borderBottom={0}>Empty link text</Td>
-                    )}
-                  </Tr>
-                )
-              }
-
-              return (
-                <Tr>
-                  <Td borderBottom={0}>{errorType}</Td>
-                  <Td borderBottom={0}>{link.linkToAsset}</Td>
-                  <Td borderBottom={0}>Not applicable</Td>
-                </Tr>
-              )
-            })}
-          </Tbody>
-        </Table>
-      </TableContainer>
-    </VStack>
-  )
-}
-
-const LinkContent = ({ brokenLinks }: { brokenLinks: RepoError[] }) => {
-  const links: NonPermalinkError[] = (brokenLinks.filter((error) =>
-    isBrokenRefError(error)
-  ) as NonPermalinkErrorDto[]).map((error) => {
-    return {
-      ...error,
-      breadcrumb: getBreadcrumb(error.viewablePageInCms),
-    }
-  })
-
-  const pagesWithBrokenLinks: Map<string, string> = new Map()
-  const brokenLink: number = links.filter(
-    (error) => error.type === "broken-link"
-  ).length
-  const brokenImage: number = links.filter(
-    (error) => error.type === "broken-image"
-  ).length
-  // create a set of <breadcrumb, [errors]> pairs
-  const siteToErrorMap = new Map<string, NonPermalinkErrorDto[]>()
-  links.forEach((error) => {
-    const { breadcrumb } = error
-
-    if (siteToErrorMap.has(breadcrumb)) {
-      siteToErrorMap.get(breadcrumb)?.push(error)
-    } else {
-      siteToErrorMap.set(breadcrumb, [error])
-      pagesWithBrokenLinks.set(breadcrumb, error.viewablePageInStaging)
-    }
-  })
-
-  return (
-    <HStack
-      pl="1rem"
-      spacing="1rem"
-      alignContent="normal"
-      alignItems="flex-start"
-    >
-      <VStack
-        spacing="0.5rem"
-        m="1rem"
-        textStyle="body-1"
-        alignItems="start"
-        position="sticky"
-        top="2rem"
-        w="17.5rem"
-      >
-        <Text mb="0.25rem" textStyle="h5">
-          Pages with broken links
-        </Text>
-
-        {Array.from(pagesWithBrokenLinks.keys()).map((page) => (
-          // safe to assert as we know the key exists
-          <Link href={`#${pagesWithBrokenLinks.get(page)!}`} textStyle="body-2">
-            {page}
-          </Link>
-        ))}
-      </VStack>
-      <VStack width="calc(100vw - 350px)">
-        <HStack spacing="2rem" w="calc(100vw - 350px)" m="1.5rem" mt="1rem">
-          <VStack align="stretch">
-            <Text textStyle="body-1">Broken links</Text>
-            <Text textStyle="h4">{brokenLink}</Text>
-          </VStack>
-          <VStack align="stretch">
-            <Text textStyle="body-1">Broken images</Text>
-            <Text textStyle="h4">{brokenImage}</Text>
-          </VStack>
-        </HStack>
-        {Array.from(siteToErrorMap.keys()).map((breadcrumb) => {
-          return (
-            <SiteReportCard
-              breadcrumb={breadcrumb}
-              // safe to assert as we know the key exists
-              links={siteToErrorMap.get(breadcrumb)!} // safe to assert as we know the key exists
-            />
-          )
-        })}
-      </VStack>
-    </HStack>
-  )
-}
-
 const NoBrokenLinks = () => {
+  const { siteName } = useParams<{ siteName: string }>()
   return (
-    <Center height="70vh">
-      <VStack>
+    <Center w="22.5rem" pt="3rem">
+      <VStack justifyContent="center" gap="0.75rem">
         <NoBrokenLinksImage />
-        <Text mt="1rem" textStyle="h2">
-          No broken links found
+        <Text textStyle="h5" textAlign="center" pt="0.5rem">
+          Hurrah! All your references are nice and sturdy.
         </Text>
-        <Text textStyle="body-1">
-          Your site is in good shape. No broken references were found.
+        <Text textStyle="body-2" textAlign="center">
+          {`We couldn't find any broken references on your site. You can come  
+          back anytime to run the checker again.`}
         </Text>
+        <Button as={RouterLink} to={`/sites/${siteName}/dashboard`} mt="1rem">
+          Back to dashboard
+        </Button>
       </VStack>
     </Center>
   )
@@ -344,15 +142,10 @@ const ErrorLoading = () => {
           {`We couldn't generate a broken report for this site.`}
         </Text>
         <Text textStyle="body-1" textAlign="center" mb="1rem">
-          {" "}
           You might want to try running the check again. If the issue persists,
           reach out to Isomer Support.
         </Text>
-        <Button
-          onClick={() => {
-            refreshLinkChecker(siteName)
-          }}
-        >
+        <Button onClick={() => refreshLinkChecker(siteName)}>
           Run check again
         </Button>
       </VStack>
@@ -361,14 +154,26 @@ const ErrorLoading = () => {
 }
 
 const LoadingLinkChecker = () => {
+  const spin = keyframes`
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  `
+
   return (
-    <Center h="70vh">
-      <VStack width="24rem">
-        <Text textStyle="h4" textAlign="center">
-          Scanning your site for broken references{" "}
+    <Center h="40vh">
+      <VStack width="24rem" color="base.content.default">
+        <Box
+          as={BiLoaderAlt}
+          animation={`${spin} 1s linear infinite`}
+          height="1.25rem"
+          width="1.25rem"
+        />
+        <Text textStyle="h5" textAlign="center">
+          Sniffing out broken links on your site...
         </Text>
-        <Text textStyle="body-1" textAlign="center">
-          This may take a while...
+        <Text textStyle="body-2" textAlign="center">
+          Pages with broken references will appear here. This might take a
+          while.
         </Text>
       </VStack>
     </Center>
@@ -376,6 +181,13 @@ const LoadingLinkChecker = () => {
 }
 
 const LinkBody = () => {
+  const {
+    isOpen: isLinkReportModalOpen,
+    onOpen: onLinkReportModalOpen,
+    onClose: onLinkReportModalClose,
+  } = useDisclosure()
+  const [selectedLinkCms, setSelectedLinkCms] = useState("")
+  const [selectedLinkStaging, setSelectedLinkStaging] = useState("")
   const isBrokenLinksReporterEnabled = useFeatureIsOn(
     "is_broken_links_report_enabled"
   )
@@ -395,31 +207,330 @@ const LinkBody = () => {
 
   if (brokenLinks?.status === "success") {
     if (brokenLinks?.errors?.length === 0) {
-      return <NoBrokenLinks />
+      return (
+        <>
+          <LinkReportModal
+            props={{
+              isOpen: isLinkReportModalOpen,
+              onClose: onLinkReportModalClose,
+            }}
+            linksArr={[]}
+            pageCmsUrl={selectedLinkCms}
+            pageStagingUrl={selectedLinkStaging}
+          />
+          <Center>
+            <NoBrokenLinks />
+          </Center>
+        </>
+      )
     }
 
-    // todo: remove this once design is ready with showing duplicate permalinks
     const onlyDuplicatePermalinks = brokenLinks.errors.every(
       (error) => error.type === "duplicate-permalink"
     )
     if (onlyDuplicatePermalinks) {
-      return <NoBrokenLinks />
+      return (
+        <>
+          <LinkReportModal
+            props={{
+              isOpen: isLinkReportModalOpen,
+              onClose: onLinkReportModalClose,
+            }}
+            linksArr={[]}
+            pageCmsUrl={selectedLinkCms}
+            pageStagingUrl={selectedLinkStaging}
+          />
+          <Center>
+            <NoBrokenLinks />
+          </Center>
+        </>
+      )
     }
 
-    return <LinkContent brokenLinks={brokenLinks.errors} />
+    const links: NonPermalinkError[] = brokenLinks.errors
+      .filter(isBrokenRefError)
+      .map((error) => ({
+        ...error,
+        breadcrumb: getBreadcrumb(error.viewablePageInCms),
+      }))
+
+    const uniqueLinks = [
+      ...new Set(links.map((error) => error.viewablePageInCms)),
+    ]
+
+    const sortedUniqueLinks = _.sortBy(
+      uniqueLinks,
+      (e) => links.filter((link) => link.viewablePageInCms === e).length
+    ).reverse()
+
+    return (
+      <>
+        <LinkReportModal
+          props={{
+            isOpen: isLinkReportModalOpen,
+            onClose: onLinkReportModalClose,
+          }}
+          linksArr={links.filter(
+            (link) => link.viewablePageInCms === selectedLinkCms
+          )}
+          pageCmsUrl={selectedLinkCms}
+          pageStagingUrl={selectedLinkStaging}
+        />
+        <Grid
+          templateColumns="repeat(12, 1fr)"
+          w="100%"
+          gap="1rem"
+          mx="auto"
+          px="2rem"
+          h="100%"
+        >
+          <GridItem colSpan={1} />
+          <GridItem colSpan={10}>
+            <VStack spacing="0.5rem" pt="3rem">
+              <Text
+                textStyle="h4"
+                alignSelf="flex-start"
+                textAlign="left"
+                textColor="base.content.strong"
+              >
+                {sortedUniqueLinks.length} Pages with {links.length} broken
+                references
+              </Text>
+              <HStack alignSelf="flex-start" paddingBottom="1rem">
+                <Text
+                  textStyle="body-2"
+                  textAlign="left"
+                  color="base.content.medium"
+                >
+                  {`Click "Review page" to view a detailed list of  
+                  references broken on that page.`}
+                </Text>
+              </HStack>
+              <TableContainer
+                w="100%"
+                mb="1.5rem"
+                borderRadius="8px"
+                bgColor="utility.ui"
+                border="1px"
+                borderColor="base.divider.medium"
+              >
+                <Table style={{ tableLayout: "fixed" }}>
+                  <Thead>
+                    <Tr>
+                      <Th
+                        h="3.5rem"
+                        textAlign="left"
+                        padding="0.375rem 1rem"
+                        flex="1"
+                      >
+                        <Text textStyle="subhead-2" textTransform="none">
+                          Page
+                        </Text>
+                      </Th>
+                      <Th
+                        w="12.5rem"
+                        h="3.5rem"
+                        textAlign="center"
+                        padding="0.375rem 1rem"
+                      >
+                        <Text textStyle="subhead-2" textTransform="none">
+                          Broken References
+                        </Text>
+                      </Th>
+                      <Th w="12.5rem" textAlign="left" padding="0.375rem 1rem">
+                        <Text textStyle="subhead-2" textTransform="none">
+                          View Details
+                        </Text>
+                      </Th>
+                    </Tr>
+                  </Thead>
+                  <Tbody>
+                    {sortedUniqueLinks.map((itemUrl) => {
+                      const uniqueBreadcrumb = getBreadcrumb(itemUrl)
+                      return (
+                        <Tr
+                          key={itemUrl}
+                          borderTop="1px"
+                          borderColor="base.divider.medium"
+                        >
+                          <Td
+                            border="0px"
+                            padding="1.125rem 1rem"
+                            flex="1"
+                            maxW="calc(100% - 25rem)"
+                          >
+                            <VStack alignItems="flex-start" spacing="0.25rem">
+                              <Text
+                                textStyle="subhead-2"
+                                textOverflow="ellipsis"
+                                overflow="hidden"
+                                whiteSpace="nowrap"
+                                w="100%"
+                              >
+                                {uniqueBreadcrumb.split("/").at(-1)}
+                              </Text>
+                              <Breadcrumb
+                                separator="/"
+                                color="base.content.medium"
+                                size="xs"
+                                maxW="100%"
+                                isTruncated
+                              >
+                                {uniqueBreadcrumb.split("/").map((item) => (
+                                  <BreadcrumbItem key={item}>
+                                    <Text textStyle="caption-2">{item}</Text>
+                                  </BreadcrumbItem>
+                                ))}
+                              </Breadcrumb>
+                            </VStack>
+                          </Td>
+                          <Td w="12.5rem" border="0px" padding="1.125rem 1rem">
+                            <Text
+                              textColor="base.content.strong"
+                              textStyle="subhead-2"
+                              alignSelf="stretch"
+                              textAlign="center"
+                            >
+                              {
+                                links.filter(
+                                  (link) => link.viewablePageInCms === itemUrl
+                                ).length
+                              }
+                            </Text>
+                          </Td>
+                          <Td w="12.5rem" border="0px" padding="1.125rem 1rem">
+                            <Button
+                              variant="link"
+                              textStyle="subhead-2"
+                              color="interaction.links.default"
+                              onClick={() => {
+                                setSelectedLinkCms(itemUrl)
+                                setSelectedLinkStaging(
+                                  links.find(
+                                    (item) => item.viewablePageInCms === itemUrl
+                                  )!.viewablePageInStaging
+                                ) // This shouldn't be null since there should be at least one error with the same cms url.
+                                onLinkReportModalOpen()
+                              }}
+                            >
+                              Review Page
+                              <BxRightArrowAlt
+                                h="1.25rem"
+                                w="1.25rem"
+                                pl="0.25rem"
+                              />
+                            </Button>
+                          </Td>
+                        </Tr>
+                      )
+                    })}
+                  </Tbody>
+                </Table>
+              </TableContainer>
+            </VStack>
+          </GridItem>
+        </Grid>
+      </>
+    )
   }
 
-  return <LoadingLinkChecker />
+  return (
+    <>
+      <LinkReportModal
+        props={{
+          isOpen: isLinkReportModalOpen,
+          onClose: onLinkReportModalClose,
+        }}
+        linksArr={[]}
+        pageCmsUrl={selectedLinkCms}
+        pageStagingUrl={selectedLinkStaging}
+      />
+      <Grid
+        templateColumns="repeat(12, 1fr)"
+        w="100%"
+        gap="1rem"
+        mx="auto"
+        px="2rem"
+        h="100%"
+      >
+        <GridItem colSpan={1} />
+        <GridItem colSpan={10}>
+          <VStack spacing="0.5rem" pt="3rem">
+            <Text
+              textStyle="h4"
+              alignSelf="flex-start"
+              textAlign="left"
+              textColor="base.content.strong"
+            >
+              Pages with broken references
+            </Text>
+            <HStack alignSelf="flex-start" paddingBottom="1rem">
+              <Text
+                textStyle="body-2"
+                textAlign="left"
+                textColor="base.content.medium"
+              >
+                {`Click "Review page" to view a detailed list of
+                references broken on that page.`}
+              </Text>
+            </HStack>
+            <TableContainer
+              w="100%"
+              mb="1.5rem"
+              borderRadius={8}
+              bgColor="utility.ui"
+              border="1px"
+              borderColor="base.divider.medium"
+            >
+              <Table>
+                <Thead>
+                  <Tr>
+                    <Th h="3.5rem" textAlign="left" padding="0.375rem 1rem">
+                      <Text textStyle="subhead-2" textTransform="none">
+                        Page
+                      </Text>
+                    </Th>
+                    <Th
+                      w="12.5rem"
+                      h="3.5rem"
+                      textAlign="center"
+                      padding="0.375rem 1rem"
+                    >
+                      <Text textStyle="subhead-2" textTransform="none">
+                        Broken References
+                      </Text>
+                    </Th>
+                    <Th w="12.5rem" textAlign="left" padding="0.375rem 1rem">
+                      <Text textStyle="subhead-2" textTransform="none">
+                        View Details
+                      </Text>
+                    </Th>
+                  </Tr>
+                </Thead>
+                <Tbody>
+                  <Tr borderTop="1px" borderColor="base.divider.medium">
+                    <Td colSpan={3} border="0px">
+                      <LoadingLinkChecker />
+                    </Td>
+                  </Tr>
+                </Tbody>
+              </Table>
+            </TableContainer>
+          </VStack>
+        </GridItem>
+      </Grid>
+    </>
+  )
 }
 
 export const LinksReport = () => {
   return (
-    <>
+    <Box backgroundColor="base.canvas.alt" minH="100vh">
       <SiteViewHeader />
-      <Box backgroundColor="base.canvas.alt">
+      <Box>
         <LinksReportBanner />
         <LinkBody />
       </Box>
-    </>
+    </Box>
   )
 }
