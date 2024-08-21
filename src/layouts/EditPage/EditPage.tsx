@@ -180,7 +180,7 @@ export const EditPage = () => {
                   .chain()
                   .focus()
                   .insertContent(
-                    `<a target="_blank" rel="noopener nofollow" referrerpolicy="origin-when-cross-origin" href="${href}">${text}</a>`
+                    `<a target="_blank" rel="noopener nofollow" href="${href}">${text}</a>`
                   )
                   .run()
                 onHyperlinkModalClose()
