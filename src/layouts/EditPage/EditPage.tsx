@@ -210,7 +210,7 @@ export const EditPage = () => {
                     .chain()
                     .focus()
                     .insertContent(
-                      `<a target="_blank" rel="noopener noreferrer nofollow" href="${selectedMediaPath}">${
+                      `<a target="_blank" rel="noopener nofollow" href="${selectedMediaPath}">${
                         altText || "file"
                       }</a>`
                     )
