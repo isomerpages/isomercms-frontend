@@ -107,7 +107,7 @@
     "uuid": "^3.4.0",
     "webpack": "^5.91.0",
     "yaml": "^1.10.2",
-    "yup": "^0.32.11"
+    "yup": "^1.4.0"
   },
   "scripts": {
     "gen:theme-typings": "chakra-cli tokens src/theme/index.ts",
