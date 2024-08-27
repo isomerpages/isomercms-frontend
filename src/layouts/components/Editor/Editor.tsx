@@ -34,7 +34,7 @@ export const Editor = (props: BoxProps & { showInfoBox: boolean }) => {
           borderRadius={0}
           p="0.625rem 0.5rem 0.625rem 0.5rem"
         >
-          <Text>
+          <Text onClick={() => console.log(editor.getJSON())}>
             You are using Isomer’s new no-code editor.{" "}
             <Link
               isExternal
