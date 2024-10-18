@@ -17,6 +17,8 @@ import { useEffect, useState } from "react"
 import { ButtonLink } from "components/ButtonLink"
 import { Modal } from "components/Modal"
 
+import { useStagingLink } from "hooks/useStagingLink"
+
 export interface ViewStagingSiteModalProps {
   isOpen: boolean
   onClose: () => void
@@ -57,6 +59,8 @@ export function ViewStagingSiteModal({
   stagingUrl,
   editMode,
 }: ViewStagingSiteModalProps) {
+  const stagingLink = useStagingLink(stagingUrl)
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
@@ -78,7 +82,7 @@ export function ViewStagingSiteModal({
               what your site may look like on smaller devices:
             </Text>
 
-            <GenerateQr text={stagingUrl || ""} />
+            <GenerateQr text={stagingLink || ""} />
           </VStack>
         </ModalBody>
         <ModalFooter>
@@ -87,7 +91,7 @@ export function ViewStagingSiteModal({
               Close
             </Button>
             <Skeleton isLoaded={!isLoading}>
-              <ButtonLink href={stagingUrl}>
+              <ButtonLink href={stagingLink}>
                 <Text color="white">Open staging site in a new tab</Text>
               </ButtonLink>
             </Skeleton>

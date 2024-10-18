@@ -47,6 +47,7 @@ import {
 import { useGetBrokenLinks } from "hooks/siteDashboardHooks/useGetLinkChecker"
 import { useRefreshLinkChecker } from "hooks/siteDashboardHooks/useRefreshLinkChecker"
 import useRedirectHook from "hooks/useRedirectHook"
+import { useStagingLink } from "hooks/useStagingLink"
 
 import { getDateTimeFromUnixTime } from "utils/date"
 import { isSiteLaunchEnabled } from "utils/siteLaunchUtils"
@@ -96,6 +97,7 @@ export const SiteDashboard = (): JSX.Element => {
   const {
     mutateAsync: updateViewedReviewRequests,
   } = useUpdateViewedReviewRequests()
+  const stagingLink = useStagingLink(siteInfo?.stagingUrl)
 
   const isBrokenLinksReporterEnabled = useFeatureIsOn(
     "is_broken_links_report_enabled"
@@ -143,11 +145,11 @@ export const SiteDashboard = (): JSX.Element => {
               mainButtonText="Open staging"
               isDisabled={isSiteInfoLoading || isSiteInfoError}
               as={ButtonLink}
-              href={siteInfo?.stagingUrl}
+              href={stagingLink}
             >
               <MenuDropdownItem
                 as={ButtonLink}
-                href={siteInfo?.stagingUrl}
+                href={stagingLink}
                 isDisabled={isSiteInfoLoading || isSiteInfoError}
               >
                 <Text textStyle="body-1" fill="text.body">
