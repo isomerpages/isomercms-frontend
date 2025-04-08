@@ -14,6 +14,8 @@ jobs:
       with:
         node-version: 18
     - name: Install dependencies
+      env:
+        TIPTAP_PRO_TOKEN: ${{secrets.TIPTAP_PRO_TOKEN}}
       run: npm ci
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
