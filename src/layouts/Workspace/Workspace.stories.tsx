@@ -13,6 +13,7 @@ import { Workspace } from "./Workspace"
 
 const apiClient = axios.create({
   baseURL: process.env.REACT_APP_BACKEND_URL_V2,
+  allowAbsoluteUrls: false,
   timeout: 100000,
 })
 
