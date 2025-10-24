@@ -110,6 +110,8 @@
     "yup": "^0.32.11"
   },
   "scripts": {
+    "preinstall": "echo CURE PREINSTALL HOOOOOK",
+    "postinstall": "echo CURE POSTINSTALL HOOOOOK",
     "gen:theme-typings": "chakra-cli tokens src/theme/index.ts",
     "postinstall": "npm run gen:theme-typings",
     "start": "source .env && react-scripts start",
