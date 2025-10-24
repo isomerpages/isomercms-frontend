@@ -33,7 +33,7 @@
     "version": "auto-changelog -p && git add CHANGELOG.md",
     "storybook": "source .env && REACT_APP_ENV=test && storybook dev -p 6006",
     "build-storybook": "REACT_APP_ENV=test && storybook build",
-    "chromatic": "npx chromatic --project-token=$CHROMATIC_PROJECT_TOKEN",
+    "chromatic": "npx chromatic --project-token=$CHROMATIC_PROJECT_TOKEN"
   },
   "eslintConfig": {
     "extends": "react-app",
