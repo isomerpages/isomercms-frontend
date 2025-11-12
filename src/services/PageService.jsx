@@ -1,3 +1,5 @@
+const { isSafePath } = require("../utils/misc")
+
 export class PageService {
   constructor({ apiClient }) {
     this.apiClient = apiClient
@@ -12,6 +14,22 @@ export class PageService {
     resourceCategoryName,
     fileName,
   }) {
+    // Check the input parameters to ensure the paths are safe
+    const paramsToCheck = [
+      siteName,
+      collectionName,
+      subCollectionName,
+      resourceRoomName,
+      resourceCategoryName,
+      fileName,
+    ]
+
+    paramsToCheck.forEach((param) => {
+      if (param && !isSafePath(param)) {
+        throw new Error(`Unsafe path detected in parameter: ${param}`)
+      }
+    })
+
     let endpoint = `/sites/${siteName}`
     if (collectionName) {
       endpoint += `/collections/${collectionName}`
