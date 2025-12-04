@@ -7,3 +7,12 @@ export const isLinkInternal = (url: string) => {
   tempLink.href = url
   return tempLink.hostname === window.location.hostname
 }
+
+// Util method to check if a URL path is safe
+export const isSafePath = (path: string): boolean => {
+  if (path.indexOf("\\") !== -1) {
+    return false
+  }
+
+  return true
+}

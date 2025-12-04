@@ -62,6 +62,9 @@ export const Iframe = Node.create<IframeOptions>({
       style: {
         default: null,
       },
+      referrerpolicy: {
+        default: "strict-origin-when-cross-origin",
+      },
     }
   },
 
