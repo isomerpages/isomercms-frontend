@@ -105,7 +105,7 @@
     "turndown": "^7.1.1",
     "turndown-plugin-gfm": "^1.0.2",
     "uuid": "^3.4.0",
-    "webpack": "^5.91.0",
+    "webpack": "^5.94.0",
     "yaml": "^1.10.2",
     "yup": "^0.32.11"
   },
