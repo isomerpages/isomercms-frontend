@@ -12,7 +12,6 @@ export function useCspHook() {
   const errorToast = useErrorToast()
   return useQuery([CSP_CONTENT_KEY], () => CspService.get(), {
     retry: false,
-    initialData: {},
     onError: () => {
       errorToast({
         id: "get-csp-error",
