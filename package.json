@@ -3,7 +3,7 @@
   "version": "0.92.0",
   "private": true,
   "engines": {
-    "node": ">=16.0.0"
+    "node": ">=20.0.0"
   },
   "dependencies": {
     "@braintree/sanitize-url": "^6.0.1",
@@ -15,7 +15,7 @@
     "@chakra-ui/utils": "^2.0.14",
     "@craco/craco": "^7.1.0",
     "@datadog/browser-rum": "^4.38.0",
-    "@datadog/datadog-ci": "^2.37.0",
+    "@datadog/datadog-ci": "^5.1.0",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@fontsource/ibm-plex-mono": "^5.0.5",
